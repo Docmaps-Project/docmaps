@@ -29,3 +29,4 @@ Eventually we'll implement our own playground. For now, you can use this one to 
 - Break the schema out into its own file
 - Expand the schema to accomadate more examples
 - Better validation of domains for providers (right now using URI validation)
+- Create playground from one of the schema form generators.
