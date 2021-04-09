@@ -1,0 +1,21 @@
+{
+    "contentType": "author_response",
+    "content": "https://hyp.is/d255QIi9EeuXjXMzyWvbLQ/www.biorxiv.org/content/10.1101/2020.12.15.422694v1",
+    "policy": "https://sciety.org/groups/b560187e-f2fb-4ff9-a861-a204f3fc0fb0",
+    "provider": "https://sciety.org",
+    "asserter": "https://elife.org",
+    "assertedOn": "",
+    "createdOn": "",
+    "completedOn": "01-25-2021T10:58:00Z",
+    "isAuthorResponseTo": [
+        {
+            "docmap": ""
+        },
+        {
+            "contentType": "article",
+            "content": "https://www.biorxiv.org/content/10.1101/2020.12.15.422694v2",
+            "doi": "10.1101/2020.12.15.422694"
+        }
+    ],
+    "contributors": []
+}

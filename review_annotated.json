@@ -1,0 +1,84 @@
+{
+    "contentType": "review", // do you need this at all? does it need to be more specific? is this a review_process?
+    "content": "https://hyp.is/H7hTxl8mEeuJztfA9GxJ9A/www.biorxiv.org/content/10.1101/2020.12.15.422694v1", // the link to the original content, in as bare a form as possible, preferably a file
+    "permalink": "https://sciety.org/groups/b560187e-f2fb-4ff9-a861-a204f3fc0fb0", // if the object lives on a site that provides a permanent link to it, use this (could use a better name)
+    "policy": "https://sciety.org/groups/b560187e-f2fb-4ff9-a861-a204f3fc0fb0", // recc from thomas
+    "provider": "https://sciety.org", // using domains for identity (for now) allows us to verify that the docmap comes from the provider
+    "asserter": "https://elife.org", // less clear how to do identity here, but the idea is that this is the community making the assertion, which can be different than the provider
+    "assertedOn": "", // when the object was added to sciety. Not known.
+    "createdOn": "", // when the object was started, if applicable
+    "completedOn": "01-25-2021T10:58:00Z", // when the object was completed/published,
+    "doi": "",
+    "isReviewOf": [
+        {
+            "contentType": "article",
+            "content": "https://www.biorxiv.org/content/10.1101/2020.12.15.422694v1",
+            "doi": "10.1101/2020.12.15.422694"
+        }
+    ],
+    "contributors": [
+        {
+            "name": "", // blank or null if anonymous
+            "affiliations": [], // list of ROR/ringold ids?
+            "id": "", // a system-generated id, optional, but handy for looking at contributions from multiple anonymous contributors. Perhaps at some point we need a standard here, maybe one-way hashing of ORCIDs?
+            "orcid": "",
+            "role": "editor"
+        }
+    ],
+    "reviews": [
+        {
+            "contentType": "review",
+            "content": "https://hyp.is/lxIY5F8mEeuOtnMYEONoPw/www.biorxiv.org/content/10.1101/2020.12.15.422694v1",
+            "provider": "https://sciety.org",
+            "asserter": "elife.org",
+            "assertedOn": "",
+            "createdOn": "",
+            "completedOn": "01-25-2021T10:58:00Z",
+            "review_number": 1,
+            "contributors": [
+                {
+                    "name": "",
+                    "affiliations": [],
+                    "id": "",
+                    "orcid": "",
+                    "role": "reviewer"
+                }
+            ]
+        },
+        {
+            "contentType": "review",
+            "content": "https://hyp.is/70AUil8mEeua1bs-XwA-vg/www.biorxiv.org/content/10.1101/2020.12.15.422694v1",
+            "provider": "https://sciety.org",
+            "asserter": "https://elife.org",
+            "assertedOn": "",
+            "createdOn": "01-25-2021T10:58:00Z",
+            "review_number": 2,
+            "contributors": [
+                {
+                    "name": "",
+                    "id": "",
+                    "orcid": "",
+                    "role": "reviewer"
+                }
+            ]
+        },
+        {
+            "contentType": "review",
+            "content": "https://hyp.is/d255QIi9EeuXjXMzyWvbLQ/www.biorxiv.org/content/10.1101/2020.12.15.422694v1",
+            "provider": "https://sciety.org",
+            "asserter": "https;//elife.org",
+            "assertedOn": "",
+            "createdOn": "01-25-2021T10:58:00Z",
+            "review_number": 3,
+            "contributors": [
+                {
+                    "name": "",
+                    "affiliations": [],
+                    "id": "",
+                    "orcid": "",
+                    "role": "reviewer"
+                }
+            ]
+        }
+    ]
+}
