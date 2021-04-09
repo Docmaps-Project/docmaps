@@ -6,17 +6,20 @@ More info: https://docmaps.knowledgefutures.org
 
 ## About This Repo
 
-This repo defines a basic initial schema using JSON schema, a validation tool, and two example schemas based on https://sciety.org/articles/activity/10.1101/2020.12.15.422694
+This repo defines a basic initial schema using JSON schema, a validation tool, and two example schemas for a review and author response based on https://sciety.org/articles/activity/10.1101/2020.12.15.422694
 
 The schema includes annotation and definition. Also included are two annotated schemas (invalid JSON, but quite helpful), which provide more details about
 
-## Using
+## Usage
 
-Clone the repo, change the imported schema in `index.js` to the one you want to validate, and run `npm run validate`.
+`npm run validate -- --docmap ./path-to-file.json`
+
+Try it out with:
+
+`npm run validate -- --docmap ./review.json`
 
 ## To Do
 
-- Make the validation command more useful by allowing you to specify the schema to validate against
 - Fix schema to include anyOf "#", "docmap" in required
 - Add isAuthorResponseTo property
 - Break the schema out into its own file

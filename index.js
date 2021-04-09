@@ -1,18 +1,18 @@
-var Ajv = require("ajv");
-var docmap = require('./response.json');
-var ajv = new Ajv();
-
-var uriPattern = ".+://[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)";
+var Ajv = require('ajv');
+var argv = require('yargs/yargs')(process.argv.slice(2)).argv;
+var fs = require('fs');
 
 var readJson = (path, cb) => {
     fs.readFile(require.resolve(path), (err, data) => {
-      if (err)
-        cb(err)
-      else
-        cb(null, JSON.parse(data))
+        if (err)
+            cb(err)
+        else
+            cb(null, JSON.parse(data))
     })
-  }
-  
+}
+
+var uriPattern = ".+://[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)";
+
 var schema = {
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "http://example.com/example.json",
@@ -228,10 +228,19 @@ var schema = {
     }
 }
 
-var valid = ajv.validate(schema, docmap);
-if(!valid) {
-    console.log(ajv.errors);
-    return;
+var ajv = new Ajv();
+
+if(argv.docmap) {
+    readJson(argv.docmap, function(err, res){
+        if(err) {
+            console.error('Error:', err);
+        }
+        var valid = ajv.validate(schema, res);
+        if(!valid) {
+            console.error(ajv.errors);
+        }
+        console.log('validated', argv.docmap);
+    })
 }
-console.log("valid!");
-return;
+
+console.warn('Please supply a path to a docmap, e.g.: npm run validate -- --docmap ./review.json');
