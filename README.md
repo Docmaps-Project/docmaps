@@ -8,7 +8,7 @@ More info: https://docmaps.knowledgefutures.org
 
 This repo defines a basic initial schema using JSON schema, a validation tool, and two example schemas for a review and author response based on https://sciety.org/articles/activity/10.1101/2020.12.15.422694
 
-The schema includes annotation and definition. Also included are two annotated schemas (invalid JSON, but quite helpful), which provide more details about
+The schema includes annotation and definition. Also included are two annotated schemas (invalid JSON, but quite helpful), which provide more details about the thinking of specific fields in DocMaps.
 
 ## Usage
 
