@@ -9,12 +9,12 @@
     "createdOn": "", // when the object was started, if applicable
     "completedOn": "01-25-2021T10:58:00Z", // when the object was completed/published,
     "doi": "",
-    "isReviewOf": [
+    "isReviewOf": [ // generic pointer?
         {
             "contentType": "article",
             "content": "https://www.biorxiv.org/content/10.1101/2020.12.15.422694v1",
             "doi": "10.1101/2020.12.15.422694"
-        }
+        },
     ],
     "contributors": [
         {
@@ -25,7 +25,7 @@
             "role": "editor"
         }
     ],
-    "reviews": [
+    "reviews": [ // docmap version? generic pointer?
         {
             "contentType": "review",
             "content": "https://hyp.is/lxIY5F8mEeuOtnMYEONoPw/www.biorxiv.org/content/10.1101/2020.12.15.422694v1",
