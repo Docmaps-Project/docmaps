@@ -241,6 +241,6 @@ if(argv.docmap) {
         }
         console.log('validated', argv.docmap);
     })
+} else {
+    console.warn('Please supply a path to a docmap, e.g.: npm run validate -- --docmap ./examples/review.json');
 }
-
-console.warn('Please supply a path to a docmap, e.g.: npm run validate -- --docmap ./review.json');

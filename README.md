@@ -16,7 +16,7 @@ The schema includes annotation and definition. Also included are two annotated s
 
 Try it out with:
 
-`npm run validate -- --docmap ./review.json`
+`npm run validate -- --docmap ./examples/review.json`
 
 ## Create a DocMap!
 
