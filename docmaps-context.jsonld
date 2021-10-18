@@ -45,7 +45,7 @@
         "homepage": "foaf:homepage",
         "account": "foaf:onlineAccount",
         "service": "foaf:accountServiceHomepage",
-        "accountName": "foaf:accountName",
+        "account-name": "foaf:accountName",
         "process": "prov:process",
         "provenance": "dcterms:provenance",
         "inputs": {
