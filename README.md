@@ -10,4 +10,5 @@ This repo contains JSONLD contexts and framing for DocMaps that can be reference
 
 ## Persistent URLs
 
-Latest @context: https://purl.org/docmaps/latest
+Documentation: https://w3id.org/docmaps
+Latest @context: https://w3id.org/docmaps/context.jsonld
