@@ -156,6 +156,7 @@
             "@type": "@id"
         },
         "reply": "fabio:Reply",
+        "evaluation-summary": "fabio:ExecutiveSummary",
         "comment": "fabio:Comment",
         "editorial": "fabio:Editorial"
     }
