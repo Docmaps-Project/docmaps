@@ -6,6 +6,7 @@ import SerializerNtriples from '@rdfjs/serializer-ntriples'
 import { Readable, Transform } from 'stream'
 import fs from "fs";
 
+const BASE_IRI='https://w3id.org/docmaps/examples/'
 
 async function loadFile(fileName) {
   try {
@@ -19,7 +20,7 @@ async function loadFile(fileName) {
 const fileName = process.argv[2];
 const  data = await loadFile(fileName);
 
-const parserJsonld = new ParserJsonld({baseIRI: 'http://docmaps.knowledgefutures./org/examples/'})
+const parserJsonld = new ParserJsonld({baseIRI: BASE_IRI})
 const serializerNtriples = new SerializerNtriples()
 const serializer = new Serializer()
 

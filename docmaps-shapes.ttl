@@ -1,4 +1,4 @@
-@prefix : <http://github.com/Docmaps-project/docmaps/> .
+@prefix : <https://w3id.org/docmaps/v0/> .
 @prefix ti: <http://www.ontologydesignpatterns.org/cp/owl/timeinterval.owl#> .
 @prefix cnt: <http://www.w3.org/2011/content#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
