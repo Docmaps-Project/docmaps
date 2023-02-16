@@ -27,11 +27,37 @@
         rdfs:subClassOf pwo:Workflow ;
         rdfs:label "Docmap" .
 
+:DocmapStepShape
+        a sh:NodeShape ;
+        sh:property [
+                sh:path pwo:hasNextStep ;
+                # TODO: make sure this is safe, because possibly validation can't handle this recursion
+                #   If we mysteriously start getting callstack size errors, it could be because of this
+                #   and we def get those errors when we add the same call for hasPreviousStep
+                sh:node :DocmapStepShape ;
+        ] .
+
 :DocmapShape
         a sh:NodeShape ;
         sh:targetClass :Docmap ;
         sh:property [
                 sh:path dcterms:created ;
+                # TODO: specify it is an xsd:date string
                 sh:minCount 1 ;
                 sh:maxCount 1 ;
+        ] ;
+        sh:property [
+                sh:path pwo:hasFirstStep ;
+                # somewhat redundant because it is a owl:subPropertyOf hasStep;
+                # specifying here is useful however for generation.
+                sh:node :DocmapStepShape ;
+                sh:maxCount 1 ;
+        ] ;
+        sh:property [
+                sh:path dcterms:publisher ;
+                sh:node :DocmapPublisherShape ;
+        ] ;
+        sh:property [
+                sh:path pwo:hasStep ;
+                sh:node :DocmapStepShape ;
         ] .
