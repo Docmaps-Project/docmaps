@@ -30,9 +30,11 @@ const input = new Readable({
   }
 })
 
+// TODO: include declaration that a docmap is a :Docmap
 const quads = parserJsonld.import(input)
 
 const nt = serializerNtriples.import(quads)
 
+// TODO: add conversion to turtle as well.
 nt.pipe(process.stdout)
 
