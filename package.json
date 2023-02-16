@@ -1,0 +1,16 @@
+{
+  "name": "docmaps-specification",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Top-level Docmaps specification module -- not intended for direct npm consumption.",
+  "scripts": {
+    "test": "npx node scripts/package-tests.js"
+  },
+  "author": "early evening @ships",
+  "license": "MTI",
+  "dependencies": {
+    "@rdfjs/parser-n3": "^2.0.1",
+    "rdf-ext": "^2.2.0",
+    "rdf-validate-shacl": "^0.4.5"
+  }
+}

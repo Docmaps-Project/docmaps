@@ -1,0 +1,37 @@
+@prefix : <http://github.com/Docmaps-project/docmaps/> .
+@prefix ti: <http://www.ontologydesignpatterns.org/cp/owl/timeinterval.owl#> .
+@prefix cnt: <http://www.w3.org/2011/content#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix pro: <http://purl.org/spar/pro/> .
+@prefix pso: <http://purl.org/spar/pso/> .
+@prefix pwo: <http://purl.org/spar/pwo/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix frbr: <http://purl.org/vocab/frbr/core#> .
+@prefix prov: <https://www.w3.org/TR/prov-o/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix fabio: <http://purl.org/spar/fabio/> .
+@prefix prism: <http://prismstandard.org/namespaces/basic/2.0/> .
+@prefix taskex: <http://www.ontologydesignpatterns.org/cp/owl/taskexecution.owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@base <http://github.com/Docmaps-project/docmaps/> .
+
+#################################################################
+#    Shapes
+#################################################################
+
+:Docmap rdf:type owl:Class ;
+        rdfs:subClassOf pwo:Workflow ;
+        rdfs:label "Docmap" .
+
+:DocmapShape
+        a sh:NodeShape ;
+        sh:targetClass :Docmap ;
+        sh:property [
+                sh:path dcterms:created ;
+                sh:minCount 1 ;
+                sh:maxCount 1 ;
+        ] .
