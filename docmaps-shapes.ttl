@@ -72,10 +72,64 @@
         # sh:closed true ;
         .
 
-# TODO: add constraints to this
+
+# TODO: add constraints for required fields?
 :DocmapPublisherShape
         a sh:NodeShape ;
         sh:ignoredProperties ( rdf:type ) ;
+        sh:property :DocmapHasLogo ;
+        sh:property :DocmapHasName ;
+        sh:property :DocmapHasHomepage ;
+        sh:property :DocmapHasURL ;
+        sh:property [
+                sh:path foaf:onlineAccount ;
+                sh:node :DocmapOnlineAccountShape ;
+                sh:maxCount 1 ;
+        ] ;
+#       TODO ** note that embo is adding a peer_review_policy to
+#       publisher field that has no corresponding context key.
+#       That means the value is dropped on import to n3
+        sh:closed true ;
+        .
+
+:DocmapHasLogo
+        a sh:PropertyShape ;
+        sh:path foaf:logo ;
+        sh:nodeKind sh:Literal ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1;
+        .
+
+:DocmapHasName
+        a sh:PropertyShape ;
+        sh:path foaf:name ;
+        sh:nodeKind sh:Literal ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1 ;
+        .
+:DocmapHasHomepage
+        a sh:PropertyShape ;
+        sh:path foaf:homepage ;
+        sh:nodeKind sh:Literal ;
+        sh:datatype xsd:string ;
+        sh:maxCount 1;
+        .
+:DocmapHasURL
+        a sh:PropertyShape ;
+        sh:path fabio:hasURL ;
+        sh:nodeKind sh:Literal ;
+        sh:datatype xsd:anyURI ;
+        sh:maxCount 1;
+        .
+
+:DocmapOnlineAccountShape
+        a sh:NodeShape ;
+        sh:nodeKind sh:IRI ;
+        sh:property [
+                sh:path foaf:accountServiceHomepage ;
+                sh:datatype xsd:string ;
+        ] ;
+        sh:closed true ;
         .
 
 :DocmapStepShape
@@ -83,6 +137,7 @@
         sh:ignoredProperties ( rdf:type ) ;
         sh:node :DocmapStepSequenceShape ;
         sh:node :DocmapStepPropsShape ;
+        # TODO: closure may be impossible with these nested types.
         # sh:closed true ;
         .
 
@@ -126,7 +181,11 @@
         sh:property [
                 # "assertions:
                 sh:path pso:resultsInAcquiring
-        ]
+        ] ;
+        # TODO: some examples fail on closure here, for surprising reasons.
+        # It appears that the eLife generated NT file contains a `step` that
+        # `produces` its `previousStep`. That may be an error in my converter.
+        # sh:closed true ;
         .
 
 :DocmapRoleInTimeShape
