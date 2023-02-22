@@ -1,0 +1,162 @@
+    {
+      "@context": "https://w3id.org/docmaps/context.jsonld",
+      "id": "https://connect.biorxiv.org/docmaps/",
+      "type": "docmap",
+      "created": "",
+      "updated": "",
+      "publisher": {
+        "logo": "https://biorxiv.s3.amazonaws.com/logo_elife.jpg",
+        "homepage": "https://elifesciences.org/"
+      },
+      "first-step": "b1",
+      "steps": {
+        "b1": {
+          "assertions": [],
+          "inputs": [
+            {
+              "doi": "",
+              "url": "https://doi.org/"
+            }
+          ],
+          "actions": [
+            [
+              {
+                "doi": "10.1101/2021.06.07.447348",
+                "rev_date": "2021-12-15",
+                "rev_platform": "eLife",
+                "rev_platform_link": "https://eeb.embo.org/api/v2/review_material/19209938",
+                "rev_type": "review",
+                "participants": [
+                  {
+                    "actor": {
+                      "name": "",
+                      "role": "author"
+                    }
+                  }
+                ],
+                "outputs": [
+                  {
+                    "type": "review",
+                    "published": "2021-12-15",
+                    "content": [
+                      {
+                        "type": "webpage",
+                        "url": "https://doi.org/10.1101/2021.06.07.447348#review"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "doi": "10.1101/2021.06.07.447348",
+                "rev_date": "2021-12-13",
+                "rev_platform": "eLife",
+                "rev_platform_link": "https://eeb.embo.org/api/v2/review_material/19209427",
+                "rev_type": "review",
+                "participants": [
+                  {
+                    "actor": {
+                      "name": "",
+                      "role": "author"
+                    }
+                  }
+                ],
+                "outputs": [
+                  {
+                    "type": "review",
+                    "published": "2021-12-13",
+                    "content": [
+                      {
+                        "type": "webpage",
+                        "url": "https://doi.org/10.1101/2021.06.07.447348#review"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "doi": "10.1101/2021.06.07.447348",
+                "rev_date": "2021-12-10",
+                "rev_platform": "eLife",
+                "rev_platform_link": "https://eeb.embo.org/api/v2/review_material/19209430",
+                "rev_type": "review",
+                "participants": [
+                  {
+                    "actor": {
+                      "name": "",
+                      "role": "author"
+                    }
+                  }
+                ],
+                "outputs": [
+                  {
+                    "type": "review",
+                    "published": "2021-12-10",
+                    "content": [
+                      {
+                        "type": "webpage",
+                        "url": "https://doi.org/10.1101/2021.06.07.447348#review"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "doi": "10.1101/2021.06.07.447348",
+                "rev_date": "2021-12-10",
+                "rev_platform": "eLife",
+                "rev_platform_link": "https://eeb.embo.org/api/v2/review_material/19209428",
+                "rev_type": "review",
+                "participants": [
+                  {
+                    "actor": {
+                      "name": "",
+                      "role": "author"
+                    }
+                  }
+                ],
+                "outputs": [
+                  {
+                    "type": "review",
+                    "published": "2021-12-10",
+                    "content": [
+                      {
+                        "type": "webpage",
+                        "url": "https://doi.org/10.1101/2021.06.07.447348#review"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "doi": "10.1101/2021.06.07.447348",
+                "rev_date": "2021-12-10",
+                "rev_platform": "eLife",
+                "rev_platform_link": "https://eeb.embo.org/api/v2/review_material/19209429",
+                "rev_type": "review",
+                "participants": [
+                  {
+                    "actor": {
+                      "name": "",
+                      "role": "author"
+                    }
+                  }
+                ],
+                "outputs": [
+                  {
+                    "type": "review",
+                    "published": "2021-12-10",
+                    "content": [
+                      {
+                        "type": "webpage",
+                        "url": "https://doi.org/10.1101/2021.06.07.447348#review"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          ]
+        }
+      }
+    }

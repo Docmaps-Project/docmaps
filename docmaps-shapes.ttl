@@ -17,25 +17,16 @@
 @prefix taskex: <http://www.ontologydesignpatterns.org/cp/owl/taskexecution.owl#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
-@base <http://github.com/Docmaps-project/docmaps/> .
-
+@base <https://w3id.org/docmaps/v0/> .
 #################################################################
 #    Shapes
 #################################################################
 
-:Docmap rdf:type owl:Class ;
+:Docmap a owl:Class ;
         rdfs:subClassOf pwo:Workflow ;
-        rdfs:label "Docmap" .
-
-:DocmapStepShape
-        a sh:NodeShape ;
-        sh:property [
-                sh:path pwo:hasNextStep ;
-                # TODO: make sure this is safe, because possibly validation can't handle this recursion
-                #   If we mysteriously start getting callstack size errors, it could be because of this
-                #   and we def get those errors when we add the same call for hasPreviousStep
-                sh:node :DocmapStepShape ;
-        ] .
+        rdfs:label "Docmap" ;
+        rdfs:comment "A Docmap is a Workflow of publishing steps with additional metadata" ;
+        .
 
 :DocmapShape
         a sh:NodeShape ;
@@ -60,4 +51,26 @@
         sh:property [
                 sh:path pwo:hasStep ;
                 sh:node :DocmapStepShape ;
-        ] .
+        ]
+        .
+
+:DocmapActionShape
+        a sh:NodeShape ;
+        sh:ignoredProperties ( rdf:type ) ;
+        .
+
+:DocmapStepShape
+        a sh:NodeShape ;
+        sh:ignoredProperties ( rdf:type ) ;
+        sh:property [
+                sh:path pwo:hasNextStep ;
+                # TODO: make sure this is safe, because possibly validation can't handle this recursion
+                #   If we mysteriously start getting callstack size errors, it could be because of this
+                #   and we def get those errors when we add the same call for hasPreviousStep
+                sh:node :DocmapStepShape ;
+        ] ;
+        sh:property [
+                sh:path taskex:isExecutedIn ;
+                sh:node :DocmapActionShape ;
+        ] ;
+        .
