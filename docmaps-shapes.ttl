@@ -17,6 +17,7 @@
 @prefix taskex: <http://www.ontologydesignpatterns.org/cp/owl/taskexecution.owl#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
+
 @base <https://w3id.org/docmaps/v0/> .
 #################################################################
 #    Shapes
@@ -28,9 +29,18 @@
         rdfs:comment "A Docmap is a Workflow of publishing steps with additional metadata" ;
         .
 
+# TODO: investigate whether it makes sense to use specific OWL classes and SHACL shapes
+# at the same time for all sub-elements.
+:Thing a owl:Class ;
+        rdfs:subClassOf owl:Thing ;
+        rdfs:label "Any Research Object" ;
+        rdfs:comment "A docmaps:Thing is the generic holder for a research object" ;
+        .
+
 :DocmapShape
         a sh:NodeShape ;
         sh:targetClass :Docmap ;
+        sh:nodeKind sh:IRI ;
         sh:property [
                 sh:path dcterms:created ;
                 # TODO: specify it is an xsd:date string
@@ -38,23 +48,32 @@
                 sh:maxCount 1 ;
         ] ;
         sh:property [
+                sh:path dcterms:updated ;
+                # TODO: specify it is an xsd:date string
+                sh:maxCount 1 ;
+        ] ;
+        sh:property [
                 sh:path pwo:hasFirstStep ;
-                # somewhat redundant because it is a owl:subPropertyOf hasStep;
-                # specifying here is useful however for generation.
+                # possibly redundant because it is a owl:subPropertyOf hasStep;
+                # specifying here may be useful however for generation.
                 sh:node :DocmapStepShape ;
                 sh:maxCount 1 ;
         ] ;
         sh:property [
                 sh:path dcterms:publisher ;
                 sh:node :DocmapPublisherShape ;
+                sh:minCount 1 ;
         ] ;
         sh:property [
                 sh:path pwo:hasStep ;
                 sh:node :DocmapStepShape ;
         ]
+        # TODO remove comments from these Closed lines for max constraint
+        # sh:closed true ;
         .
 
-:DocmapActionShape
+# TODO: add constraints to this
+:DocmapPublisherShape
         a sh:NodeShape ;
         sh:ignoredProperties ( rdf:type ) ;
         .
@@ -62,15 +81,122 @@
 :DocmapStepShape
         a sh:NodeShape ;
         sh:ignoredProperties ( rdf:type ) ;
-        sh:property [
-                sh:path pwo:hasNextStep ;
-                # TODO: make sure this is safe, because possibly validation can't handle this recursion
-                #   If we mysteriously start getting callstack size errors, it could be because of this
-                #   and we def get those errors when we add the same call for hasPreviousStep
-                sh:node :DocmapStepShape ;
-        ] ;
+        sh:node :DocmapStepSequenceShape ;
+        sh:node :DocmapStepPropsShape ;
+        # sh:closed true ;
+        .
+
+:DocmapStepPropsShape
+        a sh:NodeShape ;
         sh:property [
                 sh:path taskex:isExecutedIn ;
                 sh:node :DocmapActionShape ;
         ] ;
+        .
+
+# DocMap Step is separated into two subclasses because SHACL parsers will hit
+#       a stack overflow when traversing a LinkedList that refers circularly.
+#       TODO: ensure that this is safe as-is even with long list.
+:DocmapStepSequenceShape
+        a sh:NodeShape ;
+        sh:property [
+                sh:path pwo:hasNextStep ;
+                sh:node :DocmapStepShape ;
+        ] ;
+        sh:property [
+                sh:path pwo:hasPreviousStep ;
+                # Note how in the backward case, we just assert that it has the Props,
+                # a weaker assertion.
+                sh:node :DocmapStepPropsShape ;
+        ] ;
+        .
+
+:DocmapActionShape
+        a sh:NodeShape ;
+        sh:ignoredProperties ( rdf:type ) ;
+        sh:property [
+                sh:path pwo:produces ;
+                sh:node :DocmapThingShape ;
+        ] ;
+        sh:property [
+                # "participants", in json-ld documents
+                sh:path pro:isDocumentContextFor ;
+                sh:node :DocmapRoleInTimeShape ;
+        ] ;
+        sh:property [
+                # "assertions:
+                sh:path pso:resultsInAcquiring
+        ]
+        .
+
+:DocmapRoleInTimeShape
+        a sh:NodeShape ;
+        sh:closed true ;
+        sh:property [
+                sh:path pro:isHeldBy ;
+                # TODO: specify that this is an Agent
+        ] ;
+        sh:property [
+                sh:path pro:withRole ;
+                # TODO: specify that this is an Agent
+                # in a more canonical way , such as
+                #       sh:class pro:PublishingRole ; # or
+                #       sh:property [
+                #               sh:path rdf:type ;
+                #               sh:hasValue pro:PublishingRole ;
+                #       ] ;
+                sh:node :DocmapRoleAsPublishingRole ;
+        ] ;
+        .
+
+
+## DocmapRoleAsPublishingRole
+#
+# This is a shim to state what roles are
+# subsets of publishing roles. This is a
+# shim until TODO: i get `sh:class` working.
+#
+:DocmapRoleAsPublisherRole
+        a sh:PropertyShape ;
+        sh:in (
+                pro:archivist
+                pro:author
+                pro:authors-agent
+                pro:biographer
+                pro:blogger
+                pro:commissioning-editor
+                pro:compiler
+                pro:contributor
+                pro:copy-editor
+                pro:copyright-owner
+                pro:critic
+                pro:deputy-editor
+                pro:distributor
+                pro:editor
+                pro:editor-in-chief
+                pro:executive-editor
+                pro:ghost-writer
+                pro:guest-editor
+                pro:illustrator
+                pro:journalist
+                pro:librarian
+                pro:managing-editor
+                pro:peer-reviewer
+                pro:printer
+                pro:producer
+                pro:production-editor
+                pro:proof-reader
+                pro:publisher
+                pro:reader
+                pro:senior-editor
+                pro:series-editor
+                pro:translator
+                pro:reviewer
+        )
+        .
+
+:DocmapThingShape
+        a sh:NodeShape ;
+        sh:targetClass :Thing ;
+        # sh:closed true ;
         .
