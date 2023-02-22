@@ -10,10 +10,7 @@ async function loadDataset (filePath) {
 }
 
 export async function validateShacl(shapeFile, dataFile) {
-  console.log(`Validating that data in file:
-    ${dataFile}
-conforms to constraints in:
-    ${shapeFile}`)
+  process.stdout.write(`... ${dataFile} `)
 
   const shapes = await loadDataset(shapeFile)
   const data = await loadDataset(dataFile)

@@ -20,8 +20,10 @@ const SHACL_FILE = `${ROOT_DIR}/docmaps-shapes.ttl`
 
 async function main() {
   var ex = ''
+  console.log(`Using SHACL shape file: ${SHACL_FILE}`)
+  console.log(`to validate data files...`)
   for (ex of TEST_EXAMPLES) {
-    validateShacl(SHACL_FILE, ex);
+    await validateShacl(SHACL_FILE, ex);
   }
 }
 
