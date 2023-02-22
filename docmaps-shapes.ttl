@@ -122,13 +122,17 @@
         sh:maxCount 1;
         .
 
+:DocmapHasAccountHomepage
+        a sh:PropertyShape ;
+        sh:path foaf:accountServiceHomepage ;
+        sh:nodeKind sh:Literal ;
+        sh:maxCount 1;
+        .
+
 :DocmapOnlineAccountShape
         a sh:NodeShape ;
         sh:nodeKind sh:IRI ;
-        sh:property [
-                sh:path foaf:accountServiceHomepage ;
-                sh:datatype xsd:string ;
-        ] ;
+        sh:property :DocmapHasAccountHomepage ;
         sh:closed true ;
         .
 
@@ -215,7 +219,7 @@
 # subsets of publishing roles. This is a
 # shim until TODO: i get `sh:class` working.
 #
-:DocmapRoleAsPublisherRole
+:DocmapRoleAsPublishingRole
         a sh:PropertyShape ;
         sh:in (
                 pro:archivist
@@ -257,5 +261,31 @@
 :DocmapThingShape
         a sh:NodeShape ;
         sh:targetClass :Thing ;
-        # sh:closed true ;
+        sh:property [
+                sh:path prism:publicationDate ;
+                sh:nodeKind sh:Literal ;
+                # TODO: specify it must be a date
+        ] ;
+        sh:property [
+                sh:path fabio:hasManifestation ;
+                sh:node :DocmapManifestationShape ;
+        ] ;
+        sh:property [
+                sh:path rdf:type ;
+        ] ;
+        sh:property [
+                sh:path prism:doi ;
+        ] ;
+        sh:property :DocmapHasURL ;
+        sh:closed true ;
+        .
+
+:DocmapManifestationShape
+        a sh:NodeShape ;
+        sh:closed true ;
+        sh:property [
+                sh:path rdf:type ;
+        ] ;
+        sh:property :DocmapHasAccountHomepage ;
+        sh:property :DocmapHasURL ;
         .

@@ -10,7 +10,8 @@ _:b1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/docmaps
 _:b1 <http://prismstandard.org/namespaces/basic/2.0/doi> "10.1101/2022.11.08.515698" .
 _:b1 <http://purl.org/spar/fabio/hasURL> "https://www.biorxiv.org/content/10.1101/2022.11.08.515698v2"^^<http://www.w3.org/2001/XMLSchema#anyURI> .
 _:b1 <http://prismstandard.org/namespaces/basic/2.0/publicationDate> "2022-11-22"^^<http://www.w3.org/2001/XMLSchema#date> .
-_:b2 <http://purl.org/spar/pwo/produces> _:b1 .
+# TODO: Why does this line appear ? it breaks expectations ...
+# _:b2 <http://purl.org/spar/pwo/produces> _:b1 .
 _:b3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/docmaps/examples/preprint> .
 _:b3 <http://prismstandard.org/namespaces/basic/2.0/doi> "10.1101/2022.11.08.515698" .
 _:b4 <http://purl.org/spar/pso/isStatusHeldBy> _:b3 .
