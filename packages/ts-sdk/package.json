@@ -1,0 +1,25 @@
+{
+  "name": "ts-sdk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --detectOpenHandles"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fp-ts": "^2.13.1",
+    "graphql": "^14.2.0",
+    "io-ts": "^2.2.20",
+    "rdf-object": "^1.13.2",
+    "semantic-graphql": "^0.6.3"
+  },
+  "devDependencies": {
+    "@rdfjs/types": "^1.1.0",
+    "@tsconfig/node-lts-strictest-esm": "^18.12.1",
+    "@types/jest": "^29.4.0",
+    "@types/n3": "^1.10.4"
+  }
+}
