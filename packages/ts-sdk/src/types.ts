@@ -1,6 +1,11 @@
 import * as t from 'io-ts';
 export type IRI = string;
 
+// enum DocmapTypeIRIs {
+//   Docmap = 'https://w3id.org/docmaps/v0/Docmap',
+//   DocmapPublisher = 'https://w3id.org/docmaps/v0/DocmapPublisherShape',
+// }
+
 // export type Docmap = {
 //   id: IRI;
 //   '@type': 'https://w3id.org/docmaps/v0/Docmap';
@@ -14,11 +19,12 @@ export type IRI = string;
 export const DocmapOnlineAccount = t.intersection([
   t.type({
     id: t.string,
-    '@type': t.literal('https://w3id.org/docmaps/v0/DocmapOnlineAccountShape'),
+    // TODO: is actually a `foaf:onlineaccount`, but that is not specified in the JSON_LD. TBD whetehr that would be enough of a constraint.
   }),
   // type intersects partial to add optional fields
   t.partial({
-    accountServiceHomepage: t.string,
+    service: t.string,
+    'type': t.literal('foaf:onlineAccount'),
   }),
 ]);
 
@@ -29,7 +35,7 @@ export type DocmapOnlineAccountT = t.TypeOf<typeof DocmapOnlineAccount>;
 export const DocmapPublisher = t.intersection([
   t.type({
     id: t.string,
-    '@type': t.literal('https://w3id.org/docmaps/v0/DocmapPublisherShape'),
+    type: t.literal('foaf:organization'),
   }),
   t.partial({
     // TODO: add url typing?
@@ -37,7 +43,7 @@ export const DocmapPublisher = t.intersection([
     name: t.string,
     homepage: t.string,
     hasURL: t.string,
-    onlineAccount: DocmapOnlineAccount,
+    account: DocmapOnlineAccount,
   }),
 ]);
 export type DocmapPublisherT = t.TypeOf<typeof DocmapPublisher>;
@@ -45,11 +51,10 @@ export type DocmapPublisherT = t.TypeOf<typeof DocmapPublisher>;
 export const AnyDocmap = t.union([DocmapPublisher, DocmapOnlineAccount]);
 
 export const DocmapsFactory = {
-  'https://w3id.org/docmaps/v0/DocmapPublisherShape': DocmapPublisher,
-  'https://w3id.org/docmaps/v0/DocmapOnlineAccountShape': DocmapOnlineAccount,
+  'foaf:organization': DocmapPublisher,
 };
 
-// TODO add these in io-ts form instead
+//
 // export type DocmapPublisher = {
 //   id: IRI;
 //   '@type': 'https://w3id.org/docmaps/v0/DocmapPublisherShape';
@@ -122,3 +127,15 @@ export const DocmapsFactory = {
 //   | DocmapThing
 //   | DocmapStepProps;
 //
+//
+// export const DocmapFactory: Record<string, typeof safePartialToT<AnyDocmapType> = {
+//   'https://w3id.org/docmaps/v0/Docmap' : safePartialToT<Docmap>,
+//   'https://w3id.org/docmaps/v0/DocmapPublisherShape' : safePartialToT<DocmapPublisher>,
+//   'https://w3id.org/docmaps/v0/DocmapOnlineAccountShape' : safePartialToT<DocmapOnlineAccount>,
+//   'https://w3id.org/docmaps/v0/DocmapStepShape' : safePartialToT<DocmapStep>,
+//   'https://w3id.org/docmaps/v0/DocmapStepPropsShape' : safePartialToT<DocmapStepProps>,
+//   'https://w3id.org/docmaps/v0/DocmapActionShape' : safePartialToT<DocmapAction>,
+//   'https://w3id.org/docmaps/v0/DocmapRoleInTimeShape' : safePartialToT<DocmapRoleInTime>,
+//   'https://w3id.org/docmaps/v0/DocmapThingShape' : safePartialToT<DocmapThing>,
+//   'https://w3id.org/docmaps/v0/DocmapManifestationShape' : safePartialToT<DocmapManifestation >,
+// };
