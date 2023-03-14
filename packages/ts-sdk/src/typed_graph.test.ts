@@ -48,7 +48,9 @@ test('Graph Extraction', async (t) => {
     }
   })
 
-  const pub = await g.pickStream(input) as DocmapsTypes.DocmapPublisherT;
+  const pub = await g.pickStream(input, {
+    'type': "foaf:organization", // selects the Publisher
+  }) as DocmapsTypes.DocmapPublisherT;
 
   t.is(pub.name, 'Example Publisher');
   t.is(pub.logo, 'https://w3id.org/docmaps/examples/publisher#logo.img');

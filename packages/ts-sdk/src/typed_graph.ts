@@ -20,6 +20,10 @@ export interface NodeShapeCodec<A extends TypedNodeShapeT> extends t.Decoder<any
 export type TypesFactory = typeof DocmapsFactory;
 export type TypesFactoryKeys = keyof TypesFactory;
 
+export type FrameSelection = {
+  'type': TypesFactoryKeys
+};
+
 
 export class TypedGraph {
   factory: TypesFactory;
@@ -30,13 +34,13 @@ export class TypedGraph {
     this.factory = factory;
   }
 
-  pickStream(s: Stream): Promise<TypedNodeShapeT> {
+  pickStream(s: Stream, frame: FrameSelection): Promise<TypedNodeShapeT> {
     const context = {
       '@context': {
         '@import': DM_JSONLD_CONTEXT,
       },
-      'type': 'foaf:organization',
-    } as any;
+      ...frame,
+    } as any; // TODO: this cast is needed because DefinitelyTyped definition is out of date for this library.
 
     const serializer = new SerializerJsonld({
       context: context,
@@ -52,12 +56,12 @@ export class TypedGraph {
         // test if this body can match
         const tId: TypesFactoryKeys = jsonld['type'];
         if (!tId) {
-          return rej(new Error('unable to type a jsonld object without @type'));
+          return rej(new Error(`unable to type a jsonld object without type field: ${JSON.stringify(jsonld, null, '  ')}`));
         }
 
         const t = this.factory[tId];
         if (!t) {
-          return rej(new Error(`unable to type jsonld object: @type ${tId} is foreign to this type factory`));
+          return rej(new Error(`unable to type jsonld object: type \`${tId}\` is foreign to this type factory`));
         }
 
         const typedResult = t.decode(jsonld);
