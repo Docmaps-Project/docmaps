@@ -36,5 +36,10 @@ test('Graph Extraction of a Manifestation', async (t) => {
 
   t.is(mf.id, 'https://w3id.org/docmaps/examples/manifestation');
   t.is(mf.service, 'https://w3id.org/docmaps/examples/manifestation#HOMEPAGE');
+
+  // TODO: note how the `url` key in the jsonld context has a @type key, and therefore
+  // ALL values must have @type specified as `xsd:anyURI` for this to be safely
+  // parsed by `jsonld.js`. Without type specification in the data, compaction/framing
+  // algorithm will use the CURIE instead of the term.
   t.is(mf.url, 'https://w3id.org/docmaps/examples/manifestation#URL');
 });

@@ -1,11 +1,6 @@
 import * as t from 'io-ts';
 export type IRI = string;
 
-// enum DocmapTypeIRIs {
-//   Docmap = 'https://w3id.org/docmaps/v0/Docmap',
-//   DocmapPublisher = 'https://w3id.org/docmaps/v0/DocmapPublisherShape',
-// }
-
 // export type Docmap = {
 //   id: IRI;
 //   '@type': 'https://w3id.org/docmaps/v0/Docmap';
@@ -24,53 +19,97 @@ export const DocmapOnlineAccount = t.intersection([
   // type intersects partial to add optional fields
   t.partial({
     service: t.string,
-    'type': t.literal('foaf:onlineAccount'),
+    'type': t.union([
+      t.literal('foaf:onlineaccount'),
+      t.literal('foaf:OnlineAccount'),
+    ]),
   }),
 ]);
-
-export type DocmapOnlineAccountT = t.TypeOf<typeof DocmapOnlineAccount>;
-
-// type DocmapOnlineAccountT = t.TypeOf<typeof DocmapOnlineAccount>;
 
 export const DocmapPublisher = t.intersection([
   t.type({
     id: t.string,
-    type: t.literal('foaf:organization'),
+    'type': t.union([
+      t.literal('foaf:organization'),
+      t.literal('foaf:Organization'),
+    ]),
   }),
   t.partial({
     // TODO: add url typing?
     logo: t.string,
     name: t.string,
     homepage: t.string,
-    hasURL: t.string,
+    url: t.string,
     account: DocmapOnlineAccount,
   }),
 ]);
-export type DocmapPublisherT = t.TypeOf<typeof DocmapPublisher>;
 
-export const AnyDocmap = t.union([DocmapPublisher, DocmapOnlineAccount]);
+export const DocmapManifestation = t.intersection([
+  t.type({
+    // TODO is this optional?
+    id: t.string,
+    // type: t.union([
+    // TODO: this looks like it might need to be an AnyType or something. Manifestations are extensive.
+    type:  t.literal('web-page'),
+    // ]),
+  }),
+  t.partial({
+    service: t.string,
+    url: t.string,
+  }),
+]);
+
+export type DocmapPublisherT = t.TypeOf<typeof DocmapPublisher>;
+export type DocmapOnlineAccountT = t.TypeOf<typeof DocmapOnlineAccount>;
+export type DocmapManifestationT = t.TypeOf<typeof DocmapManifestation>;
+
+export const AnyDocmap = t.union([
+  DocmapPublisher,
+  DocmapManifestation
+]);
+
+export type AnyDocmapT = t.TypeOf<typeof AnyDocmap>;
 
 export const DocmapsFactory = {
   'foaf:organization': DocmapPublisher,
+  'web-page': DocmapManifestation,
 };
+//
+// export const DocmapThing = t.type({
+//   id: t.string,
+//   type: t.literal('https://w3id.org/docmaps/v0/DocmapThingShape'),
+//   publicationDate: t.union([t.Date, t.undefined]),
+//   hasManifestation: t.array(DocmapManifestation),
+//   doi: t.union([t.string, t.undefined]),
+//   hasURL: t.union([t.string, t.undefined])
+// });
+//
+// export const DocmapAction = t.type({
+//   id: t.string,
+//   type: t.literal('https://w3id.org/docmaps/v0/DocmapActionShape'),
+//   produces: t.array(DocmapThing),
+//   isDocumentContextFor: t.array(DocmapRoleInTime),
+//   resultsInAcquiring: t.array(t.string)
+// });
+//
+// export const DocmapStep = t.intersection([
+//   t.type({
+//     id: t.string,
+//     type: t.literal('https://w3id.org/docmaps/v0/DocmapStepShape'),
+//     isExecutedIn: DocmapAction
+//   }),
+//   t.partial({
+//     hasNextStep: DocmapStep,
+//     hasPreviousStep: DocmapStepProps
+//   })
+// ]);
+//
+// export const DocmapStepProps = t.type({
+//   id: t.string,
+//   type: t.literal('https://w3id.org/docmaps/v0/DocmapStepPropsShape'),
+//   isExecutedIn: DocmapAction
+// });
 
-//
-// export type DocmapPublisher = {
-//   id: IRI;
-//   '@type': 'https://w3id.org/docmaps/v0/DocmapPublisherShape';
-//   logo?: string;
-//   name?: string;
-//   homepage?: string;
-//   hasURL?: string;
-//   onlineAccount?: DocmapOnlineAccount;
-// }
-//
-// export type DocmapOnlineAccount = {
-//   id: IRI;
-//   '@type': 'https://w3id.org/docmaps/v0/DocmapOnlineAccountShape';
-//   accountServiceHomepage?: string;
-// }
-//
 // export type DocmapStep = {
 //   id: IRI;
 //   '@type': 'https://w3id.org/docmaps/v0/DocmapStepShape';
