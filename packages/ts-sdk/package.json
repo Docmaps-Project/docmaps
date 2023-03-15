@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "ava",
+    "debug": "node --loader=ts-node/esm --experimental-specifier-resolution=node --nolazy -r ts-node/register/transpile-only --inspect-brk src/debuggable.ts",
     "build": "tsc"
   },
   "keywords": [],
