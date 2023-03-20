@@ -39,7 +39,7 @@
         "person": "foaf:Person",
         "publisher": {
             "@id": "dcterms:publisher",
-            "@type": "foaf:organization"
+            "@type": "@id"
         },
         "logo": "foaf:logo",
         "homepage": "foaf:homepage",
