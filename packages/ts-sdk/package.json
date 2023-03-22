@@ -1,0 +1,54 @@
+{
+  "name": "ts-sdk",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava",
+    "debug": "node --loader=ts-node/esm --experimental-specifier-resolution=node --nolazy -r ts-node/register/transpile-only --inspect-brk src/debuggable.ts",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@rdfjs/serializer-jsonld-ext": "~4.0.0",
+    "fp-ts": "^2.13.1",
+    "io-ts": "^2.2.20",
+    "readable-stream": "^3.6.2"
+  },
+  "devDependencies": {
+    "@babel/core": ">=7.0.0-beta.0 <8.0.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.21.2",
+    "@babel/preset-env": "^7.20.2",
+    "@rdfjs/data-model": "^2.0.1",
+    "@rdfjs/parser-n3": "^2.0.1",
+    "@rdfjs/types": "^1.1.0",
+    "@tsconfig/node-lts-strictest-esm": "^18.12.1",
+    "@types/jsonld": "^1.5.8",
+    "@types/n3": "^1.10.4",
+    "@types/node": "*",
+    "@types/rdf-ext": "^2.0.0",
+    "@types/rdfjs__data-model": "^2.0.1",
+    "@types/rdfjs__parser-n3": "^1.1.5",
+    "@types/rdfjs__serializer-jsonld-ext": "^2.0.5",
+    "@types/readable-stream": "^2.3.15",
+    "ava": "^5.2.0",
+    "rdf-ext": "^2.2.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
+  },
+  "ava": {
+    "extensions": {
+      "ts": "module"
+    },
+    "nodeArguments": [
+      "--loader=ts-node/esm",
+      "--experimental-specifier-resolution=node"
+    ],
+    "files": [
+      "**/*.test.ts"
+    ]
+  }
+}
