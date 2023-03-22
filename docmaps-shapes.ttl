@@ -276,6 +276,7 @@
         sh:property [
                 sh:path prism:doi ;
         ] ;
+        # TODO - -this could be wrong, we see only one example and it is URI not URL.
         sh:property :DocmapHasURL ;
         sh:closed true ;
         .

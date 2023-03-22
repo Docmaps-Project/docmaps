@@ -3,9 +3,8 @@ import * as fixtures from './__fixtures__';
 
 debugger;
 
-const mani = fixtures.OneManifestationQuadstore();
 const t = new pkg.TypedGraph();
 
-const parsed = await t.pickStream(mani, {'type': 'web-page'} );
+const parsed = await t.pickStream(fixtures.FromRootExamples.elife_01, pkg.DocmapNormalizedFrame );
 console.log(parsed);
 

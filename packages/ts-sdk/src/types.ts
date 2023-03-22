@@ -1,16 +1,6 @@
 import * as t from 'io-ts';
 export type IRI = string;
 
-// export type Docmap = {
-//   id: IRI;
-//   '@type': 'https://w3id.org/docmaps/v0/Docmap';
-//   hasFirstStep: DocmapStep;
-//   hasStep: DocmapStep[];
-//   created: Date;
-//   updated?: Date;
-//   publisher: DocmapPublisher;
-// }
-
 export const DocmapOnlineAccount = t.intersection([
   t.type({
     id: t.string,
@@ -46,115 +36,163 @@ export const DocmapPublisher = t.intersection([
 
 export const DocmapManifestation = t.intersection([
   t.type({
-    // TODO is this optional?
-    id: t.string,
     // type: t.union([
     // TODO: this looks like it might need to be an AnyType or something. Manifestations are extensive.
-    type:  t.literal('web-page'),
+    'type':  t.literal('web-page'),
     // ]),
   }),
   t.partial({
+    id: t.string,
     service: t.string,
     url: t.string,
+  }),
+]);
+
+export const DocmapActor = t.union([
+  t.type({
+    'type': t.literal('person'),
+    name: t.string,
+  }),
+  // TODO:  this can be any FOAF type, based on our context spec.
+  t.unknown,
+]);
+
+export const DocmapRoleInTime = t.intersection([
+  t.type({
+    actor: DocmapActor,
+    // TODO: this may need to be more specific to the RoleInTimes.
+    role: t.string,
+  }),
+  t.partial({
+    id: t.string,
+    type: t.union([
+      t.literal('pro:roleintime'),
+      t.literal('pro:RoleInTime'),
+    ]),
+  }),
+]);
+
+export const DocmapThing = t.intersection([
+  t.type({
+    // TODO this is not so useful as partial-only
+  }),
+  t.partial({
+    // TODO use DateFromString for better parsing:
+    //    https://github.com/gcanti/io-ts/blob/dedb64e05328417ecd3d87e00008d9e72130374a/index.md#custom-types
+    published: t.string,
+    id: t.string,
+    doi: t.string,
+    'type': t.string, // TODO this Type can be more specific ('web-page', 'preprint', etc)
+    content: t.array(DocmapManifestation),
+  }),
+]);
+
+export const DocmapAction = t.intersection([
+  t.type({
+    // type: t.literal('https://w3id.org/docmaps/v0/DocmapActionShape'),
+    outputs: t.array(DocmapThing),
+    participants: t.array(DocmapRoleInTime),
+  }),
+  t.partial({
+    // TODO - this will probably be an independently-publishable thing and should not be optional.
+    id: t.string,
+  }),
+]);
+
+export const DocmapStep = t.intersection([
+  // This is used as umbrella for any type that can be directly extracted by framing
+  // using this library. Currently, we only select by @type, so it must have a @type.
+  t.type({
+    // type: t.literal('https://w3id.org/docmaps/v0/DocmapStepShape'),
+    actions: t.array(DocmapAction),
+    inputs: t.array(DocmapThing),
+
+    // TODO: make this smarter
+    assertions: t.array(t.unknown),
+  }),
+  t.partial({
+    id: t.string,
+    'next-step': t.string,
+    'previous-step': t.string,
+  })
+]);
+
+function arrayOrOneOf(literalStrings: string[]) {
+  const [one, two, ...r] = literalStrings;
+
+  if (!one) {
+      throw "Never use arrayOrOneOf without any options!"
+  }
+  if (!two) {
+      const onlyOption = t.literal(one);
+      return t.union([onlyOption, t.array(onlyOption)]);
+  }
+
+  const literals = t.union([
+    t.literal(one),
+    t.literal(two),
+    ...r.map((e) => t.literal(e)),
+  ]);
+
+  return t.union([
+    t.array(literals),
+    literals,
+  ]);
+}
+
+// TODO: use smart validation rules for custom io-ts docmap type, such as next-steps referring to steps that exist
+//   and any other value-dependent type rules
+export const Docmap = t.intersection([
+  t.type({
+    id: t.string,
+    'type': t.literal('docmap'),
+    // 'type': arrayOrOneOf([
+    //   // TODO support something where docmaps: is prefixed
+    //   // t.literal('docmaps:docmap'),
+    //   // t.literal('docmaps:Docmap'),
+    //   // or abbreviate the Base somehow on the w3id docmap repo.
+    //   'docmap',
+    //   'Docmap',
+    //   'https://w3id.org/docmaps/v0/Docmap',
+    // ]),
+    publisher: DocmapPublisher,
+    // TODO: required contents of these date strings,
+    created: t.string,
+  }),
+  t.partial({
+    steps: t.record(t.string, DocmapStep),
+    'first-step': t.string,
+    updated: t.string,
   }),
 ]);
 
 export type DocmapPublisherT = t.TypeOf<typeof DocmapPublisher>;
 export type DocmapOnlineAccountT = t.TypeOf<typeof DocmapOnlineAccount>;
 export type DocmapManifestationT = t.TypeOf<typeof DocmapManifestation>;
+export type DocmapStepT = t.TypeOf<typeof DocmapStep>;
+export type DocmapT = t.TypeOf<typeof Docmap>;
+export type DocmapActionT = t.TypeOf<typeof DocmapAction>;
+export type DocmapThingT = t.TypeOf<typeof DocmapThing>;
+export type DocmapRoleInTimeT = t.TypeOf<typeof DocmapRoleInTime>;
+export type DocmapActorT = t.TypeOf<typeof DocmapActor>;
 
-export const AnyDocmap = t.union([
-  DocmapPublisher,
-  DocmapManifestation
-]);
-
-export type AnyDocmapT = t.TypeOf<typeof AnyDocmap>;
+// export const AnyDocmap = t.union([
+//   DocmapPublisher,
+//   DocmapManifestation,
+//   Docmap,
+// ]);
+//
+// export type AnyDocmapT = t.TypeOf<typeof AnyDocmap>;
 
 export const DocmapsFactory = {
   'foaf:organization': DocmapPublisher,
+  'foaf:Organization': DocmapPublisher,
   'web-page': DocmapManifestation,
+  'docmap': Docmap,
+  // 'https://w3id.org/docmaps/v0/Docmap': Docmap,
+  'Docmap': Docmap,
 };
-//
-// export const DocmapThing = t.type({
-//   id: t.string,
-//   type: t.literal('https://w3id.org/docmaps/v0/DocmapThingShape'),
-//   publicationDate: t.union([t.Date, t.undefined]),
-//   hasManifestation: t.array(DocmapManifestation),
-//   doi: t.union([t.string, t.undefined]),
-//   hasURL: t.union([t.string, t.undefined])
-// });
-//
-// export const DocmapAction = t.type({
-//   id: t.string,
-//   type: t.literal('https://w3id.org/docmaps/v0/DocmapActionShape'),
-//   produces: t.array(DocmapThing),
-//   isDocumentContextFor: t.array(DocmapRoleInTime),
-//   resultsInAcquiring: t.array(t.string)
-// });
-//
-// export const DocmapStep = t.intersection([
-//   t.type({
-//     id: t.string,
-//     type: t.literal('https://w3id.org/docmaps/v0/DocmapStepShape'),
-//     isExecutedIn: DocmapAction
-//   }),
-//   t.partial({
-//     hasNextStep: DocmapStep,
-//     hasPreviousStep: DocmapStepProps
-//   })
-// ]);
-//
-// export const DocmapStepProps = t.type({
-//   id: t.string,
-//   type: t.literal('https://w3id.org/docmaps/v0/DocmapStepPropsShape'),
-//   isExecutedIn: DocmapAction
-// });
 
-// export type DocmapStep = {
-//   id: IRI;
-//   '@type': 'https://w3id.org/docmaps/v0/DocmapStepShape';
-//   hasNextStep?: DocmapStep;
-//   hasPreviousStep?: DocmapStepProps;
-//   isExecutedIn: DocmapAction;
-// } & DocmapStepProps ;
-//
-// export type DocmapStepProps = {
-//   id: IRI;
-//   '@type': 'https://w3id.org/docmaps/v0/DocmapStepPropsShape';
-//   isExecutedIn: DocmapAction;
-// }
-//
-// export type DocmapAction = {
-//   id: IRI;
-//   '@type': 'https://w3id.org/docmaps/v0/DocmapActionShape';
-//   produces: DocmapThing[];
-//   isDocumentContextFor: DocmapRoleInTime[];
-//   resultsInAcquiring: IRI[];
-// }
-//
-// export type DocmapRoleInTime = {
-//   id: IRI;
-//   '@type': 'https://w3id.org/docmaps/v0/DocmapRoleInTimeShape';
-//   isHeldBy: IRI;
-//   withRole: IRI;
-// }
-//
-// export type DocmapThing = {
-//   id: IRI;
-//   '@type': 'https://w3id.org/docmaps/v0/DocmapThingShape';
-//   publicationDate?: Date;
-//   hasManifestation: DocmapManifestation[];
-//   doi?: string;
-//   hasURL?: string;
-// }
-//
-// export type DocmapManifestation = {
-//   id: IRI;
-//   '@type': 'https://w3id.org/docmaps/v0/DocmapManifestationShape';
-//   accountServiceHomepage?: string;
-//   hasURL?: string;
-// }
-//
 // export type AnyDocmapType
 //   = Docmap
 //   | DocmapAction
