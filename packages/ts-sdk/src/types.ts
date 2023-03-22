@@ -1,5 +1,4 @@
 import * as t from 'io-ts';
-export type IRI = string;
 
 function arrayOrOneOf(literalStrings: string[]) {
   const [one, two, ...r] = literalStrings;
@@ -29,18 +28,15 @@ export const DocmapOnlineAccount = t.intersection([
     id: t.string,
     // TODO: is actually a `foaf:onlineaccount`, but that is not specified in the JSON_LD. TBD whetehr that would be enough of a constraint.
   }),
-  // type intersects partial to add optional fields
+  // t.type intersects t.partial to add optional fields
   t.partial({
     service: t.string,
-    'type': t.union([
-      t.literal('foaf:onlineaccount'),
-      t.literal('foaf:OnlineAccount'),
-    ]),
   }),
 ]);
 
 export const DocmapPublisher = t.intersection([
   t.type({
+    // TODO this is not so useful as partial-only
   }),
   t.partial({
     // fields used by eLife
@@ -57,12 +53,10 @@ export const DocmapPublisher = t.intersection([
 
 export const DocmapManifestation = t.intersection([
   t.type({
-    // type: t.union([
     // TODO: this looks like it might need to be an AnyType or something. Manifestations are extensive.
     'type': arrayOrOneOf([
       'web-page', // correctly used by eLife
     ]),
-    // ]),
   }),
   t.partial({
     id: t.string,
@@ -73,7 +67,7 @@ export const DocmapManifestation = t.intersection([
 
 export const DocmapActor = t.union([
   t.type({
-    'type': t.literal('person'),
+    'type': arrayOrOneOf(['person']),
     name: t.string,
   }),
   // TODO:  this can be any FOAF type, based on our context spec.
@@ -105,28 +99,24 @@ export const DocmapThing = t.intersection([
     published: t.string,
     id: t.string,
     doi: t.string,
-    'type': t.string, // TODO this Type can be more specific ('web-page', 'preprint', etc)
+    'type': t.union([t.array(t.string), t.string]), // TODO this Type can be more specific ('web-page', 'preprint', etc)
     content: t.array(DocmapManifestation),
   }),
 ]);
 
 export const DocmapAction = t.intersection([
   t.type({
-    // type: t.literal('https://w3id.org/docmaps/v0/DocmapActionShape'),
     outputs: t.array(DocmapThing),
     participants: t.array(DocmapRoleInTime),
   }),
   t.partial({
-    // TODO - this will probably be an independently-publishable thing and should not be optional.
+    // TODO - this will probably be an independently-publishable thing and id should not be optional.
     id: t.string,
   }),
 ]);
 
 export const DocmapStep = t.intersection([
-  // This is used as umbrella for any type that can be directly extracted by framing
-  // using this library. Currently, we only select by @type, so it must have a @type.
   t.type({
-    // type: t.literal('https://w3id.org/docmaps/v0/DocmapStepShape'),
     actions: t.array(DocmapAction),
     inputs: t.array(DocmapThing),
 
@@ -146,16 +136,15 @@ export const DocmapStep = t.intersection([
 export const Docmap = t.intersection([
   t.type({
     id: t.string,
-    'type': t.literal('docmap'),
-    // 'type': arrayOrOneOf([
-    //   // TODO support something where docmaps: is prefixed
-    //   // t.literal('docmaps:docmap'),
-    //   // t.literal('docmaps:Docmap'),
-    //   // or abbreviate the Base somehow on the w3id docmap repo.
-    //   'docmap',
-    //   'Docmap',
-    //   'https://w3id.org/docmaps/v0/Docmap',
-    // ]),
+    'type': arrayOrOneOf([
+      // TODO support something where docmaps: is prefixed
+      // t.literal('docmaps:docmap'),
+      // t.literal('docmaps:Docmap'),
+      // or abbreviate the Base somehow on the w3id docmap repo.
+      'docmap',
+      'Docmap',
+      'https://w3id.org/docmaps/v0/Docmap',
+    ]),
     publisher: DocmapPublisher,
     // TODO: required contents of these date strings,
     created: t.string,
@@ -167,6 +156,7 @@ export const Docmap = t.intersection([
   }),
 ]);
 
+export type IRI = string;
 export type DocmapPublisherT = t.TypeOf<typeof DocmapPublisher>;
 export type DocmapOnlineAccountT = t.TypeOf<typeof DocmapOnlineAccount>;
 export type DocmapManifestationT = t.TypeOf<typeof DocmapManifestation>;
@@ -177,28 +167,15 @@ export type DocmapThingT = t.TypeOf<typeof DocmapThing>;
 export type DocmapRoleInTimeT = t.TypeOf<typeof DocmapRoleInTime>;
 export type DocmapActorT = t.TypeOf<typeof DocmapActor>;
 
+
+/**  DocmapsFactory
+ *
+ *  The DocmapsFactory is a map from @type keys to the relevant type codecs.
+ *  This is only used in the Typed Graph Extraction code.
+ */
 export const DocmapsFactory = {
   'web-page': DocmapManifestation,
   'docmap': Docmap,
   'https://w3id.org/docmaps/v0/Docmap': Docmap,
   'Docmap': Docmap,
 };
-
-
-// export const AnyDocmap = t.union([
-//   DocmapPublisher,
-//   DocmapManifestation,
-//   Docmap,
-// ]);
-//
-// export type AnyDocmapT = t.TypeOf<typeof AnyDocmap>;
-// export type AnyDocmapType
-//   = Docmap
-//   | DocmapAction
-//   | DocmapManifestation
-//   | DocmapOnlineAccount
-//   | DocmapPublisher
-//   | DocmapRoleInTime
-//   | DocmapStep
-//   | DocmapThing
-//   | DocmapStepProps;
