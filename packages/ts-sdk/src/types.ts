@@ -19,10 +19,6 @@ export const DocmapOnlineAccount = t.intersection([
 export const DocmapPublisher = t.intersection([
   t.type({
     id: t.string,
-    'type': t.union([
-      t.literal('foaf:organization'),
-      t.literal('foaf:Organization'),
-    ]),
   }),
   t.partial({
     // TODO: add url typing?
@@ -176,6 +172,14 @@ export type DocmapThingT = t.TypeOf<typeof DocmapThing>;
 export type DocmapRoleInTimeT = t.TypeOf<typeof DocmapRoleInTime>;
 export type DocmapActorT = t.TypeOf<typeof DocmapActor>;
 
+export const DocmapsFactory = {
+  'web-page': DocmapManifestation,
+  'docmap': Docmap,
+  'https://w3id.org/docmaps/v0/Docmap': Docmap,
+  'Docmap': Docmap,
+};
+
+
 // export const AnyDocmap = t.union([
 //   DocmapPublisher,
 //   DocmapManifestation,
@@ -183,16 +187,6 @@ export type DocmapActorT = t.TypeOf<typeof DocmapActor>;
 // ]);
 //
 // export type AnyDocmapT = t.TypeOf<typeof AnyDocmap>;
-
-export const DocmapsFactory = {
-  'foaf:organization': DocmapPublisher,
-  'foaf:Organization': DocmapPublisher,
-  'web-page': DocmapManifestation,
-  'docmap': Docmap,
-  // 'https://w3id.org/docmaps/v0/Docmap': Docmap,
-  'Docmap': Docmap,
-};
-
 // export type AnyDocmapType
 //   = Docmap
 //   | DocmapAction
@@ -203,16 +197,3 @@ export const DocmapsFactory = {
 //   | DocmapStep
 //   | DocmapThing
 //   | DocmapStepProps;
-//
-//
-// export const DocmapFactory: Record<string, typeof safePartialToT<AnyDocmapType> = {
-//   'https://w3id.org/docmaps/v0/Docmap' : safePartialToT<Docmap>,
-//   'https://w3id.org/docmaps/v0/DocmapPublisherShape' : safePartialToT<DocmapPublisher>,
-//   'https://w3id.org/docmaps/v0/DocmapOnlineAccountShape' : safePartialToT<DocmapOnlineAccount>,
-//   'https://w3id.org/docmaps/v0/DocmapStepShape' : safePartialToT<DocmapStep>,
-//   'https://w3id.org/docmaps/v0/DocmapStepPropsShape' : safePartialToT<DocmapStepProps>,
-//   'https://w3id.org/docmaps/v0/DocmapActionShape' : safePartialToT<DocmapAction>,
-//   'https://w3id.org/docmaps/v0/DocmapRoleInTimeShape' : safePartialToT<DocmapRoleInTime>,
-//   'https://w3id.org/docmaps/v0/DocmapThingShape' : safePartialToT<DocmapThing>,
-//   'https://w3id.org/docmaps/v0/DocmapManifestationShape' : safePartialToT<DocmapManifestation >,
-// };

@@ -59,7 +59,7 @@ export class TypedGraph {
   }
 
   parseJsonld(jsonld: any): TypedNodeShapeT {
-    console.log(util.inspect(jsonld, {depth: null, colors: true}))
+    // console.log(util.inspect(jsonld, {depth: null, colors: true}))
 
     // allow multiple types, whichever is first we should use
 
@@ -121,6 +121,7 @@ export class TypedGraph {
         try {
           res(this.parseJsonld(jsonld));
         } catch (errors) {
+          // TODO better error message handling
           console.log("error parsing: ", util.inspect(errors, {colors: true, depth: 5}))
           rej(new Error("no type annotations were parseable for object", {cause: errors}))
         }

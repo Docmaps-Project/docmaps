@@ -9,6 +9,8 @@ function loadDatasetNtriples(filePath: string) {
 }
 
 function loadDataset(filePath: string) {
+  // TODO - note that in the eLife case, we have to parse out from the top-level array
+
   return JSON.parse(fs.readFileSync(filePath).toString());
 }
 
@@ -17,14 +19,17 @@ export const FromRootExamples = {
   elife_01_nt: loadDatasetNtriples('../../examples/docmaps-example-elife-01.jsonld.nt'),
   embo_01_nt: loadDatasetNtriples('../../examples/docmaps-example-embo-01.jsonld.nt'),
   biorxiv_01_jsonld: loadDataset('../../examples/docmaps-example-biorxiv-01.jsonld'),
-  elife_01_jsonld: loadDataset('../../examples/docmaps-example-elife-01.jsonld'),
+  elife_01_jsonld: loadDataset('../../examples/docmaps-example-elife-01.jsonld')[0],
   embo_01_jsonld: loadDataset('../../examples/docmaps-example-embo-01.jsonld'),
 }
 
-const el_dm = FromRootExamples.elife_01_jsonld;
-const el_dm_publisher = el_dm['publisher'];
-const el_dm_acc = el_dm_publisher['account'];
-const el_dm_step: any[] = Object.values(el_dm['steps']) || [];
+const el_dm = [
+  FromRootExamples.elife_01_jsonld,
+  // FromRootExamples.biorxiv_01_jsonld,
+];
+const el_dm_publisher = el_dm.flatMap((dm) => dm['publisher'] || []);
+const el_dm_acc = el_dm_publisher.flatMap((p) => p['account'] || []);
+const el_dm_step: any[] = el_dm.flatMap((dm) => Object.values(dm['steps']) || []);
 const el_dm_action = el_dm_step.flatMap((s) => s['actions'] || [] );
 const el_dm_thing = el_dm_action.flatMap((a) => a['outputs'] || [] );
 const el_dm_mani = el_dm_thing.flatMap((t) => t['content'] || []);
@@ -33,9 +38,9 @@ const el_dm_actor = el_dm_role.map((r) => r['actor'] || [] );
 
 export const PartialExamples = {
   elife: {
-    Docmap: [ el_dm ],
-    DocmapPublisher: [ el_dm_publisher ],
-    DocmapOnlineAccount: [ el_dm_acc ],
+    Docmap: el_dm,
+    DocmapPublisher: el_dm_publisher,
+    DocmapOnlineAccount: el_dm_acc,
     DocmapStep: el_dm_step,
     DocmapAction: el_dm_action,
     DocmapThing: el_dm_thing,
