@@ -151,6 +151,10 @@
                 sh:path taskex:isExecutedIn ;
                 sh:node :DocmapActionShape ;
         ] ;
+        sh:property [
+                # "assertions:
+                sh:path pso:resultsInAcquiring
+        ] ;
         .
 
 # DocMap Step is separated into two subclasses because SHACL parsers will hit
@@ -181,10 +185,6 @@
                 # "participants", in json-ld documents
                 sh:path pro:isDocumentContextFor ;
                 sh:node :DocmapRoleInTimeShape ;
-        ] ;
-        sh:property [
-                # "assertions:
-                sh:path pso:resultsInAcquiring
         ] ;
         # TODO: some examples fail on closure here, for surprising reasons.
         # It appears that the eLife generated NT file contains a `step` that
