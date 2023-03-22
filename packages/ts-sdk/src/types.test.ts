@@ -11,7 +11,7 @@ function isRightArray(t: ExecutionContext, arr: Either<unknown, any>[], len: num
     if (isRight(a)) {
       t.pass();
     } else {
-      t.fail(`Error parsing: ${util.inspect(a.left, {depth: 8})}`);
+      t.fail(`Error parsing: ${util.inspect(a.left, {depth: 18})}`);
     }
   });
 }
@@ -27,54 +27,54 @@ test('Codec parsing DocmapPublisher', (t) => {
   const v = ex.elife.DocmapPublisher.flatMap((x) => {
     return dm.DocmapPublisher.decode(x)
   });
-  isRightArray(t, v, 1)
+  isRightArray(t, v, 2)
 });
 
 test('Codec parsing DocmapManifestation', (t) => {
   const v = ex.elife.DocmapManifestation.flatMap((x) => {
     return dm.DocmapManifestation.decode(x)
   });
-  isRightArray(t, v, 9)
+  isRightArray(t, v, 21)
 });
 
 test('Codec parsing DocmapThing', (t) => {
   const v = ex.elife.DocmapThing.flatMap((x) => {
     return dm.DocmapThing.decode(x)
   });
-  isRightArray(t, v, 5)
+  isRightArray(t, v, 9)
 });
 
 test('Codec parsing DocmapRoleInTime', (t) => {
   const v = ex.elife.DocmapRoleInTime.flatMap((x) => {
     return dm.DocmapRoleInTime.decode(x)
   });
-  isRightArray(t, v, 4)
+  isRightArray(t, v, 9)
 });
 
 test('Codec parsing DocmapActor', (t) => {
   const v = ex.elife.DocmapActor.flatMap((x) => {
     return dm.DocmapActor.decode(x)
   });
-  isRightArray(t, v, 4)
+  isRightArray(t, v, 9)
 });
 
 test('Codec parsing DocmapAction', (t) => {
   const v = ex.elife.DocmapAction.flatMap((x) => {
     return dm.DocmapAction.decode(x)
   });
-  isRightArray(t, v, 5)
+  isRightArray(t, v, 9)
 });
 
 test('Codec parsing DocmapStep', (t) => {
   const v = ex.elife.DocmapStep.flatMap((x) => {
     return dm.DocmapStep.decode(x)
   });
-  isRightArray(t, v, 3)
+  isRightArray(t, v, 5)
 });
 
 test('Codec parsing Docmap', (t) => {
   const v = ex.elife.Docmap.flatMap((x) => {
     return dm.Docmap.decode(x)
   });
-  isRightArray(t, v, 1)
+  isRightArray(t, v, 2)
 });

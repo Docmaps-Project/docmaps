@@ -9,8 +9,7 @@ function loadDatasetNtriples(filePath: string) {
 }
 
 function loadDataset(filePath: string) {
-  // TODO - note that in the eLife case, we have to parse out from the top-level array
-
+  // TODO - note that in the eLife case, we have to parse out from the top-level array or graph
   return JSON.parse(fs.readFileSync(filePath).toString());
 }
 
@@ -19,14 +18,25 @@ export const FromRootExamples = {
   elife_01_nt: loadDatasetNtriples('../../examples/docmaps-example-elife-01.jsonld.nt'),
   embo_01_nt: loadDatasetNtriples('../../examples/docmaps-example-embo-01.jsonld.nt'),
   biorxiv_01_jsonld: loadDataset('../../examples/docmaps-example-biorxiv-01.jsonld'),
+  // TODO - note the difference in structure of the response here
   elife_01_jsonld: loadDataset('../../examples/docmaps-example-elife-01.jsonld')[0],
-  embo_01_jsonld: loadDataset('../../examples/docmaps-example-embo-01.jsonld'),
+  // TODO - note the difference in structure of the response here
+  embo_01_jsonld: loadDataset('../../examples/docmaps-example-embo-01.jsonld')['@graph'][0]['docmap'],
 }
 
 const el_dm = [
   FromRootExamples.elife_01_jsonld,
+
+  // TODO we are unable to currently assert on the bioRxiv example due to malformation:
+  //      - the RoleInTime puts the Role under the Actor rather than sibling to
+  //      - the Manifestation uses `webpage` rather than `web-page`.
+  //    and maybe more!
+  //
   // FromRootExamples.biorxiv_01_jsonld,
+
+  FromRootExamples.embo_01_jsonld,
 ];
+
 const el_dm_publisher = el_dm.flatMap((dm) => dm['publisher'] || []);
 const el_dm_acc = el_dm_publisher.flatMap((p) => p['account'] || []);
 const el_dm_step: any[] = el_dm.flatMap((dm) => Object.values(dm['steps']) || []);

@@ -1,6 +1,29 @@
 import * as t from 'io-ts';
 export type IRI = string;
 
+function arrayOrOneOf(literalStrings: string[]) {
+  const [one, two, ...r] = literalStrings;
+
+  if (!one) {
+      throw "Never use arrayOrOneOf without any options!"
+  }
+  if (!two) {
+      const onlyOption = t.literal(one);
+      return t.union([onlyOption, t.array(onlyOption)]);
+  }
+
+  const literals = t.union([
+    t.literal(one),
+    t.literal(two),
+    ...r.map((e) => t.literal(e)),
+  ]);
+
+  return t.union([
+    t.array(literals),
+    literals,
+  ]);
+}
+
 export const DocmapOnlineAccount = t.intersection([
   t.type({
     id: t.string,
@@ -18,9 +41,11 @@ export const DocmapOnlineAccount = t.intersection([
 
 export const DocmapPublisher = t.intersection([
   t.type({
-    id: t.string,
   }),
   t.partial({
+    // fields used by eLife
+    id: t.string,
+
     // TODO: add url typing?
     logo: t.string,
     name: t.string,
@@ -34,7 +59,9 @@ export const DocmapManifestation = t.intersection([
   t.type({
     // type: t.union([
     // TODO: this looks like it might need to be an AnyType or something. Manifestations are extensive.
-    'type':  t.literal('web-page'),
+    'type': arrayOrOneOf([
+      'web-page', // correctly used by eLife
+    ]),
     // ]),
   }),
   t.partial({
@@ -113,28 +140,6 @@ export const DocmapStep = t.intersection([
   })
 ]);
 
-function arrayOrOneOf(literalStrings: string[]) {
-  const [one, two, ...r] = literalStrings;
-
-  if (!one) {
-      throw "Never use arrayOrOneOf without any options!"
-  }
-  if (!two) {
-      const onlyOption = t.literal(one);
-      return t.union([onlyOption, t.array(onlyOption)]);
-  }
-
-  const literals = t.union([
-    t.literal(one),
-    t.literal(two),
-    ...r.map((e) => t.literal(e)),
-  ]);
-
-  return t.union([
-    t.array(literals),
-    literals,
-  ]);
-}
 
 // TODO: use smart validation rules for custom io-ts docmap type, such as next-steps referring to steps that exist
 //   and any other value-dependent type rules
