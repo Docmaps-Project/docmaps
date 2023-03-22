@@ -6,7 +6,7 @@ import util from 'util';
 
 import SerializerJsonld from '@rdfjs/serializer-jsonld-ext';
 
-const DM_JSONLD_CONTEXT = 'https://cdn.jsdelivr.net/gh/docmaps-project/docmaps@main/docmaps-context.jsonld'
+const DM_JSONLD_CONTEXT = 'https://w3id.org/docmaps/context.jsonld'
 
 export const TypedNodeShape = t.type({
   'type': t.union([
