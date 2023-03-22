@@ -1,6 +1,6 @@
 import test from 'ava';
-import { TypedGraph, DocmapNormalizedFrame } from './typed_graph';
-import * as DocmapsTypes from './types';
+import { TypedGraph, DocmapNormalizedFrame } from '..';
+import * as DocmapsTypes from '../types';
 import {
   OneManifestationQuadstore,
   OnePublisherQuadstore,

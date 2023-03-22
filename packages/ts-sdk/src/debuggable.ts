@@ -1,5 +1,5 @@
 import * as pkg from '.';
-import * as fixtures from './__fixtures__';
+import * as fixtures from './test/__fixtures__';
 
 
 /**  Debug entrypoint script

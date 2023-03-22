@@ -1,6 +1,6 @@
 import test, {ExecutionContext} from 'ava';
 import { PartialExamples as ex } from './__fixtures__';
-import * as dm from './types';
+import * as dm from '../types';
 import { Either, isLeft, isRight } from 'fp-ts/lib/Either';
 import util from 'util';
 
