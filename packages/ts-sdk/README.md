@@ -24,7 +24,7 @@ Any codec can be used directly with a JSON string or `any`/`unknown` object to t
 create the instantiation of the Typescript type. `io-ts` is designed to work with
 [`fp-ts`](https://github.com/gcanti/fp-ts), so you get an instance of Either which must
 be deconstructed by case to determine whether the input was valid. See examples of this
-in the [`typed_graph`](/src/typed_graph.ts), where we use `isLeft` to check if the decode
+in the [`typed_graph`](/packages/ts-sdk/src/typed_graph.ts), where we use `isLeft` to check if the decode
 failed.
 
 Alternatively, the `typed_graph` class is used for choosing the codec to use based on the
