@@ -5,6 +5,6 @@ debugger;
 
 const t = new pkg.TypedGraph();
 
-const parsed = await t.pickStream(fixtures.FromRootExamples.elife_01, pkg.DocmapNormalizedFrame );
+const parsed = await t.pickStream(fixtures.FromRootExamples.elife_01_nt, pkg.DocmapNormalizedFrame );
 console.log(parsed);
 
