@@ -21,9 +21,6 @@
     "readable-stream": "^3.6.2"
   },
   "devDependencies": {
-    "@babel/core": ">=7.0.0-beta.0 <8.0.0",
-    "@babel/plugin-transform-modules-commonjs": "^7.21.2",
-    "@babel/preset-env": "^7.20.2",
     "@rdfjs/data-model": "^2.0.1",
     "@rdfjs/parser-n3": "^2.0.1",
     "@rdfjs/types": "^1.1.0",
