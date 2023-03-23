@@ -5,5 +5,6 @@ module.exports = {
   root: true,
   ignorePatterns: [
     "src/debuggable.ts",
+    "dist/",
   ],
 };

@@ -7,8 +7,8 @@
   "scripts": {
     "test": "ava",
     "debug": "node --loader=ts-node/esm --experimental-specifier-resolution=node --nolazy -r ts-node/register/transpile-only --inspect-brk src/debuggable.ts",
-    "lint": "npx eslint src",
-    "lint:fix": "npx eslint --fix src",
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint --fix .",
     "build": "tsc"
   },
   "keywords": [],
