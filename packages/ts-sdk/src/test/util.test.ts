@@ -41,11 +41,11 @@ test('UrlFromString success cases', (t) => {
 
 test('UrlFromString failure cases', (t) => {
   const url1 = UrlFromString.decode('NOT_A_URL')
-  t.false( isRight(UrlFromString.decode(url1)))
+  t.false(isRight(UrlFromString.decode(url1)))
 
   const url2 = UrlFromString.decode(409)
-  t.false( isRight(UrlFromString.decode(url1)))
+  t.false(isRight(UrlFromString.decode(url2)))
 
   const url3 = UrlFromString.decode({})
-  t.false( isRight(UrlFromString.decode(url1)))
+  t.false(isRight(UrlFromString.decode(url3)))
 })

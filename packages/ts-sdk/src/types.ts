@@ -1,4 +1,5 @@
 import * as t from 'io-ts'
+import { DateFromISOString } from 'io-ts-types'
 import { UrlFromString } from './util'
 
 function arrayOrOneOf(literalStrings: string[]) {
@@ -86,7 +87,7 @@ export const DocmapThing = t.intersection([
   t.partial({
     // TODO use DateFromString for better parsing:
     //    https://github.com/gcanti/io-ts/blob/dedb64e05328417ecd3d87e00008d9e72130374a/index.md#custom-types
-    published: t.string,
+    published: DateFromISOString,
     id: t.string,
     doi: t.string,
     type: t.union([t.array(t.string), t.string]), // TODO this Type can be more specific ('web-page', 'preprint', etc)
@@ -136,12 +137,12 @@ export const Docmap = t.intersection([
     ]),
     publisher: DocmapPublisher,
     // TODO: required contents of these date strings,
-    created: t.string,
+    created: DateFromISOString,
   }),
   t.partial({
     steps: t.record(t.string, DocmapStep),
     'first-step': t.string,
-    updated: t.string,
+    updated: DateFromISOString,
   }),
 ])
 

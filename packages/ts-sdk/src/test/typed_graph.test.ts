@@ -31,12 +31,15 @@ test('Parsing JSONLD from concrete elife examples', async (t) => {
     dm_elife.id,
     'https://data-hub-api.elifesciences.org/enhanced-preprints/docmaps/v1/get-by-doi?preprint_doi=10.1101%2F2022.11.08.515698',
   )
+
+  t.deepEqual(dm_elife.updated, new Date('2022-11-28T11:30:05+00:00'))
 })
 
 test('Parsing JSONLD from concrete embo examples', async (t) => {
   const dm_embo = g.parseJsonld(FromRootExamples.embo_01_jsonld) as DocmapsTypes.DocmapT
 
   t.is(dm_embo.id, 'https://eeb.embo.org/api/v2/docmap/10.1101/2021.03.24.436774')
+  t.deepEqual(dm_embo.created, new Date('2023-02-13T05:43:49.289Z'))
   t.is(dm_embo.publisher.name, 'review commons')
   t.is(dm_embo.publisher.url?.toString(), 'https://reviewcommons.org/')
   if (!dm_embo.steps) {
