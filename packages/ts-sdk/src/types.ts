@@ -1,3 +1,8 @@
+/**
+ * Library of Docmaps encoders and types.
+ *
+ * @since 0.1.0
+ */
 import * as t from 'io-ts'
 import { fromNullable } from 'io-ts-types/lib/fromNullable'
 import { UrlFromString, DateFromUnknown } from './util'
@@ -18,6 +23,9 @@ function arrayOrOneOf(literalStrings: string[]) {
   return t.union([t.array(literals), literals])
 }
 
+/**
+ * @since 0.9.0
+ */
 export const ContextUpsert = {
   // only one legal value, and fill it if absent
   '@context': fromNullable(
@@ -26,6 +34,9 @@ export const ContextUpsert = {
   ),
 }
 
+/**
+ * @since 0.1.0
+ */
 export const OnlineAccount = t.intersection([
   t.type({
     id: t.string,
@@ -37,6 +48,9 @@ export const OnlineAccount = t.intersection([
   }),
 ])
 
+/**
+ * @since 0.1.0
+ */
 export const Publisher = t.intersection([
   t.type({
     // TODO this is not so useful as partial-only
@@ -53,6 +67,9 @@ export const Publisher = t.intersection([
   }),
 ])
 
+/**
+ * @since 0.1.0
+ */
 export const Manifestation = t.intersection([
   t.type({
     // TODO: this looks like it might need to be an AnyType or something. Manifestations are extensive.
@@ -68,6 +85,9 @@ export const Manifestation = t.intersection([
   }),
 ])
 
+/**
+ * @since 0.1.0
+ */
 export const Actor = t.union([
   t.type({
     type: arrayOrOneOf(['person']),
@@ -77,6 +97,9 @@ export const Actor = t.union([
   t.unknown,
 ])
 
+/**
+ * @since 0.1.0
+ */
 export const RoleInTime = t.intersection([
   t.type({
     actor: Actor,
@@ -89,6 +112,9 @@ export const RoleInTime = t.intersection([
   }),
 ])
 
+/**
+ * @since 0.9.0
+ */
 export const ThingType = arrayOrOneOf([
   'review',
   'preprint',
@@ -103,6 +129,9 @@ export const ThingType = arrayOrOneOf([
 
 // TODO - now that we have Types, we could do more assertive
 // shaping based on a given Type value implying certain fields must exist
+/**
+ * @since 0.1.0
+ */
 export const Thing = t.intersection([
   t.type({
     // TODO this is not so useful as partial-only
@@ -116,6 +145,9 @@ export const Thing = t.intersection([
   }),
 ])
 
+/**
+ * @since 0.1.0
+ */
 export const Action = t.intersection([
   t.type({
     outputs: t.array(Thing),
@@ -129,6 +161,9 @@ export const Action = t.intersection([
 
 const Status = t.string
 
+/**
+ * @since 0.9.0
+ */
 export const Assertion = t.intersection([
   t.type({
     item: t.unknown,
@@ -139,6 +174,9 @@ export const Assertion = t.intersection([
   }),
 ])
 
+/**
+ * @since 0.1.0
+ */
 export const Step = t.intersection([
   t.type({
     actions: t.array(Action),
@@ -154,9 +192,12 @@ export const Step = t.intersection([
   }),
 ])
 
+/**
+ * @since 0.1.0
+ */
+export const Docmap = t.intersection([
 // TODO: use smart validation rules for custom io-ts docmap type, such as next-steps referring to steps that exist
 //   and any other value-dependent type rules
-export const Docmap = t.intersection([
   t.type({
     ...ContextUpsert,
     id: t.string,
@@ -180,22 +221,53 @@ export const Docmap = t.intersection([
   }),
 ])
 
+/**
+ * @since 0.1.0
+ */
 export type IRI = string
+/**
+ * @since 0.1.0
+ */
 export type PublisherT = t.TypeOf<typeof Publisher>
+/**
+ * @since 0.1.0
+ */
 export type OnlineAccountT = t.TypeOf<typeof OnlineAccount>
+/**
+ * @since 0.1.0
+ */
 export type ManifestationT = t.TypeOf<typeof Manifestation>
+/**
+ * @since 0.1.0
+ */
 export type StepT = t.TypeOf<typeof Step>
+/**
+ * @since 0.1.0
+ */
 export type DocmapT = t.TypeOf<typeof Docmap>
+/**
+ * @since 0.1.0
+ */
 export type ActionT = t.TypeOf<typeof Action>
+/**
+ * @since 0.1.0
+ */
 export type ThingT = t.TypeOf<typeof Thing>
+/**
+ * @since 0.1.0
+ */
 export type RoleInTimeT = t.TypeOf<typeof RoleInTime>
+/**
+ * @since 0.1.0
+ */
 export type ActorT = t.TypeOf<typeof Actor>
-export type AssertionT = t.TypeOf<typeof Assertion>
 
 /**  DocmapsFactory
  *
  *  The DocmapsFactory is a map from @type keys to the relevant type codecs.
  *  This is only used in the Typed Graph Extraction code.
+
+ * @since 0.1.0
  */
 export const DocmapsFactory = {
   'web-page': Manifestation,

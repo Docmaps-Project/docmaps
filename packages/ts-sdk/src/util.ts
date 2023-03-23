@@ -1,15 +1,22 @@
+/**
+ * @since 0.1.0
+ */
 import * as t from 'io-ts'
 import { pipe } from 'fp-ts/lib/pipeable'
 import { chain } from 'fp-ts/lib/Either'
 
-/** URL from String parser
+/**
+ * @since 0.1.0
+ */
+export type UrlFromStringC = t.Type<URL, string, unknown>
+
+/**
+ * URL from String parser
  *
  * based on example there:
  *   https://github.com/gcanti/io-ts-types/blob/master/src/BooleanFromString.ts
+ * @since 0.1.0
  */
-
-export type UrlFromStringC = t.Type<URL, string, unknown>
-
 export const UrlFromString: UrlFromStringC = new t.Type<URL, string, unknown>(
   'UrlFromString',
   (u): u is URL => u instanceof URL,
@@ -27,6 +34,13 @@ export const UrlFromString: UrlFromStringC = new t.Type<URL, string, unknown>(
     ),
   String,
 )
+
+/**
+ * Should be the same as a URL.
+ *
+ * @since 0.1.0
+ */
+export type UrlT = t.TypeOf<typeof UrlFromString>;
 
 /** Date from Anything
  *

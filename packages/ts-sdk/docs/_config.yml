@@ -1,0 +1,9 @@
+remote_theme: pmarsceill/just-the-docs
+
+# Enable or disable the site search
+search_enabled: true
+
+# Aux links for the upper right navigation
+aux_links:
+  'ts-sdk on GitHub':
+    - 'https://github.com/Docmaps-Project/docmaps/tree/main/packages/ts-sdk'

@@ -1,0 +1,8 @@
+{
+  "exclude": [
+    "src/debuggable.ts",
+    "src/index.ts",
+    "src/typed_graph.ts",
+    "**/test/**/*"
+  ]
+}
