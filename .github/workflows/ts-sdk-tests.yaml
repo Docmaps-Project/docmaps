@@ -57,3 +57,8 @@ jobs:
         run: |
           cd packages/ts-sdk;
           pnpm test;
+
+      - name: Lint Check
+        run: |
+          cd packages/ts-sdk;
+          pnpm lint;
