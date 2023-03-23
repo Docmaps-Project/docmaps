@@ -1,6 +1,5 @@
-import * as pkg from '.';
-import * as fixtures from './test/__fixtures__';
-
+import * as pkg from '.'
+import * as fixtures from './test/__fixtures__'
 
 /**  Debug entrypoint script
  *
@@ -8,10 +7,11 @@ import * as fixtures from './test/__fixtures__';
  *   any issues we may face due to the algorithm complexity of
  *   jsonld.
  */
-debugger;
 
-const t = new pkg.TypedGraph();
+/* eslint-disable-next-line no-debugger */
+debugger
 
-const parsed = await t.pickStream(fixtures.FromRootExamples.elife_01_nt, pkg.DocmapNormalizedFrame );
-console.log(parsed);
+const t = new pkg.TypedGraph()
 
+const parsed = await t.pickStream(fixtures.FromRootExamples.elife_01_nt, pkg.DocmapNormalizedFrame)
+console.log(parsed)

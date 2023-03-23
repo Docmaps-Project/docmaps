@@ -1,26 +1,19 @@
-import * as t from 'io-ts';
+import * as t from 'io-ts'
 
 function arrayOrOneOf(literalStrings: string[]) {
-  const [one, two, ...r] = literalStrings;
+  const [one, two, ...r] = literalStrings
 
   if (!one) {
-      throw "Never use arrayOrOneOf without any options!"
+    throw 'Never use arrayOrOneOf without any options!'
   }
   if (!two) {
-      const onlyOption = t.literal(one);
-      return t.union([onlyOption, t.array(onlyOption)]);
+    const onlyOption = t.literal(one)
+    return t.union([onlyOption, t.array(onlyOption)])
   }
 
-  const literals = t.union([
-    t.literal(one),
-    t.literal(two),
-    ...r.map((e) => t.literal(e)),
-  ]);
+  const literals = t.union([t.literal(one), t.literal(two), ...r.map((e) => t.literal(e))])
 
-  return t.union([
-    t.array(literals),
-    literals,
-  ]);
+  return t.union([t.array(literals), literals])
 }
 
 export const DocmapOnlineAccount = t.intersection([
@@ -32,7 +25,7 @@ export const DocmapOnlineAccount = t.intersection([
   t.partial({
     service: t.string,
   }),
-]);
+])
 
 export const DocmapPublisher = t.intersection([
   t.type({
@@ -49,12 +42,12 @@ export const DocmapPublisher = t.intersection([
     url: t.string,
     account: DocmapOnlineAccount,
   }),
-]);
+])
 
 export const DocmapManifestation = t.intersection([
   t.type({
     // TODO: this looks like it might need to be an AnyType or something. Manifestations are extensive.
-    'type': arrayOrOneOf([
+    type: arrayOrOneOf([
       'web-page', // correctly used by eLife
     ]),
   }),
@@ -63,16 +56,16 @@ export const DocmapManifestation = t.intersection([
     service: t.string,
     url: t.string,
   }),
-]);
+])
 
 export const DocmapActor = t.union([
   t.type({
-    'type': arrayOrOneOf(['person']),
+    type: arrayOrOneOf(['person']),
     name: t.string,
   }),
   // TODO:  this can be any FOAF type, based on our context spec.
   t.unknown,
-]);
+])
 
 export const DocmapRoleInTime = t.intersection([
   t.type({
@@ -82,12 +75,9 @@ export const DocmapRoleInTime = t.intersection([
   }),
   t.partial({
     id: t.string,
-    type: t.union([
-      t.literal('pro:roleintime'),
-      t.literal('pro:RoleInTime'),
-    ]),
+    type: t.union([t.literal('pro:roleintime'), t.literal('pro:RoleInTime')]),
   }),
-]);
+])
 
 export const DocmapThing = t.intersection([
   t.type({
@@ -99,10 +89,10 @@ export const DocmapThing = t.intersection([
     published: t.string,
     id: t.string,
     doi: t.string,
-    'type': t.union([t.array(t.string), t.string]), // TODO this Type can be more specific ('web-page', 'preprint', etc)
+    type: t.union([t.array(t.string), t.string]), // TODO this Type can be more specific ('web-page', 'preprint', etc)
     content: t.array(DocmapManifestation),
   }),
-]);
+])
 
 export const DocmapAction = t.intersection([
   t.type({
@@ -113,7 +103,7 @@ export const DocmapAction = t.intersection([
     // TODO - this will probably be an independently-publishable thing and id should not be optional.
     id: t.string,
   }),
-]);
+])
 
 export const DocmapStep = t.intersection([
   t.type({
@@ -127,16 +117,15 @@ export const DocmapStep = t.intersection([
     id: t.string,
     'next-step': t.string,
     'previous-step': t.string,
-  })
-]);
-
+  }),
+])
 
 // TODO: use smart validation rules for custom io-ts docmap type, such as next-steps referring to steps that exist
 //   and any other value-dependent type rules
 export const Docmap = t.intersection([
   t.type({
     id: t.string,
-    'type': arrayOrOneOf([
+    type: arrayOrOneOf([
       // TODO support something where docmaps: is prefixed
       // t.literal('docmaps:docmap'),
       // t.literal('docmaps:Docmap'),
@@ -154,19 +143,18 @@ export const Docmap = t.intersection([
     'first-step': t.string,
     updated: t.string,
   }),
-]);
+])
 
-export type IRI = string;
-export type DocmapPublisherT = t.TypeOf<typeof DocmapPublisher>;
-export type DocmapOnlineAccountT = t.TypeOf<typeof DocmapOnlineAccount>;
-export type DocmapManifestationT = t.TypeOf<typeof DocmapManifestation>;
-export type DocmapStepT = t.TypeOf<typeof DocmapStep>;
-export type DocmapT = t.TypeOf<typeof Docmap>;
-export type DocmapActionT = t.TypeOf<typeof DocmapAction>;
-export type DocmapThingT = t.TypeOf<typeof DocmapThing>;
-export type DocmapRoleInTimeT = t.TypeOf<typeof DocmapRoleInTime>;
-export type DocmapActorT = t.TypeOf<typeof DocmapActor>;
-
+export type IRI = string
+export type DocmapPublisherT = t.TypeOf<typeof DocmapPublisher>
+export type DocmapOnlineAccountT = t.TypeOf<typeof DocmapOnlineAccount>
+export type DocmapManifestationT = t.TypeOf<typeof DocmapManifestation>
+export type DocmapStepT = t.TypeOf<typeof DocmapStep>
+export type DocmapT = t.TypeOf<typeof Docmap>
+export type DocmapActionT = t.TypeOf<typeof DocmapAction>
+export type DocmapThingT = t.TypeOf<typeof DocmapThing>
+export type DocmapRoleInTimeT = t.TypeOf<typeof DocmapRoleInTime>
+export type DocmapActorT = t.TypeOf<typeof DocmapActor>
 
 /**  DocmapsFactory
  *
@@ -175,7 +163,7 @@ export type DocmapActorT = t.TypeOf<typeof DocmapActor>;
  */
 export const DocmapsFactory = {
   'web-page': DocmapManifestation,
-  'docmap': Docmap,
+  docmap: Docmap,
   'https://w3id.org/docmaps/v0/Docmap': Docmap,
-  'Docmap': Docmap,
-};
+  Docmap: Docmap,
+}
