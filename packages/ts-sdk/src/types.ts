@@ -196,8 +196,8 @@ export const Step = t.intersection([
  * @since 0.1.0
  */
 export const Docmap = t.intersection([
-// TODO: use smart validation rules for custom io-ts docmap type, such as next-steps referring to steps that exist
-//   and any other value-dependent type rules
+  // TODO: use smart validation rules for custom io-ts docmap type, such as next-steps referring to steps that exist
+  //   and any other value-dependent type rules
   t.type({
     ...ContextUpsert,
     id: t.string,
