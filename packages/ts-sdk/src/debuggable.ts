@@ -8,6 +8,8 @@ import * as fixtures from './test/__fixtures__';
  *   any issues we may face due to the algorithm complexity of
  *   jsonld.
  */
+
+/* eslint-disable-next-line no-debugger */
 debugger;
 
 const t = new pkg.TypedGraph();

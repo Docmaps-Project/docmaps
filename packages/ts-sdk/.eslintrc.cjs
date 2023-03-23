@@ -4,7 +4,6 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   root: true,
   ignorePatterns: [
-    "src/debuggable.ts",
     "dist/",
   ],
 };
