@@ -2,15 +2,14 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
     'plugin:prettier/recommended',
   ],
   parser: '@typescript-eslint/parser',
-  plugins: [
-    '@typescript-eslint',
-    'prettier',
-  ],
+  plugins: ['@typescript-eslint', 'prettier'],
   root: true,
-  ignorePatterns: [
-    "dist/",
-  ],
-};
+  ignorePatterns: ['dist/'],
+  rules: {
+    '@typescript-eslint/no-unused-vars': 'error',
+  },
+}

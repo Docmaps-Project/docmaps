@@ -1,7 +1,7 @@
 import test from 'ava'
-import { TypedGraph, DocmapNormalizedFrame } from '..'
+import { TypedGraph } from '..'
 import * as DocmapsTypes from '../types'
-import { OneManifestationQuadstore, OnePublisherQuadstore, FromRootExamples } from './__fixtures__/'
+import { OneManifestationQuadstore, FromRootExamples } from './__fixtures__/'
 
 const factory = DocmapsTypes.DocmapsFactory
 const g = new TypedGraph(factory)

@@ -1,13 +1,13 @@
 import test, { ExecutionContext } from 'ava'
 import { PartialExamples as ex } from './__fixtures__'
 import * as dm from '../types'
-import { Either, isLeft, isRight } from 'fp-ts/lib/Either'
+import { Either, isRight } from 'fp-ts/lib/Either'
 import util from 'util'
 
 function isRightArray(t: ExecutionContext, arr: Either<unknown, any>[], len: number) {
   t.is(arr.length, len)
 
-  const res = arr.map((a) => {
+  arr.map((a) => {
     if (isRight(a)) {
       t.pass()
     } else {
