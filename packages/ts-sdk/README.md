@@ -38,6 +38,12 @@ makes it more useful.
 
 Documentation is comments-only for now. See [relevant issue](https://github.com/Docmaps-Project/docmaps/issues/20).
 
+## Contributing
+
+For Code of Conduct, see the repository-wide [CODE_OF_CONDUCT.md](/CODE_OF_CONDUCT.md).
+
+For info about local development of this repository, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Current next steps
 
 Review the issues on this repository for up-to-date info of desired improvements.
