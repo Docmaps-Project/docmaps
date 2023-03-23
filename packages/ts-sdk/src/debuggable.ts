@@ -1,6 +1,5 @@
-import * as pkg from '.';
-import * as fixtures from './test/__fixtures__';
-
+import * as pkg from '.'
+import * as fixtures from './test/__fixtures__'
 
 /**  Debug entrypoint script
  *
@@ -10,10 +9,9 @@ import * as fixtures from './test/__fixtures__';
  */
 
 /* eslint-disable-next-line no-debugger */
-debugger;
+debugger
 
-const t = new pkg.TypedGraph();
+const t = new pkg.TypedGraph()
 
-const parsed = await t.pickStream(fixtures.FromRootExamples.elife_01_nt, pkg.DocmapNormalizedFrame );
-console.log(parsed);
-
+const parsed = await t.pickStream(fixtures.FromRootExamples.elife_01_nt, pkg.DocmapNormalizedFrame)
+console.log(parsed)

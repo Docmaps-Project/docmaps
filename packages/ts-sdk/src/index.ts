@@ -1,2 +1,2 @@
-export * from './types';
-export * from './typed_graph';
+export * from './types'
+export * from './typed_graph'
