@@ -12,13 +12,16 @@ test('Graph Extraction of a Manifestation', async (t) => {
   })) as DocmapsTypes.DocmapManifestationT
 
   t.is(mf.id, 'https://w3id.org/docmaps/examples/manifestation')
-  t.is(mf.service, 'https://w3id.org/docmaps/examples/manifestation#HOMEPAGE')
+  t.is(mf.service?.hostname, 'w3id.org')
+  t.is(mf.service?.pathname, '/docmaps/examples/manifestation')
+  t.is(mf.service?.hash, '#HOMEPAGE')
+  t.is(mf.service?.protocol, 'https:')
 
   // TODO: note how the `url` key in the jsonld context has a @type key, and therefore
   // ALL values for this must have @type specified as `xsd:anyURI` to be safely
   // parsed by `jsonld.js`. Without type specification in the data, compaction/framing
   // algorithm will use the CURIE instead of the term.
-  t.is(mf.url, 'https://w3id.org/docmaps/examples/manifestation#URL')
+  t.is(mf.url?.toString(), 'https://w3id.org/docmaps/examples/manifestation#URL')
 })
 
 test('Parsing JSONLD from concrete elife examples', async (t) => {
@@ -35,7 +38,7 @@ test('Parsing JSONLD from concrete embo examples', async (t) => {
 
   t.is(dm_embo.id, 'https://eeb.embo.org/api/v2/docmap/10.1101/2021.03.24.436774')
   t.is(dm_embo.publisher.name, 'review commons')
-  t.is(dm_embo.publisher.url, 'https://reviewcommons.org')
+  t.is(dm_embo.publisher.url?.toString(), 'https://reviewcommons.org/')
   if (!dm_embo.steps) {
     throw 'steps did not parse' // must interrupt flow for type safety later
   }

@@ -1,4 +1,5 @@
 import * as t from 'io-ts'
+import { UrlFromString } from './util'
 
 function arrayOrOneOf(literalStrings: string[]) {
   const [one, two, ...r] = literalStrings
@@ -23,7 +24,7 @@ export const DocmapOnlineAccount = t.intersection([
   }),
   // t.type intersects t.partial to add optional fields
   t.partial({
-    service: t.string,
+    service: UrlFromString,
   }),
 ])
 
@@ -35,11 +36,10 @@ export const DocmapPublisher = t.intersection([
     // fields used by eLife
     id: t.string,
 
-    // TODO: add url typing?
-    logo: t.string,
+    logo: UrlFromString,
     name: t.string,
-    homepage: t.string,
-    url: t.string,
+    homepage: UrlFromString,
+    url: UrlFromString,
     account: DocmapOnlineAccount,
   }),
 ])
@@ -53,8 +53,8 @@ export const DocmapManifestation = t.intersection([
   }),
   t.partial({
     id: t.string,
-    service: t.string,
-    url: t.string,
+    service: UrlFromString,
+    url: UrlFromString,
   }),
 ])
 
