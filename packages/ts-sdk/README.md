@@ -44,7 +44,7 @@ Review the issues on this repository for up-to-date info of desired improvements
 There are also expressive TODOs in the codebase.
 Here are some examples:
 
-- [ ] use more specific types in `io-ts-types` to validate that strings which should
+- [x] use more specific types in `io-ts-types` to validate that strings which should
 be URLs and dates contain their respective value types.
 - [ ] build out the typed-graph functionality to support parsing various types from streams.
 - [ ] validate the semantics of docmaps, not just structure (i.e., the first-step refers to a real step).
