@@ -1,0 +1,55 @@
+@prefix : <http://github.com/Docmaps-project/docmaps/> .
+@prefix ti: <http://www.ontologydesignpatterns.org/cp/owl/timeinterval.owl#> .
+@prefix cnt: <http://www.w3.org/2011/content#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix pro: <http://purl.org/spar/pro/> .
+@prefix pso: <http://purl.org/spar/pso/> .
+@prefix pwo: <http://purl.org/spar/pwo/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .https://raw.githubusercontent.com/SPAROntologies/pwo/master/docs/current/pwo.owl
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix frbr: <http://purl.org/vocab/frbr/core#> .
+@prefix prov: <https://www.w3.org/TR/prov-o/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix fabio: <http://purl.org/spar/fabio/> .
+@prefix prism: <http://prismstandard.org/namespaces/basic/2.0/> .
+@prefix taskex: <http://www.ontologydesignpatterns.org/cp/owl/taskexecution.owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@base <http://github.com/Docmaps-project/docmaps/> .
+
+<http://github.com/Docmaps-project/docmaps> rdf:type owl:Ontology ;
+                                             owl:imports <http://purl.org/spar/pwo/2017-06-01> .
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://github.com/Docmaps-project/docmaps/Docmap
+:Docmap rdf:type owl:Class ;
+        rdfs:subClassOf pwo:Workflow ;
+        rdfs:label "Docmap" .
+
+:DocmapPublisher rdf:type owl:Class ;
+        rdfs:subClassOf foaf:Organization ;
+        rdfs:label "DocmapPublisher" .
+
+:DocmapOnlineAccount rdf:type owl:Class ;
+        rdfs:subClassOf foaf:OnlineAccount ;
+        rdfs:label "DocmapOnlineAccount" .
+
+:DocmapStep rdf:type owl:Class ;
+        rdfs:subClassOf pwo:Step ;
+        rdfs:label "DocmapStep" .
+
+# :DocmapAction rdf:type owl:Class ;
+#         rdfs:subClassOf pwo:Step ;
+#         rdfs:label "DocmapStep" .
+#
+# :DocmapRoleInTime rdf:type owl:Class ;
+#         rdfs:subClassOf pwo:Step ;
+#         rdfs:label "DocmapStep" .
+#
+# :DocmapActor rdf:type owl:Class ;
+#         rdfs:subClassOf pro:Actor ;
+#         rdfs:label "DocmapActor" .
