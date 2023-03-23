@@ -22,6 +22,9 @@ specifiers:
   eslint-plugin-prettier: ^4.2.1
   fp-ts: ^2.13.1
   io-ts: ^2.2.20
+  io-ts-types: ^0.5.19
+  monocle-ts: ^2.3.13
+  newtype-ts: ^0.3.5
   prettier: ^2.8.6
   rdf-ext: ^2.2.0
   readable-stream: ^3.6.2
@@ -32,6 +35,9 @@ dependencies:
   '@rdfjs/serializer-jsonld-ext': 4.0.0
   fp-ts: 2.13.1
   io-ts: 2.2.20_fp-ts@2.13.1
+  io-ts-types: 0.5.19_3r4zs434vtthvwddf63cdxp364
+  monocle-ts: 2.3.13_fp-ts@2.13.1
+  newtype-ts: 0.3.5_y4ecnzjsatnzoei5elwf4wjeqa
   readable-stream: 3.6.2
 
 devDependencies:
@@ -1437,6 +1443,20 @@ packages:
   /inherits/2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
 
+  /io-ts-types/0.5.19_3r4zs434vtthvwddf63cdxp364:
+    resolution: {integrity: sha512-kQOYYDZG5vKre+INIDZbLeDJe+oM+4zLpUkjXyTMyUfoCpjJNyi29ZLkuEAwcPufaYo3yu/BsemZtbdD+NtRfQ==}
+    peerDependencies:
+      fp-ts: ^2.0.0
+      io-ts: ^2.0.0
+      monocle-ts: ^2.0.0
+      newtype-ts: ^0.3.2
+    dependencies:
+      fp-ts: 2.13.1
+      io-ts: 2.2.20_fp-ts@2.13.1
+      monocle-ts: 2.3.13_fp-ts@2.13.1
+      newtype-ts: 0.3.5_y4ecnzjsatnzoei5elwf4wjeqa
+    dev: false
+
   /io-ts/2.2.20_fp-ts@2.13.1:
     resolution: {integrity: sha512-Rq2BsYmtwS5vVttie4rqrOCIfHCS9TgpRLFpKQCM1wZBBRY9nWVGmEvm2FnDbSE2un1UE39DvFpTR5UL47YDcA==}
     peerDependencies:
@@ -1688,6 +1708,14 @@ packages:
       brace-expansion: 1.1.11
     dev: true
 
+  /monocle-ts/2.3.13_fp-ts@2.13.1:
+    resolution: {integrity: sha512-D5Ygd3oulEoAm3KuGO0eeJIrhFf1jlQIoEVV2DYsZUMz42j4tGxgct97Aq68+F8w4w4geEnwFa8HayTS/7lpKQ==}
+    peerDependencies:
+      fp-ts: ^2.5.0
+    dependencies:
+      fp-ts: 2.13.1
+    dev: false
+
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
     dev: true
@@ -1711,6 +1739,16 @@ packages:
   /natural-compare/1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
+
+  /newtype-ts/0.3.5_y4ecnzjsatnzoei5elwf4wjeqa:
+    resolution: {integrity: sha512-v83UEQMlVR75yf1OUdoSFssjitxzjZlqBAjiGQ4WJaML8Jdc68LJ+BaSAXUmKY4bNzp7hygkKLYTsDi14PxI2g==}
+    peerDependencies:
+      fp-ts: ^2.0.0
+      monocle-ts: ^2.0.0
+    dependencies:
+      fp-ts: 2.13.1
+      monocle-ts: 2.3.13_fp-ts@2.13.1
+    dev: false
 
   /node-domexception/1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
