@@ -72,7 +72,7 @@ export class TypedGraph {
       typesArr = [jsonld['type']];
     }
 
-    let errors: Error[] = [];
+    const errors: Error[] = [];
     for (const tIdStr of typesArr) {
       const tId = tIdStr as TypesFactoryKeys;
       if (!tId) {
