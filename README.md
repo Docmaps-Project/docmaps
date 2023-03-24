@@ -25,3 +25,9 @@ This package contains a library of JSON-parsing and string-parsing codecs based 
 that library natively integrates with `fp-ts` and enables easy encoding & decoding
 from raw data types at runtime by creating Prototypical classes in runtime namespace
 along with the types/interfaces in type namespace.
+
+## Governance
+
+As stated in CODE_OF_CONDUCT.md:
+
+This project is governed by the [Knowledge Futures, Inc Organizational Code of Conduct](https://github.com/knowledgefutures/general/blob/master/CODE_OF_CONDUCT.md).
