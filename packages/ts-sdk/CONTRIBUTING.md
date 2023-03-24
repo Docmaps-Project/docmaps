@@ -25,6 +25,12 @@ Once the changes have been made, the PR will be merged by a maintainer or contri
 
 ## Local development
 
+[`nvm`](https://github.com/nvm-sh/nvm) is a good local Node version manager.
+
+```
+nvm use 18.14.0
+```
+
 I recommend you use `pnpm` for best performance. Alternatively you can use `npm`.
 
 ```bash
