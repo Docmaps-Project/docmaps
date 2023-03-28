@@ -33,7 +33,7 @@
     "@types/node": "*",
     "@types/rdf-ext": "^2.0.0",
     "@types/rdfjs__data-model": "^2.0.1",
-    "@types/rdfjs__parser-n3": "^1.1.5",
+    "@types/rdfjs__parser-n3": "^2.0.0",
     "@types/rdfjs__serializer-jsonld-ext": "^2.0.5",
     "@types/readable-stream": "^2.3.15",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
