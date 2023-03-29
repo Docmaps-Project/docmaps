@@ -48,20 +48,20 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd ${{PKG_DIR}} ;
+          cd ${{env.PKG_DIR}} ;
           pnpm install;
 
       - name: Verify builds
         run: |
-          cd ${{PKG_DIR}} ;
+          cd ${{env.PKG_DIR}} ;
           pnpm build;
 
       - name: Test
         run: |
-          cd ${{PKG_DIR}} ;
+          cd ${{env.PKG_DIR}} ;
           pnpm test;
 
       - name: Lint Check
         run: |
-          cd ${{PKG_DIR}} ;
+          cd ${{env.PKG_DIR}} ;
           pnpm lint;
