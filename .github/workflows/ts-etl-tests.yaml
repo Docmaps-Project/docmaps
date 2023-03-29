@@ -1,13 +1,12 @@
-name: Test ts-sdk
+name: Test ts-etl
 
 on:
   push:
     # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  workflow_call:
 
 env:
-  PKG_DIR: "packages/ts-sdk"
+  PKG_DIR: "packages/ts-etl"
 
 jobs:
   nodejs_test:
