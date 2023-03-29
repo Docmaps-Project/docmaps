@@ -1,3 +1,3 @@
-import { Command } from '@commander-js/extra-typings';
+import { Command } from '@commander-js/extra-typings'
 
-console.log("hello world");
+console.log('hello world')
