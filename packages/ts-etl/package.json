@@ -7,6 +7,8 @@
   "scripts": {
     "test": "ava",
     "debug": "node --loader=ts-node/esm --experimental-specifier-resolution=node --nolazy -r ts-node/register/transpile-only --inspect-brk src/debuggable.ts",
+    "start": "node --loader=ts-node/esm --experimental-specifier-resolution=node --nolazy -r ts-node/register/transpile-only src/index.ts",
+    "install-deps": "pnpm update crossref-openapi-client-ts cd node_modules/crossref-openapi-client-ts && pnpm install && pnpm build",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
     "build": "tsc"
@@ -15,7 +17,9 @@
   "author": "eve github.com/ships",
   "license": "ISC",
   "dependencies": {
-    "commander": "^10.0.0"
+    "@jamesgopsill/crossref-client": "^1.0.0",
+    "commander": "^10.0.0",
+    "crossref-openapi-client-ts": "github:Docmaps-Project/crossref-openapi-client-ts"
   },
   "devDependencies": {
     "@commander-js/extra-typings": "^10.0.3",
@@ -28,6 +32,7 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.8.6",
+    "ts-mockito": "^2.6.1",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
   },
