@@ -1,6 +1,6 @@
 import { Command } from '@commander-js/extra-typings'
 
-const cli = new Command();
+const cli = new Command()
 
 cli
   .name('docmaps-cli')
@@ -8,4 +8,3 @@ cli
   .version('0.1.0')
 
 cli.parse()
-

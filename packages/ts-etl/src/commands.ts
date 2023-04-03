@@ -1,5 +1,5 @@
-import type { CrossrefClient, WorksService } from 'crossref-openapi-client-ts';
-import * as crossref  from './crossref'
+import type { CrossrefClient } from 'crossref-openapi-client-ts'
+import * as crossref from './crossref'
 
 // TODO rewrite this to assume it generates a stream of output rather than a single string
 // .. although actually, the streaming may be a layer down instead
@@ -15,16 +15,19 @@ export type Cmd<ArgT extends string[], OptT> = (args: ArgT, opts: OptT) => Promi
 // }
 
 export interface PageOpts {
-  source: 'crossref-api',
-  // service: WorksService,
-  client: CrossrefClient,
-  prefix: string,
-  rowsPerPage?: number,
-  pageNumber?: number,
+  source: 'crossref-api'
+  client: CrossrefClient
+  prefix: string
+  rowsPerPage?: number
+  pageNumber?: number
 }
 
 export const PageCmd: Cmd<[], PageOpts> = async (_a, opts) => {
-  const pubData = await crossref.fetchPublications(opts.client, opts.prefix, opts.rowsPerPage, opts.pageNumber )
+  const pubData = await crossref.fetchPublications(
+    opts.client,
+    opts.prefix,
+    opts.rowsPerPage,
+    opts.pageNumber,
+  )
   return JSON.stringify(pubData)
-};
-
+}
