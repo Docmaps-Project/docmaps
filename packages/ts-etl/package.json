@@ -6,7 +6,6 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "ava",
-    "debug": "node --loader=ts-node/esm --experimental-specifier-resolution=node --nolazy -r ts-node/register/transpile-only --inspect-brk src/debuggable.ts",
     "start": "node --loader=ts-node/esm --experimental-specifier-resolution=node --nolazy -r ts-node/register/transpile-only src/index.ts",
     "install-deps": "pnpm update crossref-openapi-client-ts cd node_modules/crossref-openapi-client-ts && pnpm install && pnpm build",
     "lint": "npx eslint .",

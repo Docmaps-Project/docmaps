@@ -49,6 +49,7 @@ jobs:
         run: |
           cd ${{env.PKG_DIR}} ;
           pnpm install;
+          pnpm install-deps;
 
       - name: Verify builds
         run: |
