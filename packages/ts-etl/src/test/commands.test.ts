@@ -6,7 +6,11 @@ import * as cm from './__fixtures__/crossref'
 test('fetchPublications: happy-path scenario', async (t) => {
   whenThenResolve(
     cm.worksT.getWorks1,
-    { filter: `has-relation:1,prefix:10.1234`, rows: 1, offset: 0 },
+    { filter: `has-relation:1,prefix:10.1234,relation.type=is-preprint-of`,
+      // the default invocation of Page command requests 2 entities,
+      // but our mock implemenation assumes 1 for simplicity.
+      rows: 1,
+      offset: 0 },
     cm.mockCrossrefWorksResponse,
   )
   whenThenResolve(
@@ -18,9 +22,9 @@ test('fetchPublications: happy-path scenario', async (t) => {
   const res = await PageCmd([], {
     source: 'crossref-api',
     client: cm.crs,
-    prefix: '10.1234',
     pageNumber: 0,
     rowsPerPage: 1,
+    prefix: '10.1234',
   })
 
   const publications = JSON.parse(res)

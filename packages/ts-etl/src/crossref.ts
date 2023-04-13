@@ -12,7 +12,7 @@ async function fetchPublications(
   page = 0,
 ): Promise<PublicationData[]> {
   const query = {
-    filter: `has-relation:1,prefix:${prefix}`,
+    filter: `has-relation:1,prefix:${prefix},relation.type=is-preprint-of`,
     rows: itemsPerPage,
     offset: page * itemsPerPage,
   }
