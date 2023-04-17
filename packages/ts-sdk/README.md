@@ -44,6 +44,10 @@ For Code of Conduct, see the repository-wide [CODE_OF_CONDUCT.md](/CODE_OF_CONDU
 
 For info about local development of this repository, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Releases
+
+Packages are hosted on NPM and automated by senmantic-release (see repository root for more info).
+
 ## Current next steps
 
 Review the issues on this repository for up-to-date info of desired improvements.
