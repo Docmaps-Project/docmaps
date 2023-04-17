@@ -1,10 +1,11 @@
 {
   "name": "docmaps-sdk",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "repository": "git@github.com:docmaps-project/docmaps.git",
   "description": "",
   "type": "module",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "ava",
     "debug": "node --loader=ts-node/esm --experimental-specifier-resolution=node --nolazy -r ts-node/register/transpile-only --inspect-brk src/debuggable.ts",
@@ -16,6 +17,12 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "files": [
+    "dist/",
+    "README.md",
+    "package.json",
+    "tsconfig.json"
+  ],
   "dependencies": {
     "@rdfjs/serializer-jsonld-ext": "~4.0.0",
     "fp-ts": "^2.13.1",
