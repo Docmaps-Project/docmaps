@@ -12,6 +12,9 @@ on:
       - main
       - ships/chore/enable-npm-releases
 
+env:
+  NPM_TOKEN: {{ secrets.NPM_TOKEN }}
+
 jobs:
   test-ts-sdk:
     uses: ./.github/workflows/ts-sdk-tests.yaml
