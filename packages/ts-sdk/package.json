@@ -1,6 +1,6 @@
 {
-  "name": "docmaps",
-  "version": "0.1.0",
+  "name": "docmaps-sdk",
+  "version": "*",
   "repository": "git@github.com:docmaps-project/docmaps.git",
   "description": "",
   "type": "module",
@@ -11,7 +11,7 @@
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
     "clean": "rm -rf dist/",
-    "build": "tsc"
+    "build": "tsc --declaration"
   },
   "keywords": [],
   "author": "",
