@@ -1,5 +1,11 @@
 name: Release all packages with semantic release
 
+permissions:
+  actions: read
+  checks: read
+  contents: read|write
+  packages: read|write
+
 on:
   push:
     branches:
