@@ -8,5 +8,12 @@
     "outDir": "./dist",
     "sourceMap": true,
     "noUnusedLocals": false
-  }
+  },
+  "exclude": [
+    "src/test/**/*",
+    "dist",
+    "node_modules",
+    "src/debuggable.ts",
+    "src/test/__fixtures__/*"
+  ]
 }

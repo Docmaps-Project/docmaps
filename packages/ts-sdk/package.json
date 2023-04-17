@@ -1,6 +1,7 @@
 {
-  "name": "ts-sdk",
-  "version": "1.0.0",
+  "name": "docmaps",
+  "version": "0.1.0",
+  "repository": "git@github.com:docmaps-project/docmaps.git",
   "description": "",
   "type": "module",
   "main": "index.js",
@@ -9,6 +10,7 @@
     "debug": "node --loader=ts-node/esm --experimental-specifier-resolution=node --nolazy -r ts-node/register/transpile-only --inspect-brk src/debuggable.ts",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
+    "clean": "rm -rf dist/",
     "build": "tsc"
   },
   "keywords": [],
