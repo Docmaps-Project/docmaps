@@ -10,11 +10,20 @@ This repo contains JSONLD contexts and framing for DocMaps that can be reference
 
 It also contains the Typescript-based libraries (initially, just `packages/ts-sdk`) for use with Node.js.
 
+### Monorepo usage
+
+This repository is an NPM Module Monorepo. This top-level directory includes no distributed packages, but some reference material as well as automation scripts for the
+cross-package behavior, such as release automation.
+
+**Releases and tags:** Github Actions uses [multi-semantic-release](https://github.com/dhoulb/multi-semantic-release) to automatically generate semvers based on commit history for each package in the repository. Multiple tags
+are generated for a single commit if it updates multiple packages.
+
 ## Persistent URLs
 
 Documentation: https://w3id.org/docmaps
 
 Latest @context: https://w3id.org/docmaps/context.jsonld
+
 
 ## Packages
 

@@ -15,5 +15,8 @@
     "@rdfjs/serializer-turtle": "^1.0.1",
     "rdf-ext": "^2.2.0",
     "rdf-validate-shacl": "^0.4.5"
+  },
+  "devDependencies": {
+    "multi-semantic-release": "^3.0.2"
   }
 }

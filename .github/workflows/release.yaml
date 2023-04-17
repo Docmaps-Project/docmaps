@@ -1,13 +1,29 @@
-name: Test ts-sdk
+name: Release all packages with semantic release
+
+permissions:
+  actions: read
+  checks: read
+  contents: write
+  packages: write
 
 on:
   push:
-    # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-  workflow_call:
+    branches:
+      - main
+
+env:
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
-  nodejs_test:
+  test-ts-sdk:
+    uses: ./.github/workflows/ts-sdk-tests.yaml
+  test-specification:
+    uses: ./.github/workflows/specification-tests.yaml
+  nodejs_release:
+    needs:
+      - test-ts-sdk
+      - test-specification
+
     runs-on: ubuntu-latest
 
     strategy:
@@ -33,33 +49,22 @@ jobs:
         id: pnpm-cache
         shell: bash
         run: |
-          cd packages/ts-sdk;
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v3
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('packages/ts-sdk/pnpm-lock.yaml') }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
         run: |
-          cd packages/ts-sdk;
           pnpm install;
 
-      - name: Verify builds
-        run: |
-          cd packages/ts-sdk;
-          pnpm build;
-
-      - name: Test
-        run: |
-          cd packages/ts-sdk;
-          pnpm test;
-
-      - name: Lint Check
-        run: |
-          cd packages/ts-sdk;
-          pnpm lint;
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx multi-semantic-release
