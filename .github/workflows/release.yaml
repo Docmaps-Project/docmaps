@@ -13,7 +13,7 @@ on:
       - ships/chore/enable-npm-releases
 
 env:
-  NPM_TOKEN: {{ secrets.NPM_TOKEN }}
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
   test-ts-sdk:
