@@ -13,7 +13,15 @@ on:
       - ships/chore/enable-npm-releases
 
 jobs:
+  test-ts-sdk:
+    uses: ./.github/workflows/ts-sdk-tests.yaml
+  test-specification:
+    uses: ./.github/workflows/specification-tests.yaml
   nodejs_release:
+    needs:
+      - test-ts-sdk
+      - test-specification
+
     runs-on: ubuntu-latest
 
     strategy:
@@ -60,11 +68,6 @@ jobs:
         run: |
           cd packages/ts-sdk;
           pnpm build;
-
-      - name: Test
-        run: |
-          cd packages/ts-sdk;
-          pnpm test;
 
       - name: Release
         env:
