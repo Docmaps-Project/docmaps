@@ -10,7 +10,6 @@ on:
   push:
     branches:
       - main
-      - ships/chore/enable-npm-releases
 
 env:
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
