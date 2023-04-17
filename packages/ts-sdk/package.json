@@ -13,7 +13,8 @@
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
     "clean": "rm -rf dist/",
-    "build": "tsc --declaration"
+    "build": "tsc",
+    "prepare": "tsc --declaration"
   },
   "keywords": [],
   "author": "",

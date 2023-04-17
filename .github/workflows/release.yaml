@@ -47,27 +47,19 @@ jobs:
         id: pnpm-cache
         shell: bash
         run: |
-          cd packages/ts-sdk;
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v3
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('packages/ts-sdk/pnpm-lock.yaml') }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
         run: |
           pnpm install;
-          cd packages/ts-sdk;
-          pnpm install;
-
-      - name: Verify builds
-        run: |
-          cd packages/ts-sdk;
-          pnpm build;
 
       - name: Release
         env:
