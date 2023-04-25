@@ -50,7 +50,7 @@ const PreprintItemBody = {
   ...GENERIC_WORK_DATA,
   relation: {
     'is-preprint-of': [{
-      id: '10.1234/manuscript.1',
+      id: MANUSCRIPT_DOI,
       'id-type': 'DOI',
       'asserted-by': 'subject',
     }],
@@ -94,7 +94,7 @@ export const mockCrossrefManuscriptResponse: WorkMessage = {
     DOI: MANUSCRIPT_DOI,
     relation: {
       'has-preprint': [{
-        id: '10.1234/preprint.1',
+        id: PREPRINT_DOI,
         'id-type': 'DOI',
         'asserted-by': 'subject',
       }],

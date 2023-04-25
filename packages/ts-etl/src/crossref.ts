@@ -139,7 +139,7 @@ async function fetchPublicationByDoi(
     }
 
     const manuscriptStep = D.DocmapStep.decode({
-      inputs: [manuscriptObject.right],
+      inputs: [preprintObject],
       actions: [manuscriptAction.right],
       assertions: [{
         // TODO: this may be wrong. does "has preprint" mean "is published"?
@@ -206,8 +206,8 @@ async function fetchPublicationByDoi(
 
       return service.getWorks({doi: preprintDoi}).then(prepMessage => {
         return toDocmap(
-          prepMessage.message,
           manuMessage,
+          prepMessage.message,
         );
       });
     })
