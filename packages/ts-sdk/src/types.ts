@@ -1,5 +1,5 @@
 import * as t from 'io-ts'
-import { UrlFromString,DateFromUnknown } from './util'
+import { UrlFromString, DateFromUnknown } from './util'
 
 function arrayOrOneOf(literalStrings: string[]) {
   const [one, two, ...r] = literalStrings

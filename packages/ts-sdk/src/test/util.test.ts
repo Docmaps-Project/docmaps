@@ -69,7 +69,7 @@ test('DateFromUnknown success cases', (t) => {
     }),
   )
 
-  const d4 = DateFromUnknown.decode("1970-01-01T00:00:00.000Z")
+  const d4 = DateFromUnknown.decode('1970-01-01T00:00:00.000Z')
   t.true(
     rightAnd(d4, (d) => {
       t.is(d.valueOf(), 0)
@@ -86,6 +86,6 @@ test('DateFromUnknown failure cases', (t) => {
   const d2 = DateFromUnknown.decode(undefined)
   t.false(isRight(d2))
 
-  const d4 = DateFromUnknown.decode({some: 'thing'})
+  const d4 = DateFromUnknown.decode({ some: 'thing' })
   t.false(isRight(d4))
 })

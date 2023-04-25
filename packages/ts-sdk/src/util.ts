@@ -41,12 +41,12 @@ export const DateFromUnknown: DateFromUnknownC = new t.Type<Date, string, unknow
   (input: unknown): input is Date => input instanceof Date,
   (input, context) => {
     if (typeof input === 'string' || typeof input === 'number' || input instanceof Date) {
-      const date = new Date(input);
+      const date = new Date(input)
       if (!isNaN(date.getTime())) {
-        return t.success(date);
+        return t.success(date)
       }
     }
-    return t.failure(input, context, 'Invalid date-like input');
+    return t.failure(input, context, 'Invalid date-like input')
   },
   (date: Date) => date.toISOString(),
-);
+)
