@@ -27,3 +27,26 @@ export const UrlFromString: UrlFromStringC = new t.Type<URL, string, unknown>(
     ),
   String,
 )
+
+/** Date from Anything
+ *
+ * based on example there:
+ *   https://github.com/gcanti/io-ts/blob/master/index.md#custom-types
+ */
+
+export type DateFromUnknownC = t.Type<Date, string, unknown>
+
+export const DateFromUnknown: DateFromUnknownC = new t.Type<Date, string, unknown>(
+  'DateFromUnknown',
+  (input: unknown): input is Date => input instanceof Date,
+  (input, context) => {
+    if (typeof input === 'string' || typeof input === 'number' || input instanceof Date) {
+      const date = new Date(input)
+      if (!isNaN(date.getTime())) {
+        return t.success(date)
+      }
+    }
+    return t.failure(input, context, 'Invalid date-like input')
+  },
+  (date: Date) => date.toISOString(),
+)
