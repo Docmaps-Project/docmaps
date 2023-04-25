@@ -7,7 +7,6 @@
   "scripts": {
     "test": "ava",
     "start": "node --loader=ts-node/esm --experimental-specifier-resolution=node --nolazy -r ts-node/register/transpile-only src/index.ts",
-    "install-deps": "pnpm update crossref-openapi-client-ts cd node_modules/crossref-openapi-client-ts && pnpm install && pnpm build",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
     "build": "tsc"
@@ -16,9 +15,10 @@
   "author": "eve github.com/ships",
   "license": "ISC",
   "dependencies": {
-    "@jamesgopsill/crossref-client": "^1.0.0",
     "commander": "^10.0.0",
-    "crossref-openapi-client-ts": "github:Docmaps-Project/crossref-openapi-client-ts"
+    "crossref-openapi-client-ts": "^1.1.0",
+    "docmaps-sdk": "^0.4.0",
+    "fp-ts": "^2.13.2"
   },
   "devDependencies": {
     "@commander-js/extra-typings": "^10.0.3",
