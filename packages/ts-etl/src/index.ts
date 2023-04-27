@@ -1,16 +1,8 @@
-import { Command, Option } from '@commander-js/extra-typings'
-import type { PageOpts } from './commands';
-import { Client } from './crossref';
+import cli from './cli'
+export default cli
 
-const cli = new Command()
+export * from './cli'
+export * from './crossref'
+export * from './types'
 
-cli
-  .name('docmaps-cli')
-  .description('Command line utility for paginated/streamed creation of docmaps from similar data')
-  .version('0.1.0')
-
-const PLUGINOPTIONS = [
-  'crossref-api'
-]
-
-cli.parse()
+await cli.parseAsync()

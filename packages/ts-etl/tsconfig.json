@@ -9,6 +9,17 @@
     "moduleResolution": "node",
     "outDir": "./dist",
     "sourceMap": true,
-    "noUnusedLocals": false
-  }
+    "noUnusedLocals": false,
+    "removeComments": true,
+    "declaration": true
+  },
+  "include": [
+    "src/**/*",
+    "integration"
+  ],
+  "exclude": [
+    "dist",
+    "**/test/*",
+    "node_modules"
+  ]
 }

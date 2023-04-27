@@ -6,6 +6,9 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "ava",
+    "clean": "rm -rf dist/",
+    "test:integration": "ava integration/",
+    "test:unit": "ava src/test/",
     "start": "node --loader=ts-node/esm --experimental-specifier-resolution=node --nolazy -r ts-node/register/transpile-only src/index.ts",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",

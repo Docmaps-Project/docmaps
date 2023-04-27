@@ -56,10 +56,10 @@ async function fetchPublicationByDoi(
       return E.left(new Error("unable to parse preprint authors", {cause: errors}))
     }
 
-
     const preprintObject = {
+      // TODO: should we include arbitrary keys? make that parametric?
+      // ...preprint,
       // FIXME: is this possibly fake news? should it fail instead if no published date?
-      ...preprint,
       published: DatemorphISOString(preprint.published || preprint.created),
       doi: preprint.DOI,
       type: preprint.type,
@@ -96,8 +96,9 @@ async function fetchPublicationByDoi(
 
 
     const manuscriptObject = D.DocmapThing.decode({
+      // TODO: should we include arbitrary keys? make that parametric?
+      // ...manuscript,
       // FIXME: is this possibly fake news? should it fail instead if no published date?
-      ...manuscript,
       published: DatemorphISOString(manuscript.published || manuscript.created),
       doi: manuscript.DOI,
       type: manuscript.type,

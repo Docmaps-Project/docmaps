@@ -6,7 +6,6 @@ import * as crossref from './crossref'
 
 import type { ErrorOrDocmap } from './types'
 
-
 // TODO rewrite this to assume it generates a stream of output rather than a single string
 // .. although actually, the streaming may be a layer down instead
 export type Cmd<ArgT extends string[], OptT> = (args: ArgT, opts: OptT) => Promise<ErrorOrDocmap>
