@@ -49,11 +49,13 @@ const GENERIC_WORK_DATA = {
 const PreprintItemBody = {
   ...GENERIC_WORK_DATA,
   relation: {
-    'is-preprint-of': [{
-      id: MANUSCRIPT_DOI,
-      'id-type': 'DOI',
-      'asserted-by': 'subject',
-    }],
+    'is-preprint-of': [
+      {
+        id: MANUSCRIPT_DOI,
+        'id-type': 'DOI',
+        'asserted-by': 'subject',
+      },
+    ],
   },
   URL: `https://doi.org/${PREPRINT_DOI}`,
   // unimportant values for this test
@@ -65,7 +67,7 @@ export const mockCrossrefPreprintResponse: WorkMessage = {
   status: 'ok',
   'message-type': 'work', // realistic strings
   'message-version': '1.0.0', // realistic strings
-  message: PreprintItemBody
+  message: PreprintItemBody,
 }
 
 export const mockCrossrefWorksResponse: WorksMessage = {
@@ -79,9 +81,7 @@ export const mockCrossrefWorksResponse: WorksMessage = {
     },
     'total-results': 1000,
     'items-per-page': 1,
-    items: [
-      PreprintItemBody
-    ],
+    items: [PreprintItemBody],
   },
 }
 export const mockCrossrefManuscriptResponse: WorkMessage = {
@@ -93,11 +93,13 @@ export const mockCrossrefManuscriptResponse: WorkMessage = {
     URL: `https://doi.org/${MANUSCRIPT_DOI}`,
     DOI: MANUSCRIPT_DOI,
     relation: {
-      'has-preprint': [{
-        id: PREPRINT_DOI,
-        'id-type': 'DOI',
-        'asserted-by': 'subject',
-      }],
+      'has-preprint': [
+        {
+          id: PREPRINT_DOI,
+          'id-type': 'DOI',
+          'asserted-by': 'subject',
+        },
+      ],
     },
   },
 }
@@ -116,32 +118,32 @@ export const mockCrossrefReviewsResponse: WorksMessage = {
     items: [
       {
         ...GENERIC_WORK_DATA,
-        DOI: "10.1234/review.1",
-        URL: "http://dx.doi.org/10.1234/review.1",
+        DOI: '10.1234/review.1',
+        URL: 'http://dx.doi.org/10.1234/review.1',
         relation: {
-          "is-review-of": [
+          'is-review-of': [
             {
-              "id-type": "doi",
-              "id": "10.1186/1471-2334-10-89",
-              "asserted-by": "subject"
-            }
-          ]
+              'id-type': 'doi',
+              id: '10.1186/1471-2334-10-89',
+              'asserted-by': 'subject',
+            },
+          ],
         },
       },
       {
         ...GENERIC_WORK_DATA,
-        DOI: "10.1234/review.2",
-        URL: "http://dx.doi.org/10.1234/review.2",
+        DOI: '10.1234/review.2',
+        URL: 'http://dx.doi.org/10.1234/review.2',
         relation: {
-          "is-review-of": [
+          'is-review-of': [
             {
-              "id-type": "doi",
-              "id": "10.1098/RSOB.210168",
-              "asserted-by": "subject"
-            }
-          ]
+              'id-type': 'doi',
+              id: '10.1098/RSOB.210168',
+              'asserted-by': 'subject',
+            },
+          ],
         },
-      }
+      },
     ],
   },
 }

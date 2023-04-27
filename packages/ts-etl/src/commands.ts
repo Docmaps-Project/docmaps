@@ -39,7 +39,6 @@ export const ItemCmd: Cmd<[string], ItemOpts> = ([doi], opts) => {
   return crossref.fetchPublicationByDoi(opts.source.client, doi)
 }
 
-
 export const PageCmd: Cmd<[], PageOpts> = async (_a, _opts) => {
   return right([])
 }

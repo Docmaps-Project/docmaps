@@ -17,32 +17,33 @@ async function cmdIoResults(args: string): Promise<cmdResult> {
   cli.configureOutput({
     writeErr: (str) => stderrLines.push(str),
     writeOut: (str) => stdoutLines.push(str),
-  });
+  })
 
-  const cmd = cli.parseAsync(args.split(' '), {from: 'user'})
+  const cmd = cli.parseAsync(args.split(' '), { from: 'user' })
 
   try {
-    const result = await cmd;
+    const result = await cmd
     return {
-      stderr: stderrLines.join("\n"),
-      stdout: stdoutLines.join("\n"),
-    };
-  } catch(e) {
+      stderr: stderrLines.join('\n'),
+      stdout: stdoutLines.join('\n'),
+    }
+  } catch (e) {
     return {
-      stderr: stderrLines.join("\n"),
-      stdout: stdoutLines.join("\n"),
+      stderr: stderrLines.join('\n'),
+      stdout: stdoutLines.join('\n'),
       error: e as Error,
-    };
+    }
   }
 }
 
 test('single item from crossref', async (t) => {
-  const {stdout, stderr, error} = await cmdIoResults('item --source crossref-api 10.5194/acp-9-8413-2009')
+  const { stdout, stderr, error } = await cmdIoResults(
+    'item --source crossref-api 10.5194/acp-9-8413-2009',
+  )
 
   t.falsy(error)
 
   const dmArr = JSON.parse(stdout) as Array<DocmapT>
-
 
   t.is(dmArr[0]?.['type'], 'docmap')
   t.is(dmArr[0]?.['first-step'], '_:b0')

@@ -17,16 +17,8 @@ test('ItemCmd: crossref: happy-path scenario: a manuscript with one preprint and
   //    5. search for reviews
   //    6. recursively treat its preprints for reviews and further preprints
 
-  whenThenResolve(
-    cm.worksT.getWorks,
-    { doi: MANUSCRIPT_DOI },
-    cm.mockCrossrefManuscriptResponse,
-  )
-  whenThenResolve(
-    cm.worksT.getWorks,
-    { doi: PREPRINT_DOI },
-    cm.mockCrossrefPreprintResponse
-  )
+  whenThenResolve(cm.worksT.getWorks, { doi: MANUSCRIPT_DOI }, cm.mockCrossrefManuscriptResponse)
+  whenThenResolve(cm.worksT.getWorks, { doi: PREPRINT_DOI }, cm.mockCrossrefPreprintResponse)
 
   const res = await ItemCmd([MANUSCRIPT_DOI], {
     source: {
