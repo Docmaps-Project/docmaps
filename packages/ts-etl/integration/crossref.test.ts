@@ -1,5 +1,4 @@
 import test from 'ava'
-import { CommanderError } from 'commander'
 import type { DocmapT } from 'docmaps-sdk'
 import cli from '../src/cli'
 
@@ -22,7 +21,7 @@ async function cmdIoResults(args: string): Promise<cmdResult> {
   const cmd = cli.parseAsync(args.split(' '), { from: 'user' })
 
   try {
-    const result = await cmd
+    await cmd
     return {
       stderr: stderrLines.join('\n'),
       stdout: stdoutLines.join('\n'),
@@ -37,9 +36,7 @@ async function cmdIoResults(args: string): Promise<cmdResult> {
 }
 
 test('single item from crossref', async (t) => {
-  const { stdout, stderr, error } = await cmdIoResults(
-    'item --source crossref-api 10.5194/acp-9-8413-2009',
-  )
+  const { stdout, error } = await cmdIoResults('item --source crossref-api 10.5194/acp-9-8413-2009')
 
   t.falsy(error)
 

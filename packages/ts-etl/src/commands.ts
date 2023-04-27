@@ -1,6 +1,5 @@
 import type { CrossrefClient } from 'crossref-openapi-client-ts'
-import { DocmapT, Docmap } from 'docmaps-sdk'
-import { isLeft, right } from 'fp-ts/lib/Either'
+import { right } from 'fp-ts/lib/Either'
 
 import * as crossref from './crossref'
 
