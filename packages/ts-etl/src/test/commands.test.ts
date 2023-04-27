@@ -1,6 +1,6 @@
 import test from 'ava'
 import { isLeft } from 'fp-ts/lib/Either'
-import { PageCmd, ItemCmd } from '../commands'
+import { ItemCmd } from '../commands'
 import { whenThenResolve } from './utils'
 import * as cm from './__fixtures__/crossref'
 
@@ -8,7 +8,6 @@ const MANUSCRIPT_DOI = '10.1234/manuscript.1'
 const PREPRINT_DOI = '10.1234/preprint.1'
 
 test('ItemCmd: crossref: happy-path scenario: a manuscript with one preprint and no reviews', async (t) => {
-
   // Only current routine:
   //    1. get the DOI specified
   //    2. get any preprints referenced in its own relations

@@ -219,5 +219,4 @@ async function fetchPublicationByDoi(
   return await resultTask()
 }
 
-
-export { fetchPublicationByDoi, Client };
+export { fetchPublicationByDoi, Client }
