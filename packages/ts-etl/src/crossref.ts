@@ -20,6 +20,53 @@ const Client = new CrossrefClient({
 //    5. search for reviews
 //    6. recursively treat its preprints for reviews and further preprints
 
+function decodeActionForWork(
+  work: Work,
+): E.Either<Error, D.DocmapActionT> {
+    const errors: Error[] = []
+    const workAuthors = work.author.map((a) => {
+      // TODO this whole code block shows why better use of fp-ts chaining is needed
+      const auth = D.DocmapActor.decode({
+        type: 'person',
+        name: a.name || `${a.family}, ${a.given}` || '', // FIXME this seems presumptuous
+      })
+      if (E.isLeft(auth)) {
+        errors.push(new Error('unable to parse work author', { cause: auth.left }))
+        return // undefined behavior because exits later
+      }
+
+      return {
+        actor: auth.right,
+        role: 'author',
+      }
+    })
+
+    if (errors.length > 0) {
+      return E.left(new Error('unable to parse work authors', { cause: errors }))
+    }
+
+    const workObject = {
+      // TODO: should we include arbitrary keys? make that parametric?
+      // ...work,
+      // FIXME: is this possibly fake news? should it fail instead if no published date?
+      published: DatemorphISOString(work.published || work.created),
+      doi: work.DOI,
+      type: work.type,
+      // TODO: other fields we ignore: id, content
+    }
+
+    const workAction = D.DocmapAction.decode({
+      participants: workAuthors,
+      outputs: [workObject],
+    })
+
+    if (E.isLeft(workAction)) {
+      return E.left(new Error('unable to parse work action', { cause: workAction.left }))
+    }
+
+  return E.right(workAction.right)
+}
+
 async function fetchPublicationByDoi(
   client: CrossrefClient,
   inputDoi: string,
@@ -33,61 +80,24 @@ async function fetchPublicationByDoi(
   // the intermediate representation is input to this transform
   //   TODO: this may need to become an n3
   const toDocmap = (manuscript: Work, preprint: Work): ErrorOrDocmap => {
-    const errors: Error[] = []
-    const preprintAuthors = preprint.author.map((a) => {
-      // TODO this whole code block shows why better use of fp-ts chaining is needed
-      const auth = D.DocmapActor.decode({
-        type: 'person',
-        name: a.name || `${a.family}, ${a.given}` || '', // FIXME this seems presumptuous
-      })
-      if (E.isLeft(auth)) {
-        errors.push(new Error('unable to parse preprint author', { cause: auth.left }))
-        return // undefined behavior because exits later
-      }
-
-      return {
-        actor: auth.right,
-        role: 'author',
-      }
-    })
-
-    if (errors.length > 0) {
-      return E.left(new Error('unable to parse preprint authors', { cause: errors }))
-    }
-
-    const preprintObject = {
-      // TODO: should we include arbitrary keys? make that parametric?
-      // ...preprint,
-      // FIXME: is this possibly fake news? should it fail instead if no published date?
-      published: DatemorphISOString(preprint.published || preprint.created),
-      doi: preprint.DOI,
-      type: preprint.type,
-      // TODO: other fields we ignore: id, content
-    }
-
-    const preprintAction = D.DocmapAction.decode({
-      participants: preprintAuthors,
-      outputs: [preprintObject],
-    })
+    const preprintAction = decodeActionForWork(preprint)
 
     if (E.isLeft(preprintAction)) {
       return E.left(new Error('unable to parse preprint action', { cause: preprintAction.left }))
     }
 
     const preprintStep = D.DocmapStep.decode({
-      inputs: [preprintObject],
+      inputs: [],
       actions: [preprintAction.right],
       assertions: [
         {
           status: 'final-draft',
-          // TODO: this is too strong an assumption (how to identify the item?)
-          item: preprintObject.doi || preprintObject,
+          item: preprint.DOI,
         },
       ],
     })
 
     if (E.isLeft(preprintStep)) {
-      console.log(preprintStep.left)
       return E.left(new Error('unable to parse preprint step', { cause: preprintStep.left }))
     }
 
@@ -95,47 +105,7 @@ async function fetchPublicationByDoi(
     // we need a second step which describes the promotion to the Manuscript.
     // what STATUS is acquired? Published?
 
-    const manuscriptObject = D.DocmapThing.decode({
-      // TODO: should we include arbitrary keys? make that parametric?
-      // ...manuscript,
-      // FIXME: is this possibly fake news? should it fail instead if no published date?
-      published: DatemorphISOString(manuscript.published || manuscript.created),
-      doi: manuscript.DOI,
-      type: manuscript.type,
-      // other fields we ignore: id, content
-    })
-
-    if (E.isLeft(manuscriptObject)) {
-      return E.left(
-        new Error('unable to parse manuscript object', { cause: manuscriptObject.left }),
-      )
-    }
-
-    const manuscriptAuthors = manuscript.author.map((a) => {
-      // TODO this whole code block shows why better use of fp-ts chaining is needed
-      const auth = D.DocmapActor.decode({
-        type: 'person',
-        name: a.name || `${a.family}, ${a.given}` || '', // FIXME this seems presumptuous
-      })
-      if (E.isLeft(auth)) {
-        errors.push(new Error('unable to parse manuscript author', { cause: auth.left }))
-        return // undefined behavior because exits later
-      }
-
-      return {
-        actor: auth.right,
-        role: 'author',
-      }
-    })
-
-    if (errors.length > 0) {
-      return E.left(new Error('unable to parse manuscript authors', { cause: errors }))
-    }
-
-    const manuscriptAction = D.DocmapAction.decode({
-      participants: manuscriptAuthors,
-      outputs: [manuscriptObject.right],
-    })
+    const manuscriptAction = decodeActionForWork(manuscript)
 
     if (E.isLeft(manuscriptAction)) {
       return E.left(
@@ -144,14 +114,14 @@ async function fetchPublicationByDoi(
     }
 
     const manuscriptStep = D.DocmapStep.decode({
-      inputs: [preprintObject],
+      // FIXME - this allowance of undefined is lazy
+      inputs: [preprintStep.right.actions[0]?.outputs[0]],
       actions: [manuscriptAction.right],
       assertions: [
         {
           // TODO: this may be wrong. does "has preprint" mean "is published"?
           status: 'published',
-          // TODO: this is too strong an assumption (how to identify the item?)
-          item: manuscriptObject.right.doi || manuscriptObject.right.id || manuscriptObject.right,
+          item: manuscript.DOI
         },
       ],
     })

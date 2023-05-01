@@ -2,12 +2,21 @@ import { CrossrefClient, WorkMessage, WorksMessage, WorksService } from 'crossre
 import { testCrossrefDate } from '../utils'
 import { mock, instance, when } from 'ts-mockito'
 
-export const crsT = mock(CrossrefClient)
-export const crs = instance(crsT)
-export const worksT = mock(WorksService)
-export const w = instance(worksT)
+export function CrossrefClientMocks() {
+  const crsT = mock(CrossrefClient)
+  const crs = instance(crsT)
+  const worksT = mock(WorksService)
+  const w = instance(worksT)
 
-when(crsT.works).thenReturn(w)
+  when(crsT.works).thenReturn(w)
+
+  return {
+    crs: crs,
+    crsT: crsT,
+    w: w,
+    worksT: worksT,
+  }
+}
 
 export const PREPRINT_DOI = '10.1234/preprint.1'
 export const MANUSCRIPT_DOI = '10.1234/manuscript.1'
@@ -92,11 +101,23 @@ export const mockCrossrefManuscriptResponse: WorkMessage = {
     ...GENERIC_WORK_DATA,
     URL: `https://doi.org/${MANUSCRIPT_DOI}`,
     DOI: MANUSCRIPT_DOI,
+    relation: {},
+  },
+}
+
+export const mockCrossrefManuscriptWithPreprintResponse: WorkMessage = {
+  status: 'ok',
+  'message-type': 'work', // realistic strings
+  'message-version': '1.0.0', // realistic strings
+  message: {
+    ...GENERIC_WORK_DATA,
+    URL: `https://doi.org/${MANUSCRIPT_DOI}`,
+    DOI: MANUSCRIPT_DOI,
     relation: {
       'has-preprint': [
         {
           id: PREPRINT_DOI,
-          'id-type': 'DOI',
+          'id-type': 'doi',
           'asserted-by': 'subject',
         },
       ],
