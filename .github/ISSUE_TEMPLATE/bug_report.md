@@ -10,6 +10,7 @@ Packages affected:
 
 - [ ] OWL/SHACL definitions
 - [ ] ts-sdk
+- [ ] ts-etl
 
 ### Expected behavior
 
