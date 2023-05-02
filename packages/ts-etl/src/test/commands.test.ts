@@ -42,6 +42,7 @@ test('ItemCmd: crossref: happy-path scenario: a manuscript with one preprint and
   }
 
   t.deepEqual(dm.type, 'docmap')
+  t.is(dm.steps ? Object.keys(dm.steps).length : 0, 2)
   t.is(dm.steps?.['_:b0']?.inputs.length, 0)
   t.deepEqual(dm.steps?.['_:b0']?.actions[0]?.outputs[0]?.doi, cm.PREPRINT_DOI)
   t.deepEqual(dm.steps?.['_:b1']?.inputs[0]?.doi, cm.PREPRINT_DOI)

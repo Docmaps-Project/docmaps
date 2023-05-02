@@ -67,6 +67,86 @@ function decodeActionForWork(
   return E.right(workAction.right)
 }
 
+// NOTE: possibly this wants to be in the core sdk, but because docmaps
+// contain info about authorship, i am not so sure --- might require too
+// much configuration.
+//
+// This is slightly sane because while steps have keys like `first-step`
+// and `next-step`, these keys do not mean anything outside context of docmap.
+// possibly long term this makes a case for rdf-star.
+function stepArrayToDocmap(inputDoi: string, [firstStep, ...steps]: D.DocmapStepT[]): ErrorOrDocmap {
+  // TODO: extract this
+  const dm_id = `https://docmaps-project.github.io/ex/docmap_for/${inputDoi}`
+
+  const now = new Date()
+
+  let bnodeId = 0;
+
+  let dmBody = {
+    type: 'docmap',
+    id: dm_id,
+    publisher: {
+      // FIXME: fill this in
+    },
+    created: now, // FIXME does it have to be a string?
+    updated: now, // FIXME does it have to be a string?
+  }
+
+  if (!firstStep) {
+    const dmObject = D.Docmap.decode(dmBody)
+
+    if (E.isLeft(dmObject)) {
+      return E.left(new Error('unable to parse manuscript step', { cause: dmObject.left }))
+    }
+
+    return E.right([dmObject.right])
+  }
+
+  const reduction = steps.reduce<E.Either<Error, Record<string, D.DocmapStepT>>>((memo, next)=> {
+    if (E.isLeft(memo)) {
+      return memo //cascade all errors
+    }
+
+    let m = memo.right
+
+    const previousId = `_:b${bnodeId}`
+    bnodeId += 1
+    const thisId = `_:b${bnodeId}`
+
+    const prev = m[previousId]
+    if (!prev) {
+      return E.left(new Error(`algorithm error: step memo was missing step for id ${previousId} but was processing step with id ${thisId}`))
+    }
+    m[previousId] = {
+      ...prev,
+      'next-step': thisId,
+    }
+    m[thisId] = {
+      ...next,
+      'previous-step': previousId,
+    }
+
+    return E.right(m)
+  }, E.right({
+    '_:b0': firstStep,
+  }))
+
+  if (E.isLeft(reduction)) {
+    return reduction
+  }
+  const dmObject = D.Docmap.decode({
+    ...dmBody,
+    'first-step': '_:b0',
+    steps: reduction.right
+  })
+
+  if (E.isLeft(dmObject)) {
+    return E.left(new Error('unable to parse manuscript step', { cause: dmObject.left }))
+  }
+
+  return E.right([dmObject.right])
+}
+
 async function fetchPublicationByDoi(
   client: CrossrefClient,
   inputDoi: string,
@@ -131,38 +211,8 @@ async function fetchPublicationByDoi(
     }
 
     // we have 2 steps. now we need to describe this whole workflow as one docmap.
-
-    // TODO: extract this
-    const dm_id = `https://docmaps-project.github.io/ex/docmap_for/${inputDoi}`
-
-    const now = new Date()
-
-    const dmObject = D.Docmap.decode({
-      type: 'docmap',
-      id: dm_id,
-      publisher: {
-        // TODO: fill this in
-      },
-      created: now, // FIXME does it have to be a string?
-      updated: now, // FIXME does it have to be a string?
-      'first-step': '_:b0',
-      steps: {
-        '_:b0': {
-          ...preprintStep.right,
-          'next-step': '_:b1',
-        },
-        '_:b1': {
-          ...manuscriptStep.right,
-          'previous-step': '_:b0',
-        },
-      },
-    })
-
-    if (E.isLeft(dmObject)) {
-      return E.left(new Error('unable to parse manuscript step', { cause: dmObject.left }))
-    }
-
-    return E.right([dmObject.right])
+    // TODO: input DOI may not be always correct if input was for preprint not manuscript
+    return stepArrayToDocmap(inputDoi, [preprintStep.right, manuscriptStep.right])
   }
 
   const resultTask = pipe(
