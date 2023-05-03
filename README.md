@@ -35,8 +35,15 @@ that library natively integrates with `fp-ts` and enables easy encoding & decodi
 from raw data types at runtime by creating Prototypical classes in runtime namespace
 along with the types/interfaces in type namespace.
 
+### [ts-etl](/packages/ts-etl)
+
+This package contains a CLI tool based on `commander.js` for generating docmaps. Currently,
+it supports generating a docmap for a given DOI if that DOI is indexed on Crossref, and
+will traverse the Crossref API to find related preprints and reviews for that DOI. It is
+still in a pre-release state while we gather feedback.
+
 ## Governance
 
-As stated in CODE_OF_CONDUCT.md:
+As stated in [CODE_OF_CONDUCT.md](/CODE_OF_CONDUCT.md):
 
 This project is governed by the [Knowledge Futures, Inc Organizational Code of Conduct](https://github.com/knowledgefutures/general/blob/master/CODE_OF_CONDUCT.md).
