@@ -65,6 +65,13 @@ test('Codec parsing DocmapAction', (t) => {
   isRightArray(t, v, 9)
 })
 
+test('Codec parsing DocmapAssertion', (t) => {
+  const v = ex.elife.DocmapAssertion.flatMap((x) => {
+    return dm.DocmapAssertion.decode(x)
+  })
+  isRightArray(t, v, 6)
+})
+
 test('Codec parsing DocmapStep', (t) => {
   const v = ex.elife.DocmapStep.flatMap((x) => {
     return dm.DocmapStep.decode(x)
