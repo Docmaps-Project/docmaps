@@ -129,4 +129,3 @@ test('ItemCmd: crossref: happy-path scenario: a manuscript with 2 reviews and no
   t.deepEqual(dm.steps?.['_:b1']?.actions[0]?.outputs[0]?.doi, cm.REVIEW_1_DOI)
   t.deepEqual(dm.steps?.['_:b1']?.actions[1]?.outputs[0]?.doi, cm.REVIEW_2_DOI)
 })
-
