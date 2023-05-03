@@ -20,6 +20,8 @@ export function CrossrefClientMocks() {
 
 export const PREPRINT_DOI = '10.1234/preprint.1'
 export const MANUSCRIPT_DOI = '10.1234/manuscript.1'
+export const REVIEW_1_DOI = '10.1234/review.1'
+export const REVIEW_2_DOI = '10.1234/review.2'
 
 export const TEST_DATE = testCrossrefDate()
 
@@ -125,6 +127,51 @@ export const mockCrossrefManuscriptWithPreprintResponse: WorkMessage = {
   },
 }
 
+export const mockCrossrefManuscriptWithReviewsResponse: WorkMessage = {
+  status: 'ok',
+  'message-type': 'work', // realistic strings
+  'message-version': '1.0.0', // realistic strings
+  message: {
+    ...GENERIC_WORK_DATA,
+    URL: `https://doi.org/${MANUSCRIPT_DOI}`,
+    DOI: MANUSCRIPT_DOI,
+    relation: {
+      'has-review': [
+        {
+          id: REVIEW_1_DOI,
+          'id-type': 'doi',
+          'asserted-by': 'object',
+        },
+        {
+          id: REVIEW_2_DOI,
+          'id-type': 'doi',
+          'asserted-by': 'object',
+        },
+      ],
+    },
+  },
+}
+
+export const mockCrossrefReviewsResponses: WorkMessage[] = [REVIEW_1_DOI, REVIEW_2_DOI].map((doi) => ({
+  status: 'ok',
+  'message-type': 'work', // realistic strings
+  'message-version': '1.0.0', // realistic strings
+  message: {
+    ...GENERIC_WORK_DATA,
+    URL: `https://doi.org/${doi}`,
+    DOI: doi,
+    relation: {
+      'is-review-of': [
+        {
+          'id-type': 'doi',
+          id: 'mocked-value',
+          'asserted-by': 'subject',
+        },
+      ],
+    },
+  },
+}))
+
 export const mockCrossrefReviewsResponse: WorksMessage = {
   status: 'ok',
   'message-type': 'work-list', // realistic strings
@@ -139,13 +186,13 @@ export const mockCrossrefReviewsResponse: WorksMessage = {
     items: [
       {
         ...GENERIC_WORK_DATA,
-        DOI: '10.1234/review.1',
-        URL: 'http://dx.doi.org/10.1234/review.1',
+        DOI: REVIEW_1_DOI,
+        URL: `http://dx.doi.org/{REVIEW_1_DOI}`,
         relation: {
           'is-review-of': [
             {
               'id-type': 'doi',
-              id: '10.1186/1471-2334-10-89',
+              id: 'mocked-value',
               'asserted-by': 'subject',
             },
           ],
@@ -153,13 +200,13 @@ export const mockCrossrefReviewsResponse: WorksMessage = {
       },
       {
         ...GENERIC_WORK_DATA,
-        DOI: '10.1234/review.2',
-        URL: 'http://dx.doi.org/10.1234/review.2',
+        DOI: REVIEW_2_DOI,
+        URL: `http://dx.doi.org/{REVIEW_2_DOI}`,
         relation: {
           'is-review-of': [
             {
               'id-type': 'doi',
-              id: '10.1098/RSOB.210168',
+              id: 'mocked-value',
               'asserted-by': 'subject',
             },
           ],

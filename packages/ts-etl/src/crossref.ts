@@ -1,7 +1,7 @@
-import { CrossrefClient, Work, DatemorphISOString } from 'crossref-openapi-client-ts'
+import { CrossrefClient, Work, DatemorphISOString, WorkRelationEntry } from 'crossref-openapi-client-ts'
 import * as E from 'fp-ts/lib/Either'
 import type { ErrorOrDocmap } from './types'
-import { pipe } from 'fp-ts/lib/function'
+import { pipe } from 'fp-ts/lib/pipeable'
 import * as TE from 'fp-ts/lib/TaskEither'
 import * as D from 'docmaps-sdk'
 
@@ -20,11 +20,23 @@ const Client = new CrossrefClient({
 //    5. search for reviews
 //    6. recursively treat its preprints for reviews and further preprints
 
+function thingForCrossrefWork(work: Work) {
+  return {
+    // TODO: should we include arbitrary keys? make that parametric?
+    // ...work,
+    // FIXME: is this possibly fake news? should it fail instead if no published date?
+    published: DatemorphISOString(work.published || work.created),
+    doi: work.DOI,
+    type: work.type,
+    // TODO: other fields we ignore: id, content
+  }
+}
+
 function decodeActionForWork(
   work: Work,
 ): E.Either<Error, D.DocmapActionT> {
     const errors: Error[] = []
-    const workAuthors = work.author.map((a) => {
+    const workAuthors = (work.author || []).map((a) => {
       // TODO this whole code block shows why better use of fp-ts chaining is needed
       const auth = D.DocmapActor.decode({
         type: 'person',
@@ -45,16 +57,7 @@ function decodeActionForWork(
       return E.left(new Error('unable to parse work authors', { cause: errors }))
     }
 
-    const workObject = {
-      // TODO: should we include arbitrary keys? make that parametric?
-      // ...work,
-      // FIXME: is this possibly fake news? should it fail instead if no published date?
-      published: DatemorphISOString(work.published || work.created),
-      doi: work.DOI,
-      type: work.type,
-      // TODO: other fields we ignore: id, content
-    }
-
+    const workObject = thingForCrossrefWork(work)
     const workAction = D.DocmapAction.decode({
       participants: workAuthors,
       outputs: [workObject],
@@ -147,92 +150,159 @@ function stepArrayToDocmap(inputDoi: string, [firstStep, ...steps]: D.DocmapStep
   return E.right([dmObject.right])
 }
 
+// FIXME this is a weak upcast - use t.Errors more effectively in ts-sdk
+const leftToStrError = E.mapLeft((e: unknown) => new Error(String(e)))
+
+function actionForReviewDOI(client: CrossrefClient, doi: string): TE.TaskEither<Error, D.DocmapActionT> {
+  const service = client.works
+  return pipe(
+    TE.tryCatch(
+      () => service.getWorks({ doi: doi }), // FIXME throw/reject if not status OK ? (what is client behavior if not 200?)
+      (reason: unknown) => new Error(`failed to fetch crossref body for review DOI ${doi}`, {cause: reason}),
+    ),
+    TE.map((w) => w.message),
+    TE.chain((m) => {
+      return pipe(
+        m,
+        decodeActionForWork,
+        TE.fromEither,
+      )
+    })
+  )
+}
+
+type RecursiveStepDataChain = {
+  head: D.DocmapStepT,
+  all: D.DocmapStepT[],
+}
+
+function stepsForDoiRecursive(
+  client: CrossrefClient,
+  inputDoi: string,
+  status: string,
+): TE.TaskEither<Error, RecursiveStepDataChain> {
+  const service = client.works
+  const program = pipe(
+    TE.tryCatch(
+      () => service.getWorks({ doi: inputDoi }), // FIXME throw/reject if not status OK ? (what is client behavior if not 200?)
+      (reason: unknown) => new Error(`failed to fetch crossref body for DOI ${inputDoi}`, {cause: reason}),
+    ),
+    TE.chain((w) => {
+      // 1. get step for this
+      const step = pipe( // FIXME: is this nesting needed? thinking so for now because must have w in context for constructing assertions
+        w.message,
+        decodeActionForWork,
+        E.chain((action) => pipe(
+          D.DocmapStep.decode({
+            inputs: [], // TODO: confirm we always override this as needed
+            actions: [action],
+            assertions: [{
+              status: status, //TODO : choose this key carefully
+              item: w.message.DOI,
+            }],
+          }),
+          leftToStrError,
+        )),
+        E.map((s) => ({
+          all: [s],
+          head: s,
+        }))
+      )
+
+      const task = pipe(
+        step, // now have an Either of Step Array
+        TE.fromEither,
+        TE.chain((s) => {
+          // 2. if there is a preprint recurse
+          const preprints = w.message.relation?.['has-preprint']
+          if (!preprints) {
+            return TE.right(s)
+          }
+          return pipe(
+            preprints,
+            (p: WorkRelationEntry[]) => p.filter((wre) => {
+              return wre['id-type'].toLowerCase() == 'doi'
+            }),
+            // get unique IDs
+            (p: WorkRelationEntry[]) => [... new Set(p.map((wre) => wre.id))],
+            TE.traverseArray((wreId) => {
+              return stepsForDoiRecursive(client, wreId, 'catalogued') // TODO: status for any preprint
+            }),
+            TE.map((meta) => {
+              // this is array of result.
+              // the output `head` should have all the `head` outputs as inputs.
+              // the output `all` should have concatenation of alls, plus the new Head.
+
+              const newStep = {
+                ...s.head,
+                inputs: meta.reduce<D.DocmapThingT[]>((memo, c) => memo.concat(c.head.actions.reduce<D.DocmapThingT[]>((m, a) => m.concat(a.outputs), [])), [])
+              }
+
+              return {
+                head: newStep,
+                all: meta.reduce<D.DocmapStepT[]>((m, c) => m.concat(c.all), []).concat([newStep])
+              }
+            }),
+          )
+        }),
+        TE.chain((s) => {
+          // 2. if there is a preprint recurse
+          const reviews = w.message.relation?.['has-review']
+          if (!reviews) {
+            return TE.right(s)
+          }
+          return pipe(
+            reviews,
+            TE.traverseArray((wre) => {
+              if (wre['id-type'].toLowerCase() != 'doi') {
+                return TE.left(new Error("unable to create step for preprint with identifier that is not DOI", {cause: {work: w.message, preprint: wre.id}}))
+              }
+              // a function that takes one DOI and returns one review ACTION as a task
+              // TODO - we could collapse this into one Works1 call that fetches all Reviews at once
+              return actionForReviewDOI(client, wre.id)
+            }),
+            TE.chain((listOfActions) => {
+              // create a Step for the collected reviews
+              return pipe(
+                { actions: listOfActions,
+                  inputs: [thingForCrossrefWork(w.message)],
+                  assertions: [{
+                    status: 'reviewed', //TODO : choose this key carefully
+                    item: w.message.DOI,
+                  }],
+                },
+                D.DocmapStep.decode,
+                leftToStrError,
+                TE.fromEither,
+                TE.map((reviewStep) => ({
+                  head: s.head,
+                  all: s.all.concat([reviewStep])
+                }))
+              )
+            }),
+          )
+        })
+      ) // this is a TaskEither<Error, Step[]>
+
+      return task
+    }),
+  )
+
+  return program
+}
+
 async function fetchPublicationByDoi(
   client: CrossrefClient,
   inputDoi: string,
 ): Promise<ErrorOrDocmap> {
   const service = client.works
-  const fetchManuscriptTask = TE.tryCatch(
-    () => service.getWorks({ doi: inputDoi }),
-    (reason: unknown) => new Error(String(reason)),
-  )
-
-  // the intermediate representation is input to this transform
-  //   TODO: this may need to become an n3
-  const toDocmap = (manuscript: Work, preprint: Work): ErrorOrDocmap => {
-    const preprintAction = decodeActionForWork(preprint)
-
-    if (E.isLeft(preprintAction)) {
-      return E.left(new Error('unable to parse preprint action', { cause: preprintAction.left }))
-    }
-
-    const preprintStep = D.DocmapStep.decode({
-      inputs: [],
-      actions: [preprintAction.right],
-      assertions: [
-        {
-          status: 'final-draft',
-          item: preprint.DOI,
-        },
-      ],
-    })
-
-    if (E.isLeft(preprintStep)) {
-      return E.left(new Error('unable to parse preprint step', { cause: preprintStep.left }))
-    }
-
-    // now, we have one complete Step for the preprint
-    // we need a second step which describes the promotion to the Manuscript.
-    // what STATUS is acquired? Published?
-
-    const manuscriptAction = decodeActionForWork(manuscript)
-
-    if (E.isLeft(manuscriptAction)) {
-      return E.left(
-        new Error('unable to parse manuscript action', { cause: manuscriptAction.left }),
-      )
-    }
-
-    const manuscriptStep = D.DocmapStep.decode({
-      // FIXME - this allowance of undefined is lazy
-      inputs: [preprintStep.right.actions[0]?.outputs[0]],
-      actions: [manuscriptAction.right],
-      assertions: [
-        {
-          // TODO: this may be wrong. does "has preprint" mean "is published"?
-          status: 'published',
-          item: manuscript.DOI
-        },
-      ],
-    })
-
-    if (E.isLeft(manuscriptStep)) {
-      return E.left(new Error('unable to parse manuscript step', { cause: manuscriptStep.left }))
-    }
-
-    // we have 2 steps. now we need to describe this whole workflow as one docmap.
-    // TODO: input DOI may not be always correct if input was for preprint not manuscript
-    return stepArrayToDocmap(inputDoi, [preprintStep.right, manuscriptStep.right])
-  }
-
   const resultTask = pipe(
-    fetchManuscriptTask,
-    TE.map((response) => response.message),
-    TE.chain((manuMessage) => () => {
-      if (
-        !manuMessage.relation ||
-        !manuMessage.relation['has-preprint'] ||
-        !manuMessage.relation['has-preprint'][0] ||
-        !(manuMessage.relation['has-preprint'][0]['id-type'].toLowerCase() == 'doi')
-      ) {
-        return Promise.reject('Manuscript does not have preprint')
-      }
-
-      const preprintDoi = manuMessage.relation['has-preprint'][0].id
-
-      return service.getWorks({ doi: preprintDoi }).then((prepMessage) => {
-        return toDocmap(manuMessage, prepMessage.message)
-      })
+    stepsForDoiRecursive(client, inputDoi, 'published'),
+    TE.chain((steps) => {
+      return pipe(
+        stepArrayToDocmap(inputDoi, steps.all),
+        TE.fromEither,
+      )
     }),
   )
 
