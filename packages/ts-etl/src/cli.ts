@@ -20,7 +20,9 @@ export function MakeCli() {
 
   cli
     .name('docmaps-cli')
-    .description('Command line utility for paginated/streamed creation of docmaps from similar data')
+    .description(
+      'Command line utility for paginated/streamed creation of docmaps from similar data',
+    )
     .version('0.1.0')
 
   const PLUGINOPTIONS: PLUGIN_TYPE[] = ['crossref-api']

@@ -8,7 +8,11 @@ import * as cm from './__fixtures__/crossref'
 
 test('ItemCmd: crossref: happy-path scenario: a manuscript with one preprint and no reviews', async (t) => {
   const mocks = cm.CrossrefClientMocks()
-  whenThenResolve(mocks.worksT.getWorks, { doi: cm.MANUSCRIPT_DOI }, cm.mockCrossrefManuscriptWithPreprintResponse)
+  whenThenResolve(
+    mocks.worksT.getWorks,
+    { doi: cm.MANUSCRIPT_DOI },
+    cm.mockCrossrefManuscriptWithPreprintResponse,
+  )
   whenThenResolve(mocks.worksT.getWorks, { doi: cm.PREPRINT_DOI }, cm.mockCrossrefPreprintResponse)
 
   const res = await ItemCmd([cm.MANUSCRIPT_DOI], {
@@ -44,7 +48,11 @@ test('ItemCmd: crossref: happy-path scenario: a manuscript with one preprint and
 
 test('ItemCmd: crossref: happy-path scenario: a manuscript with no relations', async (t) => {
   const mocks = cm.CrossrefClientMocks()
-  whenThenResolve(mocks.worksT.getWorks, { doi: cm.MANUSCRIPT_DOI }, cm.mockCrossrefManuscriptResponse)
+  whenThenResolve(
+    mocks.worksT.getWorks,
+    { doi: cm.MANUSCRIPT_DOI },
+    cm.mockCrossrefManuscriptResponse,
+  )
 
   const res = await ItemCmd([cm.MANUSCRIPT_DOI], {
     source: {
@@ -75,10 +83,22 @@ test('ItemCmd: crossref: happy-path scenario: a manuscript with no relations', a
 
 test('ItemCmd: crossref: happy-path scenario: a manuscript with 2 reviews and no preprint', async (t) => {
   const mocks = cm.CrossrefClientMocks()
-  whenThenResolve(mocks.worksT.getWorks, { doi: cm.MANUSCRIPT_DOI }, cm.mockCrossrefManuscriptWithReviewsResponse)
+  whenThenResolve(
+    mocks.worksT.getWorks,
+    { doi: cm.MANUSCRIPT_DOI },
+    cm.mockCrossrefManuscriptWithReviewsResponse,
+  )
   // TODO - this implies each Review is fetched on its own
-  whenThenResolve(mocks.worksT.getWorks, {doi: cm.REVIEW_1_DOI}, cm.mockCrossrefReviewsResponses[0])
-  whenThenResolve(mocks.worksT.getWorks, {doi: cm.REVIEW_2_DOI}, cm.mockCrossrefReviewsResponses[1])
+  whenThenResolve(
+    mocks.worksT.getWorks,
+    { doi: cm.REVIEW_1_DOI },
+    cm.mockCrossrefReviewsResponses[0],
+  )
+  whenThenResolve(
+    mocks.worksT.getWorks,
+    { doi: cm.REVIEW_2_DOI },
+    cm.mockCrossrefReviewsResponses[1],
+  )
 
   const res = await ItemCmd([cm.MANUSCRIPT_DOI], {
     source: {

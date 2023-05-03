@@ -1,6 +1,6 @@
 import test from 'ava'
 import type { DocmapT } from 'docmaps-sdk'
-import {MakeCli} from '../src/cli'
+import { MakeCli } from '../src/cli'
 
 type cmdResult = {
   stderr: string
@@ -58,7 +58,9 @@ test('single item from crossref with one preprint deduped', async (t) => {
 })
 
 test('single item from crossref with no relations', async (t) => {
-  const { stdout, error } = await cmdIoResults('item --source crossref-api 10.1016/j.jaac.2016.07.660')
+  const { stdout, error } = await cmdIoResults(
+    'item --source crossref-api 10.1016/j.jaac.2016.07.660',
+  )
 
   t.falsy(error)
 
@@ -79,7 +81,9 @@ test('single item from crossref with no relations', async (t) => {
 })
 
 test('single item from crossref with both preprint and reviews', async (t) => {
-  const { stdout, error } = await cmdIoResults('item --source crossref-api 10.5194/angeo-40-247-2022')
+  const { stdout, error } = await cmdIoResults(
+    'item --source crossref-api 10.5194/angeo-40-247-2022',
+  )
 
   t.falsy(error)
 

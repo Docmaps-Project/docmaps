@@ -152,25 +152,27 @@ export const mockCrossrefManuscriptWithReviewsResponse: WorkMessage = {
   },
 }
 
-export const mockCrossrefReviewsResponses: WorkMessage[] = [REVIEW_1_DOI, REVIEW_2_DOI].map((doi) => ({
-  status: 'ok',
-  'message-type': 'work', // realistic strings
-  'message-version': '1.0.0', // realistic strings
-  message: {
-    ...GENERIC_WORK_DATA,
-    URL: `https://doi.org/${doi}`,
-    DOI: doi,
-    relation: {
-      'is-review-of': [
-        {
-          'id-type': 'doi',
-          id: 'mocked-value',
-          'asserted-by': 'subject',
-        },
-      ],
+export const mockCrossrefReviewsResponses: WorkMessage[] = [REVIEW_1_DOI, REVIEW_2_DOI].map(
+  (doi) => ({
+    status: 'ok',
+    'message-type': 'work', // realistic strings
+    'message-version': '1.0.0', // realistic strings
+    message: {
+      ...GENERIC_WORK_DATA,
+      URL: `https://doi.org/${doi}`,
+      DOI: doi,
+      relation: {
+        'is-review-of': [
+          {
+            'id-type': 'doi',
+            id: 'mocked-value',
+            'asserted-by': 'subject',
+          },
+        ],
+      },
     },
-  },
-}))
+  }),
+)
 
 export const mockCrossrefReviewsResponse: WorksMessage = {
   status: 'ok',
