@@ -8,6 +8,15 @@ Actions or Actors that might be published separately from a whole Docmap. It
 will also be integrated into concrete tools such as a docmap-from-meca ETL pipeline
 and general visualization tools.
 
+# Usage
+
+In this repository:
+
+```bash
+pnpm install # or npm install
+pnpm start item --source crossref-api 10.5194/angeo-40-247-2022 # or npm start
+```
+
 ## Implementation
 
 This tool and library are written using the [`docmaps-sdk` package](/packages/ts-sdk)
