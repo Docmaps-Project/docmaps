@@ -105,13 +105,25 @@ export const DocmapAction = t.intersection([
   }),
 ])
 
+const DocmapStatus = t.string
+
+export const DocmapAssertion = t.intersection([
+  t.type({
+    item: t.unknown,
+    status: DocmapStatus,
+  }),
+  t.partial({
+    happened: DateFromUnknown,
+  }),
+])
+
 export const DocmapStep = t.intersection([
   t.type({
     actions: t.array(DocmapAction),
     inputs: t.array(DocmapThing),
 
     // TODO: make this smarter
-    assertions: t.array(t.unknown),
+    assertions: t.array(DocmapAssertion),
   }),
   t.partial({
     id: t.string,
@@ -155,6 +167,7 @@ export type DocmapActionT = t.TypeOf<typeof DocmapAction>
 export type DocmapThingT = t.TypeOf<typeof DocmapThing>
 export type DocmapRoleInTimeT = t.TypeOf<typeof DocmapRoleInTime>
 export type DocmapActorT = t.TypeOf<typeof DocmapActor>
+export type DocmapAssertionT = t.TypeOf<typeof DocmapAssertion>
 
 /**  DocmapsFactory
  *

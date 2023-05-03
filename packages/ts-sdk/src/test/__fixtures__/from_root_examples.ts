@@ -43,6 +43,7 @@ const el_dm_publisher = el_dm.flatMap((dm) => dm['publisher'] || [])
 const el_dm_acc = el_dm_publisher.flatMap((p) => p['account'] || [])
 const el_dm_step: any[] = el_dm.flatMap((dm) => Object.values(dm['steps']) || [])
 const el_dm_action = el_dm_step.flatMap((s) => s['actions'] || [])
+const el_dm_assertion = el_dm_step.flatMap((s) => s['assertions'] || [])
 const el_dm_thing = el_dm_action.flatMap((a) => a['outputs'] || [])
 const el_dm_mani = el_dm_thing.flatMap((t) => t['content'] || [])
 const el_dm_role = el_dm_action.flatMap((a) => a['participants'] || [])
@@ -55,6 +56,7 @@ export const PartialExamples = {
     DocmapOnlineAccount: el_dm_acc,
     DocmapStep: el_dm_step,
     DocmapAction: el_dm_action,
+    DocmapAssertion: el_dm_assertion,
     DocmapThing: el_dm_thing,
     DocmapActor: el_dm_actor,
     DocmapRoleInTime: el_dm_role,
