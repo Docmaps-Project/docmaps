@@ -1,4 +1,5 @@
 import {
+  CreateCrossrefClient,
   CrossrefClient,
   Work,
   DatemorphISOString,
@@ -10,12 +11,8 @@ import { pipe } from 'fp-ts/lib/pipeable'
 import * as TE from 'fp-ts/lib/TaskEither'
 import * as D from 'docmaps-sdk'
 
-const Client = new CrossrefClient({
-  BASE: 'https://api.crossref.org',
-  // TODO is header a way to supply MAILTO for niceness?
-  // HEADERS?: Headers
-  // alternatively, create a wrapper class.
-})
+// TODO: force consumers of this library to supply a polite-mailto
+const Client = CreateCrossrefClient({})
 
 function thingForCrossrefWork(work: Work) {
   return {
