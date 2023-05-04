@@ -17,14 +17,6 @@ const Client = new CrossrefClient({
   // alternatively, create a wrapper class.
 })
 
-// Basic routine:
-//    1. get the DOI specified
-//    2. get any preprints referenced in its own relations
-//    3. search for preprints
-//    4. get reviews referenced in its own relations
-//    5. search for reviews
-//    6. recursively treat its preprints for reviews and further preprints
-
 function thingForCrossrefWork(work: Work) {
   return {
     // TODO: should we include arbitrary keys? make that parametric?
