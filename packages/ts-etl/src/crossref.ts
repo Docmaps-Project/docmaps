@@ -164,12 +164,10 @@ function actionForReviewDOI(
     TE.tryCatch(
       () => service.getWorks({ doi: doi }), // FIXME throw/reject if not status OK ? (what is client behavior if not 200?)
       (reason: unknown) =>
-        new Error(`failed to fetch crossref body for review DOI ${doi}`, { cause: reason }),
+      new Error(`failed to fetch crossref body for review DOI ${doi}`, { cause: reason }),
     ),
     TE.map((w) => w.message),
-    TE.chain((m) => {
-      return pipe(m, decodeActionForWork, TE.fromEither)
-    }),
+    TE.chain((m) => TE.fromEither(decodeActionForWork(m)))
   )
 }
 
@@ -188,7 +186,7 @@ function stepsForDoiRecursive(
     TE.tryCatch(
       () => service.getWorks({ doi: inputDoi }), // FIXME throw/reject if not status OK ? (what is client behavior if not 200?)
       (reason: unknown) =>
-        new Error(`failed to fetch crossref body for DOI ${inputDoi}`, { cause: reason }),
+      new Error(`failed to fetch crossref body for DOI ${inputDoi}`, { cause: reason }),
     ),
     TE.chain((w) => {
       // 1. get step for this
@@ -229,9 +227,9 @@ function stepsForDoiRecursive(
           return pipe(
             preprints,
             (p: WorkRelationEntry[]) =>
-              p.filter((wre) => {
-                return wre['id-type'].toLowerCase() == 'doi'
-              }),
+            p.filter((wre) => {
+              return wre['id-type'].toLowerCase() == 'doi'
+            }),
             // get unique IDs
             (p: WorkRelationEntry[]) => [...new Set(p.map((wre) => wre.id))],
             TE.traverseArray((wreId) => {
@@ -246,9 +244,9 @@ function stepsForDoiRecursive(
                 ...s.head,
                 inputs: meta.reduce<D.DocmapThingT[]>(
                   (memo, c) =>
-                    memo.concat(
-                      c.head.actions.reduce<D.DocmapThingT[]>((m, a) => m.concat(a.outputs), []),
-                    ),
+                  memo.concat(
+                    c.head.actions.reduce<D.DocmapThingT[]>((m, a) => m.concat(a.outputs), []),
+                  ),
                   [],
                 ),
               }
@@ -268,7 +266,7 @@ function stepsForDoiRecursive(
           }
           return pipe(
             reviews,
-            TE.traverseArray((wre) => {
+            TE.traverseArray((wre) => { // TODO: we could collapse this into one Works1 call that fetches all Reviews at once
               if (wre['id-type'].toLowerCase() != 'doi') {
                 return TE.left(
                   new Error('unable to create step for preprint with identifier that is not DOI', {
@@ -276,32 +274,23 @@ function stepsForDoiRecursive(
                   }),
                 )
               }
-              // a function that takes one DOI and returns one review ACTION as a task
-              // TODO - we could collapse this into one Works1 call that fetches all Reviews at once
               return actionForReviewDOI(client, wre.id)
             }),
-            TE.chain((listOfActions) => {
-              // create a Step for the collected reviews
-              return pipe(
+            TE.map((listOfActions) => ({
+              actions: listOfActions,
+              inputs: [thingForCrossrefWork(w.message)],
+              assertions: [
                 {
-                  actions: listOfActions,
-                  inputs: [thingForCrossrefWork(w.message)],
-                  assertions: [
-                    {
-                      status: 'reviewed', //TODO : choose this key carefully
-                      item: w.message.DOI,
-                    },
-                  ],
+                  status: 'reviewed', //TODO: choose this key carefully
+                  item: w.message.DOI,
                 },
-                D.DocmapStep.decode,
-                leftToStrError,
-                TE.fromEither,
-                TE.map((reviewStep) => ({
-                  head: s.head,
-                  all: s.all.concat([reviewStep]),
-                })),
-              )
-            }),
+              ],
+            })),
+            TE.chainEitherK((rs) => leftToStrError(D.DocmapStep.decode(rs))),
+            TE.map((reviewStep) => ({
+              head: s.head,
+              all: s.all.concat([reviewStep]),
+            })),
           )
         }),
       ) // this is a TaskEither<Error, Step[]>
