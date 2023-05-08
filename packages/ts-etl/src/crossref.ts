@@ -3,13 +3,14 @@ import {
   CrossrefClient,
   Work,
   DatemorphISOString,
-  WorkRelationEntry,
 } from 'crossref-openapi-client-ts'
 import * as E from 'fp-ts/lib/Either'
+import * as A from 'fp-ts/lib/Array'
 import type { ErrorOrDocmap } from './types'
 import { pipe } from 'fp-ts/lib/pipeable'
 import * as TE from 'fp-ts/lib/TaskEither'
 import * as D from 'docmaps-sdk'
+import { eqString } from 'fp-ts/lib/Eq'
 
 // TODO: force consumers of this library to supply a polite-mailto
 const Client = CreateCrossrefClient({})
@@ -164,13 +165,18 @@ function actionForReviewDOI(
     TE.tryCatch(
       () => service.getWorks({ doi: doi }), // FIXME throw/reject if not status OK ? (what is client behavior if not 200?)
       (reason: unknown) =>
-      new Error(`failed to fetch crossref body for review DOI ${doi}`, { cause: reason }),
+        new Error(`failed to fetch crossref body for review DOI ${doi}`, { cause: reason }),
     ),
     TE.map((w) => w.message),
-    TE.chain((m) => TE.fromEither(decodeActionForWork(m)))
+    TE.chain((m) => TE.fromEither(decodeActionForWork(m))),
   )
 }
 
+// This type is needed because the recursion may produce steps in
+// order with review step last, but the preprint step must be
+// known to the recursing caller. This is awkward but workable
+// for now without going all the way to a graphy representation
+// in this procedure.
 type RecursiveStepDataChain = {
   head: D.DocmapStepT
   all: D.DocmapStepT[]
@@ -183,120 +189,114 @@ function stepsForDoiRecursive(
 ): TE.TaskEither<Error, RecursiveStepDataChain> {
   const service = client.works
   const program = pipe(
-    TE.tryCatch(
-      () => service.getWorks({ doi: inputDoi }), // FIXME throw/reject if not status OK ? (what is client behavior if not 200?)
-      (reason: unknown) =>
-      new Error(`failed to fetch crossref body for DOI ${inputDoi}`, { cause: reason }),
+    TE.Do,
+    TE.bind('w', () =>
+      TE.tryCatch(
+        () => service.getWorks({ doi: inputDoi }), // FIXME throw/reject if not status OK ? (what is client behavior if not 200?)
+        (reason: unknown) =>
+          new Error(`failed to fetch crossref body for DOI ${inputDoi}`, { cause: reason }),
+      ),
     ),
-    TE.chain((w) => {
-      // 1. get step for this
-      const step = pipe(
-        // FIXME: is this nesting needed? thinking so for now because must have w in context for constructing assertions
+    // 1. get step for this
+    TE.bind('initialChain', ({ w }) =>
+      pipe(
         w.message,
         decodeActionForWork,
-        E.chain((action) =>
-          pipe(
-            D.DocmapStep.decode({
-              inputs: [], // TODO: confirm we always override this as needed
-              actions: [action],
-              assertions: [
-                {
-                  status: status, //TODO : choose this key carefully
-                  item: w.message.DOI,
-                },
-              ],
-            }),
-            leftToStrError,
-          ),
-        ),
+        E.map((action) => ({
+          inputs: [], // TODO: confirm we always override this as needed
+          actions: [action],
+          assertions: [
+            {
+              status: status, //TODO : choose this key carefully
+              item: w.message.DOI,
+            },
+          ],
+        })),
+        E.chain((action) => pipe(D.DocmapStep.decode(action), leftToStrError)),
         E.map((s) => ({
           all: [s],
           head: s,
         })),
-      )
-
-      const task = pipe(
-        step, // now have an Either of Step Array
         TE.fromEither,
-        TE.chain((s) => {
-          // 2. if there is a preprint recurse
-          const preprints = w.message.relation?.['has-preprint']
-          if (!preprints) {
-            return TE.right(s)
-          }
-          return pipe(
-            preprints,
-            (p: WorkRelationEntry[]) =>
-            p.filter((wre) => {
-              return wre['id-type'].toLowerCase() == 'doi'
-            }),
-            // get unique IDs
-            (p: WorkRelationEntry[]) => [...new Set(p.map((wre) => wre.id))],
-            TE.traverseArray((wreId) => {
-              return stepsForDoiRecursive(client, wreId, 'catalogued') // TODO: status for any preprint
-            }),
-            TE.map((meta) => {
-              // this is array of result.
-              // the output `head` should have all the `head` outputs as inputs.
-              // the output `all` should have concatenation of alls, plus the new Head.
+      ),
+    ),
+    TE.bind('prefixChain', ({ w, initialChain }) => {
+      const preprints = w.message.relation?.['has-preprint']
+      if (!preprints) {
+        return TE.right(initialChain)
+      }
 
-              const newStep = {
-                ...s.head,
-                inputs: meta.reduce<D.DocmapThingT[]>(
-                  (memo, c) =>
-                  memo.concat(
-                    c.head.actions.reduce<D.DocmapThingT[]>((m, a) => m.concat(a.outputs), []),
-                  ),
-                  [],
+      // 2. if there is a preprint recurse
+      return pipe(
+        preprints,
+        A.filter((wre) => {
+          return wre['id-type'].toLowerCase() == 'doi'
+        }),
+        // get unique IDs
+        A.map((wre) => wre.id),
+        A.uniq(eqString),
+        TE.traverseArray((wreId) => {
+          return stepsForDoiRecursive(client, wreId, 'catalogued') // TODO: status for any preprint
+        }),
+        TE.map((meta) => {
+          // this is array of DataChain.
+          // the output `head` should have all the `head` outputs as inputs.
+          // the output `all` should have concatenation of alls, plus the new Head.
+
+          const newStep = {
+            ...initialChain.head,
+            inputs: meta.reduce<D.DocmapThingT[]>(
+              (memo, c) =>
+                memo.concat(
+                  c.head.actions.reduce<D.DocmapThingT[]>((m, a) => m.concat(a.outputs), []),
                 ),
-              }
-
-              return {
-                head: newStep,
-                all: meta.reduce<D.DocmapStepT[]>((m, c) => m.concat(c.all), []).concat([newStep]),
-              }
-            }),
-          )
-        }),
-        TE.chain((s) => {
-          // 2. if there is a preprint recurse
-          const reviews = w.message.relation?.['has-review']
-          if (!reviews) {
-            return TE.right(s)
+              [],
+            ),
           }
-          return pipe(
-            reviews,
-            TE.traverseArray((wre) => { // TODO: we could collapse this into one Works1 call that fetches all Reviews at once
-              if (wre['id-type'].toLowerCase() != 'doi') {
-                return TE.left(
-                  new Error('unable to create step for preprint with identifier that is not DOI', {
-                    cause: { work: w.message, preprint: wre.id },
-                  }),
-                )
-              }
-              return actionForReviewDOI(client, wre.id)
-            }),
-            TE.map((listOfActions) => ({
-              actions: listOfActions,
-              inputs: [thingForCrossrefWork(w.message)],
-              assertions: [
-                {
-                  status: 'reviewed', //TODO: choose this key carefully
-                  item: w.message.DOI,
-                },
-              ],
-            })),
-            TE.chainEitherK((rs) => leftToStrError(D.DocmapStep.decode(rs))),
-            TE.map((reviewStep) => ({
-              head: s.head,
-              all: s.all.concat([reviewStep]),
-            })),
-          )
-        }),
-      ) // this is a TaskEither<Error, Step[]>
 
-      return task
+          return {
+            head: newStep,
+            all: meta.reduce<D.DocmapStepT[]>((m, c) => m.concat(c.all), []).concat([newStep]),
+          }
+        }),
+      )
     }),
+    TE.bind('completeChain', ({ w, prefixChain }) => {
+      const reviews = w.message.relation?.['has-review']
+      if (!reviews) {
+        return TE.right(prefixChain)
+      }
+      return pipe(
+        reviews,
+        TE.traverseArray((wre) => {
+          // TODO: we could collapse this into one Works1 call that fetches all Reviews at once
+          if (wre['id-type'].toLowerCase() != 'doi') {
+            return TE.left(
+              new Error('unable to create step for preprint with identifier that is not DOI', {
+                cause: { work: w.message, preprint: wre.id },
+              }),
+            )
+          }
+          return actionForReviewDOI(client, wre.id)
+        }),
+        TE.map((listOfActions) => ({
+          actions: listOfActions,
+          inputs: [thingForCrossrefWork(w.message)],
+          assertions: [
+            {
+              status: 'reviewed', //TODO: choose this key carefully
+              item: w.message.DOI,
+            },
+          ],
+        })),
+        TE.chainEitherK((rs) => leftToStrError(D.DocmapStep.decode(rs))),
+        TE.map((reviewStep) => ({
+          head: prefixChain.head,
+          all: prefixChain.all.concat([reviewStep]),
+        })),
+      )
+    }),
+    TE.map(({ completeChain }) => completeChain),
   )
 
   return program
