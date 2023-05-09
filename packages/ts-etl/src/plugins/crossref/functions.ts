@@ -56,6 +56,7 @@ export function decodeActionForWork(work: Work): E.Either<Error, D.DocmapActionT
 }
 
 export function stepArrayToDocmap(
+  publisher: D.DocmapPublisherT,
   inputDoi: string,
   [firstStep, ...steps]: D.DocmapStepT[],
 ): ErrorOrDocmap {
@@ -69,9 +70,7 @@ export function stepArrayToDocmap(
   const dmBody = {
     type: 'docmap',
     id: dm_id,
-    publisher: {
-      // FIXME: fill this in
-    },
+    publisher: publisher,
     created: now, // FIXME does it have to be a string?
     updated: now, // FIXME does it have to be a string?
   }

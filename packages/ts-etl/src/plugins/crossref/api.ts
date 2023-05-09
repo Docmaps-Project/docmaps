@@ -14,7 +14,7 @@ import {
 } from './functions'
 
 // TODO: force consumers of this library to supply a polite-mailto
-const Client = CreateCrossrefClient({})
+export const Client = CreateCrossrefClient({})
 
 // This type is needed because the recursion may produce steps in
 // order with review step last, but the preprint step must be
@@ -146,21 +146,21 @@ function stepsForDoiRecursive(
   return program
 }
 
-async function fetchPublicationByDoi(
+export async function fetchPublicationByDoi(
   client: CrossrefClient,
+  publisher: D.DocmapPublisherT,
   inputDoi: string,
 ): Promise<ErrorOrDocmap> {
   const resultTask = pipe(
     stepsForDoiRecursive(client, inputDoi, 'published'),
     TE.chain((steps) => {
-      return pipe(stepArrayToDocmap(inputDoi, steps.all), TE.fromEither)
+      return pipe(stepArrayToDocmap(publisher, inputDoi, steps.all), TE.fromEither)
     }),
   )
 
   return await resultTask()
 }
 
-export { fetchPublicationByDoi, Client }
 // NOTE: possibly this wants to be in the core sdk, but because docmaps
 // contain info about authorship, i am not so sure --- might require too
 // much configuration.

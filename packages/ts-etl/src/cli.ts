@@ -1,4 +1,5 @@
 import { Command, Option } from '@commander-js/extra-typings'
+import { DocmapPublisher } from 'docmaps-sdk'
 import { isLeft } from 'fp-ts/lib/Either'
 import { ItemOpts, ItemCmd } from './commands'
 import { Client } from './plugins/crossref'
@@ -37,12 +38,31 @@ export function MakeCli() {
         .choices(PLUGINOPTIONS)
         .makeOptionMandatory(),
     )
+    .option('--publisher.id <id>', 'id of publisher of docmaps to generate (you)')
+    .option('--publisher.name <name>', 'name of publisher of docmaps to generate (you)')
+    .option('--publisher.url <url>', 'url of publisher of docmaps to generate (you)')
+    .option('--publisher.homepage <homepage>', 'homepage of publisher of docmaps to generate (you)')
+    .option('--publisher.logo <logo>', 'logo of publisher of docmaps to generate (you)')
     .action(async (doi, options) => {
+      const pub = DocmapPublisher.decode({
+        id: options['publisher.id'],
+        name: options['publisher.name'],
+        homepage: options['publisher.homepage'],
+        url: options['publisher.url'],
+        logo: options['publisher.logo'],
+      })
+
+      if (isLeft(pub)) {
+        cli.error(String(pub.left))
+        throw 'unreachable, if cli.error exits (?)'
+      }
+
       const o: ItemOpts = {
         source: {
           preset: options.source,
           client: Client,
         },
+        publisher: pub.right,
       }
 
       const result = await ItemCmd([doi], o)

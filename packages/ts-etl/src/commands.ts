@@ -1,4 +1,5 @@
 import type { CrossrefClient } from 'crossref-openapi-client-ts'
+import type { DocmapPublisherT } from 'docmaps-sdk'
 import { right } from 'fp-ts/lib/Either'
 
 import * as crossref from './plugins/crossref'
@@ -25,6 +26,7 @@ export interface CrossrefConfiguration {
 
 export interface ItemOpts {
   source: CrossrefConfiguration
+  publisher: DocmapPublisherT
 }
 
 export interface PageOpts {
@@ -35,7 +37,7 @@ export interface PageOpts {
 }
 
 export const ItemCmd: Cmd<[string], ItemOpts> = ([doi], opts) => {
-  return crossref.fetchPublicationByDoi(opts.source.client, doi)
+  return crossref.fetchPublicationByDoi(opts.source.client, opts.publisher, doi)
 }
 
 export const PageCmd: Cmd<[], PageOpts> = async (_a, _opts) => {

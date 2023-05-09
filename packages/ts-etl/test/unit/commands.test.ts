@@ -20,6 +20,7 @@ test('ItemCmd: crossref: happy-path scenario: a manuscript with one preprint and
       preset: 'crossref-api',
       client: mocks.crs,
     },
+    publisher: {},
   })
 
   if (isLeft(res)) {
@@ -46,6 +47,47 @@ test('ItemCmd: crossref: happy-path scenario: a manuscript with one preprint and
   //TODO: can write stronger assertions as we learn what this should look like
 })
 
+test('ItemCmd: crossref: happy-path scenario: publisher is included', async (t) => {
+  const mocks = cm.CrossrefClientMocks()
+  whenThenResolve(
+    mocks.worksT.getWorks,
+    { doi: cm.MANUSCRIPT_DOI },
+    cm.mockCrossrefManuscriptResponse,
+  )
+
+  const res = await ItemCmd([cm.MANUSCRIPT_DOI], {
+    source: {
+      preset: 'crossref-api',
+      client: mocks.crs,
+    },
+    publisher: {
+      id: 'my_pub_id',
+      name: 'my_name',
+    },
+  })
+
+  if (isLeft(res)) {
+    t.fail(`Got error instead of docmaps: ${res.left}`)
+    return
+  }
+
+  t.is(res.right.length, 1)
+  const dm = res.right[0]
+
+  // necessary because Typescript doesn't narrow down type of dm just because
+  // test failure guarantees we can't get here
+  if (!dm) {
+    t.fail('impossibly, we couldnt find the first docmap in a list of one')
+    return //necessary
+  }
+
+  t.deepEqual(dm.type, 'docmap')
+  t.deepEqual(dm.publisher, {
+    id: 'my_pub_id',
+    name: 'my_name',
+  })
+})
+
 test('ItemCmd: crossref: happy-path scenario: a manuscript with no relations', async (t) => {
   const mocks = cm.CrossrefClientMocks()
   whenThenResolve(
@@ -59,6 +101,7 @@ test('ItemCmd: crossref: happy-path scenario: a manuscript with no relations', a
       preset: 'crossref-api',
       client: mocks.crs,
     },
+    publisher: {},
   })
 
   if (isLeft(res)) {
@@ -105,6 +148,7 @@ test('ItemCmd: crossref: happy-path scenario: a manuscript with 2 reviews and no
       preset: 'crossref-api',
       client: mocks.crs,
     },
+    publisher: {},
   })
 
   if (isLeft(res)) {
