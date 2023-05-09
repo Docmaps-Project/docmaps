@@ -25,7 +25,7 @@ export const REVIEW_2_DOI = '10.1234/review.2'
 
 export const TEST_DATE = testCrossrefDate()
 
-const GENERIC_WORK_DATA = {
+export const GENERIC_WORK_DATA = {
   source: 'mocks',
   author: [
     {

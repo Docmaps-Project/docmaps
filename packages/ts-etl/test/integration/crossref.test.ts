@@ -1,6 +1,6 @@
 import test from 'ava'
 import type { DocmapT } from 'docmaps-sdk'
-import { MakeCli } from '../src/cli'
+import { MakeCli } from '../../src/cli'
 
 type cmdResult = {
   stderr: string

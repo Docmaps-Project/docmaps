@@ -1,7 +1,7 @@
 import type { CrossrefClient } from 'crossref-openapi-client-ts'
 import { right } from 'fp-ts/lib/Either'
 
-import * as crossref from './crossref'
+import * as crossref from './plugins/crossref'
 
 import type { ErrorOrDocmap } from './types'
 

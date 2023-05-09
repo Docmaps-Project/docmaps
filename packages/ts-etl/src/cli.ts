@@ -1,7 +1,7 @@
 import { Command, Option } from '@commander-js/extra-typings'
 import { isLeft } from 'fp-ts/lib/Either'
 import { ItemOpts, ItemCmd } from './commands'
-import { Client } from './crossref'
+import { Client } from './plugins/crossref'
 
 /**
  * CLI - the default export

@@ -1,176 +1,20 @@
-import {
-  CreateCrossrefClient,
-  CrossrefClient,
-  Work,
-  DatemorphISOString,
-} from 'crossref-openapi-client-ts'
+import { CreateCrossrefClient, CrossrefClient } from 'crossref-openapi-client-ts'
 import * as E from 'fp-ts/lib/Either'
 import * as A from 'fp-ts/lib/Array'
-import type { ErrorOrDocmap } from './types'
+import type { ErrorOrDocmap } from '../../types'
 import { pipe } from 'fp-ts/lib/pipeable'
 import * as TE from 'fp-ts/lib/TaskEither'
 import * as D from 'docmaps-sdk'
 import { eqString } from 'fp-ts/lib/Eq'
+import {
+  leftToStrError,
+  decodeActionForWork,
+  stepArrayToDocmap,
+  thingForCrossrefWork,
+} from './functions'
 
 // TODO: force consumers of this library to supply a polite-mailto
 const Client = CreateCrossrefClient({})
-
-function thingForCrossrefWork(work: Work) {
-  return {
-    // TODO: should we include arbitrary keys? make that parametric?
-    // ...work,
-    // FIXME: is this possibly fake news? should it fail instead if no published date?
-    published: DatemorphISOString(work.published || work.created),
-    doi: work.DOI,
-    type: work.type,
-    // TODO: other fields we ignore: id, content
-  }
-}
-
-function decodeActionForWork(work: Work): E.Either<Error, D.DocmapActionT> {
-  const errors: Error[] = []
-  const workAuthors = (work.author || []).map((a) => {
-    // TODO this whole code block shows why better use of fp-ts chaining is needed
-    const auth = D.DocmapActor.decode({
-      type: 'person',
-      name: a.name || `${a.family}, ${a.given}` || '', // FIXME this seems presumptuous
-    })
-    if (E.isLeft(auth)) {
-      errors.push(new Error('unable to parse work author', { cause: auth.left }))
-      return // undefined behavior because exits later
-    }
-
-    return {
-      actor: auth.right,
-      role: 'author',
-    }
-  })
-
-  if (errors.length > 0) {
-    return E.left(new Error('unable to parse work authors', { cause: errors }))
-  }
-
-  const workObject = thingForCrossrefWork(work)
-  const workAction = D.DocmapAction.decode({
-    participants: workAuthors,
-    outputs: [workObject],
-  })
-
-  if (E.isLeft(workAction)) {
-    return E.left(new Error('unable to parse work action', { cause: workAction.left }))
-  }
-
-  return E.right(workAction.right)
-}
-
-// NOTE: possibly this wants to be in the core sdk, but because docmaps
-// contain info about authorship, i am not so sure --- might require too
-// much configuration.
-//
-// This is slightly sane because while steps have keys like `first-step`
-// and `next-step`, these keys do not mean anything outside context of docmap.
-// possibly long term this makes a case for rdf-star.
-function stepArrayToDocmap(
-  inputDoi: string,
-  [firstStep, ...steps]: D.DocmapStepT[],
-): ErrorOrDocmap {
-  // TODO: extract this
-  const dm_id = `https://docmaps-project.github.io/ex/docmap_for/${inputDoi}`
-
-  const now = new Date()
-
-  let bnodeId = 0
-
-  const dmBody = {
-    type: 'docmap',
-    id: dm_id,
-    publisher: {
-      // FIXME: fill this in
-    },
-    created: now, // FIXME does it have to be a string?
-    updated: now, // FIXME does it have to be a string?
-  }
-
-  if (!firstStep) {
-    const dmObject = D.Docmap.decode(dmBody)
-
-    if (E.isLeft(dmObject)) {
-      return E.left(new Error('unable to parse manuscript step', { cause: dmObject.left }))
-    }
-
-    return E.right([dmObject.right])
-  }
-
-  const reduction = steps.reduce<E.Either<Error, Record<string, D.DocmapStepT>>>(
-    (memo, next) => {
-      if (E.isLeft(memo)) {
-        return memo //cascade all errors
-      }
-
-      const m = memo.right
-
-      const previousId = `_:b${bnodeId}`
-      bnodeId += 1
-      const thisId = `_:b${bnodeId}`
-
-      const prev = m[previousId]
-      if (!prev) {
-        return E.left(
-          new Error(
-            `algorithm error: step memo was missing step for id ${previousId} but was processing step with id ${thisId}`,
-          ),
-        )
-      }
-      m[previousId] = {
-        ...prev,
-        'next-step': thisId,
-      }
-      m[thisId] = {
-        ...next,
-        'previous-step': previousId,
-      }
-
-      return E.right(m)
-    },
-    E.right({
-      '_:b0': firstStep,
-    }),
-  )
-
-  if (E.isLeft(reduction)) {
-    return reduction
-  }
-  const dmObject = D.Docmap.decode({
-    ...dmBody,
-    'first-step': '_:b0',
-    steps: reduction.right,
-  })
-
-  if (E.isLeft(dmObject)) {
-    return E.left(new Error('unable to parse manuscript step', { cause: dmObject.left }))
-  }
-
-  return E.right([dmObject.right])
-}
-
-// FIXME this is a weak upcast - use t.Errors more effectively in ts-sdk
-const leftToStrError = E.mapLeft((e: unknown) => new Error(String(e)))
-
-function actionForReviewDOI(
-  client: CrossrefClient,
-  doi: string,
-): TE.TaskEither<Error, D.DocmapActionT> {
-  const service = client.works
-  return pipe(
-    TE.tryCatch(
-      () => service.getWorks({ doi: doi }), // FIXME throw/reject if not status OK ? (what is client behavior if not 200?)
-      (reason: unknown) =>
-        new Error(`failed to fetch crossref body for review DOI ${doi}`, { cause: reason }),
-    ),
-    TE.map((w) => w.message),
-    TE.chain((m) => TE.fromEither(decodeActionForWork(m))),
-  )
-}
 
 // This type is needed because the recursion may produce steps in
 // order with review step last, but the preprint step must be
@@ -317,3 +161,26 @@ async function fetchPublicationByDoi(
 }
 
 export { fetchPublicationByDoi, Client }
+// NOTE: possibly this wants to be in the core sdk, but because docmaps
+// contain info about authorship, i am not so sure --- might require too
+// much configuration.
+//
+// This is slightly sane because while steps have keys like `first-step`
+// and `next-step`, these keys do not mean anything outside context of docmap.
+// possibly long term this makes a case for rdf-star.
+
+export function actionForReviewDOI(
+  client: CrossrefClient,
+  doi: string,
+): TE.TaskEither<Error, D.DocmapActionT> {
+  const service = client.works
+  return pipe(
+    TE.tryCatch(
+      () => service.getWorks({ doi: doi }), // FIXME throw/reject if not status OK ? (what is client behavior if not 200?)
+      (reason: unknown) =>
+        new Error(`failed to fetch crossref body for review DOI ${doi}`, { cause: reason }),
+    ),
+    TE.map((w) => w.message),
+    TE.chain((m) => TE.fromEither(decodeActionForWork(m))),
+  )
+}

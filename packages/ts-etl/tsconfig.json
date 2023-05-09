@@ -14,8 +14,7 @@
     "declaration": true
   },
   "include": [
-    "src/**/*",
-    "integration"
+    "src/**/*"
   ],
   "exclude": [
     "dist",
