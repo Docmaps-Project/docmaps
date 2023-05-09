@@ -27,6 +27,9 @@ be deconstructed by case to determine whether the input was valid. See examples 
 in the [`typed_graph`](/packages/ts-sdk/src/typed_graph.ts), where we use `isLeft` to check if the decode
 failed.
 
+**For examples of usage of `fp-ts` pipelines with our `io-ts` codecs, review the
+[`ts-etl` implementation](/packages/ts-etl/src/plugins/crossref.ts).
+
 Alternatively, the `typed_graph` class is used for choosing the codec to use based on the
 `@type` key present in the jsonld. This is mainly here to support to-be-implemented RDF
 use-cases rather than JsonLD use cases, because it only works when the `@type` field is set
