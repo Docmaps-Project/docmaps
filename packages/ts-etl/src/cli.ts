@@ -4,17 +4,22 @@ import { isLeft } from 'fp-ts/lib/Either'
 import { ItemOpts, ItemCmd } from './commands'
 import { Client } from './plugins/crossref'
 
-/**
- * CLI - the default export
- *
- * invoke this as a library by calling `parseAsync`--
- *   with no args, as in index.ts, it uses argv.
- *   or pass in string array to parse flags.
- */
-
 export type PLUGIN_TYPE = 'crossref-api'
 
 const stdoutWrite = (str: string) => process.stdout.write(str)
+
+/**
+ * CLI
+ *
+ * the MakeCli function creates instances of the Cli,
+ * which is useful for re-use in test. The executable
+ * script for this tool will use the singleton cli
+ * (the default export).
+ *
+ * Invoke this as a library by calling `MakeCli().parseAsync`.
+ *   with no args, as in index.ts, parseAsync uses argv.
+ *   or pass in string array to parse flags.
+ */
 
 export function MakeCli() {
   const cli = new Command()

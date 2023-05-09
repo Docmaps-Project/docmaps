@@ -10,34 +10,41 @@ import type { ErrorOrDocmap } from './types'
 // .. although actually, the streaming may be a layer down instead
 export type Cmd<ArgT extends string[], OptT> = (args: ArgT, opts: OptT) => Promise<ErrorOrDocmap>
 
-// helpcmd is the one type that does not need defining
-// export const HelpCmd: Cmd<{}> = (s, opts) => {
-//   console.log(s =
-// };
-
-// export interface StreamOpts {
-//   source: 'crossref-api'
-// }
-
 export interface CrossrefConfiguration {
   preset: 'crossref-api'
   client: CrossrefClient
 }
 
+/**
+ * ItemOpts
+ *
+ * Configuration for a single Item invocation.
+ */
 export interface ItemOpts {
   source: CrossrefConfiguration
   publisher: DocmapPublisherT
 }
 
+/**
+ * ItemCmd
+ *
+ * Generates a Docmap for a single DOI. Behavior
+ * may depend on the source configuration provided.
+ */
+export const ItemCmd: Cmd<[string], ItemOpts> = ([doi], opts) => {
+  return crossref.fetchPublicationByDoi(opts.source.client, opts.publisher, doi)
+}
+
+/**
+ * PageCmd
+ *
+ * Needs implementation!
+ */
 export interface PageOpts {
   source: CrossrefConfiguration
   prefix: string
   rowsPerPage?: number
   pageNumber?: number
-}
-
-export const ItemCmd: Cmd<[string], ItemOpts> = ([doi], opts) => {
-  return crossref.fetchPublicationByDoi(opts.source.client, opts.publisher, doi)
 }
 
 export const PageCmd: Cmd<[], PageOpts> = async (_a, _opts) => {
