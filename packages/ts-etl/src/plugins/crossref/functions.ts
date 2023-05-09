@@ -25,27 +25,33 @@ function nameForAuthor(a: { family: string; name?: string; given?: string }): st
 export function decodeActionForWork(work: Work): E.Either<Error, D.DocmapActionT> {
   return pipe(
     E.Do,
-    E.bind('wo', () => pipe(
-      work,
-      thingForCrossrefWork,
-      E.right,
-    )),
-    E.bind('wa', () => pipe(
-      work.author || [],
-      A.map((a) => ({
-        type: 'person',
-        name: nameForAuthor(a),
-      })),
-      E.traverseArray((a) => leftToStrError(D.DocmapActor.decode(a))),
-      E.map((auths) => auths.map((a) => ({
-        actor: a,
-        role: 'author',
-      }))),
-    )),
-    E.chain(({wo, wa}) => leftToStrError(D.DocmapAction.decode({
-      participants: wa,
-      outputs: [wo],
-    }))),
+    E.bind('wo', () => pipe(work, thingForCrossrefWork, E.right)),
+    E.bind('wa', () =>
+      pipe(
+        work.author || [],
+        A.map((a) => ({
+          type: 'person',
+          name: nameForAuthor(a),
+        })),
+        E.traverseArray((a) => leftToStrError(D.DocmapActor.decode(a))),
+        E.map((auths) =>
+          auths.map((a) => ({
+            actor: a,
+            role: 'author',
+          })),
+        ),
+      ),
+    ),
+    E.chain(({ wo, wa }) =>
+      pipe(
+        {
+          participants: wa,
+          outputs: [wo],
+        },
+        D.DocmapAction.decode,
+        leftToStrError,
+      ),
+    ),
   )
 }
 
