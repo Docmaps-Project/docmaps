@@ -1,6 +1,6 @@
 import test from 'ava'
 import { isLeft } from 'fp-ts/lib/Either'
-import { ItemCmd } from '../../src/commands'
+import { ItemCmd } from '../../src/command'
 import { whenThenResolve } from './utils'
 import * as cm from './__fixtures__/crossref'
 

@@ -1,8 +1,6 @@
-import cli from './cli'
+import cli from './command'
 export default cli
 
-export * from './cli'
+export * from './command'
 export * from './plugins/crossref'
 export * from './types'
-
-await cli.parseAsync()
