@@ -1,23 +1,18 @@
 <script>
   import { onMount } from 'svelte';
-	import '@source-data/render-rev/render-rev.js';
+  import { configureForDoiString } from './utils.js';
+  import '@source-data/render-rev/render-rev.js';
 
   let inputDoi = '';
   let placeholder;
-	//export let renderRev;
-	let renderRevElement;
+  let renderRevElement;
 
   onMount(() => {
-	  renderRevElement = document.createElement('render-rev')
+    renderRevElement = document.createElement('render-rev')
   });
 
   function fetchData() {
-    renderRevElement.configure({
-      doi: '10.1101/2020.07.20.212886',
-      display: {
-        publisherName: name => name.toUpperCase(),
-      },
-    });
+    configureForDoiString(renderRevElement, inputDoi);
     if (placeholder) {
       placeholder.appendChild(renderRevElement);
     }
@@ -55,6 +50,10 @@
 		text-transform: uppercase;
 		font-size: 4em;
 		font-weight: 100;
+	}
+
+	input {
+		min-width: 400px;
 	}
 
 	@media (min-width: 640px) {
