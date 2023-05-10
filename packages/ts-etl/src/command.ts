@@ -1,6 +1,6 @@
 import type { CrossrefClient } from 'crossref-openapi-client-ts'
 import { Command, Option } from '@commander-js/extra-typings'
-import {DocmapPublisher, DocmapPublisherT } from 'docmaps-sdk'
+import { DocmapPublisher, DocmapPublisherT } from 'docmaps-sdk'
 import { isLeft, right } from 'fp-ts/lib/Either'
 
 import * as crossref from './plugins/crossref'
@@ -155,4 +155,3 @@ export const PageCmd: Cmd<[], PageOpts> = async (_a, _opts) => {
 
 const cli = MakeCli()
 export default cli
-
