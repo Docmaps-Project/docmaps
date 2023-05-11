@@ -1,3 +1,4 @@
 packages:
   - 'packages/ts-sdk'
   - 'packages/ts-etl'
+  - 'packages/spa'
