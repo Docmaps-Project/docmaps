@@ -1,4 +1,5 @@
 import * as t from 'io-ts'
+import { fromNullable } from 'io-ts-types/lib/fromNullable'
 import { UrlFromString, DateFromUnknown } from './util'
 
 function arrayOrOneOf(literalStrings: string[]) {
@@ -137,6 +138,11 @@ export const DocmapStep = t.intersection([
 export const Docmap = t.intersection([
   t.type({
     id: t.string,
+    // only one legal value, and fill it if absent
+    '@context': fromNullable(
+      t.literal('https://w3id.org/docmaps/context.jsonld'),
+      'https://w3id.org/docmaps/context.jsonld',
+    ),
     type: arrayOrOneOf([
       // TODO support something where docmaps: is prefixed
       // t.literal('docmaps:docmap'),
