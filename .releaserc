@@ -1,2 +1,3 @@
 branches:
   - main
+  - ships/add-etl-cli
