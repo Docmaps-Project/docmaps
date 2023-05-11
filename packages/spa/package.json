@@ -20,7 +20,7 @@
     "svelte": "^3.55.0"
   },
   "dependencies": {
-    "@docmaps/etl": "^0.1.1",
+    "@docmaps/etl": "^0.1.2",
     "@source-data/render-rev": "github:source-data/render-rev",
     "@spider-ui/global-event-registry": ">= 0.2.3",
     "docmaps-sdk": "^0.5.0",
