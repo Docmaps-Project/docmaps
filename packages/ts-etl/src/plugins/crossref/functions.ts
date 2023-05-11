@@ -25,7 +25,9 @@ function nameForAuthor(a: { family: string; name?: string; given?: string }): st
 export function decodeActionForWork(work: Work): E.Either<Error, D.DocmapActionT> {
   return pipe(
     E.Do,
+    // prepare the Thing which will be output
     E.bind('wo', () => pipe(work, thingForCrossrefWork, E.right)),
+    // prepare the Authors
     E.bind('wa', () =>
       pipe(
         work.author || [],
@@ -33,7 +35,7 @@ export function decodeActionForWork(work: Work): E.Either<Error, D.DocmapActionT
           type: 'person',
           name: nameForAuthor(a),
         })),
-        E.traverseArray((a) => leftToStrError(D.DocmapActor.decode(a))),
+        E.traverseArray((a) => mapLeftToUnknownError(D.DocmapActor.decode(a))),
         E.map((auths) =>
           auths.map((a) => ({
             actor: a,
@@ -42,6 +44,7 @@ export function decodeActionForWork(work: Work): E.Either<Error, D.DocmapActionT
         ),
       ),
     ),
+    // construct and decode the Action
     E.chain(({ wo, wa }) =>
       pipe(
         {
@@ -49,18 +52,30 @@ export function decodeActionForWork(work: Work): E.Either<Error, D.DocmapActionT
           outputs: [wo],
         },
         D.DocmapAction.decode,
-        leftToStrError,
+        mapLeftToUnknownError,
       ),
     ),
   )
 }
 
+/**
+ * stepArrayToDocmap - a helper function that processes a list of steps into a coherent docmap
+ *
+ * This function is needed because while a recursive process can produce a list of steps,
+ * those steps are not inherently doubly-linked the way they need to be in a docmap.
+ * (i.e., the Steps are each created independent from each other based on the crossref
+ *   data for each DOI, but they need to be connected when they become a Workflow.)
+ * we additionally insert any step-independent info that is pertinent to the docmap, such as
+ * the Publisher of the docmap.
+ *
+ * This is an awkward moment that breaks some of the functional abstraction (see comments).
+ */
 export function stepArrayToDocmap(
   publisher: D.DocmapPublisherT,
   inputDoi: string,
   [firstStep, ...steps]: D.DocmapStepT[],
 ): ErrorOrDocmap {
-  // TODO: extract this
+  // TODO: extract this logic
   const dm_id = `https://docmaps-project.github.io/ex/docmap_for/${inputDoi}`
 
   const now = new Date()
@@ -85,6 +100,9 @@ export function stepArrayToDocmap(
     return E.right([dmObject.right])
   }
 
+  // this reduction takes advantage of the fact that we have separated the firstStep
+  // from the ...steps argument, because the first & last step is only singly linked
+  //   (see the last argument to #reduce).
   const reduction = steps.reduce<E.Either<Error, Record<string, D.DocmapStepT>>>(
     (memo, next) => {
       if (E.isLeft(memo)) {
@@ -116,29 +134,37 @@ export function stepArrayToDocmap(
 
       return E.right(m)
     },
+    // initial memo: the first step only, whose next-step is inserted during
+    // the reduction loop and who doesn't need a first-step. since the reduce
+    // is creating an Either, we begin with an Either that never fails.
     E.right({
       '_:b0': firstStep,
     }),
   )
 
-  if (E.isLeft(reduction)) {
-    return reduction
-  }
-  const dmObject = D.Docmap.decode({
-    ...dmBody,
-    'first-step': '_:b0',
-    steps: reduction.right,
-  })
-
-  if (E.isLeft(dmObject)) {
-    return E.left(new Error('unable to parse manuscript step', { cause: dmObject.left }))
-  }
-
-  return E.right([dmObject.right])
+  return pipe(
+    reduction,
+    E.map((r) => ({
+      ...dmBody,
+      'first-step': '_:b0',
+      steps: r,
+    })),
+    E.chain((b) => pipe(
+      b,
+      D.Docmap.decode,
+      mapLeftToUnknownError,
+    )),
+    // requires to output Array of docmap
+    E.map((d) => [d])
+  )
 }
 
-// FIXME this is a weak upcast - use t.Errors more effectively in ts-sdk
-export const leftToStrError = E.mapLeft((e: unknown) => {
+/** mapLeftToUnknownError - helper function for interoperating between Either types
+ *
+ * specifically, io-ts codecs are always of type Either<ValidationError[], T>, and that
+ * validation error is not naturally upcastable to Error where we use Either<Error, T>.
+ */
+export const mapLeftToUnknownError = E.mapLeft((e: unknown) => {
   if (e instanceof Error) {
     return e
   }

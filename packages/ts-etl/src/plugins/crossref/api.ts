@@ -7,7 +7,7 @@ import * as TE from 'fp-ts/lib/TaskEither'
 import * as D from 'docmaps-sdk'
 import { eqString } from 'fp-ts/lib/Eq'
 import {
-  leftToStrError,
+  mapLeftToUnknownError,
   decodeActionForWork,
   stepArrayToDocmap,
   thingForCrossrefWork,
@@ -56,7 +56,7 @@ function stepsForDoiRecursive(
             },
           ],
         })),
-        E.chain((action) => pipe(D.DocmapStep.decode(action), leftToStrError)),
+        E.chain((action) => pipe(D.DocmapStep.decode(action), mapLeftToUnknownError)),
         E.map((s) => ({
           all: [s],
           head: s,
@@ -133,7 +133,7 @@ function stepsForDoiRecursive(
             },
           ],
         })),
-        TE.chainEitherK((rs) => leftToStrError(D.DocmapStep.decode(rs))),
+        TE.chainEitherK((rs) => mapLeftToUnknownError(D.DocmapStep.decode(rs))),
         TE.map((reviewStep) => ({
           head: prefixChain.head,
           all: prefixChain.all.concat([reviewStep]),
