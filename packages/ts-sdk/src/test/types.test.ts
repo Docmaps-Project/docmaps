@@ -9,14 +9,16 @@ function isRightArray<T>(
   t: ExecutionContext,
   arr: E.Either<unknown, T>[],
   len: number,
-  proc?: (_a: readonly T[]) => void) {
+  proc?: (_a: readonly T[]) => void,
+) {
   t.is(arr.length, len)
 
   pipe(
     arr,
     E.sequenceArray,
     E.mapLeft((e) => t.fail(`Error parsing: ${util.inspect(e, { depth: 18 })}`)),
-    E.map(proc || (() => {}))
+    //eslint-disable-next-line
+    E.map(proc || (() => {})),
   )
 }
 
@@ -87,20 +89,17 @@ test('Codec parsing Docmap', (t) => {
   const v = ex.elife.Docmap.flatMap((x) => {
     return dm.Docmap.decode(x)
   })
-  isRightArray(t, v, 2, (arr => {
+  isRightArray(t, v, 2, (arr) => {
     t.deepEqual(arr[0]?.['@context'], 'https://w3id.org/docmaps/context.jsonld')
-  }))
+  })
 })
 
 test('Codec inserts missing @context key for Docmap', (t) => {
   const v = ex.elife.Docmap.flatMap((x) => {
-    const {
-      ['@context']: _,
-      ...stripped
-    } = x
+    const { ['@context']: _, ...stripped } = x
     return dm.Docmap.decode(stripped)
   })
-  isRightArray(t, v, 2, (arr => {
+  isRightArray(t, v, 2, (arr) => {
     t.deepEqual(arr[0]?.['@context'], 'https://w3id.org/docmaps/context.jsonld')
-  }))
+  })
 })

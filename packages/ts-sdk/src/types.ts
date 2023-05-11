@@ -141,7 +141,7 @@ export const Docmap = t.intersection([
     // only one legal value, and fill it if absent
     '@context': fromNullable(
       t.literal('https://w3id.org/docmaps/context.jsonld'),
-      'https://w3id.org/docmaps/context.jsonld'
+      'https://w3id.org/docmaps/context.jsonld',
     ),
     type: arrayOrOneOf([
       // TODO support something where docmaps: is prefixed
