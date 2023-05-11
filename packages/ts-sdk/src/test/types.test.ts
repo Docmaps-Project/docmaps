@@ -1,19 +1,23 @@
 import test, { ExecutionContext } from 'ava'
 import { PartialExamples as ex } from './__fixtures__'
 import * as dm from '../types'
-import { Either, isRight } from 'fp-ts/lib/Either'
+import * as E from 'fp-ts/lib/Either'
 import util from 'util'
+import { pipe } from 'fp-ts/lib/pipeable'
 
-function isRightArray(t: ExecutionContext, arr: Either<unknown, any>[], len: number) {
+function isRightArray<T>(
+  t: ExecutionContext,
+  arr: E.Either<unknown, T>[],
+  len: number,
+  proc?: (_a: readonly T[]) => void) {
   t.is(arr.length, len)
 
-  arr.map((a) => {
-    if (isRight(a)) {
-      t.pass()
-    } else {
-      t.fail(`Error parsing: ${util.inspect(a.left, { depth: 18 })}`)
-    }
-  })
+  pipe(
+    arr,
+    E.sequenceArray,
+    E.mapLeft((e) => t.fail(`Error parsing: ${util.inspect(e, { depth: 18 })}`)),
+    E.map(proc || (() => {}))
+  )
 }
 
 test('Codec parsing DocmapOnlineAccount', (t) => {
@@ -83,5 +87,20 @@ test('Codec parsing Docmap', (t) => {
   const v = ex.elife.Docmap.flatMap((x) => {
     return dm.Docmap.decode(x)
   })
-  isRightArray(t, v, 2)
+  isRightArray(t, v, 2, (arr => {
+    t.deepEqual(arr[0]?.['@context'], 'https://w3id.org/docmaps/context.jsonld')
+  }))
+})
+
+test('Codec inserts missing @context key for Docmap', (t) => {
+  const v = ex.elife.Docmap.flatMap((x) => {
+    const {
+      ['@context']: _,
+      ...stripped
+    } = x
+    return dm.Docmap.decode(stripped)
+  })
+  isRightArray(t, v, 2, (arr => {
+    t.deepEqual(arr[0]?.['@context'], 'https://w3id.org/docmaps/context.jsonld')
+  }))
 })
