@@ -1,6 +1,6 @@
 {
   "name": "@docmaps/etl",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "ETL tool for Docmaps",
   "type": "module",
   "main": "dist/index.js",
