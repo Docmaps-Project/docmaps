@@ -15,6 +15,9 @@
     "prepare": "tsc --declaration",
     "build": "tsc"
   },
+  "bin": {
+    "docmaps-etl": "dist/cli.js"
+  },
   "keywords": [],
   "author": "eve github.com/ships",
   "license": "ISC",

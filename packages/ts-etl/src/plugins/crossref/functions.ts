@@ -149,13 +149,9 @@ export function stepArrayToDocmap(
       'first-step': '_:b0',
       steps: r,
     })),
-    E.chain((b) => pipe(
-      b,
-      D.Docmap.decode,
-      mapLeftToUnknownError,
-    )),
+    E.chain((b) => pipe(b, D.Docmap.decode, mapLeftToUnknownError)),
     // requires to output Array of docmap
-    E.map((d) => [d])
+    E.map((d) => [d]),
   )
 }
 
