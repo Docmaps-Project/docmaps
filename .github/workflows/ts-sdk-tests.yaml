@@ -6,6 +6,9 @@ on:
   workflow_dispatch:
   workflow_call:
 
+env:
+  PKG_DIR: "packages/ts-sdk"
+
 jobs:
   nodejs_test:
     runs-on: ubuntu-latest
@@ -33,33 +36,32 @@ jobs:
         id: pnpm-cache
         shell: bash
         run: |
-          cd packages/ts-sdk;
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v3
         name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('packages/ts-sdk/pnpm-lock.yaml') }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('${{env.PKG_DIR}}/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
         run: |
-          cd packages/ts-sdk;
+          cd ${{env.PKG_DIR}} ;
           pnpm install;
 
       - name: Verify builds
         run: |
-          cd packages/ts-sdk;
+          cd ${{env.PKG_DIR}} ;
           pnpm build;
 
       - name: Test
         run: |
-          cd packages/ts-sdk;
+          cd ${{env.PKG_DIR}} ;
           pnpm test;
 
       - name: Lint Check
         run: |
-          cd packages/ts-sdk;
+          cd ${{env.PKG_DIR}} ;
           pnpm lint;
