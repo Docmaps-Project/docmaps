@@ -19,11 +19,11 @@ function arrayOrOneOf(literalStrings: string[]) {
 }
 
 export const ContextUpsert = {
-    // only one legal value, and fill it if absent
-    '@context': fromNullable(
-      t.literal('https://w3id.org/docmaps/context.jsonld'),
-      'https://w3id.org/docmaps/context.jsonld',
-    ),
+  // only one legal value, and fill it if absent
+  '@context': fromNullable(
+    t.literal('https://w3id.org/docmaps/context.jsonld'),
+    'https://w3id.org/docmaps/context.jsonld',
+  ),
 }
 
 export const OnlineAccount = t.intersection([
