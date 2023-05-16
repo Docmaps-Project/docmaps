@@ -2,6 +2,7 @@
   "extends": "@tsconfig/node-lts-strictest-esm/tsconfig.json",
   "compilerOptions": {
     "module": "esnext",
+    "isolatedModules": true,
     "target": "ES2020",
     "esModuleInterop": true,
     "moduleResolution": "node",
