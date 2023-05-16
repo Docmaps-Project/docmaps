@@ -10,7 +10,6 @@ on:
   push:
     branches:
       - main
-      - ships/add-etl-cli
 
 env:
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
