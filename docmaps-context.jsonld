@@ -103,8 +103,6 @@
             "@id": "fabio:hasURL",
             "@type": "xsd:anyURI"
         },
-        "review-article": "fabio:ReviewArticle",
-        "web-page": "fabio:WebPage",
         "participants": {
             "@id": "pro:isDocumentContextFor",
             "@container": "@set",
@@ -155,6 +153,10 @@
             "@id": "frbr:realizationOf",
             "@type": "@id"
         },
+        "review-article": "fabio:ReviewArticle",
+        "journal-article": "fabio:JournalArticle",
+        "review": "fabio:Review",
+        "web-page": "fabio:WebPage",
         "reply": "fabio:Reply",
         "evaluation-summary": "fabio:ExecutiveSummary",
         "comment": "fabio:Comment",
