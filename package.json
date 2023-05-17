@@ -4,7 +4,10 @@
   "version": "0.1.0",
   "description": "Top-level Docmaps specification module -- not intended for direct npm consumption.",
   "scripts": {
-    "test": "npx node scripts/package-tests.js"
+    "clean": "manypkg exec $npm_execpath run clean && rm -rf node_modules",
+    "test": "node scripts/package-tests.js",
+    "test:packages": "manypkg exec $npm_execpath test",
+    "test:all": "$npm_execpath run test && $npm_execpath run test:packages"
   },
   "author": "early evening @ships",
   "license": "MTI",
