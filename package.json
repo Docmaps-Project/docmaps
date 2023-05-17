@@ -9,23 +9,13 @@
   "author": "early evening @ships",
   "license": "MTI",
   "dependencies": {
+    "@manypkg/cli": "^0.20.0",
     "@rdfjs/formats-common": "^3.1.0",
     "@rdfjs/parser-jsonld": "^2.1.0",
     "@rdfjs/parser-n3": "^2.0.1",
     "@rdfjs/serializer-turtle": "^1.1.1",
+    "multi-semantic-release": "^3.0.2",
     "rdf-ext": "^2.2.0",
     "rdf-validate-shacl": "^0.4.5"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.21.8",
-    "@babel/preset-env": "^7.21.5",
-    "@babel/preset-typescript": "^7.21.5",
-    "@preconstruct/cli": "^2.6.4",
-    "multi-semantic-release": "^3.0.2"
-  },
-  "preconstruct": {
-    "packages": [
-      "packages/*"
-    ]
   }
 }
