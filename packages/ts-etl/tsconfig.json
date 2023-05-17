@@ -3,6 +3,7 @@
   "noErrorTruncation": true,
   "compilerOptions": {
     "noErrorTruncation": true,
+    "isolatedModules": true,
     "module": "esnext",
     "target": "ES2020",
     "esModuleInterop": true,
