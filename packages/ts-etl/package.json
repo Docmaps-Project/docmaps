@@ -13,7 +13,7 @@
     "start": "node --loader=ts-node/esm --experimental-specifier-resolution=node --nolazy -r ts-node/register/transpile-only src/cli.ts",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
-    "prepare": "ava test/unit/",
+    "prepublishOnly": "ls -la dist/docmaps-etl.cjs.js",
     "build": "tsc"
   },
   "bin": {

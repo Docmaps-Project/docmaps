@@ -15,7 +15,7 @@
     "lint:fix": "npx eslint --fix .",
     "clean": "rm -rf dist/ node_modules/",
     "build": "tsc",
-    "prepare": "ava src/test/"
+    "prepublishOnly": "ls -la dist/docmaps-sdk.cjs.js"
   },
   "keywords": [],
   "author": "",
