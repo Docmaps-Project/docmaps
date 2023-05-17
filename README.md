@@ -18,6 +18,9 @@ cross-package behavior, such as release automation.
 **Releases and tags:** Github Actions uses [multi-semantic-release](https://github.com/dhoulb/multi-semantic-release) to automatically generate semvers based on commit history for each package in the repository. Multiple tags
 are generated for a single commit if it updates multiple packages.
 
+The packages are themselves distributed each from its own `dist/` folder, but
+that folder is built by `preconstruct build` run in the workspace root at release time.
+
 ## Persistent URLs
 
 Documentation: https://w3id.org/docmaps

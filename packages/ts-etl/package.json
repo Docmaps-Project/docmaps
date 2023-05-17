@@ -3,7 +3,8 @@
   "version": "0.1.2",
   "description": "ETL tool for Docmaps",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/docmaps-etl.cjs.js",
+  "module": "dist/docmaps-etl.esm.js",
   "scripts": {
     "test": "ava",
     "clean": "rm -rf dist/",
@@ -12,7 +13,7 @@
     "start": "node --loader=ts-node/esm --experimental-specifier-resolution=node --nolazy -r ts-node/register/transpile-only src/cli.ts",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
-    "prepare": "tsc --declaration",
+    "prepublishOnly": "ls -la dist/docmaps-etl.cjs.js",
     "build": "tsc"
   },
   "bin": {
