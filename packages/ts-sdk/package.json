@@ -5,17 +5,16 @@
   "homepage": "https://github.com/Docmaps-Project/docmaps/tree/main/packages/ts-sdk",
   "description": "",
   "type": "module",
-  "main": "dist/docmaps-sdk.cjs.js",
-  "module": "dist/docmaps-sdk.esm.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "ava",
     "debug": "node --loader=ts-node/esm --experimental-specifier-resolution=node --nolazy -r ts-node/register/transpile-only --inspect-brk src/debuggable.ts",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
-    "clean": "rm -rf dist/ node_modules/",
+    "clean": "rm -rf dist/",
     "build": "tsc",
-    "prepublishOnly": "ls -la dist/docmaps-sdk.cjs.js"
+    "prepare": "tsc --declaration"
   },
   "keywords": [],
   "author": "",

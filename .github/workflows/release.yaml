@@ -70,6 +70,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          pnpm preconstruct build
-          npx multi-semantic-release
+        run: npx multi-semantic-release
