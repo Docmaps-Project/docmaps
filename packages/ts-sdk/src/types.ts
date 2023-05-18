@@ -95,6 +95,10 @@ export const ThingType = arrayOrOneOf([
   'review',
   'review-article',
   'author-response',
+  'journal-article',
+  'editorial',
+  'comment',
+  'reply',
 ])
 
 // TODO - now that we have Types, we could do more assertive

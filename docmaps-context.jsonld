@@ -155,6 +155,7 @@
         },
         "review-article": "fabio:ReviewArticle",
         "journal-article": "fabio:JournalArticle",
+        "preprint": "fabio:Preprint",
         "review": "fabio:Review",
         "web-page": "fabio:WebPage",
         "reply": "fabio:Reply",
