@@ -94,7 +94,6 @@ export const ThingType = arrayOrOneOf([
   'evaluation-summary',
   'review',
   'review-article',
-  'author-response',
   'journal-article',
   'editorial',
   'comment',

@@ -86,7 +86,7 @@ _:b16 <http://purl.org/spar/pso/withStatus> <http://purl.org/spar/pso/> .
 <https://w3id.org/docmaps/examples/10.1101/2021.03.24.436774> <http://xmlns.com/foaf/0.1/accountServiceHomepage> "https://biorxiv.org" .
 <https://w3id.org/docmaps/examples/10.1101/2021.03.24.436774> <http://purl.org/spar/fabio/hasURL> "https://biorxiv.org/content/10.1101/2021.03.24.436774#review"^^<http://www.w3.org/2001/XMLSchema#anyURI> .
 _:b17 <http://prismstandard.org/namespaces/basic/2.0/publicationDate> "2021-12-15T21:34:56.527596+00:00"^^<http://www.w3.org/2001/XMLSchema#date> .
-_:b17 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://w3id.org/docmaps/examples/author-response> .
+_:b17 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/spar/fabio/Reply> .
 _:b17 <http://purl.org/spar/fabio/hasManifestation> <https://w3id.org/docmaps/examples/19209934> .
 _:b17 <http://purl.org/spar/fabio/hasManifestation> <https://w3id.org/docmaps/examples/2Pw-rF3uEeyeiFtWpHAokg> .
 _:b17 <http://purl.org/spar/fabio/hasManifestation> <https://w3id.org/docmaps/examples/10.1101/2021.03.24.436774> .
