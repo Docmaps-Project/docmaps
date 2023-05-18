@@ -8,6 +8,7 @@ importers:
       '@rdfjs/formats-common': ^3.1.0
       '@rdfjs/parser-jsonld': ^2.1.0
       '@rdfjs/parser-n3': ^2.0.1
+      '@rdfjs/serializer-ntriples': ^2.0.0
       '@rdfjs/serializer-turtle': ^1.1.1
       multi-semantic-release: ^3.0.2
       rdf-ext: ^2.2.0
@@ -17,6 +18,7 @@ importers:
       '@rdfjs/formats-common': 3.1.0
       '@rdfjs/parser-jsonld': 2.1.0
       '@rdfjs/parser-n3': 2.0.1
+      '@rdfjs/serializer-ntriples': 2.0.0
       '@rdfjs/serializer-turtle': 1.1.1
       multi-semantic-release: 3.0.2
       rdf-ext: 2.2.0
