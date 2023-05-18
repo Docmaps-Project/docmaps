@@ -91,9 +91,7 @@ function stepsForDoiRecursive(
             ...initialChain.head,
             inputs: meta.reduce<D.ThingT[]>(
               (memo, c) =>
-                memo.concat(
-                  c.head.actions.reduce<D.ThingT[]>((m, a) => m.concat(a.outputs), []),
-                ),
+                memo.concat(c.head.actions.reduce<D.ThingT[]>((m, a) => m.concat(a.outputs), [])),
               [],
             ),
           }
