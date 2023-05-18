@@ -52,14 +52,14 @@ const el_dm_actor = el_dm_role.map((r) => r['actor'] || [])
 export const PartialExamples = {
   elife: {
     Docmap: el_dm,
-    DocmapPublisher: el_dm_publisher,
-    DocmapOnlineAccount: el_dm_acc,
-    DocmapStep: el_dm_step,
-    DocmapAction: el_dm_action,
-    DocmapAssertion: el_dm_assertion,
-    DocmapThing: el_dm_thing,
-    DocmapActor: el_dm_actor,
-    DocmapRoleInTime: el_dm_role,
-    DocmapManifestation: el_dm_mani,
+    Publisher: el_dm_publisher,
+    OnlineAccount: el_dm_acc,
+    Step: el_dm_step,
+    Action: el_dm_action,
+    Assertion: el_dm_assertion,
+    Thing: el_dm_thing,
+    Actor: el_dm_actor,
+    RoleInTime: el_dm_role,
+    Manifestation: el_dm_mani,
   },
 }

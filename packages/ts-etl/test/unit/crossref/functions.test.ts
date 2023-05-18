@@ -3,7 +3,7 @@ import * as cm from '../__fixtures__/crossref'
 import * as E from 'fp-ts/lib/Either'
 import { inspect } from 'util'
 import * as F from '../../../src/plugins/crossref/functions'
-import type { DocmapActionT } from 'docmaps-sdk'
+import type { ActionT } from 'docmaps-sdk'
 
 function rightOrInspectError<T>(
   t: ExecutionContext,
@@ -31,7 +31,7 @@ test('decodeActionForWork: no authors', async (t) => {
   t.true(
     rightOrInspectError(
       t,
-      (action: DocmapActionT) => {
+      (action: ActionT) => {
         t.is(action.outputs[0]?.doi, 'mock.decodeAction')
         t.deepEqual(action.participants, [])
       },
@@ -55,7 +55,7 @@ test('decodeActionForWork: with authors', async (t) => {
   t.true(
     rightOrInspectError(
       t,
-      (action: DocmapActionT) => {
+      (action: ActionT) => {
         t.is(action.outputs[0]?.doi, 'mock.decodeAction')
         t.is(action.participants[0]?.role, 'author')
         t.is(action.participants[1]?.role, 'author')

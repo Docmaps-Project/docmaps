@@ -9,7 +9,7 @@ const g = new TypedGraph(factory)
 test('Graph Extraction of a Manifestation', async (t) => {
   const mf = (await g.pickStream(OneManifestationQuadstore(), {
     type: 'web-page', // selects the Publisher
-  })) as DocmapsTypes.DocmapManifestationT
+  })) as DocmapsTypes.ManifestationT
 
   t.is(mf.id, 'https://w3id.org/docmaps/examples/manifestation')
   t.is(mf.service?.hostname, 'w3id.org')
@@ -63,7 +63,7 @@ test('Parsing JSONLD from concrete embo examples', async (t) => {
 // test('Graph Extraction of a publisher', async (t) => {
 //   const pub = await g.pickStream(OnePublisherQuadstore(), {
 //     'type': "foaf:organization", // selects the Publisher
-//   }) as DocmapsTypes.DocmapPublisherT;
+//   }) as DocmapsTypes.PublisherT;
 //
 //   t.is(pub.id, 'https://w3id.org/docmaps/examples/publisher');
 //   t.is(pub.name, 'Example Publisher');

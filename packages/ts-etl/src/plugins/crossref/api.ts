@@ -22,8 +22,8 @@ export const Client = CreateCrossrefClient({})
 // for now without going all the way to a graphy representation
 // in this procedure.
 type RecursiveStepDataChain = {
-  head: D.DocmapStepT
-  all: D.DocmapStepT[]
+  head: D.StepT
+  all: D.StepT[]
 }
 
 function stepsForDoiRecursive(
@@ -56,7 +56,7 @@ function stepsForDoiRecursive(
             },
           ],
         })),
-        E.chain((action) => pipe(D.DocmapStep.decode(action), mapLeftToUnknownError)),
+        E.chain((action) => pipe(D.Step.decode(action), mapLeftToUnknownError)),
         E.map((s) => ({
           all: [s],
           head: s,
@@ -89,10 +89,10 @@ function stepsForDoiRecursive(
 
           const newStep = {
             ...initialChain.head,
-            inputs: meta.reduce<D.DocmapThingT[]>(
+            inputs: meta.reduce<D.ThingT[]>(
               (memo, c) =>
                 memo.concat(
-                  c.head.actions.reduce<D.DocmapThingT[]>((m, a) => m.concat(a.outputs), []),
+                  c.head.actions.reduce<D.ThingT[]>((m, a) => m.concat(a.outputs), []),
                 ),
               [],
             ),
@@ -100,7 +100,7 @@ function stepsForDoiRecursive(
 
           return {
             head: newStep,
-            all: meta.reduce<D.DocmapStepT[]>((m, c) => m.concat(c.all), []).concat([newStep]),
+            all: meta.reduce<D.StepT[]>((m, c) => m.concat(c.all), []).concat([newStep]),
           }
         }),
       )
@@ -133,7 +133,7 @@ function stepsForDoiRecursive(
             },
           ],
         })),
-        TE.chainEitherK((rs) => mapLeftToUnknownError(D.DocmapStep.decode(rs))),
+        TE.chainEitherK((rs) => mapLeftToUnknownError(D.Step.decode(rs))),
         TE.map((reviewStep) => ({
           head: prefixChain.head,
           all: prefixChain.all.concat([reviewStep]),
@@ -148,7 +148,7 @@ function stepsForDoiRecursive(
 
 export async function fetchPublicationByDoi(
   client: CrossrefClient,
-  publisher: D.DocmapPublisherT,
+  publisher: D.PublisherT,
   inputDoi: string,
 ): Promise<ErrorOrDocmap> {
   const resultTask = pipe(
@@ -172,7 +172,7 @@ export async function fetchPublicationByDoi(
 export function actionForReviewDOI(
   client: CrossrefClient,
   doi: string,
-): TE.TaskEither<Error, D.DocmapActionT> {
+): TE.TaskEither<Error, D.ActionT> {
   const service = client.works
   return pipe(
     TE.tryCatch(
