@@ -4,8 +4,6 @@ import * as A from 'fp-ts/lib/Array'
 import type { ErrorOrDocmap } from '../../types'
 import { pipe } from 'fp-ts/lib/pipeable'
 import * as D from 'docmaps-sdk'
-import { ContextUpsert } from 'docmaps-sdk'
-
 
 /**
  * Mappings from strings used in Crossref that are not in Docmaps semantics.
