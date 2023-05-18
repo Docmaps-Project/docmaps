@@ -22,7 +22,7 @@ function nameForAuthor(a: { family: string; name?: string; given?: string }): st
   return a.name || (a.given ? `${a.family}, ${a.given}` : a.family)
 }
 
-export function decodeActionForWork(work: Work): E.Either<Error, D.DocmapActionT> {
+export function decodeActionForWork(work: Work): E.Either<Error, D.ActionT> {
   return pipe(
     E.Do,
     // prepare the Thing which will be output
@@ -35,7 +35,7 @@ export function decodeActionForWork(work: Work): E.Either<Error, D.DocmapActionT
           type: 'person',
           name: nameForAuthor(a),
         })),
-        E.traverseArray((a) => mapLeftToUnknownError(D.DocmapActor.decode(a))),
+        E.traverseArray((a) => mapLeftToUnknownError(D.Actor.decode(a))),
         E.map((auths) =>
           auths.map((a) => ({
             actor: a,
@@ -51,7 +51,7 @@ export function decodeActionForWork(work: Work): E.Either<Error, D.DocmapActionT
           participants: wa,
           outputs: [wo],
         },
-        D.DocmapAction.decode,
+        D.Action.decode,
         mapLeftToUnknownError,
       ),
     ),
@@ -71,9 +71,9 @@ export function decodeActionForWork(work: Work): E.Either<Error, D.DocmapActionT
  * This is an awkward moment that breaks some of the functional abstraction (see comments).
  */
 export function stepArrayToDocmap(
-  publisher: D.DocmapPublisherT,
+  publisher: D.PublisherT,
   inputDoi: string,
-  [firstStep, ...steps]: D.DocmapStepT[],
+  [firstStep, ...steps]: D.StepT[],
 ): ErrorOrDocmap {
   // TODO: extract this logic
   const dm_id = `https://docmaps-project.github.io/ex/docmap_for/${inputDoi}`
@@ -103,7 +103,7 @@ export function stepArrayToDocmap(
   // this reduction takes advantage of the fact that we have separated the firstStep
   // from the ...steps argument, because the first & last step is only singly linked
   //   (see the last argument to #reduce).
-  const reduction = steps.reduce<E.Either<Error, Record<string, D.DocmapStepT>>>(
+  const reduction = steps.reduce<E.Either<Error, Record<string, D.StepT>>>(
     (memo, next) => {
       if (E.isLeft(memo)) {
         return memo //cascade all errors

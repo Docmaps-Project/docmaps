@@ -18,7 +18,7 @@ function arrayOrOneOf(literalStrings: string[]) {
   return t.union([t.array(literals), literals])
 }
 
-export const DocmapOnlineAccount = t.intersection([
+export const OnlineAccount = t.intersection([
   t.type({
     id: t.string,
     // TODO: is actually a `foaf:onlineaccount`, but that is not specified in the JSON_LD. TBD whetehr that would be enough of a constraint.
@@ -29,7 +29,7 @@ export const DocmapOnlineAccount = t.intersection([
   }),
 ])
 
-export const DocmapPublisher = t.intersection([
+export const Publisher = t.intersection([
   t.type({
     // TODO this is not so useful as partial-only
   }),
@@ -41,11 +41,11 @@ export const DocmapPublisher = t.intersection([
     name: t.string,
     homepage: UrlFromString,
     url: UrlFromString,
-    account: DocmapOnlineAccount,
+    account: OnlineAccount,
   }),
 ])
 
-export const DocmapManifestation = t.intersection([
+export const Manifestation = t.intersection([
   t.type({
     // TODO: this looks like it might need to be an AnyType or something. Manifestations are extensive.
     type: arrayOrOneOf([
@@ -59,7 +59,7 @@ export const DocmapManifestation = t.intersection([
   }),
 ])
 
-export const DocmapActor = t.union([
+export const Actor = t.union([
   t.type({
     type: arrayOrOneOf(['person']),
     name: t.string,
@@ -68,9 +68,9 @@ export const DocmapActor = t.union([
   t.unknown,
 ])
 
-export const DocmapRoleInTime = t.intersection([
+export const RoleInTime = t.intersection([
   t.type({
-    actor: DocmapActor,
+    actor: Actor,
     // TODO: this may need to be more specific to the RoleInTimes.
     role: t.string,
   }),
@@ -80,7 +80,7 @@ export const DocmapRoleInTime = t.intersection([
   }),
 ])
 
-export const DocmapThing = t.intersection([
+export const Thing = t.intersection([
   t.type({
     // TODO this is not so useful as partial-only
   }),
@@ -91,14 +91,14 @@ export const DocmapThing = t.intersection([
     id: t.string,
     doi: t.string,
     type: t.union([t.array(t.string), t.string]), // TODO this Type can be more specific ('web-page', 'preprint', etc)
-    content: t.array(DocmapManifestation),
+    content: t.array(Manifestation),
   }),
 ])
 
-export const DocmapAction = t.intersection([
+export const Action = t.intersection([
   t.type({
-    outputs: t.array(DocmapThing),
-    participants: t.array(DocmapRoleInTime),
+    outputs: t.array(Thing),
+    participants: t.array(RoleInTime),
   }),
   t.partial({
     // TODO - this will probably be an independently-publishable thing and id should not be optional.
@@ -106,25 +106,25 @@ export const DocmapAction = t.intersection([
   }),
 ])
 
-const DocmapStatus = t.string
+const Status = t.string
 
-export const DocmapAssertion = t.intersection([
+export const Assertion = t.intersection([
   t.type({
     item: t.unknown,
-    status: DocmapStatus,
+    status: Status,
   }),
   t.partial({
     happened: DateFromUnknown,
   }),
 ])
 
-export const DocmapStep = t.intersection([
+export const Step = t.intersection([
   t.type({
-    actions: t.array(DocmapAction),
-    inputs: t.array(DocmapThing),
+    actions: t.array(Action),
+    inputs: t.array(Thing),
 
     // TODO: make this smarter
-    assertions: t.array(DocmapAssertion),
+    assertions: t.array(Assertion),
   }),
   t.partial({
     id: t.string,
@@ -152,28 +152,28 @@ export const Docmap = t.intersection([
       'Docmap',
       'https://w3id.org/docmaps/v0/Docmap',
     ]),
-    publisher: DocmapPublisher,
+    publisher: Publisher,
     // TODO: required contents of these date strings,
     created: DateFromUnknown,
   }),
   t.partial({
-    steps: t.record(t.string, DocmapStep),
+    steps: t.record(t.string, Step),
     'first-step': t.string,
     updated: DateFromUnknown,
   }),
 ])
 
 export type IRI = string
-export type DocmapPublisherT = t.TypeOf<typeof DocmapPublisher>
-export type DocmapOnlineAccountT = t.TypeOf<typeof DocmapOnlineAccount>
-export type DocmapManifestationT = t.TypeOf<typeof DocmapManifestation>
-export type DocmapStepT = t.TypeOf<typeof DocmapStep>
+export type PublisherT = t.TypeOf<typeof Publisher>
+export type OnlineAccountT = t.TypeOf<typeof OnlineAccount>
+export type ManifestationT = t.TypeOf<typeof Manifestation>
+export type StepT = t.TypeOf<typeof Step>
 export type DocmapT = t.TypeOf<typeof Docmap>
-export type DocmapActionT = t.TypeOf<typeof DocmapAction>
-export type DocmapThingT = t.TypeOf<typeof DocmapThing>
-export type DocmapRoleInTimeT = t.TypeOf<typeof DocmapRoleInTime>
-export type DocmapActorT = t.TypeOf<typeof DocmapActor>
-export type DocmapAssertionT = t.TypeOf<typeof DocmapAssertion>
+export type ActionT = t.TypeOf<typeof Action>
+export type ThingT = t.TypeOf<typeof Thing>
+export type RoleInTimeT = t.TypeOf<typeof RoleInTime>
+export type ActorT = t.TypeOf<typeof Actor>
+export type AssertionT = t.TypeOf<typeof Assertion>
 
 /**  DocmapsFactory
  *
@@ -181,7 +181,7 @@ export type DocmapAssertionT = t.TypeOf<typeof DocmapAssertion>
  *  This is only used in the Typed Graph Extraction code.
  */
 export const DocmapsFactory = {
-  'web-page': DocmapManifestation,
+  'web-page': Manifestation,
   docmap: Docmap,
   'https://w3id.org/docmaps/v0/Docmap': Docmap,
   Docmap: Docmap,

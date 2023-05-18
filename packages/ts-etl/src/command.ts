@@ -1,6 +1,6 @@
 import type { CrossrefClient } from 'crossref-openapi-client-ts'
 import { Command, Option } from '@commander-js/extra-typings'
-import { DocmapPublisher, DocmapPublisherT } from 'docmaps-sdk'
+import { Publisher, PublisherT } from 'docmaps-sdk'
 import { isLeft, right } from 'fp-ts/lib/Either'
 
 import * as crossref from './plugins/crossref'
@@ -52,7 +52,7 @@ export function MakeCli() {
     .option('--publisher.homepage <homepage>', 'homepage of publisher of docmaps to generate (you)')
     .option('--publisher.logo <logo>', 'logo of publisher of docmaps to generate (you)')
     .action(async (doi, options) => {
-      const pub = DocmapPublisher.decode({
+      const pub = Publisher.decode({
         id: options['publisher.id'],
         name: options['publisher.name'],
         homepage: options['publisher.homepage'],
@@ -124,7 +124,7 @@ export interface CrossrefConfiguration {
  */
 export interface ItemOpts {
   source: CrossrefConfiguration
-  publisher: DocmapPublisherT
+  publisher: PublisherT
 }
 
 /**
