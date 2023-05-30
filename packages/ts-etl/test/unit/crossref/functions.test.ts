@@ -32,7 +32,7 @@ test('decodeActionForWork: type mappings: posted-content -> preprint', async (t)
   t.true(
     rightOrInspectError(
       t,
-      (action: DocmapActionT) => {
+      (action: ActionT) => {
         t.is(action.outputs[0]?.doi, 'mock.decodeAction')
         t.is(action.outputs[0]?.type, 'preprint')
         t.deepEqual(action.participants, [])
