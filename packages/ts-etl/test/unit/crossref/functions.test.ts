@@ -19,11 +19,35 @@ function rightOrInspectError<T>(
   return true
 }
 
+test('decodeActionForWork: type mappings: posted-content -> preprint', async (t) => {
+  const result = F.decodeActionForWork({
+    ...cm.GENERIC_WORK_DATA,
+    DOI: 'mock.decodeAction',
+    prefix: 'mock',
+    type: 'posted-content',
+    URL: 'none',
+    author: [],
+  })
+
+  t.true(
+    rightOrInspectError(
+      t,
+      (action: ActionT) => {
+        t.is(action.outputs[0]?.doi, 'mock.decodeAction')
+        t.is(action.outputs[0]?.type, 'preprint')
+        t.deepEqual(action.participants, [])
+      },
+      result,
+    ),
+  )
+})
+
 test('decodeActionForWork: no authors', async (t) => {
   const result = F.decodeActionForWork({
     ...cm.GENERIC_WORK_DATA,
     DOI: 'mock.decodeAction',
     prefix: 'mock',
+    type: 'preprint',
     URL: 'none',
     author: [],
   })
@@ -46,6 +70,7 @@ test('decodeActionForWork: with authors', async (t) => {
     DOI: 'mock.decodeAction',
     prefix: 'mock',
     URL: 'none',
+    type: 'preprint',
     author: [
       { family: 'name', affiliation: [], sequence: 'mockseq' },
       { family: 'fam', given: 'first', affiliation: [], sequence: 'mockseq' },

@@ -162,7 +162,7 @@
                 "outputs": [
                   {
                     "published": "2021-12-15T21:34:56.527596+00:00",
-                    "type": "reply",
+                    "type": "author-response",
                     "uri": "https://eeb.embo.org/api/v2/review_material/19209934",
                     "content": [
                       {

@@ -18,6 +18,14 @@ function arrayOrOneOf(literalStrings: string[]) {
   return t.union([t.array(literals), literals])
 }
 
+export const ContextUpsert = {
+  // only one legal value, and fill it if absent
+  '@context': fromNullable(
+    t.literal('https://w3id.org/docmaps/context.jsonld'),
+    'https://w3id.org/docmaps/context.jsonld',
+  ),
+}
+
 export const OnlineAccount = t.intersection([
   t.type({
     id: t.string,
@@ -80,17 +88,29 @@ export const RoleInTime = t.intersection([
   }),
 ])
 
+export const ThingType = arrayOrOneOf([
+  'review',
+  'preprint',
+  'evaluation-summary',
+  'review',
+  'review-article',
+  'journal-article',
+  'editorial',
+  'comment',
+  'reply',
+])
+
+// TODO - now that we have Types, we could do more assertive
+// shaping based on a given Type value implying certain fields must exist
 export const Thing = t.intersection([
   t.type({
     // TODO this is not so useful as partial-only
   }),
   t.partial({
-    // TODO use DateFromString for better parsing:
-    //    https://github.com/gcanti/io-ts/blob/dedb64e05328417ecd3d87e00008d9e72130374a/index.md#custom-types
     published: DateFromUnknown,
     id: t.string,
     doi: t.string,
-    type: t.union([t.array(t.string), t.string]), // TODO this Type can be more specific ('web-page', 'preprint', etc)
+    type: ThingType,
     content: t.array(Manifestation),
   }),
 ])
@@ -137,12 +157,8 @@ export const Step = t.intersection([
 //   and any other value-dependent type rules
 export const Docmap = t.intersection([
   t.type({
+    ...ContextUpsert,
     id: t.string,
-    // only one legal value, and fill it if absent
-    '@context': fromNullable(
-      t.literal('https://w3id.org/docmaps/context.jsonld'),
-      'https://w3id.org/docmaps/context.jsonld',
-    ),
     type: arrayOrOneOf([
       // TODO support something where docmaps: is prefixed
       // t.literal('docmaps:docmap'),

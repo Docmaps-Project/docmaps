@@ -14,6 +14,7 @@ const TEST_EXAMPLES = [
   // TODO : generate these .NT files from JSON-LD as part of testing, or stream the content directly in
   `${ROOT_DIR}/examples/docmaps-example-embo-01.jsonld.nt`,
   `${ROOT_DIR}/examples/docmaps-example-elife-01.jsonld.nt`,
+  `${ROOT_DIR}/examples/docmaps-example-elife-02.jsonld.nt`,
   `${ROOT_DIR}/examples/docmaps-example-biorxiv-01.jsonld.nt`,
 ]
 

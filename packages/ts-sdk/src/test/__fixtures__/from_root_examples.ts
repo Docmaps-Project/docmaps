@@ -20,6 +20,7 @@ export const FromRootExamples = {
   biorxiv_01_jsonld: loadDataset('../../examples/docmaps-example-biorxiv-01.jsonld'),
   // TODO - note the difference in structure of the response here
   elife_01_jsonld: loadDataset('../../examples/docmaps-example-elife-01.jsonld')[0],
+  elife_02_jsonld: loadDataset('../../examples/docmaps-example-elife-02.jsonld')[0],
   // TODO - note the difference in structure of the response here
   embo_01_jsonld: loadDataset('../../examples/docmaps-example-embo-01.jsonld')['@graph'][0][
     'docmap'
@@ -28,6 +29,7 @@ export const FromRootExamples = {
 
 const el_dm = [
   FromRootExamples.elife_01_jsonld,
+  FromRootExamples.elife_02_jsonld,
 
   // TODO we are unable to currently assert on the bioRxiv example due to malformation:
   //      - the RoleInTime puts the Role under the Actor rather than sibling to

@@ -52,7 +52,6 @@ export const GENERIC_WORK_DATA = {
     'crossmark-restriction': false,
   },
   publisher: 'Test publisher',
-  type: 'work',
   created: TEST_DATE,
   prefix: '10',
 }
@@ -68,6 +67,7 @@ const PreprintItemBody = {
       },
     ],
   },
+  type: 'preprint',
   URL: `https://doi.org/${PREPRINT_DOI}`,
   // unimportant values for this test
   DOI: PREPRINT_DOI,
@@ -103,6 +103,7 @@ export const mockCrossrefManuscriptResponse: WorkMessage = {
     ...GENERIC_WORK_DATA,
     URL: `https://doi.org/${MANUSCRIPT_DOI}`,
     DOI: MANUSCRIPT_DOI,
+    type: 'journal-article',
     relation: {},
   },
 }
@@ -115,6 +116,7 @@ export const mockCrossrefManuscriptWithPreprintResponse: WorkMessage = {
     ...GENERIC_WORK_DATA,
     URL: `https://doi.org/${MANUSCRIPT_DOI}`,
     DOI: MANUSCRIPT_DOI,
+    type: 'journal-article',
     relation: {
       'has-preprint': [
         {
@@ -135,6 +137,7 @@ export const mockCrossrefManuscriptWithReviewsResponse: WorkMessage = {
     ...GENERIC_WORK_DATA,
     URL: `https://doi.org/${MANUSCRIPT_DOI}`,
     DOI: MANUSCRIPT_DOI,
+    type: 'journal-article',
     relation: {
       'has-review': [
         {
@@ -161,6 +164,7 @@ export const mockCrossrefReviewsResponses: WorkMessage[] = [REVIEW_1_DOI, REVIEW
       ...GENERIC_WORK_DATA,
       URL: `https://doi.org/${doi}`,
       DOI: doi,
+      type: 'review',
       relation: {
         'is-review-of': [
           {
@@ -190,6 +194,7 @@ export const mockCrossrefReviewsResponse: WorksMessage = {
         ...GENERIC_WORK_DATA,
         DOI: REVIEW_1_DOI,
         URL: `http://dx.doi.org/{REVIEW_1_DOI}`,
+        type: 'review',
         relation: {
           'is-review-of': [
             {
@@ -204,6 +209,7 @@ export const mockCrossrefReviewsResponse: WorksMessage = {
         ...GENERIC_WORK_DATA,
         DOI: REVIEW_2_DOI,
         URL: `http://dx.doi.org/{REVIEW_2_DOI}`,
+        type: 'review',
         relation: {
           'is-review-of': [
             {
