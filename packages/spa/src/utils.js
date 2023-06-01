@@ -6,7 +6,7 @@ export async function configureForDoiString(rev, str) {
 
   let config = {
     display: {
-      publisherName: name => name? "Unknown",
+      publisherName: name => name || "Unknown"
     }
   }
 

@@ -7,11 +7,11 @@
   let placeholder;
   let renderRevElement;
 
-  onMount(() => {
-    renderRevElement = document.getElementById('renderrev')
-  });
-
   async function fetchData() {
+    if (!renderRevElement) {
+      renderRevElement = document.createElement('render-rev');
+      placeholder.appendChild(renderRevElement);
+    }
     await configureForDoiString(renderRevElement, inputDoi);
   }
 </script>
@@ -26,7 +26,6 @@
   <!-- Your other markup and code -->
   <button on:click="{fetchData}">Fetch Data</button>
   <div id="result" bind:this="{placeholder}">
-    <render-rev id="renderrev" options={{display: {}}}></render-rev>
   </div>
 </main>
 
