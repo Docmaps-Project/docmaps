@@ -1,107 +1,79 @@
-# This repo is no longer maintained. Consider using `npm init vite` and selecting the `svelte` option or — if you want a full-fledged app framework — use [SvelteKit](https://kit.svelte.dev), the official application framework for Svelte.
+Docmap Visual Playground
 
----
+This Docmap visualizer is a simple stateless single-page web app that allows you to visualize a docmap based on our Crossref-to-Docmap ETL library. You can plug in any DOI, and if Crossref knows about it and it has reviews or a preprint, you'll get some interesting content back.
 
-# svelte app
+## Demo
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
+You can try the live demo hosted on GitHub Pages [here](https://docmaps-project.github.io/docmaps).
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+## Getting Started for Development
 
-```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
-```
+### Prerequisites
 
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
+- Node.js (>= 12.x)
+- pnpm package manager
 
+### Installation
 
-## Get started
-
-Install the dependencies...
+1. Clone the repository:
 
 ```bash
-cd svelte-app
-npm install
+git clone https://github.com/docmaps-project/docmaps
+cd docmaps/packages/spa
 ```
 
-...then start [Rollup](https://rollupjs.org):
+2. Install dependencies:
 
 ```bash
-npm run dev
+pnpm install
 ```
 
-Navigate to [localhost:8080](http://localhost:8080). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
+### Running the tests
 
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
-
-If you're using [Visual Studio Code](https://code.visualstudio.com/) we recommend installing the official extension [Svelte for VS Code](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode). If you are using other editors you may need to install a plugin in order to get syntax highlighting and intellisense.
-
-## Building and running in production mode
-
-To create an optimised version of the app:
+To run tests:
 
 ```bash
-npm run build
+pnpm test
 ```
 
-You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
+Note that you need an installation of Chrome, and must set
+the `CHROME_PATH` variable. If you use Chromium, it might be something like
+`/usr/local/bin/chromium`.
 
+### Running the App
 
-## Single-page app mode
-
-By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
-
-If you're building a single-page app (SPA) with multiple routes, sirv needs to be able to respond to requests for *any* path. You can make it so by editing the `"start"` command in package.json:
-
-```js
-"start": "sirv public --single"
-```
-
-## Using TypeScript
-
-This template comes with a script to set up a TypeScript development environment, you can run it immediately after cloning the template with:
+To start the development server:
 
 ```bash
-node scripts/setupTypeScript.js
+pnpm run dev
 ```
 
-Or remove the script via:
+Then navigate to `http://localhost:8080` in your browser.
 
-```bash
-rm scripts/setupTypeScript.js
-```
+### Deploying to GH Pages
 
-If you want to use `baseUrl` or `path` aliases within your `tsconfig`, you need to set up `@rollup/plugin-alias` to tell Rollup to resolve the aliases. For more info, see [this StackOverflow question](https://stackoverflow.com/questions/63427935/setup-tsconfig-path-in-svelte).
+The Github Pages is deployed from the `gh-pages` workflow in repository root. This workflow is called
+by the `release` workflow and is only triggered on merge to main. It first builds/bundles this package,
+then deploys the bundle. Note that because the repo name disagrees with the package name, the `index.html`
+is modified to use relative paths for all bundled resources.
 
-## Deploying to the web
+## Built With
 
-### With [Vercel](https://vercel.com)
+- [Svelte](https://svelte.dev/) - The web framework used
+- [render-rev](github.com/source-data/render-rev) - Display component built by EMBO
+- [pnpm](https://pnpm.io/) - The package manager
 
-Install `vercel` if you haven't already:
+## Contributing
 
-```bash
-npm install -g vercel
-```
+See the main repository contributing guidelines.
 
-Then, from within your project folder:
+## License
 
-```bash
-cd public
-vercel deploy --name my-project
-```
+See main repository license.
 
-### With [surge](https://surge.sh/)
+## Acknowledgments
 
-Install `surge` if you haven't already:
-
-```bash
-npm install -g surge
-```
-
-Then, from within your project folder:
-
-```bash
-npm run build
-surge public my-project.surge.sh
-```
+- [render-rev](github.com/source-data/render-rev)
+- [Svelte](https://svelte.dev/)
+- [pnpm](https://pnpm.io/)
+- [crossref](https://crossref.org/)
