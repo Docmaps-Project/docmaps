@@ -56,7 +56,12 @@ function stepsForDoiRecursive(
             },
           ],
         })),
-        E.chain((action) => pipe(D.Step.decode(action), mapLeftToUnknownError('decoding action in stepsForDoiRecursive'))),
+        E.chain((action) =>
+          pipe(
+            D.Step.decode(action),
+            mapLeftToUnknownError('decoding action in stepsForDoiRecursive'),
+          ),
+        ),
         E.map((s) => ({
           all: [s],
           head: s,
