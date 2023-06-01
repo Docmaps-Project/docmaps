@@ -62,7 +62,11 @@ export function decodeActionForWork(work: Work): E.Either<Error, D.ActionT> {
           type: 'person',
           name: nameForAuthor(a),
         })),
-        E.traverseArray((a) => mapLeftToUnknownError(D.Actor.decode(a))),
+        E.traverseArray((a) => pipe(
+          a,
+          D.Actor.decode,
+          mapLeftToUnknownError('decoding actor in decodeActionForWork'),
+        )),
         E.map((auths) =>
           auths.map((a) => ({
             actor: a,
@@ -79,7 +83,7 @@ export function decodeActionForWork(work: Work): E.Either<Error, D.ActionT> {
           outputs: [wo],
         },
         D.Action.decode,
-        mapLeftToUnknownError,
+        mapLeftToUnknownError('decoding action in decodeActionForWork'),
       ),
     ),
   )
@@ -99,7 +103,7 @@ export function decodeActionForWork(work: Work): E.Either<Error, D.ActionT> {
  */
 export function stepArrayToDocmap(
   publisher: D.PublisherT,
-  inputDoi: string,
+ inputDoi: string,
   [firstStep, ...steps]: D.StepT[],
 ): ErrorOrDocmap {
   // TODO: extract this logic
@@ -176,7 +180,7 @@ export function stepArrayToDocmap(
       'first-step': '_:b0',
       steps: r,
     })),
-    E.chain((b) => pipe(b, D.Docmap.decode, mapLeftToUnknownError)),
+    E.chain((b) => pipe(b, D.Docmap.decode, mapLeftToUnknownError('decoding docmap'))),
     // requires to output Array of docmap
     E.map((d) => [d]),
   )
@@ -187,10 +191,6 @@ export function stepArrayToDocmap(
  * specifically, io-ts codecs are always of type Either<ValidationError[], T>, and that
  * validation error is not naturally upcastable to Error where we use Either<Error, T>.
  */
-export const mapLeftToUnknownError = E.mapLeft((e: unknown) => {
-  if (e instanceof Error) {
-    return e
-  }
-
-  return new Error('unknown error', { cause: e })
+export const mapLeftToUnknownError = (m: string = 'unknown error in @docmaps/etl') => E.mapLeft((e: unknown) => {
+  return new Error(`error: ${m}`, { cause: e })
 })

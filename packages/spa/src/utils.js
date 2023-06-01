@@ -6,7 +6,7 @@ export async function configureForDoiString(rev, str) {
 
   let config = {
     display: {
-      publisherName: name => name.toUpperCase(),
+      publisherName: name => name?.toUpperCase() || "Unknown",
     }
   }
 
@@ -17,15 +17,19 @@ export async function configureForDoiString(rev, str) {
 	preset: 'crossref-api',
 	client: CrossrefClient,
       },
-      publisher: {},
+      publisher: {
+	name: 'Docmaps ETL tool (ephemeral)',
+	url: 'https://github.com/docmaps-project/docmaps/tree/main/packages/ts-etl',
+      },
     }
   );
 
   if (isLeft(result)) {
-    console.log(util.inspect(result.left, {depth: 7}))
+    console.log("Got error:", typeof result.left, util.inspect(result.left, {depth: 7}))
   } else {
     rev.configure({
       ...config,
+      debug: true,
       docmaps: result.right,
     });
   }

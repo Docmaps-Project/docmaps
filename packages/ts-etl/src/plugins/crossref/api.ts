@@ -56,7 +56,7 @@ function stepsForDoiRecursive(
             },
           ],
         })),
-        E.chain((action) => pipe(D.Step.decode(action), mapLeftToUnknownError)),
+        E.chain((action) => pipe(D.Step.decode(action), mapLeftToUnknownError('decoding action in stepsForDoiRecursive'))),
         E.map((s) => ({
           all: [s],
           head: s,
@@ -131,7 +131,7 @@ function stepsForDoiRecursive(
             },
           ],
         })),
-        TE.chainEitherK((rs) => mapLeftToUnknownError(D.Step.decode(rs))),
+        TE.chainEitherK((rs) => pipe(rs, D.Step.decode, mapLeftToUnknownError('decoding step'))),
         TE.map((reviewStep) => ({
           head: prefixChain.head,
           all: prefixChain.all.concat([reviewStep]),
