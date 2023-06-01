@@ -18,7 +18,7 @@ export async function configureForDoiString(rev, str) {
 	client: CrossrefClient,
       },
       publisher: {
-	name: 'Docmaps ETL tool (ephemeral)',
+	name: 'Discovered on api.crossref.org',
 	url: 'https://github.com/docmaps-project/docmaps/tree/main/packages/ts-etl',
       },
     }

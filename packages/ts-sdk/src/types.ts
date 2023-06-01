@@ -56,6 +56,7 @@ export const Publisher = t.intersection([
 export const Manifestation = t.intersection([
   t.type({
     // TODO: this looks like it might need to be an AnyType or something. Manifestations are extensive.
+    //    - we are at least aware of EMBO using `type: text`.
     type: arrayOrOneOf([
       'web-page', // correctly used by eLife
     ]),
