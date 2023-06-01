@@ -22,3 +22,9 @@
 
 <pre class="language-json"><code class="language-json" bind:this={codeElement}></code></pre>
 
+<style>
+  pre {
+  }
+  code {
+  }
+</style>

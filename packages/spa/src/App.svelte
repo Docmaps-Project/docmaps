@@ -55,41 +55,44 @@
   />
   <!-- Your other markup and code -->
   <button on:click="{fetchData}">Fetch Data</button>
-  <div id="result" bind:this="{placeholder}">
+  <div id="result" bind:this="{placeholder}"></div>
+  <div class="code-container">
+    <b>Derived Docmap contents:</b>
+    <JsonBox {json} bind:this="{codeBox}"/>
   </div>
-  <b>Derived Docmap contents:<b>
-  <JsonBox {json} bind:this="{codeBox}"/>
 </main>
 
 <style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
+  main {
+    text-align: center;
+    padding: 1em;
+    margin: 0 auto;
+  }
 
-	#result {
-	  padding-top: 3em;
-	  padding-bottom: 3em;
-		margin: auto;
-		max-width: 600px;
-	}
+  #result {
+    padding-top: 3em;
+    padding-bottom: 3em;
+    margin: auto;
+    max-width: 600px;
+  }
 
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
+  .code-container {
+  }
 
-	input {
-		min-width: 400px;
-	}
+  h1 {
+    color: #ff3e00;
+    text-transform: uppercase;
+    font-size: 4em;
+    font-weight: 100;
+  }
 
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+  input {
+    min-width: 400px;
+  }
+
+  @media (min-width: 640px) {
+    main {
+      max-width: none;
+    }
+  }
 </style>
