@@ -25,11 +25,14 @@ export async function configureForDoiString(rev, str) {
   );
 
   if (isLeft(result)) {
-    console.log("Got error:", typeof result.left, util.inspect(result.left, {depth: 7}))
+    console.log("Got error while building docmap from crossref:", util.inspect(result.left, {depth: 7}));
+    rev.configure({
+      ...config,
+      docmaps: result.left, // hacky solution
+    });
   } else {
     rev.configure({
       ...config,
-      debug: true,
       docmaps: result.right,
     });
   }
