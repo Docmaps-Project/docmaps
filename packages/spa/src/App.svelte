@@ -2,17 +2,47 @@
   import { onMount } from 'svelte';
   import { configureForDoiString } from './utils.js';
   import '@source-data/render-rev/render-rev.js';
+  import JsonBox from "./JsonBox.svelte";
 
   let inputDoi = '';
   let placeholder;
   let renderRevElement;
+
+  let codeBox;
+  let json = undefined;
+
+  function handleData(data) {
+    let config = {
+      display: {
+	publisherName: name => name || "Unknown"
+      }
+    }
+
+    renderRevElement.configure({
+      ...config,
+      docmaps: data,
+    });
+
+    json=data;
+  }
+
+  function handleError(error) {
+    renderRevElement.configure({
+      ...config,
+      docmaps: error, // hacky solution
+    });
+  }
 
   async function fetchData() {
     if (!renderRevElement) {
       renderRevElement = document.createElement('render-rev');
       placeholder.appendChild(renderRevElement);
     }
-    await configureForDoiString(renderRevElement, inputDoi);
+    await configureForDoiString(
+      inputDoi,
+      handleData,
+      handleError,
+    );
   }
 </script>
 
@@ -27,6 +57,8 @@
   <button on:click="{fetchData}">Fetch Data</button>
   <div id="result" bind:this="{placeholder}">
   </div>
+  <b>Derived Docmap contents:<b>
+  <JsonBox {json} bind:this="{codeBox}"/>
 </main>
 
 <style>
@@ -39,6 +71,7 @@
 
 	#result {
 	  padding-top: 3em;
+	  padding-bottom: 3em;
 		margin: auto;
 		max-width: 600px;
 	}

@@ -34,6 +34,7 @@ importers:
       '@spider-ui/global-event-registry': ^0.2.7
       docmaps-sdk: ^0.5.1
       fp-ts: ^2.16.0
+      prismjs: ^1.29.0
       rollup: ^3.23.0
       rollup-plugin-css-only: ^4.3.0
       rollup-plugin-livereload: ^2.0.5
@@ -48,6 +49,7 @@ importers:
       '@spider-ui/global-event-registry': 0.2.7
       docmaps-sdk: 0.5.1
       fp-ts: 2.16.0
+      prismjs: 1.29.0
       sirv-cli: 2.0.2
       upgraded-element: 0.6.5
     devDependencies:
@@ -4389,6 +4391,11 @@ packages:
     dependencies:
       parse-ms: 3.0.0
     dev: true
+
+  /prismjs/1.29.0:
+    resolution: {integrity: sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==}
+    engines: {node: '>=6'}
+    dev: false
 
   /process-nextick-args/2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}

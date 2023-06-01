@@ -2,14 +2,7 @@ import { ItemCmd, Client as CrossrefClient } from '@docmaps/etl'
 import util from 'util'
 import {isLeft} from 'fp-ts/lib/Either'
 
-export async function configureForDoiString(rev, str) {
-
-  let config = {
-    display: {
-      publisherName: name => name || "Unknown"
-    }
-  }
-
+export async function configureForDoiString(str, handleJson, handleError) {
   const result = await ItemCmd(
     [str],
     {
@@ -26,14 +19,8 @@ export async function configureForDoiString(rev, str) {
 
   if (isLeft(result)) {
     console.log("Got error while building docmap from crossref:", util.inspect(result.left, {depth: 7}));
-    rev.configure({
-      ...config,
-      docmaps: result.left, // hacky solution
-    });
+    handleError(result.left)
   } else {
-    rev.configure({
-      ...config,
-      docmaps: result.right,
-    });
+    handleJson(result.right)
   }
 }
