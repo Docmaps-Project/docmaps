@@ -1,0 +1,67 @@
+name: Test ts-etl
+
+on:
+  push:
+    # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  workflow_call:
+
+env:
+  PKG_DIR: "packages/spa"
+
+jobs:
+  nodejs_test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.14.0]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 7
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('${{env.PKG_DIR}}/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: |
+          cd ${{env.PKG_DIR}} ;
+          pnpm install;
+
+      - name: Verify builds
+        run: |
+          cd ${{env.PKG_DIR}} ;
+          pnpm build;
+
+      - name: Test
+        run: |
+          cd ${{env.PKG_DIR}} ;
+          pnpm test;
+
+      - name: Lint Check
+        run: |
+          cd ${{env.PKG_DIR}} ;
+          pnpm lint;

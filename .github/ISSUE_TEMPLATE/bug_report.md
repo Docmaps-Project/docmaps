@@ -11,6 +11,7 @@ Packages affected:
 - [ ] OWL/SHACL definitions
 - [ ] ts-sdk
 - [ ] ts-etl
+- [ ] spa
 
 ### Expected behavior
 

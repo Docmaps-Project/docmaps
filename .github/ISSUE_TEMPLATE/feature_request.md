@@ -11,6 +11,7 @@ Packages to improve:
 - [ ] OWL/SHACL definitions
 - [ ] ts-sdk
 - [ ] ts-etl
+- [ ] spa
 
 ### Description
 

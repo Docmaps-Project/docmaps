@@ -6,7 +6,9 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "start": "sirv public --no-clear"
+    "start": "sirv public --no-clear",
+    "lint": "echo !!!!WARN: No linter setup!",
+    "test": "echo !!!!WARN: No test setup!"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^24.1.0",
