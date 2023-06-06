@@ -11,7 +11,7 @@ export async function configureForDoiString(str, handleJson, handleError) {
 	client: CrossrefClient,
       },
       publisher: {
-	name: 'Discovered on api.crossref.org',
+	name: 'Inferred from Crossref',
 	url: 'https://github.com/docmaps-project/docmaps/tree/main/packages/ts-etl',
       },
     }
