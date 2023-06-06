@@ -30,6 +30,8 @@
     renderRevElement.configure({
       docmaps: error, // hacky solution
     });
+
+    json=JSON.stringify(error, ['message', 'cause']);
   }
 
   async function fetchData() {
