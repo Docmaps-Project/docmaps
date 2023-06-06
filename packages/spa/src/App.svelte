@@ -28,7 +28,6 @@
 
   function handleError(error) {
     renderRevElement.configure({
-      ...config,
       docmaps: error, // hacky solution
     });
   }
