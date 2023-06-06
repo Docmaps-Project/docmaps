@@ -1,5 +1,5 @@
 import test from 'ava'
-import { isLeft } from 'fp-ts/lib/Either'
+import { isLeft, isRight } from 'fp-ts/lib/Either'
 import { fetchPublicationByDoi } from '../../../src/plugins/crossref'
 import { whenThenResolve } from '../utils'
 import * as cm from '../__fixtures__/crossref'
@@ -180,4 +180,22 @@ test('fetchPublicationByDoi: happy-path scenario: a manuscript with 2 reviews an
   t.deepEqual(dm.steps?.['_:b1']?.inputs[0]?.doi, cm.MANUSCRIPT_DOI)
   t.deepEqual(dm.steps?.['_:b1']?.actions[0]?.outputs[0]?.doi, cm.REVIEW_1_DOI)
   t.deepEqual(dm.steps?.['_:b1']?.actions[1]?.outputs[0]?.doi, cm.REVIEW_2_DOI)
+})
+
+test('fetchPublicationByDoi: error case: looking up a crossref work of wrong type', async (t) => {
+  const mocks = cm.CrossrefClientMocks()
+  whenThenResolve(
+    mocks.worksT.getWorks,
+    { doi: cm.REVIEW_1_DOI },
+    cm.mockCrossrefReviewsResponses[0],
+  )
+
+  const res = await fetchPublicationByDoi(mocks.crs, {}, cm.REVIEW_1_DOI)
+
+  if (isRight(res)) {
+    t.fail(`Got docmaps instead of error: ${res.right}`)
+    return
+  }
+
+  t.regex(res.left.message, /requested root docmap for crossref entity of type 'peer-review'/)
 })

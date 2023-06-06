@@ -39,13 +39,22 @@ function stepsForDoiRecursive(
   const service = client.works
   const program = pipe(
     TE.Do,
-    TE.bind('w', () =>
+    TE.bind('w', () => pipe(
       TE.tryCatch(
         () => service.getWorks({ doi: inputDoi }),
         (reason: unknown) =>
           new Error(`failed to fetch crossref body for DOI ${inputDoi}`, { cause: reason }),
       ),
-    ),
+      TE.chainEitherK((w) => {
+        switch (w.message.type) {
+          case 'posted-content':
+          case 'journal-article':
+            return E.right(w)
+          default:
+            return E.left(new Error(`requested root docmap for crossref entity of type '${w.message.type}'`))
+        }
+      }),
+    )),
     // 1. get step for this
     TE.bind('initialChain', ({ w }) =>
       pipe(
