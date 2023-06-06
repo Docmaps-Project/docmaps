@@ -6,6 +6,10 @@ on:
   workflow_dispatch:
   workflow_call:
 
+  # FIXME: remove this before merge ideally
+  push:
+    branches: ["ships/chore/add-playground"]
+
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
