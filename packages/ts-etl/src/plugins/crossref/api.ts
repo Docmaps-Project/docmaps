@@ -24,19 +24,24 @@ export const Client = CreateCrossrefClient({})
 type RecursiveStepDataChain = {
   head: D.StepT
   all: D.StepT[]
+  visitedIds: Set<string>
 }
 
 function stepsForDoiRecursive(
   client: CrossrefClient,
   inputDoi: string,
-  status: string,
+  visitedIds: Set<string>,
+  annotations: {
+    status: string // the acquired status for the root step created by this recursive call
+    inputs: D.ThingT[]
+  },
 ): TE.TaskEither<Error, RecursiveStepDataChain> {
   const service = client.works
   const program = pipe(
     TE.Do,
     TE.bind('w', () =>
       TE.tryCatch(
-        () => service.getWorks({ doi: inputDoi }), // FIXME throw/reject if not status OK ? (what is client behavior if not 200?)
+        () => service.getWorks({ doi: inputDoi }),
         (reason: unknown) =>
           new Error(`failed to fetch crossref body for DOI ${inputDoi}`, { cause: reason }),
       ),
@@ -47,11 +52,11 @@ function stepsForDoiRecursive(
         w.message,
         decodeActionForWork,
         E.map((action) => ({
-          inputs: [], // TODO: confirm we always override this as needed
+          inputs: annotations.inputs,
           actions: [action],
           assertions: [
             {
-              status: status, //TODO : choose this key carefully
+              status: annotations.status, //TODO : choose this key carefully
               item: w.message.DOI,
             },
           ],
@@ -63,8 +68,9 @@ function stepsForDoiRecursive(
           ),
         ),
         E.map((s) => ({
-          all: [s],
           head: s,
+          all: [s],
+          visitedIds: visitedIds.add(inputDoi),
         })),
         TE.fromEither,
       ),
@@ -79,17 +85,23 @@ function stepsForDoiRecursive(
       return pipe(
         preprints,
         A.filter((wre) => {
-          return wre['id-type'].toLowerCase() == 'doi'
+          return (
+            wre['id-type'].toLowerCase() == 'doi' &&
+            !initialChain.visitedIds.has(wre['id'].toLowerCase())
+          )
         }),
         // get unique IDs
         A.map((wre) => wre.id),
         A.uniq(eqString),
         TE.traverseArray((wreId) => {
-          return stepsForDoiRecursive(client, wreId, 'catalogued') // TODO: status for any preprint
+          return stepsForDoiRecursive(client, wreId, initialChain.visitedIds, {
+            status: 'catalogued', // TODO: this is our provisionally selected status for any preprint
+            inputs: [],
+          })
         }),
         TE.map((meta) => {
           // this is array of DataChain.
-          // the output `head` should have all the `head` outputs as inputs.
+          // the output `head` should have all the in-array `head` outputs as inputs.
           // the output `all` should have concatenation of alls, plus the new Head.
 
           const newStep = {
@@ -97,18 +109,22 @@ function stepsForDoiRecursive(
             inputs: meta.reduce<D.ThingT[]>(
               (memo, c) =>
                 memo.concat(c.head.actions.reduce<D.ThingT[]>((m, a) => m.concat(a.outputs), [])),
-              [],
+              initialChain.head.inputs,
             ),
           }
 
           return {
             head: newStep,
             all: meta.reduce<D.StepT[]>((m, c) => m.concat(c.all), []).concat([newStep]),
+            visitedIds: meta.reduce<Set<string>>(
+              (m, c) => new Set<string>(...m, ...c.visitedIds),
+              initialChain.visitedIds,
+            ),
           }
         }),
       )
     }),
-    TE.bind('completeChain', ({ w, prefixChain }) => {
+    TE.bind('postfixChain', ({ w, prefixChain }) => {
       const reviews = w.message.relation?.['has-review']
       if (!reviews) {
         return TE.right(prefixChain)
@@ -140,9 +156,55 @@ function stepsForDoiRecursive(
         TE.map((reviewStep) => ({
           head: prefixChain.head,
           all: prefixChain.all.concat([reviewStep]),
+          // TODO: consider whether we want to include the review DOIs in the visitedIds
+          // - sometimes the Review is marked `is-review-of` both the preprint and manuscript
+          visitedIds: prefixChain.visitedIds,
         })),
       )
     }),
+    TE.bind('completeChain', ({ w, postfixChain }) => {
+      const manuscripts = w.message.relation?.['is-preprint-of']
+      if (!manuscripts) {
+        return TE.right(postfixChain)
+      }
+
+      // 2. if this is a preprint of another manuscript recurse
+      return pipe(
+        manuscripts,
+        A.filter((wre) => {
+          return (
+            wre['id-type'].toLowerCase() == 'doi' &&
+            !postfixChain.visitedIds.has(wre['id'].toLowerCase())
+          )
+        }),
+        // get unique IDs
+        A.map((wre) => wre.id),
+        A.uniq(eqString),
+        TE.traverseArray((wreId) => {
+          return stepsForDoiRecursive(client, wreId, postfixChain.visitedIds, {
+            status: 'published', // TODO: this is for manuscript, but doesn't handle situations with deep recursion
+            // all the outputs of all the actions of the head
+            inputs: postfixChain.head.actions.reduce<D.ThingT[]>((m, a) => m.concat(a.outputs), []),
+          })
+        }),
+        TE.map((meta) => {
+          // this is array of DataChain.
+          // in this case, we are not manipulating the current head, instead
+          // we told the new heads that they have inputs.
+          // the output `all` should still have concatenation of alls.
+
+          return {
+            head: postfixChain.head,
+            all: postfixChain.all.concat(meta.reduce<D.StepT[]>((m, c) => m.concat(c.all), [])),
+            visitedIds: meta.reduce<Set<string>>(
+              (m, c) => new Set<string>(...m, ...c.visitedIds),
+              postfixChain.visitedIds,
+            ),
+          }
+        }),
+      )
+    }),
+    // we return a complete chain, but the head is dropped when recursion is finished and we just consider `all`.
     TE.map(({ completeChain }) => completeChain),
   )
 
@@ -155,7 +217,7 @@ export async function fetchPublicationByDoi(
   inputDoi: string,
 ): Promise<ErrorOrDocmap> {
   const resultTask = pipe(
-    stepsForDoiRecursive(client, inputDoi, 'published'),
+    stepsForDoiRecursive(client, inputDoi, new Set<string>(), { status: 'published', inputs: [] }),
     TE.chain((steps) => {
       return pipe(stepArrayToDocmap(publisher, inputDoi, steps.all), TE.fromEither)
     }),
