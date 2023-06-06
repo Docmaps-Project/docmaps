@@ -107,3 +107,30 @@ test('single item from crossref with both preprint and reviews', async (t) => {
 
   t.true(stdout.length < 4000) // depends on the actual example chosen. but this is to prevent regressions from explosions of added keys.
 })
+
+test('looking up preprint by its review\'s DOI', async (t) => {
+  const { stdout, error } = await cmdIoResults(
+    'item --source crossref-api 10.1162/2e3983f5.765eab4e',
+  )
+
+  t.falsy(error)
+
+  const dmArr = JSON.parse(stdout) as Array<DocmapT>
+
+  t.is(dmArr[0]?.['type'], 'docmap')
+  t.is(dmArr[0]?.['first-step'], '_:b0')
+  t.truthy(dmArr[0]?.['steps'])
+
+  const steps = dmArr[0]?.steps
+  if (!steps) {
+    t.fail('expected 2 steps')
+    return
+  }
+
+  t.is(Object.keys(steps).length, 2)
+
+  t.is(steps['_:b0']?.assertions[0]?.['status'], 'catalogued')
+  t.is(steps['_:b3']?.assertions[0]?.['status'], 'reviewed')
+
+  t.true(stdout.length < 4000) // depends on the actual example chosen. but this is to prevent regressions from explosions of added keys.
+})
