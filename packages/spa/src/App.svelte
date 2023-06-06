@@ -14,7 +14,7 @@
   function handleData(data) {
     let config = {
       display: {
-	publisherName: name => name || "Unknown"
+	publisherName: name => name || "Preprint posted on Crossref"
       }
     }
 
