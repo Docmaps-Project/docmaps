@@ -24,3 +24,8 @@ export async function configureForDoiString(str, handleJson, handleError) {
     handleJson(result.right)
   }
 }
+
+export function structureError(error) {
+  error['type'] = 'error'
+  return JSON.stringify(error, ['message', 'cause', 'type'])
+}

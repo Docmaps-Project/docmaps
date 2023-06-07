@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { configureForDoiString } from './utils.js';
+  import { configureForDoiString, structureError } from './utils.js';
   import '@source-data/render-rev/render-rev.js';
   import JsonBox from "./JsonBox.svelte";
 
@@ -31,7 +31,7 @@
       docmaps: error, // hacky solution
     });
 
-    json=JSON.stringify(error, ['message', 'cause']);
+    json=structureError(error);
   }
 
   async function fetchData() {
