@@ -11,6 +11,7 @@ Packages related to documentation request:
 - [ ] OWL/SHACL definitions
 - [ ] ts-sdk
 - [ ] ts-etl
+- [ ] spa
 
 ### Description
 

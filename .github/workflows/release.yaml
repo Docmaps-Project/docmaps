@@ -70,4 +70,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx multi-semantic-release
+        # must ignore spa because we need spa in the workspace file for development, but spa is not released.
+        run: npx multi-semantic-release --ignore-packages=packages/spa
+
+  release-github-pages-docs:
+    uses: ./.github/workflows/gh-pages.yaml
