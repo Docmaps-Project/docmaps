@@ -35,6 +35,15 @@ export const ContextUpsert = {
 }
 
 /**
+ * A `foaf:onlineAccount`, the online identity of some Agent (person, org, etc).
+ *
+ * @example
+ * // see OnlineAccountT
+ * const A: Validation<OnlineAccountT> = OnlineAccount.decode({
+ *   id: 'https://docmaps-project.github.io/ex/onlineaccount',
+ *   service: 'https://docmaps-project.github.io/ex/onlineaccount/www'
+ * });
+ *
  * @since 0.1.0
  */
 export const OnlineAccount = t.intersection([
@@ -49,6 +58,22 @@ export const OnlineAccount = t.intersection([
 ])
 
 /**
+ * The publisher of a docmap
+ *
+ * @example
+ * // see PublisherT
+ * const A: Validation<PublisherT> = Publisher.decode({
+ *   id: 'https://docmaps-project.github.io/ex/publisher',
+ *   logo: 'https://docmaps-project.github.io/ex/publisher/logo',
+ *   name: 'DocMaps',
+ *   homepage: 'https://docmaps-project.github.io/ex/publisher/homepage',
+ *   url: 'https://docmaps-project.github.io/ex/publisher/url',
+ *   account: {
+ *     id: 'https://docmaps-project.github.io/ex/onlineaccount',
+ *     service: 'https://docmaps-project.github.io/ex/onlineaccount/www'
+ *   }
+ * });
+ *
  * @since 0.1.0
  */
 export const Publisher = t.intersection([
@@ -68,6 +93,17 @@ export const Publisher = t.intersection([
 ])
 
 /**
+ * A fabio:Manifestation, which may be included in an Output.
+ *
+ * @example
+ * // see ManifestationT
+ * const A: Validation<ManifestationT> = Manifestation.decode({
+ *   type: 'web-page',
+ *   id: 'https://docmaps-project.github.io/ex/manifestation',
+ *   service: 'https://docmaps-project.github.io/ex/manifestation/service',
+ *   url: 'https://docmaps-project.github.io/ex/manifestation/url'
+ * });
+ *
  * @since 0.1.0
  */
 export const Manifestation = t.intersection([
@@ -86,7 +122,19 @@ export const Manifestation = t.intersection([
 ])
 
 /**
+ * A pro:Agent . Can be almost anything in theory,
+ * but currently only a Person.
+ *
+ * @example
+ * // see ActorT
+ * const B: Validation<ActorT> = Actor.decode({
+ *   type: 'person',
+ *   name: 'John Doe'
+ * });
+ *
  * @since 0.1.0
+ *
+ * TODO: support organizations, etc as Agents.
  */
 export const Actor = t.union([
   t.type({
@@ -98,6 +146,18 @@ export const Actor = t.union([
 ])
 
 /**
+ * A pro:RoleInTime ; How a participant participated in an action
+ *
+ * @example
+ * // see RoleInTimeT
+ * const C: Validation<RoleInTimeT> = RoleInTime.decode({
+ *   actor: {
+ *     type: 'person',
+ *     name: 'John Doe'
+ *   },
+ *   role: 'author'
+ * });
+ *
  * @since 0.1.0
  */
 export const RoleInTime = t.intersection([
@@ -113,6 +173,8 @@ export const RoleInTime = t.intersection([
 ])
 
 /**
+ * The allowed types for a Thing (output or input).
+ *
  * @since 0.9.0
  */
 export const ThingType = arrayOrOneOf([
@@ -127,10 +189,26 @@ export const ThingType = arrayOrOneOf([
   'reply',
 ])
 
-// TODO - now that we have Types, we could do more assertive
-// shaping based on a given Type value implying certain fields must exist
 /**
+ * An output or input.
+ *
+ * @example
+ * // see ThingT
+ * const C: Validation<ThingT> = Thing.decode({
+ *   published: '2020-01-01',
+ *   id: '123456',
+ *   doi: '10.12345/abcdef',
+ *   type: 'Article',
+ *   content: [{
+ *     type: 'text',
+ *     text: 'This is an example of a thing'
+ *   }]
+ * });
+ *
  * @since 0.1.0
+ *
+  * TODO - now that we have Types, we could do more assertive
+  * shaping based on a given Type value implying certain fields must exist *
  */
 export const Thing = t.intersection([
   t.type({
@@ -146,7 +224,34 @@ export const Thing = t.intersection([
 ])
 
 /**
+ * An action taken in a step.
+ *
+ * @example
+ * // see ActionT
+ * const C: Validation<ActionT> = Action.decode({
+ *   outputs: [{
+ *     published: '2020-01-01',
+ *     id: '123456',
+ *     doi: '10.12345/abcdef',
+ *     type: 'Article',
+ *     content: [{
+ *       type: 'text',
+ *       text: 'This is an example of a thing'
+ *     }]
+ *   }],
+ *   participants: [{
+ *     actor: {
+ *       type: 'person',
+ *       name: 'John Doe'
+ *     },
+ *     role: 'author'
+ *   }],
+ *   id: '123456'
+ * });
+ *
  * @since 0.1.0
+ *
+ * TODO - this will probably be an independently-publishable thing and id should not be optional.
  */
 export const Action = t.intersection([
   t.type({
@@ -154,7 +259,6 @@ export const Action = t.intersection([
     participants: t.array(RoleInTime),
   }),
   t.partial({
-    // TODO - this will probably be an independently-publishable thing and id should not be optional.
     id: t.string,
   }),
 ])
@@ -162,7 +266,22 @@ export const Action = t.intersection([
 const Status = t.string
 
 /**
+ * A claim about a document acquiring a status that is asserted by a certain step
+ *
+ * @example
+ * // see AssertionT
+ * const C: Validation<AssertionT> = Assertion.decode({
+ *   item: {
+ *     type: 'Article',
+ *     id: '123456'
+ *   },
+ *   status: 'accepted',
+ *   happened: '2020-01-01'
+ * });
+ *
  * @since 0.9.0
+ *
+ * TODO: make this smarter
  */
 export const Assertion = t.intersection([
   t.type({
@@ -175,14 +294,59 @@ export const Assertion = t.intersection([
 ])
 
 /**
+ * One step in a docmap's workflow. This is an ephemeral object (i.e., the same
+ * set of actions may appear in a step with a different content hash).
+ *
+ * @example
+ * // see StepT
+ * const C: Validation<StepT> = Step.decode({
+ *   actions: [{
+ *     outputs: [{
+ *       published: '2020-01-01',
+ *       id: '123456',
+ *       doi: '10.12345/abcdef',
+ *       type: 'Article',
+ *       content: [{
+ *         type: 'text',
+ *         text: 'This is an example of a thing'
+ *       }]
+ *     }],
+ *     participants: [{
+ *       actor: {
+ *         type: 'person',
+ *         name: 'John Doe'
+ *       },
+ *       role: 'author'
+ *     }],
+ *     id: '123456'
+ *   }],
+ *   inputs: [{
+ *     published: '2020-01-01',
+ *     id: '123456',
+ *     doi: '10.12345/abcdef',
+ *     type: 'Article',
+ *     content: [{
+ *       type: 'text',
+ *       text: 'This is an example of a thing'
+ *     }]
+ *   }],
+ *   assertions: [{
+ *     item: {
+ *       type: 'Article',
+ *       id: '123456'
+ *     },
+ *     status: 'accepted',
+ *     happened: '2020-01-01'
+ *   }],
+ *   id: 'step-2',
+ *   'previous-step': 'step-1'
+ * });
  * @since 0.1.0
  */
 export const Step = t.intersection([
   t.type({
     actions: t.array(Action),
     inputs: t.array(Thing),
-
-    // TODO: make this smarter
     assertions: t.array(Assertion),
   }),
   t.partial({
@@ -193,11 +357,77 @@ export const Step = t.intersection([
 ])
 
 /**
+ * @example
+ * // see DocmapT
+ * const C: Validation<DocmapT> = Docmap.decode({
+ *   context: [{
+ *     type: 'schema',
+ *     value: 'https://schema.org/'
+ *   }],
+ *   id: '123456',
+ *   type: 'Docmap',
+ *   publisher: {
+ *     type: 'person',
+ *     name: 'John Doe'
+ *   },
+ *   created: '2020-01-01',
+ *   steps: {
+ *     'step-1': {
+ *       actions: [{
+ *         outputs: [{
+ *           published: '2020-01-01',
+ *           id: '123456',
+ *           doi: '10.12345/abcdef',
+ *           type: 'Article',
+ *           content: [{
+ *             type: 'text',
+ *             text: 'This is an example of a thing'
+ *           }]
+ *         }],
+ *         participants: [{
+ *           actor: {
+ *             type: 'person',
+ *             name: 'John Doe'
+ *           },
+ *           role: 'author'
+ *         }],
+ *         id: '123456'
+ *       }],
+ *       inputs: [{
+ *         published: '2020-01-01',
+ *         id: '123456',
+ *         doi: '10.12345/abcdef',
+ *         type: 'Article',
+ *         content: [{
+ *           type: 'text',
+ *           text: 'This is an example of a thing'
+ *         }]
+ *       }],
+ *       assertions: [{
+ *         item: {
+ *           type: 'Article',
+ *           id: '123456'
+ *         },
+ *         status: 'accepted',
+ *         happened: '2020-01-01'
+ *       }],
+ *       id: '123456',
+ *       'next-step': 'step-2',
+ *     },
+ *     'step-2': {
+ *       //...
+ *     }
+ *   },
+ *   'first-step': 'step-1',
+ *   updated: '2020-01-01'
+ * });
+ *
  * @since 0.1.0
+ *
+ * TODO: use smart validation rules for custom io-ts docmap type, such as next-steps referring to steps that exist
+ *   and any other value-dependent type rules. see https://github.com/Docmaps-Project/docmaps/issues/23
  */
 export const Docmap = t.intersection([
-  // TODO: use smart validation rules for custom io-ts docmap type, such as next-steps referring to steps that exist
-  //   and any other value-dependent type rules
   t.type({
     ...ContextUpsert,
     id: t.string,
@@ -211,7 +441,6 @@ export const Docmap = t.intersection([
       'https://w3id.org/docmaps/v0/Docmap',
     ]),
     publisher: Publisher,
-    // TODO: required contents of these date strings,
     created: DateFromUnknown,
   }),
   t.partial({
