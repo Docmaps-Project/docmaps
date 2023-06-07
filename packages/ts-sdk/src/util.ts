@@ -6,15 +6,18 @@ import { pipe } from 'fp-ts/lib/pipeable'
 import { chain } from 'fp-ts/lib/Either'
 
 /**
+ * Interface for a codec that parses a string and returns a URL object.
+ *
  * @since 0.1.0
  */
 export type UrlFromStringC = t.Type<URL, string, unknown>
 
 /**
- * URL from String parser
+ * Implementation of URL from String parser
  *
  * based on example there:
  *   https://github.com/gcanti/io-ts-types/blob/master/src/BooleanFromString.ts
+ *
  * @since 0.1.0
  */
 export const UrlFromString: UrlFromStringC = new t.Type<URL, string, unknown>(
@@ -42,14 +45,24 @@ export const UrlFromString: UrlFromStringC = new t.Type<URL, string, unknown>(
  */
 export type UrlT = t.TypeOf<typeof UrlFromString>;
 
-/** Date from Anything
+/**
+ * Interface for a Date from Anything
  *
  * based on example there:
  *   https://github.com/gcanti/io-ts/blob/master/index.md#custom-types
+ *
+ * @since 0.9.0
  */
-
 export type DateFromUnknownC = t.Type<Date, string, unknown>
 
+/**
+ * Date from Date,Number,orString
+ *
+ * based on example there:
+ *   https://github.com/gcanti/io-ts/blob/master/index.md#custom-types
+ *
+ * @since 0.9.0
+ */
 export const DateFromUnknown: DateFromUnknownC = new t.Type<Date, string, unknown>(
   'DateFromUnknown',
   (input: unknown): input is Date => input instanceof Date,
