@@ -1,4 +1,6 @@
-#!/bin/bash -eu
+#!/bin/bash
+
+set -eu
 
 find . -type l -exec bash -c '
   export SRC=$(readlink -f "$0");
