@@ -8,6 +8,6 @@ find . -type l -exec bash -c '
   rm "$0";
   mkdir  "$0";
 
-  cp -vfPR "$SRC" "$0";
+  cp -vfPR "$SRC/" "$0";
 ' {} \;
 
