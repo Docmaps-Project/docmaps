@@ -63,7 +63,9 @@ export const OnlineAccount = t.intersection([
  * The publisher of a docmap
  *
  * @example
- * // see PublisherT
+ * import { PublisherT, Publisher } from 'docmaps-sdk';
+ * import { Validation } from 'io-ts';
+ *
  * const A: Validation<PublisherT> = Publisher.decode({
  *   id: 'https://docmaps-project.github.io/ex/publisher',
  *   logo: 'https://docmaps-project.github.io/ex/publisher/logo',
@@ -98,7 +100,9 @@ export const Publisher = t.intersection([
  * A fabio:Manifestation, which may be included in an Output.
  *
  * @example
- * // see ManifestationT
+ * import { ManifestationT, Manifestation } from 'docmaps-sdk';
+ * import { Validation } from 'io-ts';
+ *
  * const A: Validation<ManifestationT> = Manifestation.decode({
  *   type: 'web-page',
  *   id: 'https://docmaps-project.github.io/ex/manifestation',
@@ -128,7 +132,9 @@ export const Manifestation = t.intersection([
  * but currently only a Person.
  *
  * @example
- * // see ActorT
+ * import { ActorT, Actor } from 'docmaps-sdk';
+ * import { Validation } from 'io-ts';
+ *
  * const B: Validation<ActorT> = Actor.decode({
  *   type: 'person',
  *   name: 'John Doe'
@@ -151,7 +157,9 @@ export const Actor = t.union([
  * A pro:RoleInTime ; How a participant participated in an action
  *
  * @example
- * // see RoleInTimeT
+ * import { RoleInTimeT, RoleInTime } from 'docmaps-sdk';
+ * import { Validation } from 'io-ts';
+ *
  * const C: Validation<RoleInTimeT> = RoleInTime.decode({
  *   actor: {
  *     type: 'person',
@@ -195,7 +203,9 @@ export const ThingType = arrayOrOneOf([
  * An output or input.
  *
  * @example
- * // see ThingT
+ * import { ThingT, Thing } from 'docmaps-sdk';
+ * import { Validation } from 'io-ts';
+ *
  * const C: Validation<ThingT> = Thing.decode({
  *   published: '2020-01-01',
  *   id: '123456',
@@ -229,7 +239,9 @@ export const Thing = t.intersection([
  * An action taken in a step.
  *
  * @example
- * // see ActionT
+ * import { ActionT, Action } from 'docmaps-sdk';
+ * import { Validation } from 'io-ts';
+ *
  * const C: Validation<ActionT> = Action.decode({
  *   outputs: [{
  *     published: '2020-01-01',
@@ -271,7 +283,9 @@ const Status = t.string
  * A claim about a document acquiring a status that is asserted by a certain step
  *
  * @example
- * // see AssertionT
+ * import { AssertionT, Assertion } from 'docmaps-sdk';
+ * import { Validation } from 'io-ts';
+ *
  * const C: Validation<AssertionT> = Assertion.decode({
  *   item: {
  *     type: 'Article',
@@ -300,7 +314,9 @@ export const Assertion = t.intersection([
  * set of actions may appear in a step with a different content hash).
  *
  * @example
- * // see StepT
+ * import { StepT, Step } from 'docmaps-sdk';
+ * import { Validation } from 'io-ts';
+ *
  * const C: Validation<StepT> = Step.decode({
  *   actions: [{
  *     outputs: [{
@@ -360,7 +376,9 @@ export const Step = t.intersection([
 
 /**
  * @example
- * // see DocmapT
+ * import { DocmapT, Docmap } from 'docmaps-sdk';
+ * import { Validation } from 'io-ts';
+ *
  * const C: Validation<DocmapT> = Docmap.decode({
  *   context: [{
  *     type: 'schema',
@@ -428,16 +446,17 @@ export const Step = t.intersection([
  *
  * TODO: use smart validation rules for custom io-ts docmap type, such as next-steps referring to steps that exist
  *   and any other value-dependent type rules. see https://github.com/Docmaps-Project/docmaps/issues/23
+ *
+ * TODO: support something where docmaps: is prefixed
+ * t.literal('docmaps:docmap'),
+ * t.literal('docmaps:Docmap'),
+ * or abbreviate the Base somehow on the w3id docmap repo.
  */
 export const Docmap = t.intersection([
   t.type({
     ...ContextUpsert,
     id: t.string,
     type: arrayOrOneOf([
-      // TODO support something where docmaps: is prefixed
-      // t.literal('docmaps:docmap'),
-      // t.literal('docmaps:Docmap'),
-      // or abbreviate the Base somehow on the w3id docmap repo.
       'docmap',
       'Docmap',
       'https://w3id.org/docmaps/v0/Docmap',
@@ -496,8 +515,10 @@ export type ActorT = t.TypeOf<typeof Actor>
 /**  DocmapsFactory
  *
  *  The DocmapsFactory is a map from @type keys to the relevant type codecs.
- *  This is only used in the Typed Graph Extraction code.
-
+ *
+ *  This is only used in the Typed Graph Extraction code, which is experimental.
+ *  Usage is available but not currently endorsed or supported.
+ *
  * @since 0.1.0
  */
 export const DocmapsFactory = {
