@@ -69,12 +69,12 @@ jobs:
           pnpm build;
 
       - name: Convert symlinks to hard links
-          # from https://superuser.com/questions/560597/convert-symlinks-to-hard-links
+          # adapted from https://superuser.com/questions/560597/convert-symlinks-to-hard-links
           #   we use symlinks for local dev & because they are committable to repo,
           #   but hard links are needed for building tape archive to upload
         run: |
           cd docs ;
-          find -type l -exec bash -c 'ln -f "$(readlink -m "$0")" "$0"' {} \;
+          find -type l -exec bash -c 'cp -lfPR "$(readlink -m "$0")" "$0"' {} \;
 
       # - name: Upload artifact
       #   uses: actions/upload-pages-artifact@v1
