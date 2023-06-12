@@ -219,8 +219,8 @@ export const ThingType = arrayOrOneOf([
  *
  * @since 0.1.0
  *
-  * TODO - now that we have Types, we could do more assertive
-  * shaping based on a given Type value implying certain fields must exist *
+ * TODO - now that we have Types, we could do more assertive
+ * shaping based on a given Type value implying certain fields must exist *
  */
 export const Thing = t.intersection([
   t.type({
@@ -456,11 +456,7 @@ export const Docmap = t.intersection([
   t.type({
     ...ContextUpsert,
     id: t.string,
-    type: arrayOrOneOf([
-      'docmap',
-      'Docmap',
-      'https://w3id.org/docmaps/v0/Docmap',
-    ]),
+    type: arrayOrOneOf(['docmap', 'Docmap', 'https://w3id.org/docmaps/v0/Docmap']),
     publisher: Publisher,
     created: DateFromUnknown,
   }),

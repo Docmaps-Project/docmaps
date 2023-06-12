@@ -43,7 +43,7 @@ export const UrlFromString: UrlFromStringC = new t.Type<URL, string, unknown>(
  *
  * @since 0.1.0
  */
-export type UrlT = t.TypeOf<typeof UrlFromString>;
+export type UrlT = t.TypeOf<typeof UrlFromString>
 
 /**
  * Interface for a Date from Anything
