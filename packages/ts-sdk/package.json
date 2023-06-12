@@ -10,8 +10,10 @@
   "scripts": {
     "test": "ava",
     "debug": "node --loader=ts-node/esm --experimental-specifier-resolution=node --nolazy -r ts-node/register/transpile-only --inspect-brk src/debuggable.ts",
-    "lint": "npx eslint .",
-    "lint:fix": "npx eslint --fix .",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "docs:generate": "typedoc src/index.ts",
+    "docs:check": "npm run docs:generate && git add -N . && git diff --exit-code -I 'Defined in.*blob'",
     "clean": "rm -rf dist/",
     "build": "tsc",
     "prepare": "tsc --declaration"
