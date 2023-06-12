@@ -38,10 +38,12 @@ export const ContextUpsert = {
  * A `foaf:onlineAccount`, the online identity of some Agent (person, org, etc).
  *
  * @example
- * // see OnlineAccountT
+ * import { OnlineAccountT, OnlineAccount } from 'docmaps-sdk';
+ * import { Validation } from 'io-ts';
+ *
  * const A: Validation<OnlineAccountT> = OnlineAccount.decode({
  *   id: 'https://docmaps-project.github.io/ex/onlineaccount',
- *   service: 'https://docmaps-project.github.io/ex/onlineaccount/www'
+ *   service: 'https://docmaps-project.github.io/ex/onlineaccount/www',
  * });
  *
  * @since 0.1.0
