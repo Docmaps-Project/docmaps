@@ -27,7 +27,7 @@ importers:
   packages/spa:
     specifiers:
       '@docmaps/etl': workspace:^0.1.2
-      '@rollup/plugin-commonjs': ^24.1.0
+      '@rollup/plugin-commonjs': ^25.0.0
       '@rollup/plugin-node-resolve': ^15.1.0
       '@rollup/plugin-terser': ^0.4.3
       '@source-data/render-rev': github:source-data/render-rev
@@ -53,7 +53,7 @@ importers:
       sirv-cli: 2.0.2
       upgraded-element: 0.6.5
     devDependencies:
-      '@rollup/plugin-commonjs': 24.1.0_rollup@3.23.0
+      '@rollup/plugin-commonjs': 25.0.0_rollup@3.23.0
       '@rollup/plugin-node-resolve': 15.1.0_rollup@3.23.0
       '@rollup/plugin-terser': 0.4.3_rollup@3.23.0
       rollup: 3.23.0
@@ -801,8 +801,8 @@ packages:
     dependencies:
       '@types/node': 20.2.5
 
-  /@rollup/plugin-commonjs/24.1.0_rollup@3.23.0:
-    resolution: {integrity: sha512-eSL45hjhCWI0jCCXcNtLVqM5N1JlBGvlFfY0m6oOYnLCJ6N0qEXoZql4sY2MOUArzhH4SA/qBpTxvvZp2Sc+DQ==}
+  /@rollup/plugin-commonjs/25.0.0_rollup@3.23.0:
+    resolution: {integrity: sha512-hoho2Kay9TZrLu0bnDsTTCaj4Npa+THk9snajP/XDNb9a9mmjTjh52EQM9sKl3HD1LsnihX7js+eA2sd2uKAhw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       rollup: ^2.68.0||^3.0.0
