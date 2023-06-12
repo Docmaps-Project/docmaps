@@ -74,7 +74,7 @@ jobs:
           #   but hard links are needed for building tape archive to upload
         run: |
           cd docs ;
-          find -type l -exec bash -c 'cp -lfPR "$(readlink -m "$0")" "$0"' {} \;
+          find -type l -exec bash -c 'cp -vlfPR "$(readlink -m "$0")" "$0"' {} \;
 
       # - name: Upload artifact
       #   uses: actions/upload-pages-artifact@v1
