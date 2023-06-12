@@ -1,4 +1,4 @@
-#!/bin/bash -euo pipefail
+#!/bin/bash -eu
 
 find . -type l -exec bash -c '
   export SRC=$(readlink -f "$0");
