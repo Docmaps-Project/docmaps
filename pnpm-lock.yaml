@@ -32,7 +32,7 @@ importers:
       '@rollup/plugin-terser': ^0.4.3
       '@source-data/render-rev': github:source-data/render-rev
       '@spider-ui/global-event-registry': ^0.2.7
-      docmaps-sdk: ^0.9.0
+      docmaps-sdk: ^0.10.0
       fp-ts: ^2.16.0
       prismjs: ^1.29.0
       rollup: ^3.23.0
@@ -47,7 +47,7 @@ importers:
       '@docmaps/etl': link:../ts-etl
       '@source-data/render-rev': github.com/source-data/render-rev/e77d8a0840fa6a33ea6663aa57dee6ff0930faed_en4jrmmtiggxba5g6f4h6b5bdu
       '@spider-ui/global-event-registry': 0.2.7
-      docmaps-sdk: 0.9.0
+      docmaps-sdk: 0.10.0
       fp-ts: 2.16.0
       prismjs: 1.29.0
       sirv-cli: 2.0.2
@@ -2219,8 +2219,8 @@ packages:
     dependencies:
       path-type: 4.0.0
 
-  /docmaps-sdk/0.9.0:
-    resolution: {integrity: sha512-icrT3PPxiCFN5Yzxm5BWwVzh00yihSDnOkH4TLsWSwYmB1i6IcdDZ3HmKZ9bGcF8YGYoi3OmEw26TLAy7qd/Nw==}
+  /docmaps-sdk/0.10.0:
+    resolution: {integrity: sha512-oeT30tGMeIRRaSrBb/TV9dd1N4Be6II5JQwPCb8yq96bgWj3qFkux/cOxLmZu2wto3N+K35uqEgZ5s7Ya4RXlA==}
     dependencies:
       '@rdfjs/serializer-jsonld-ext': 4.0.0
       fp-ts: 2.16.0
