@@ -65,3 +65,7 @@ jobs:
         run: |
           cd ${{env.PKG_DIR}} ;
           pnpm lint;
+
+      - name: Verify docs are up-to-date
+        run: |
+          pnpm docs:check;
