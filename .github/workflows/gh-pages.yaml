@@ -75,10 +75,7 @@ jobs:
         run: |
           cd docs ;
           cp -vlfPR
-          find -type l -exec bash -c '
-            export SRC="$(readlink -m "$0")";
-            rm "$0";
-            cp -vlfPR "$SRC" "$0"' {} \;
+          find -type l -exec bash -c ' export SRC=$(readlink -m "$0"); rm "$0"; cp -vlfPR "$SRC" "$0"' {} \;
 
       # - name: Upload artifact
       #   uses: actions/upload-pages-artifact@v1
