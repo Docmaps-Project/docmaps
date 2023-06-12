@@ -2,6 +2,9 @@
 name: Deploy static content to Pages
 
 on:
+  push:
+    branches:
+      - ships/add-typedoc-to-ts-sdk
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   workflow_call:
@@ -53,19 +56,31 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd packages/spa ;
           pnpm install;
 
-      - name: Verify builds
+      - name: Verify docs
+        run: |
+          cd packages/ts-sdk ;
+          pnpm docs:check;
+
+      - name: Build SPA
         run: |
           cd packages/spa ;
           pnpm build;
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          # Upload subdirectory
-          path: './packages/spa/public'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
+      - name: Convert symlinks to hard links
+          # from https://superuser.com/questions/560597/convert-symlinks-to-hard-links
+          #   we use symlinks for local dev & because they are committable to repo,
+          #   but hard links are needed for building tape archive to upload
+        run: |
+          cd docs ;
+          find -type l -exec bash -c 'ln -f "$(readlink -m "$0")" "$0"' {} \;
+
+      # - name: Upload artifact
+      #   uses: actions/upload-pages-artifact@v1
+      #   with:
+      #     # Upload subdirectory
+      #     path: './docs'
+      # - name: Deploy to GitHub Pages
+      #   id: deployment
+      #   uses: actions/deploy-pages@v2
