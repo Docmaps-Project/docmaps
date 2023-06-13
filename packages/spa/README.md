@@ -77,3 +77,13 @@ See main repository license.
 - [Svelte](https://svelte.dev/)
 - [pnpm](https://pnpm.io/)
 - [crossref](https://crossref.org/)
+
+## Screenshots
+
+[<img src="screenshots/preprint_posted.png" alt="DocMap for Posted Preprint" width="500"/>](screenshots/preprint_posted.png)  
+
+[<img src="screenshots/preprint_published.png" alt="DocMap for Published Preprint" width="500"/>](screenshots/preprint_published.png)  
+
+[<img src="screenshots/preprint_published_reviewed.png" alt="DocMap for Published/Reviewed Preprint (note linear issues)" width="500"/>](screenshots/preprint_published_reviewed.png)  
+
+[<img src="screenshots/preprint_refereed.png" alt="DocMap for Refereed Preprint" width="500"/>](screenshots/preprint_refereed.png)
