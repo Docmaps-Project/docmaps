@@ -8,10 +8,13 @@ You can try the live demo hosted on GitHub Pages [here](https://docmaps-project.
 
 ### Screenshots
 
-![DocMap for Posted Preprint](screenshots/preprint_posted.png)
-![DocMap for Published Preprint](screenshots/preprint_published.png)
-![DocMap for Published/Reviewed Preprint (note linear issues)](screenshots/preprint_published_reviewed.png)
-![DocMap for Refereed Preprint](screenshots/preprint_refereed.png)
+[<img src="screenshots/preprint_posted.png" alt="DocMap for Posted Preprint" width="250"/>](screenshots/preprint_posted.png)
+
+[<img src="screenshots/preprint_published.png" alt="DocMap for Published Preprint" width="250"/>](screenshots/preprint_published.png)
+
+[<img src="screenshots/preprint_published_reviewed.png" alt="DocMap for Published/Reviewed Preprint (note linear issues)" width="250"/>](screenshots/preprint_published_reviewed.png)
+
+[<img src="screenshots/preprint_refereed.png" alt="DocMap for Refereed Preprint" width="250"/>](screenshots/preprint_refereed.png)
 
 ## Getting Started for Development
 
