@@ -10,6 +10,7 @@
     "noUnusedLocals": false
   },
   "exclude": [
+    "docs/**",
     "src/test/**/*",
     "dist",
     "node_modules",

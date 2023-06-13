@@ -131,3 +131,4 @@ dist
 
 # direnv
 .envrc
+**/.DS_Store
