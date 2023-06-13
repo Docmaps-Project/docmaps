@@ -42,6 +42,12 @@ it supports generating a docmap for a given DOI if that DOI is indexed on Crossr
 will traverse the Crossref API to find related preprints and reviews for that DOI. It is
 still in a pre-release state while we gather feedback.
 
+### [SPA](/packages/spa)
+
+This Single-page App (SPA) is a simple demonstration of the above tools in action. It is
+accessible [live on Github Pages](https://docmaps-project.github.io/docmaps/demo/) where you can
+plug in a DOI and get a best-effort view of a Docmap as inferred from Crossref's API.
+
 ## Governance
 
 As stated in [CODE_OF_CONDUCT.md](/CODE_OF_CONDUCT.md):
