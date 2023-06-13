@@ -6,6 +6,13 @@ This Docmap visualizer is a simple stateless single-page web app that allows you
 
 You can try the live demo hosted on GitHub Pages [here](https://docmaps-project.github.io/docmaps).
 
+### Screenshots
+
+![DocMap for Posted Preprint](screenshots/preprint_posted.png)
+![DocMap for Published Preprint](screenshots/preprint_published.png)
+![DocMap for Published/Reviewed Preprint (note linear issues)](screenshots/preprint_published_reviewed.png)
+![DocMap for Refereed Preprint](screenshots/preprint_refereed.png)
+
 ## Getting Started for Development
 
 ### Prerequisites
