@@ -1,0 +1,301 @@
+[
+  {
+    "type": "docmap",
+    "id": "https://docmaps-project.github.io/ex/docmap_for/10.5194/angeo-40-247-2022",
+    "publisher": {
+      "name": "Inferred from Crossref",
+      "url": "https://github.com/docmaps-project/docmaps/tree/main/packages/ts-etl"
+    },
+    "created": "2023-06-15T17:41:04.422Z",
+    "updated": "2023-06-15T17:41:04.422Z",
+    "first-step": "_:b0",
+    "steps": {
+      "_:b0": {
+        "inputs": [],
+        "actions": [
+          {
+            "participants": [
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Hwang, Jun-Young"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Lee, Young-Sook"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Kim, Yong Ha"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Kam, Hosik"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Kwak, Young-Sil"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Yang, Tae-Yong"
+                },
+                "role": "author"
+              }
+            ],
+            "outputs": [
+              {
+                "published": "2021-11-10T00:00:00.000Z",
+                "doi": "10.5194/angeo-2021-65",
+                "type": "preprint"
+              }
+            ]
+          }
+        ],
+        "assertions": [
+          {
+            "status": "catalogued",
+            "item": "10.5194/angeo-2021-65"
+          }
+        ],
+        "next-step": "_:b1"
+      },
+      "_:b1": {
+        "actions": [
+          {
+            "participants": [],
+            "outputs": [
+              {
+                "published": "2021-11-16T00:00:00.000Z",
+                "doi": "10.5194/angeo-2021-65-rc1",
+                "type": "review"
+              }
+            ]
+          },
+          {
+            "participants": [],
+            "outputs": [
+              {
+                "published": "2021-11-24T00:00:00.000Z",
+                "doi": "10.5194/angeo-2021-65-rc2",
+                "type": "review"
+              }
+            ]
+          }
+        ],
+        "inputs": [
+          {
+            "published": "2021-11-10T00:00:00.000Z",
+            "doi": "10.5194/angeo-2021-65",
+            "type": "preprint"
+          }
+        ],
+        "assertions": [
+          {
+            "status": "reviewed",
+            "item": "10.5194/angeo-2021-65"
+          }
+        ],
+        "previous-step": "_:b0",
+        "next-step": "_:b2"
+      },
+      "_:b2": {
+        "inputs": [
+          {
+            "published": "2021-11-10T00:00:00.000Z",
+            "doi": "10.5194/angeo-2021-65",
+            "type": "preprint"
+          }
+        ],
+        "actions": [
+          {
+            "participants": [
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Hwang, Jun-Young"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Lee, Young-Sook"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Kim, Yong Ha"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Kam, Hosik"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Song, Seok-Min"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Kwak, Young-Sil"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Yang, Tae-Yong"
+                },
+                "role": "author"
+              }
+            ],
+            "outputs": [
+              {
+                "published": "2022-05-02T00:00:00.000Z",
+                "doi": "10.5194/angeo-40-247-2022",
+                "type": "journal-article"
+              }
+            ]
+          }
+        ],
+        "assertions": [
+          {
+            "status": "published",
+            "item": "10.5194/angeo-40-247-2022"
+          }
+        ],
+        "previous-step": "_:b1",
+        "next-step": "_:b3"
+      },
+      "_:b3": {
+        "actions": [
+          {
+            "participants": [],
+            "outputs": [
+              {
+                "published": "2021-11-16T00:00:00.000Z",
+                "doi": "10.5194/angeo-2021-65-rc1",
+                "type": "review"
+              }
+            ]
+          },
+          {
+            "participants": [],
+            "outputs": [
+              {
+                "published": "2021-11-27T00:00:00.000Z",
+                "doi": "10.5194/angeo-2021-65-cc1",
+                "type": "review"
+              }
+            ]
+          },
+          {
+            "participants": [
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Lee, Young-Sook"
+                },
+                "role": "author"
+              }
+            ],
+            "outputs": [
+              {
+                "published": "2022-01-03T00:00:00.000Z",
+                "doi": "10.5194/angeo-2021-65-ac2",
+                "type": "review"
+              }
+            ]
+          },
+          {
+            "participants": [],
+            "outputs": [
+              {
+                "published": "2021-11-24T00:00:00.000Z",
+                "doi": "10.5194/angeo-2021-65-rc2",
+                "type": "review"
+              }
+            ]
+          },
+          {
+            "participants": [
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Lee, Young-Sook"
+                },
+                "role": "author"
+              }
+            ],
+            "outputs": [
+              {
+                "published": "2021-12-23T00:00:00.000Z",
+                "doi": "10.5194/angeo-2021-65-ac1",
+                "type": "review"
+              }
+            ]
+          },
+          {
+            "participants": [
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Lee, Young-Sook"
+                },
+                "role": "author"
+              }
+            ],
+            "outputs": [
+              {
+                "published": "2022-01-27T00:00:00.000Z",
+                "doi": "10.5194/angeo-2021-65-ac3",
+                "type": "review"
+              }
+            ]
+          }
+        ],
+        "inputs": [
+          {
+            "published": "2022-05-02T00:00:00.000Z",
+            "doi": "10.5194/angeo-40-247-2022",
+            "type": "journal-article"
+          }
+        ],
+        "assertions": [
+          {
+            "status": "reviewed",
+            "item": "10.5194/angeo-40-247-2022"
+          }
+        ],
+        "previous-step": "_:b2"
+      }
+    },
+    "@context": "https://w3id.org/docmaps/context.jsonld"
+  }
+]

@@ -1,0 +1,143 @@
+[
+  {
+    "type": "docmap",
+    "id": "https://docmaps-project.github.io/ex/docmap_for/10.1101/2021.01.06.425396",
+    "publisher": {
+      "name": "Inferred from Crossref",
+      "url": "https://github.com/docmaps-project/docmaps/tree/main/packages/ts-etl"
+    },
+    "created": "2023-06-15T17:38:04.087Z",
+    "updated": "2023-06-15T17:38:04.087Z",
+    "first-step": "_:b0",
+    "steps": {
+      "_:b0": {
+        "inputs": [],
+        "actions": [
+          {
+            "participants": [
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Stewart, Hazel"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Palmulli, Roberta"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Johansen, Kristoffer H."
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "McGovern, Naomi"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Shehata, Ola M."
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Carnell, George W."
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Jackson, Hannah K."
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Lee, Jin S."
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Brown, Jonathan C."
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Burgoyne, Thomas"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Heeney, Jonathan L."
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Okkenhaug, Klaus"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Firth, Andrew E."
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Peden, Andrew A."
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Edgar, James R."
+                },
+                "role": "author"
+              }
+            ],
+            "outputs": [
+              {
+                "published": "2021-01-06T00:00:00.000Z",
+                "doi": "10.1101/2021.01.06.425396",
+                "type": "preprint"
+              }
+            ]
+          }
+        ],
+        "assertions": [
+          {
+            "status": "catalogued",
+            "item": "10.1101/2021.01.06.425396"
+          }
+        ]
+      }
+    },
+    "@context": "https://w3id.org/docmaps/context.jsonld"
+  }
+]

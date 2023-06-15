@@ -1,0 +1,362 @@
+[
+  {
+    "type": "docmap",
+    "id": "https://docmaps-project.github.io/ex/docmap_for/10.1101/2022.06.09.495472",
+    "publisher": {
+      "name": "Inferred from Crossref",
+      "url": "https://github.com/docmaps-project/docmaps/tree/main/packages/ts-etl"
+    },
+    "created": "2023-06-15T17:39:54.616Z",
+    "updated": "2023-06-15T17:39:54.616Z",
+    "first-step": "_:b0",
+    "steps": {
+      "_:b0": {
+        "inputs": [],
+        "actions": [
+          {
+            "participants": [
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Kreutzberger, Alex J.B."
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Sanyal, Anwesha"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Saminathan, Anand"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Bloyet, Louis-Marie"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Stumpf, Spencer"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Liu, Zhuoming"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Ojha, Ravi"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Patjas, Markku T."
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Geneid, Ahmed"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Scanavachi, Gustavo"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Doyle, Catherine A."
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Somerville, Elliott"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Bango Da Cunha Correira, Ricardo"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Di Caprio, Giuseppe"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Toppila-Salmi, Sanna"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Mäkitie, Antti"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Kiessling, Volker"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Vapalahti, Olli"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Whelan, Sean P.J."
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Balistreri, Giuseppe"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Kirchhausen, Tom"
+                },
+                "role": "author"
+              }
+            ],
+            "outputs": [
+              {
+                "published": "2022-06-09T00:00:00.000Z",
+                "doi": "10.1101/2022.06.09.495472",
+                "type": "preprint"
+              }
+            ]
+          }
+        ],
+        "assertions": [
+          {
+            "status": "catalogued",
+            "item": "10.1101/2022.06.09.495472"
+          }
+        ],
+        "next-step": "_:b1"
+      },
+      "_:b1": {
+        "inputs": [
+          {
+            "published": "2022-06-09T00:00:00.000Z",
+            "doi": "10.1101/2022.06.09.495472",
+            "type": "preprint"
+          }
+        ],
+        "actions": [
+          {
+            "participants": [
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Kreutzberger, Alex J. B."
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Sanyal, Anwesha"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Saminathan, Anand"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Bloyet, Louis-Marie"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Stumpf, Spencer"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Liu, Zhuoming"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Ojha, Ravi"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Patjas, Markku T."
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Geneid, Ahmed"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Scanavachi, Gustavo"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Doyle, Catherine A."
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Somerville, Elliott"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Correia, Ricardo Bango Da Cunha"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Di Caprio, Giuseppe"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Toppila-Salmi, Sanna"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Mäkitie, Antti"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Kiessling, Volker"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Vapalahti, Olli"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Whelan, Sean P. J."
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Balistreri, Giuseppe"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Kirchhausen, Tom"
+                },
+                "role": "author"
+              }
+            ],
+            "outputs": [
+              {
+                "published": "2022-09-01T00:00:00.000Z",
+                "doi": "10.1073/pnas.2209514119",
+                "type": "journal-article"
+              }
+            ]
+          }
+        ],
+        "assertions": [
+          {
+            "status": "published",
+            "item": "10.1073/pnas.2209514119"
+          }
+        ],
+        "previous-step": "_:b0"
+      }
+    },
+    "@context": "https://w3id.org/docmaps/context.jsonld"
+  }
+]

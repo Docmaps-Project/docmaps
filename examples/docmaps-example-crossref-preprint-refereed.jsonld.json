@@ -1,0 +1,130 @@
+[
+  {
+    "type": "docmap",
+    "id": "https://docmaps-project.github.io/ex/docmap_for/10.7554/eLife.87306.1",
+    "publisher": {
+      "name": "Inferred from Crossref",
+      "url": "https://github.com/docmaps-project/docmaps/tree/main/packages/ts-etl"
+    },
+    "created": "2023-06-15T17:42:15.415Z",
+    "updated": "2023-06-15T17:42:15.415Z",
+    "first-step": "_:b0",
+    "steps": {
+      "_:b0": {
+        "inputs": [],
+        "actions": [
+          {
+            "participants": [
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Liu, Wei"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Shrestha, Rupendra"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Lowe, Albert"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Zhang, Xusheng"
+                },
+                "role": "author"
+              },
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Spaeth, Ludovic"
+                },
+                "role": "author"
+              }
+            ],
+            "outputs": [
+              {
+                "published": "2023-06-05T00:00:00.000Z",
+                "doi": "10.7554/elife.87306.1",
+                "type": "preprint"
+              }
+            ]
+          }
+        ],
+        "assertions": [
+          {
+            "status": "catalogued",
+            "item": "10.7554/elife.87306.1"
+          }
+        ],
+        "next-step": "_:b1"
+      },
+      "_:b1": {
+        "actions": [
+          {
+            "participants": [],
+            "outputs": [
+              {
+                "published": "2023-06-05T00:00:00.000Z",
+                "doi": "10.7554/elife.87306.1.sa2",
+                "type": "review"
+              }
+            ]
+          },
+          {
+            "participants": [
+              {
+                "actor": {
+                  "type": "person",
+                  "name": "Liu, Xiaorong"
+                },
+                "role": "author"
+              }
+            ],
+            "outputs": [
+              {
+                "published": "2023-06-05T00:00:00.000Z",
+                "doi": "10.7554/elife.87306.1.sa0",
+                "type": "review"
+              }
+            ]
+          },
+          {
+            "participants": [],
+            "outputs": [
+              {
+                "published": "2023-06-05T00:00:00.000Z",
+                "doi": "10.7554/elife.87306.1.sa1",
+                "type": "review"
+              }
+            ]
+          }
+        ],
+        "inputs": [
+          {
+            "published": "2023-06-05T00:00:00.000Z",
+            "doi": "10.7554/elife.87306.1",
+            "type": "preprint"
+          }
+        ],
+        "assertions": [
+          {
+            "status": "reviewed",
+            "item": "10.7554/elife.87306.1"
+          }
+        ],
+        "previous-step": "_:b0"
+      }
+    },
+    "@context": "https://w3id.org/docmaps/context.jsonld"
+  }
+]
