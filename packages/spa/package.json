@@ -19,7 +19,7 @@
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-polyfill-node": "^0.12.0",
     "rollup-plugin-svelte": "^7.1.5",
-    "svelte": "^3.59.1"
+    "svelte": "^4.0.0"
   },
   "dependencies": {
     "@docmaps/etl": "workspace:^0.1.2",
