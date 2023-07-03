@@ -1,2 +1,2 @@
-**/docs linguist-generated
-
+/**/docs/**/* linguist-documentation
+/**/docs/**/*.html linguist-generated
