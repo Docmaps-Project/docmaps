@@ -1,4 +1,4 @@
-import type { CrossrefClient } from 'crossref-openapi-client-ts'
+import { CrossrefClient, CreateCrossrefClient } from 'crossref-openapi-client-ts'
 import { Command, Option } from '@commander-js/extra-typings'
 import { Publisher, PublisherT } from 'docmaps-sdk'
 import { isLeft, right } from 'fp-ts/lib/Either'
@@ -46,6 +46,10 @@ export function MakeCli() {
         .choices(PLUGINOPTIONS)
         .makeOptionMandatory(),
     )
+    .option(
+      '--source.crossrefApi.politeMailto <email>',
+      'email for crossref api polite label (your email)',
+    )
     .option('--publisher.id <id>', 'id of publisher of docmaps to generate (you)')
     .option('--publisher.name <name>', 'name of publisher of docmaps to generate (you)')
     .option('--publisher.url <url>', 'url of publisher of docmaps to generate (you)')
@@ -65,10 +69,18 @@ export function MakeCli() {
         throw 'unreachable, if cli.error exits (?)'
       }
 
+      const politeMailto = options['source.crossrefApi.politeMailto']
+
+      const crossrefConfig = politeMailto
+        ? {
+            politeMailto,
+          }
+        : {}
+
       const o: ItemOpts = {
         source: {
           preset: options.source,
-          client: crossref.Client,
+          client: CreateCrossrefClient(crossrefConfig),
         },
         publisher: pub.right,
       }
