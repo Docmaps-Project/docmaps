@@ -1,4 +1,4 @@
-import { CrossrefClient, CreateCrossrefClient } from 'crossref-openapi-client-ts'
+import type { CrossrefClient } from 'crossref-openapi-client-ts'
 import { Command, Option } from '@commander-js/extra-typings'
 import { Publisher, PublisherT } from 'docmaps-sdk'
 import { isLeft, right } from 'fp-ts/lib/Either'
@@ -80,7 +80,7 @@ export function MakeCli() {
       const o: ItemOpts = {
         source: {
           preset: options.source,
-          client: CreateCrossrefClient(crossrefConfig),
+          client: crossref.CreateCrossrefClient(crossrefConfig),
         },
         publisher: pub.right,
       }

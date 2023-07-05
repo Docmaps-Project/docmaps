@@ -13,6 +13,8 @@ import {
   thingForCrossrefWork,
 } from './functions'
 
+export { CreateCrossrefClient } from 'crossref-openapi-client-ts'
+
 // This type is needed because the recursion may produce steps in
 // order with review step last, but the preprint step must be
 // known to the recursing caller. This is awkward but workable
