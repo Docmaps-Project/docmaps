@@ -37,7 +37,9 @@ async function cmdIoResults(args: string): Promise<cmdResult> {
 }
 
 test('single item from crossref with one preprint deduped', async (t) => {
-  const { stdout, error } = await cmdIoResults('item --source crossref-api 10.5194/acp-9-8413-2009')
+  const { stdout, error } = await cmdIoResults(
+    'item --source crossref-api 10.5194/acp-9-8413-2009 --source.crossrefApi.politeMailto docmaps+testsuite@knowledgefutures.org',
+  )
 
   t.falsy(error)
 
@@ -59,7 +61,7 @@ test('single item from crossref with one preprint deduped', async (t) => {
 
 test('single item from crossref with no relations', async (t) => {
   const { stdout, error } = await cmdIoResults(
-    'item --source crossref-api 10.1016/j.jaac.2016.07.660',
+    'item --source crossref-api 10.1016/j.jaac.2016.07.660 --source.crossrefApi.politeMailto docmaps+testsuite@knowledgefutures.org',
   )
 
   t.falsy(error)
@@ -82,7 +84,7 @@ test('single item from crossref with no relations', async (t) => {
 
 test('single item from crossref with both preprint and reviews', async (t) => {
   const { stdout, error } = await cmdIoResults(
-    'item --source crossref-api 10.5194/angeo-40-247-2022',
+    'item --source crossref-api 10.5194/angeo-40-247-2022 --source.crossrefApi.politeMailto docmaps+testsuite@knowledgefutures.org',
   )
 
   t.falsy(error)

@@ -1,4 +1,4 @@
-import { ItemCmd, Client as CrossrefClient } from '@docmaps/etl'
+import { ItemCmd, CreateCrossrefClient } from '@docmaps/etl'
 import util from 'util'
 import {isLeft} from 'fp-ts/lib/Either'
 
@@ -8,7 +8,9 @@ export async function configureForDoiString(str, handleJson, handleError) {
     {
       source: {
 	preset: 'crossref-api',
-	client: CrossrefClient,
+	client: CreateCrossrefClient({
+	  politeMailto: "docmaps+spa@knowledgefutures.org"
+	}),
       },
       publisher: {
 	name: 'Inferred from Crossref',

@@ -1,4 +1,4 @@
-import { CreateCrossrefClient, CrossrefClient } from 'crossref-openapi-client-ts'
+import type { CrossrefClient } from 'crossref-openapi-client-ts'
 import * as E from 'fp-ts/lib/Either'
 import * as A from 'fp-ts/lib/Array'
 import type { ErrorOrDocmap } from '../../types'
@@ -13,8 +13,7 @@ import {
   thingForCrossrefWork,
 } from './functions'
 
-// TODO: force consumers of this library to supply a polite-mailto
-export const Client = CreateCrossrefClient({})
+export { CreateCrossrefClient } from 'crossref-openapi-client-ts'
 
 // This type is needed because the recursion may produce steps in
 // order with review step last, but the preprint step must be
