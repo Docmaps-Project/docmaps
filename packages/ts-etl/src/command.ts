@@ -2,10 +2,12 @@ import type { CrossrefClient } from 'crossref-openapi-client-ts'
 import { Command, Option } from '@commander-js/extra-typings'
 import { Publisher, PublisherT } from 'docmaps-sdk'
 import { isLeft, right } from 'fp-ts/lib/Either'
+import { process as proc } from './processor'
 
 import * as crossref from './plugins/crossref'
 
 import type { ErrorOrDocmap } from './types'
+import { makeRoutine } from './plugins/crossref'
 
 export type PLUGIN_TYPE = 'crossref-api'
 
@@ -146,7 +148,8 @@ export interface ItemOpts {
  * may depend on the source configuration provided.
  */
 export const ItemCmd: Cmd<[string], ItemOpts> = ([doi], opts) => {
-  return crossref.fetchPublicationByDoi(opts.source.client, opts.publisher, doi)
+  const plugin = makeRoutine(opts.source.client);
+  return proc(plugin, opts.publisher, doi)
 }
 
 /**

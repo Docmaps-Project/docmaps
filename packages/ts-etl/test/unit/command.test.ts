@@ -16,12 +16,17 @@ test('ItemCmd: crossref: happy-path scenario: a manuscript with one preprint and
   )
   whenThenResolve(mocks.worksT.getWorks, { doi: cm.PREPRINT_DOI }, cm.mockCrossrefPreprintResponse)
 
+  const publisher = {
+    id: 'my_pub_id',
+    name: 'my_name',
+  }
+
   const res = await ItemCmd([cm.MANUSCRIPT_DOI], {
     source: {
       preset: 'crossref-api',
       client: mocks.crs,
     },
-    publisher: {},
+    publisher: publisher,
   })
 
   if (isLeft(res)) {
@@ -40,6 +45,10 @@ test('ItemCmd: crossref: happy-path scenario: a manuscript with one preprint and
   }
 
   t.deepEqual(dm.type, 'docmap')
+  t.deepEqual(dm.publisher, {
+    id: 'my_pub_id',
+    name: 'my_name',
+  })
   t.is(dm.steps ? Object.keys(dm.steps).length : 0, 2)
   t.is(dm.steps?.['_:b0']?.inputs.length, 0)
   t.deepEqual(dm.steps?.['_:b0']?.actions[0]?.outputs[0]?.doi, cm.PREPRINT_DOI)

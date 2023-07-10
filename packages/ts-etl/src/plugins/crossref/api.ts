@@ -6,12 +6,12 @@ import { pipe } from 'fp-ts/lib/pipeable'
 import * as TE from 'fp-ts/lib/TaskEither'
 import * as D from 'docmaps-sdk'
 import { eqString } from 'fp-ts/lib/Eq'
+import type  {PluginMain} from '../types'
 import {
-  mapLeftToUnknownError,
   decodeActionForWork,
-  stepArrayToDocmap,
   thingForCrossrefWork,
 } from './functions'
+import { mapLeftToUnknownError } from '../../utils'
 
 export { CreateCrossrefClient } from 'crossref-openapi-client-ts'
 
@@ -225,29 +225,6 @@ function stepsForDoiRecursive(
   return program
 }
 
-export async function fetchPublicationByDoi(
-  client: CrossrefClient,
-  publisher: D.PublisherT,
-  inputDoi: string,
-): Promise<ErrorOrDocmap> {
-  const resultTask = pipe(
-    stepsForDoiRecursive(client, inputDoi, new Set<string>(), { inputs: [] }),
-    TE.chain((steps) => {
-      return pipe(stepArrayToDocmap(publisher, inputDoi, steps.all), TE.fromEither)
-    }),
-  )
-
-  return await resultTask()
-}
-
-// NOTE: possibly this wants to be in the core sdk, but because docmaps
-// contain info about authorship, i am not so sure --- might require too
-// much configuration.
-//
-// This is slightly sane because while steps have keys like `first-step`
-// and `next-step`, these keys do not mean anything outside context of docmap.
-// possibly long term this makes a case for rdf-star.
-
 export function actionForReviewDOI(
   client: CrossrefClient,
   doi: string,
@@ -262,4 +239,15 @@ export function actionForReviewDOI(
     TE.map((w) => w.message),
     TE.chain((m) => TE.fromEither(decodeActionForWork(m))),
   )
+}
+
+export function makeRoutine(client: CrossrefClient): PluginMain<string> {
+  const main = (inputDoi: string) => {
+    return pipe(
+      stepsForDoiRecursive(client, inputDoi, new Set<string>(), { inputs: [] }),
+      TE.map((steps) => steps.all)
+    )
+  }
+
+  return main
 }
