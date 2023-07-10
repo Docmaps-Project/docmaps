@@ -86,7 +86,7 @@ function stepsForDoiRecursive(
         E.map((s) => ({
           head: s,
           all: [s],
-          visitedIds: visitedIds.add(inputDoi),
+          visitedIds: visitedIds.add(inputDoi.toLowerCase()),
         })),
         TE.fromEither,
       ),
