@@ -13,7 +13,7 @@ test('fetchPublicationByDoi: happy-path scenario: a manuscript with one preprint
   )
   whenThenResolve(mocks.worksT.getWorks, { doi: cm.PREPRINT_DOI }, cm.mockCrossrefPreprintResponse)
 
-  const res = await fetchPublicationByDoi(mocks.crs, {}, cm.MANUSCRIPT_DOI)
+  const res = await fetchPublicationByDoi(mocks.crs, 0, {}, cm.MANUSCRIPT_DOI)
 
   if (isLeft(res)) {
     t.fail(`Got error instead of docmaps: ${res.left}`)
@@ -47,7 +47,7 @@ test('fetchPublicationByDoi: happy-path scenario: a manuscript discovered from i
   )
   whenThenResolve(mocks.worksT.getWorks, { doi: cm.PREPRINT_DOI }, cm.mockCrossrefPreprintResponse)
 
-  const res = await fetchPublicationByDoi(mocks.crs, {}, cm.PREPRINT_DOI)
+  const res = await fetchPublicationByDoi(mocks.crs, 0, {}, cm.PREPRINT_DOI)
 
   if (isLeft(res)) {
     t.fail(`Got error instead of docmaps: ${res.left}`)
@@ -84,7 +84,7 @@ test('fetchPublicationByDoi: happy-path scenario: publisher is included', async 
     id: 'my_pub_id',
     name: 'my_name',
   }
-  const res = await fetchPublicationByDoi(mocks.crs, publisher, cm.MANUSCRIPT_DOI)
+  const res = await fetchPublicationByDoi(mocks.crs, 0, publisher, cm.MANUSCRIPT_DOI)
 
   if (isLeft(res)) {
     t.fail(`Got error instead of docmaps: ${res.left}`)
@@ -116,7 +116,7 @@ test('fetchPublicationByDoi: happy-path scenario: a manuscript with no relations
     cm.mockCrossrefManuscriptResponse,
   )
 
-  const res = await fetchPublicationByDoi(mocks.crs, {}, cm.MANUSCRIPT_DOI)
+  const res = await fetchPublicationByDoi(mocks.crs, 0, {}, cm.MANUSCRIPT_DOI)
 
   if (isLeft(res)) {
     t.fail(`Got error instead of docmaps: ${res.left}`)
@@ -157,7 +157,7 @@ test('fetchPublicationByDoi: happy-path scenario: a manuscript with 2 reviews an
     cm.mockCrossrefReviewsResponses[1],
   )
 
-  const res = await fetchPublicationByDoi(mocks.crs, {}, cm.MANUSCRIPT_DOI)
+  const res = await fetchPublicationByDoi(mocks.crs, 0, {}, cm.MANUSCRIPT_DOI)
 
   if (isLeft(res)) {
     t.fail(`Got error instead of docmaps: ${res.left}`)
@@ -190,7 +190,7 @@ test('fetchPublicationByDoi: error case: looking up a crossref work of wrong typ
     cm.mockCrossrefReviewsResponses[0],
   )
 
-  const res = await fetchPublicationByDoi(mocks.crs, {}, cm.REVIEW_1_DOI)
+  const res = await fetchPublicationByDoi(mocks.crs, 0, {}, cm.REVIEW_1_DOI)
 
   if (isRight(res)) {
     t.fail(`Got docmaps instead of error: ${res.right}`)

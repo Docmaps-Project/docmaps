@@ -4,6 +4,7 @@ import * as A from 'fp-ts/lib/Array'
 import type { ErrorOrDocmap } from '../../types'
 import { pipe } from 'fp-ts/lib/pipeable'
 import * as TE from 'fp-ts/lib/TaskEither'
+import * as T from 'fp-ts/lib/Task'
 import * as D from 'docmaps-sdk'
 import { eqString } from 'fp-ts/lib/Eq'
 import {
@@ -26,8 +27,22 @@ type RecursiveStepDataChain = {
   visitedIds: Set<string>
 }
 
+const delayedTask: <E, A>(ms: number) => (te: TE.TaskEither<E, A>) => TE.TaskEither<E, A> = <E, A>(
+  ms: number,
+) => {
+  return (te: TE.TaskEither<E, A>) => {
+    return pipe(
+      T.Do,
+      T.delay(ms),
+      TE.fromTask,
+      TE.chain(() => te),
+    )
+  }
+}
+
 function stepsForDoiRecursive(
   client: CrossrefClient,
+  ratelimitDelayMs: number,
   inputDoi: string,
   visitedIds: Set<string>,
   annotations: {
@@ -37,6 +52,7 @@ function stepsForDoiRecursive(
   const service = client.works
   const program = pipe(
     TE.Do,
+    delayedTask(ratelimitDelayMs),
     TE.bind('w', () =>
       TE.tryCatch(
         () => service.getWorks({ doi: inputDoi }),
@@ -109,8 +125,8 @@ function stepsForDoiRecursive(
         // get unique IDs
         A.map((wre) => wre.id),
         A.uniq(eqString),
-        TE.traverseArray((wreId) => {
-          return stepsForDoiRecursive(client, wreId, initialChain.visitedIds, {
+        TE.traverseSeqArray((wreId) => {
+          return stepsForDoiRecursive(client, ratelimitDelayMs, wreId, initialChain.visitedIds, {
             inputs: [],
           })
         }),
@@ -146,17 +162,23 @@ function stepsForDoiRecursive(
       }
       return pipe(
         reviews,
-        TE.traverseArray((wre) => {
-          // TODO: we could collapse this into one Works1 call that fetches all Reviews at once
-          if (wre['id-type'].toLowerCase() != 'doi') {
-            return TE.left(
-              new Error('unable to create step for preprint with identifier that is not DOI', {
-                cause: { work: w.message, preprint: wre.id },
-              }),
-            )
-          }
-          return actionForReviewDOI(client, wre.id)
-        }),
+        TE.traverseArray((wre) =>
+          pipe(
+            wre,
+            (e) => {
+              // TODO: we could collapse this into one Works1 call that fetches all Reviews at once, then the delay is not needed
+              if (e['id-type'].toLowerCase() != 'doi') {
+                return TE.left(
+                  new Error('unable to create step for preprint with identifier that is not DOI', {
+                    cause: { work: w.message, preprint: e.id },
+                  }),
+                )
+              }
+              return actionForReviewDOI(client, e.id)
+            },
+            delayedTask(ratelimitDelayMs),
+          ),
+        ),
         TE.map((listOfActions) => ({
           actions: listOfActions,
           inputs: [thingForCrossrefWork(w.message)],
@@ -195,8 +217,8 @@ function stepsForDoiRecursive(
         // get unique IDs
         A.map((wre) => wre.id),
         A.uniq(eqString),
-        TE.traverseArray((wreId) => {
-          return stepsForDoiRecursive(client, wreId, postfixChain.visitedIds, {
+        TE.traverseSeqArray((wreId) => {
+          return stepsForDoiRecursive(client, ratelimitDelayMs, wreId, postfixChain.visitedIds, {
             // all the outputs of all the actions of the head
             inputs: postfixChain.head.actions.reduce<D.ThingT[]>((m, a) => m.concat(a.outputs), []),
           })
@@ -227,11 +249,12 @@ function stepsForDoiRecursive(
 
 export async function fetchPublicationByDoi(
   client: CrossrefClient,
+  ratelimitDelayMs: number,
   publisher: D.PublisherT,
   inputDoi: string,
 ): Promise<ErrorOrDocmap> {
   const resultTask = pipe(
-    stepsForDoiRecursive(client, inputDoi, new Set<string>(), { inputs: [] }),
+    stepsForDoiRecursive(client, ratelimitDelayMs, inputDoi, new Set<string>(), { inputs: [] }),
     TE.chain((steps) => {
       return pipe(stepArrayToDocmap(publisher, inputDoi, steps.all), TE.fromEither)
     }),

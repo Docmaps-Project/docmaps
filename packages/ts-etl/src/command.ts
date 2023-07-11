@@ -50,6 +50,12 @@ export function MakeCli() {
       '--source.crossrefApi.politeMailto <email>',
       'email for crossref api polite label (your email)',
     )
+    .option(
+      '--source.crossrefApi.ratelimitDelay <ms>',
+      'number of milliseconds to delay each request to crossref API (to prevent ratelimiting, which is typically 50/s)',
+      Number,
+      0,
+    )
     .option('--publisher.id <id>', 'id of publisher of docmaps to generate (you)')
     .option('--publisher.name <name>', 'name of publisher of docmaps to generate (you)')
     .option('--publisher.url <url>', 'url of publisher of docmaps to generate (you)')
@@ -70,6 +76,7 @@ export function MakeCli() {
       }
 
       const politeMailto = options['source.crossrefApi.politeMailto']
+      const ratelimitDelayMs = options['source.crossrefApi.ratelimitDelay']
 
       const crossrefConfig = politeMailto
         ? {
@@ -81,6 +88,7 @@ export function MakeCli() {
         source: {
           preset: options.source,
           client: crossref.CreateCrossrefClient(crossrefConfig),
+          ratelimitDelayMs: ratelimitDelayMs,
         },
         publisher: pub.right,
       }
@@ -127,6 +135,7 @@ export type Cmd<ArgT extends string[], OptT> = (args: ArgT, opts: OptT) => Promi
 export interface CrossrefConfiguration {
   preset: 'crossref-api'
   client: CrossrefClient
+  ratelimitDelayMs: number
 }
 
 /**
@@ -146,7 +155,12 @@ export interface ItemOpts {
  * may depend on the source configuration provided.
  */
 export const ItemCmd: Cmd<[string], ItemOpts> = ([doi], opts) => {
-  return crossref.fetchPublicationByDoi(opts.source.client, opts.publisher, doi)
+  return crossref.fetchPublicationByDoi(
+    opts.source.client,
+    opts.source.ratelimitDelayMs,
+    opts.publisher,
+    doi,
+  )
 }
 
 /**
