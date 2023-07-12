@@ -1,7 +1,16 @@
 import * as D from 'docmaps-sdk'
 import * as E from 'fp-ts/lib/Either'
 import { pipe } from 'fp-ts/lib/pipeable'
-import type  {ErrorOrDocmap} from '../types'
+import type { ErrorOrDocmap } from '../types'
+
+/*   *******
+ *    Utils
+ *   *******
+ *
+ *  This package contains utility functions that are good candidates for
+ *  adoption into the core SDK but currently have only known uses in this
+ *  ETL package.
+ */
 
 /** mapLeftToUnknownError - helper function for interoperating between Either types
  *

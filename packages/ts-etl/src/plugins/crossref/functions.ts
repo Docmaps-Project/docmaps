@@ -1,10 +1,10 @@
 import { Work, DatemorphISOString } from 'crossref-openapi-client-ts'
 import * as E from 'fp-ts/lib/Either'
 import * as A from 'fp-ts/lib/Array'
-import type { ErrorOrDocmap } from '../../types'
 import { pipe } from 'fp-ts/lib/pipeable'
 import * as D from 'docmaps-sdk'
 import { mapLeftToUnknownError, nameForAuthor } from '../../utils'
+import { eqString } from 'fp-ts/lib/Eq'
 
 /**
  * Mappings from strings used in Crossref that are not in Docmaps semantics.
@@ -80,5 +80,19 @@ export function decodeActionForWork(work: Work): E.Either<Error, D.ActionT> {
         mapLeftToUnknownError('decoding action in decodeActionForWork'),
       ),
     ),
+  )
+}
+
+export function relatedDoisForWork(w: Work, relation: string): string[] {
+  const reviews = w.relation?.[relation]
+  if (!reviews) {
+    return []
+  }
+
+  return pipe(
+    reviews,
+    // get unique IDs
+    A.map((wre) => wre.id),
+    A.uniq(eqString),
   )
 }

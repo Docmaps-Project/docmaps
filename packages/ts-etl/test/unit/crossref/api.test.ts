@@ -1,8 +1,22 @@
 import test from 'ava'
 import { isLeft, isRight } from 'fp-ts/lib/Either'
-import { makeRoutine } from '../../../src/plugins/crossref'
 import { whenThenResolve } from '../utils'
+import type { CrossrefClient } from 'crossref-openapi-client-ts'
+import { CrossrefPlugin } from '../../../src/plugins/crossref'
+import { stepsForIdRecursive } from '../../../src/processor'
 import * as cm from '../__fixtures__/crossref'
+import * as TE from 'fp-ts/lib/TaskEither'
+import { pipe } from 'fp-ts/lib/pipeable'
+
+function makeRoutine(c: CrossrefClient) {
+  const plugin = CrossrefPlugin(c)
+  return (doi: string) => {
+    return pipe(
+      stepsForIdRecursive(plugin, doi, new Set<string>(), { inputs: [] }),
+      TE.map((c) => c.all),
+    )
+  }
+}
 
 test('fetchPublicationByDoi: happy-path scenario: a manuscript with one preprint and no reviews', async (t) => {
   const mocks = cm.CrossrefClientMocks()
@@ -41,7 +55,6 @@ test('fetchPublicationByDoi: happy-path scenario: a manuscript discovered from i
   whenThenResolve(mocks.worksT.getWorks, { doi: cm.PREPRINT_DOI }, cm.mockCrossrefPreprintResponse)
   const routine = makeRoutine(mocks.crs)
 
-  // FIXME:  this makes the call signature look wrong. double-check!
   const res = await routine(cm.PREPRINT_DOI)()
 
   if (isLeft(res)) {
@@ -68,7 +81,6 @@ test('fetchPublicationByDoi: happy-path scenario: a manuscript with no relations
   )
   const routine = makeRoutine(mocks.crs)
 
-  // FIXME:  this makes the call signature look wrong. double-check!
   const res = await routine(cm.MANUSCRIPT_DOI)()
 
   if (isLeft(res)) {
@@ -102,7 +114,6 @@ test('fetchPublicationByDoi: happy-path scenario: a manuscript with 2 reviews an
   )
   const routine = makeRoutine(mocks.crs)
 
-  // FIXME:  this makes the call signature look wrong. double-check!
   const res = await routine(cm.MANUSCRIPT_DOI)()
 
   if (isLeft(res)) {
@@ -129,7 +140,6 @@ test('fetchPublicationByDoi: error case: looking up a crossref work of wrong typ
   )
   const routine = makeRoutine(mocks.crs)
 
-  // FIXME:  this makes the call signature look wrong. double-check!
   const res = await routine(cm.REVIEW_1_DOI)()
 
   if (isRight(res)) {
