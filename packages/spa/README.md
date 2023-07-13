@@ -4,7 +4,7 @@ This Docmap visualizer is a simple stateless single-page web app that allows you
 
 ## Demo
 
-You can try the live demo hosted on GitHub Pages [here](https://docmaps-project.github.io/docmaps).
+You can try the live demo hosted on GitHub Pages [here](https://docmaps-project.github.io/docmaps/demo/index.html).
 
 ## Getting Started for Development
 
