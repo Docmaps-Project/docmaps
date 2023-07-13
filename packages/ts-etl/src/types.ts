@@ -23,6 +23,6 @@ export type InductiveStepResult<ID extends D.IRI> = {
 }
 
 export type Plugin<ID extends D.IRI, E = Error> = {
-  stepForId: (id: ID, inputs: D.ThingT[]) => TE.TaskEither<E, InductiveStepResult<ID>>
+  stepForId: (id: ID) => TE.TaskEither<E, InductiveStepResult<ID>>
   actionForReviewId: (id: ID) => TE.TaskEither<E, D.ActionT>
 }

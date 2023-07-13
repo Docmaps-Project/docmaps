@@ -14,7 +14,7 @@ export const CrossrefPlugin: (client: CrossrefClient) => Plugin<string> = (
 ) => {
   const service = client.works
   return {
-    stepForId: (id: string, inputs: D.ThingT[]) => {
+    stepForId: (id: string) => {
       return pipe(
         TE.Do,
         TE.bind('w', () =>
@@ -50,7 +50,7 @@ export const CrossrefPlugin: (client: CrossrefClient) => Plugin<string> = (
             w.message,
             decodeActionForWork,
             E.map((action) => ({
-              inputs: inputs,
+              inputs: [],
               actions: [action],
               assertions: [
                 {

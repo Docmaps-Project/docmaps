@@ -24,7 +24,19 @@ export function stepsForIdRecursive<ID extends D.IRI, P extends Plugin<ID>>(
   const program = pipe(
     TE.Do,
     // 1. get step for this, and additional nodes to search
-    TE.bind('isrForId', () => plugin.stepForId(id, annotations.inputs)),
+    TE.bind('isrForId', () => {
+      return pipe(
+        id,
+        plugin.stepForId,
+        TE.map((isr) => ({
+          ...isr,
+          step: {
+            ...isr.step,
+            inputs: annotations.inputs,
+          },
+        })),
+      )
+    }),
     TE.bind('initialChain', ({ isrForId }) =>
       TE.of({
         head: isrForId.step,
