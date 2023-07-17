@@ -43,9 +43,11 @@ Documentation is comments-only for now. See [relevant issue](https://github.com/
 
 ## Contributing
 
-For Code of Conduct, see the repository-wide [CODE_OF_CONDUCT.md](https://github.com/Docmaps-Project/docmaps/blob/main/CODE_OF_CONDUCT.md).
+For Code of Conduct, see the repository-wide
+[CODE_OF_CONDUCT.md](https://github.com/Docmaps-Project/docmaps/blob/main/CODE_OF_CONDUCT.md).
 
-For info about local development of this repository, see [CONTRIBUTING.md](https://github.com/Docmaps-Project/docmaps/blob/main/CONTRIBUTING.md).
+For info about local development of this repository, see
+[CONTRIBUTING.md](https://github.com/Docmaps-Project/docmaps/blob/main/packages/ts-sdk/CONTRIBUTING.md).
 
 ## Releases
 
