@@ -24,11 +24,11 @@ Any codec can be used directly with a JSON string or `any`/`unknown` object to t
 create the instantiation of the Typescript type. `io-ts` is designed to work with
 [`fp-ts`](https://github.com/gcanti/fp-ts), so you get an instance of Either which must
 be deconstructed by case to determine whether the input was valid. See examples of this
-in the [`typed_graph`](/packages/ts-sdk/src/typed_graph.ts), where we use `isLeft` to check if the decode
-failed.
+in the [`typed_graph`](https://github.com/Docmaps-Project/docmaps/blob/main/packages/ts-sdk/src/typed_graph.ts),
+where we use `isLeft` to check if the decode failed.
 
 **For examples of usage of `fp-ts` pipelines with our `io-ts` codecs, review the
-[`ts-etl` implementation](/packages/ts-etl/src/plugins/crossref.ts).
+[`ts-etl` implementation](https://github.com/Docmaps-Project/docmaps/blob/main/packages/ts-etl/src/plugins/crossref/api.ts).
 
 Alternatively, the `typed_graph` class is used for choosing the codec to use based on the
 `@type` key present in the jsonld. This is mainly here to support to-be-implemented RDF
@@ -43,9 +43,9 @@ Documentation is comments-only for now. See [relevant issue](https://github.com/
 
 ## Contributing
 
-For Code of Conduct, see the repository-wide [CODE_OF_CONDUCT.md](/CODE_OF_CONDUCT.md).
+For Code of Conduct, see the repository-wide [CODE_OF_CONDUCT.md](https://github.com/Docmaps-Project/docmaps/blob/main/CODE_OF_CONDUCT.md).
 
-For info about local development of this repository, see [CONTRIBUTING.md](CONTRIBUTING.md).
+For info about local development of this repository, see [CONTRIBUTING.md](https://github.com/Docmaps-Project/docmaps/blob/main/CONTRIBUTING.md).
 
 ## Releases
 
