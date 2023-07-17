@@ -31,10 +31,10 @@ keys will be dropped. We can disallow extra keys using <code>t.exact</code>.</p>
 create the instantiation of the Typescript type. <code>io-ts</code> is designed to work with
 <a href="https://github.com/gcanti/fp-ts"><code>fp-ts</code></a>, so you get an instance of Either which must
 be deconstructed by case to determine whether the input was valid. See examples of this
-in the <a href="https://github.com/Docmaps-Project/docmaps/blob/main/packages/ts-sdk/src/typed_graph.ts"><code>typed_graph</code></a>, where we use <code>isLeft</code> to check if the decode
-failed.</p>
+in the <a href="https://github.com/Docmaps-Project/docmaps/blob/main/packages/ts-sdk/src/typed_graph.ts"><code>typed_graph</code></a>,
+where we use <code>isLeft</code> to check if the decode failed.</p>
 <p>**For examples of usage of <code>fp-ts</code> pipelines with our <code>io-ts</code> codecs, review the
-<a href="https://github.com/Docmaps-Project/docmaps/blob/main/packages/ts-etl/src/plugins/crossref.ts"><code>ts-etl</code> implementation</a>.</p>
+<a href="https://github.com/Docmaps-Project/docmaps/blob/main/packages/ts-etl/src/plugins/crossref/api.ts"><code>ts-etl</code> implementation</a>.</p>
 <p>Alternatively, the <code>typed_graph</code> class is used for choosing the codec to use based on the
 <code>@type</code> key present in the jsonld. This is mainly here to support to-be-implemented RDF
 use-cases rather than JsonLD use cases, because it only works when the <code>@type</code> field is set
@@ -43,7 +43,7 @@ at the moment. Generally I recommend you to ignore <code>typed_graph</code> unti
 makes it more useful.</p>
 <a id="md:documentation" class="tsd-anchor"></a><h2><a href="#md:documentation">Documentation</a></h2><p>Documentation is comments-only for now. See <a href="https://github.com/Docmaps-Project/docmaps/issues/20">relevant issue</a>.</p>
 <a id="md:contributing" class="tsd-anchor"></a><h2><a href="#md:contributing">Contributing</a></h2><p>For Code of Conduct, see the repository-wide <a href="https://github.com/Docmaps-Project/docmaps/blob/main/CODE_OF_CONDUCT.md">CODE_OF_CONDUCT.md</a>.</p>
-<p>For info about local development of this repository, see <a href="https://github.com/Docmaps-Project/docmaps/blob/main/packages/ts-sdk/CONTRIBUTING.md">CONTRIBUTING.md</a>.</p>
+<p>For info about local development of this repository, see <a href="https://github.com/Docmaps-Project/docmaps/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>.</p>
 <a id="md:releases" class="tsd-anchor"></a><h2><a href="#md:releases">Releases</a></h2><p>Packages are hosted on NPM and automated by senmantic-release (see repository root for more info).</p>
 <a id="md:current-next-steps" class="tsd-anchor"></a><h2><a href="#md:current-next-steps">Current next steps</a></h2><p>Review the issues on this repository for up-to-date info of desired improvements.
 There are also expressive TODOs in the codebase.
