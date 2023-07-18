@@ -10,11 +10,18 @@ and general visualization tools.
 
 # Usage
 
+Via a global install:
+
+```bash
+npm i -g @docmaps/etl
+npx docmaps-etl item --source crossref-api 10.5194/angeo-40-247-2022 # sub with your DOI of interest
+```
+
 In this repository:
 
 ```bash
 pnpm install # or npm install
-pnpm start item --source crossref-api 10.5194/angeo-40-247-2022 # or npm start
+pnpm docmaps-etl item --source crossref-api 10.5194/angeo-40-247-2022 # or npm docmaps-etl
 ```
 
 ## Implementation
