@@ -16,7 +16,7 @@
     "build": "tsc"
   },
   "bin": {
-    "docmaps-etl": "tsx dist/cli.js"
+    "docmaps-etl": "dist/cli.js"
   },
   "keywords": [],
   "author": "eve github.com/ships",
