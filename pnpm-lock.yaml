@@ -24,6 +24,25 @@ importers:
       rdf-ext: 2.2.0
       rdf-validate-shacl: 0.4.5
 
+  packages/example:
+    specifiers:
+      '@tsconfig/node-lts-strictest-esm': ^18.12.1
+      '@types/node': ^18.16.2
+      docmaps-sdk: workspace:^0.0.0
+      fp-ts: ^2.16.0
+      io-ts: ^2.2.20
+      tsx: ^3.12.7
+      typescript: ^4.9.5
+    dependencies:
+      docmaps-sdk: link:../ts-sdk
+      fp-ts: 2.16.0
+      io-ts: 2.2.20_fp-ts@2.16.0
+      tsx: 3.12.7
+      typescript: 4.9.5
+    devDependencies:
+      '@tsconfig/node-lts-strictest-esm': 18.12.1
+      '@types/node': 18.16.7
+
   packages/spa:
     specifiers:
       '@docmaps/etl': workspace:^0.1.2
@@ -32,7 +51,7 @@ importers:
       '@rollup/plugin-terser': ^0.4.3
       '@source-data/render-rev': github:source-data/render-rev
       '@spider-ui/global-event-registry': ^0.2.7
-      docmaps-sdk: ^0.10.0
+      docmaps-sdk: workspace:^0.0.0
       fp-ts: ^2.16.0
       prismjs: ^1.29.0
       rollup: ^3.23.0
@@ -47,7 +66,7 @@ importers:
       '@docmaps/etl': link:../ts-etl
       '@source-data/render-rev': github.com/source-data/render-rev/e77d8a0840fa6a33ea6663aa57dee6ff0930faed_en4jrmmtiggxba5g6f4h6b5bdu
       '@spider-ui/global-event-registry': 0.2.7
-      docmaps-sdk: 0.10.0
+      docmaps-sdk: link:../ts-sdk
       fp-ts: 2.16.0
       prismjs: 1.29.0
       sirv-cli: 2.0.2
@@ -73,7 +92,7 @@ importers:
       ava: ^5.2.0
       commander: ^10.0.1
       crossref-openapi-client-ts: ^1.3.0
-      docmaps-sdk: ^0.0.0
+      docmaps-sdk: workspace:^0.0.0
       eslint: ^8.39.0
       eslint-config-prettier: ^8.8.0
       eslint-plugin-prettier: ^4.2.1
@@ -2490,20 +2509,6 @@ packages:
     dependencies:
       path-type: 4.0.0
 
-  /docmaps-sdk/0.10.0:
-    resolution: {integrity: sha512-oeT30tGMeIRRaSrBb/TV9dd1N4Be6II5JQwPCb8yq96bgWj3qFkux/cOxLmZu2wto3N+K35uqEgZ5s7Ya4RXlA==}
-    dependencies:
-      '@rdfjs/serializer-jsonld-ext': 4.0.0
-      fp-ts: 2.16.0
-      io-ts: 2.2.20_fp-ts@2.16.0
-      io-ts-types: 0.5.19_s7sbo4rgx7udnj5ndpwuv6vmsa
-      monocle-ts: 2.3.13_fp-ts@2.16.0
-      newtype-ts: 0.3.5_pfnvjiba2nr3jdxmyagzf4ncpm
-      readable-stream: 4.3.0
-    transitivePeerDependencies:
-      - web-streams-polyfill
-    dev: false
-
   /doctrine/3.0.0:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
     engines: {node: '>=6.0.0'}
@@ -3438,20 +3443,6 @@ packages:
       newtype-ts: 0.3.5_jaoopmksw5o32idg3qiqnewmua
     dev: false
 
-  /io-ts-types/0.5.19_s7sbo4rgx7udnj5ndpwuv6vmsa:
-    resolution: {integrity: sha512-kQOYYDZG5vKre+INIDZbLeDJe+oM+4zLpUkjXyTMyUfoCpjJNyi29ZLkuEAwcPufaYo3yu/BsemZtbdD+NtRfQ==}
-    peerDependencies:
-      fp-ts: ^2.0.0
-      io-ts: ^2.0.0
-      monocle-ts: ^2.0.0
-      newtype-ts: ^0.3.2
-    dependencies:
-      fp-ts: 2.16.0
-      io-ts: 2.2.20_fp-ts@2.16.0
-      monocle-ts: 2.3.13_fp-ts@2.16.0
-      newtype-ts: 0.3.5_pfnvjiba2nr3jdxmyagzf4ncpm
-    dev: false
-
   /io-ts/2.2.20_fp-ts@2.15.0:
     resolution: {integrity: sha512-Rq2BsYmtwS5vVttie4rqrOCIfHCS9TgpRLFpKQCM1wZBBRY9nWVGmEvm2FnDbSE2un1UE39DvFpTR5UL47YDcA==}
     peerDependencies:
@@ -4166,14 +4157,6 @@ packages:
       fp-ts: 2.15.0
     dev: false
 
-  /monocle-ts/2.3.13_fp-ts@2.16.0:
-    resolution: {integrity: sha512-D5Ygd3oulEoAm3KuGO0eeJIrhFf1jlQIoEVV2DYsZUMz42j4tGxgct97Aq68+F8w4w4geEnwFa8HayTS/7lpKQ==}
-    peerDependencies:
-      fp-ts: ^2.5.0
-    dependencies:
-      fp-ts: 2.16.0
-    dev: false
-
   /mri/1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
     engines: {node: '>=4'}
@@ -4249,16 +4232,6 @@ packages:
     dependencies:
       fp-ts: 2.15.0
       monocle-ts: 2.3.13_fp-ts@2.15.0
-    dev: false
-
-  /newtype-ts/0.3.5_pfnvjiba2nr3jdxmyagzf4ncpm:
-    resolution: {integrity: sha512-v83UEQMlVR75yf1OUdoSFssjitxzjZlqBAjiGQ4WJaML8Jdc68LJ+BaSAXUmKY4bNzp7hygkKLYTsDi14PxI2g==}
-    peerDependencies:
-      fp-ts: ^2.0.0
-      monocle-ts: ^2.0.0
-    dependencies:
-      fp-ts: 2.16.0
-      monocle-ts: 2.3.13_fp-ts@2.16.0
     dev: false
 
   /node-domexception/1.0.0:
@@ -5881,7 +5854,6 @@ packages:
     resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
     hasBin: true
-    dev: true
 
   /uglify-js/3.17.4:
     resolution: {integrity: sha512-T9q82TJI9e/C1TAxYvfb16xO120tMVFZrGA3f9/P4424DNu6ypK103y0GPFVa17yotwSyZW5iYXgjYHkGrJW/g==}
