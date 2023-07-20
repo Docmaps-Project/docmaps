@@ -1,4 +1,4 @@
-name: Test SPA
+name: Test example
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_call:
 
 env:
-  PKG_DIR: "packages/spa"
+  PKG_DIR: "packages/example"
 
 jobs:
   nodejs_test:
@@ -65,3 +65,8 @@ jobs:
         run: |
           cd ${{env.PKG_DIR}} ;
           pnpm lint;
+
+      - name: Verify docs are up-to-date
+        run: |
+          cd ${{env.PKG_DIR}} ;
+          pnpm docs:check;

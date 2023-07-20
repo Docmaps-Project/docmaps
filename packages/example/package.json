@@ -1,0 +1,27 @@
+{
+  "name": "@docmaps/example",
+  "version": "1.0.0",
+  "description": "example of using fp-ts to parse and handle a docmaps structure",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "test": "npx tsx src/index.ts",
+    "docs:check": "echo WARN: no docs exist for this package",
+    "build": "tsc",
+    "lint": "echo WARN: no linting specified for this package"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "docmaps-sdk": "workspace:^0.0.0",
+    "fp-ts": "^2.16.0",
+    "io-ts": "^2.2.20",
+    "tsx": "^3.12.7",
+    "typescript": "^4.9.5"
+  },
+  "devDependencies": {
+    "@tsconfig/node-lts-strictest-esm": "^18.12.1",
+    "@types/node": "^18.16.2"
+  }
+}

@@ -25,7 +25,7 @@
     "@docmaps/etl": "workspace:^0.1.2",
     "@source-data/render-rev": "github:source-data/render-rev",
     "@spider-ui/global-event-registry": "^0.2.7",
-    "docmaps-sdk": "^0.10.0",
+    "docmaps-sdk": "workspace:^0.0.0",
     "fp-ts": "^2.16.0",
     "prismjs": "^1.29.0",
     "sirv-cli": "^2.0.2",
