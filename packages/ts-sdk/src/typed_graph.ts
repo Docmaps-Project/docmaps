@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-explicit-any: 0 */
 import type { Stream } from '@rdfjs/types/stream'
 import { isLeft } from 'fp-ts/lib/Either'
 import { DocmapsFactory } from './types'

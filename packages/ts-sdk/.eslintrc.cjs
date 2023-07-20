@@ -8,7 +8,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint', 'prettier'],
   root: true,
-  ignorePatterns: ['dist/', 'docs/'],
+  ignorePatterns: ['dist/', 'docs/', 'src/test/__fixtures__/'],
   rules: {
     '@typescript-eslint/no-unused-vars': [
       'error',
