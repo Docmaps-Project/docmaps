@@ -1,4 +1,4 @@
-name: Test ts-etl
+name: Test SPA
 
 on:
   push:
