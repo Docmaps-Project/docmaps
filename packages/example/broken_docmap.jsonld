@@ -1,0 +1,247 @@
+{
+  "type": "docmap",
+  "id": "https://docmaps-project.github.io/ex/docmap_for/10.5194/wes-2022-23",
+  "publisher": {},
+  "created": "2023-07-16T15:30:51.889Z",
+  "updated": "2023-07-16T15:30:51.889Z",
+  "first-step": "_:b0",
+  "steps": {
+    "_:b0": {
+      "inputs": [],
+      "actions": [
+        {
+          "participants": [
+            {
+              "actor": {
+                "type": "person",
+                "name": "Potentier, Thomas"
+              },
+              "role": "author"
+            },
+            {
+              "actor": {
+                "type": "person",
+                "name": "Guilmineau, Emmanuel"
+              },
+              "role": "author"
+            },
+            {
+              "actor": {
+                "type": "person",
+                "name": "Finez, Arthur"
+              },
+              "role": "author"
+            },
+            {
+              "actor": {
+                "type": "person",
+                "name": "Le Bourdat, Colin"
+              },
+              "role": "author"
+            },
+            {
+              "actor": {
+                "type": "person",
+                "name": "Braud, Caroline"
+              },
+              "role": "author"
+            }
+          ],
+          "outputs": [
+            {
+              "published": "2022-03-08T00:00:00.000Z",
+              "doi": "10.5194/wes-2022-23",
+              "type": "preprint"
+            }
+          ]
+        }
+      ],
+      "assertions": [
+        {
+          "status": "catalogued",
+          "item": "10.5194/wes-2022-23"
+        }
+      ],
+      "next-step": "_:b1"
+    },
+    "_:b1": {
+      "actions": [
+        {
+          "participants": [],
+          "outputs": [
+            {
+              "published": "2022-05-27T00:00:00.000Z",
+              "doi": "10.5194/wes-2022-23-rc1",
+              "type": "review"
+            }
+          ]
+        },
+        {
+          "participants": [],
+          "outputs": [
+            {
+              "published": "2022-05-29T00:00:00.000Z",
+              "doi": "10.5194/wes-2022-23-rc2",
+              "type": "review"
+            }
+          ]
+        }
+      ],
+      "inputs": [
+        {
+          "published": "2022-03-08T00:00:00.000Z",
+          "doi": "10.5194/wes-2022-23",
+          "type": "preprint"
+        }
+      ],
+      "assertions": [
+        {
+          "status": "reviewed",
+          "item": "10.5194/wes-2022-23"
+        }
+      ],
+      "previous-step": "_:b0",
+      "next-step": "_:b2"
+    },
+    "_:b2": {
+      "inputs": [
+        {
+          "published": "2022-03-08T00:00:00.000Z",
+          "doi": "10.5194/wes-2022-23",
+          "type": "preprint"
+        }
+      ],
+      "actions": [
+        {
+          "participants": [
+            {
+              "actor": {
+                "type": "person",
+                "name": "Potentier, Thomas"
+              },
+              "role": "author"
+            },
+            {
+              "actor": {
+                "type": "person",
+                "name": "Guilmineau, Emmanuel"
+              },
+              "role": "author"
+            },
+            {
+              "actor": {
+                "type": "person",
+                "name": "Finez, Arthur"
+              },
+              "role": "author"
+            },
+            {
+              "actor": {
+                "type": "person",
+                "name": "Le Bourdat, Colin"
+              },
+              "role": "author"
+            },
+            {
+              "actor": {
+                "type": "person",
+                "name": "Braud, Caroline"
+              },
+              "role": "author"
+            }
+          ],
+          "outputs": [
+            {
+              "published": "2022-08-30T00:00:00.000Z",
+              "doi": "10.5194/wes-7-1771-2022",
+              "type": "journal-article"
+            }
+          ]
+        }
+      ],
+      "assertions": [
+        {
+          "status": "published",
+          "item": "10.5194/wes-7-1771-2022"
+        }
+      ],
+      "previous-step": "_:b1",
+      "next-step": "_:b3"
+    },
+    "_:b3": {
+      "actions": [
+        {
+          "participants": [],
+          "outputs": [
+            {
+              "published": "2022-05-27T00:00:00.000Z",
+              "doi": "10.5194/wes-2022-23-rc1",
+              "type": "review"
+            }
+          ]
+        },
+        {
+          "participants": [
+            {
+              "actor": {
+                "type": "person",
+                "name": "Potentier, Thomas"
+              },
+              "role": "author"
+            }
+          ],
+          "outputs": [
+            {
+              "published": "2022-06-14T00:00:00.000Z",
+              "doi": "10.5194/wes-2022-23-ac1",
+              "type": "review"
+            }
+          ]
+        },
+        {
+          "participants": [],
+          "outputs": [
+            {
+              "published": "2022-05-29T00:00:00.000Z",
+              "doi": "10.5194/wes-2022-23-rc2",
+              "type": "review"
+            }
+          ]
+        },
+        {
+          "participants": [
+            {
+              "actor": {
+                "type": "person",
+                "name": "Potentier, Thomas"
+              },
+              "role": "author"
+            }
+          ],
+          "outputs": [
+            {
+              "published": "2022-06-14T00:00:00.000Z",
+              "doi": "10.5194/wes-2022-23-ac2",
+              "type": "review"
+            }
+          ]
+        }
+      ],
+      "inputs": [
+        {
+          "published": "2022-08-30T00:00:00.000Z",
+          "doi": "10.5194/wes-7-1771-2022",
+          "type": "journal-article"
+        }
+      ],
+      "asserions": [
+        {
+          "status": "reviewed",
+          "item": "10.5194/wes-7-1771-2022"
+        }
+      ],
+      "previous-step": "_:b2"
+    }
+  },
+  "@context": "https://w3id.org/docmaps/context.jsonld"
+}
