@@ -74,7 +74,7 @@ jobs:
           ../scripts/link-docs.sh ;
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v2
         with:
           # Upload subdirectory
           path: './docs'
