@@ -5,13 +5,15 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "test": "npx tsx src/index.ts"
+    "test": "npx tsx src/index.ts",
+    "docs:check": "echo WARN: no docs exist for this package",
+    "lint": "echo WARN: no linting specified for this package"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "docmaps-sdk": "^0.10.0",
+    "docmaps-sdk": "workspace:^0.10.0",
     "fp-ts": "^2.16.0",
     "io-ts": "^2.2.20",
     "tsx": "^3.12.7",
