@@ -7,6 +7,7 @@
   "scripts": {
     "test": "npx tsx src/index.ts",
     "docs:check": "echo WARN: no docs exist for this package",
+    "build": "tsc",
     "lint": "echo WARN: no linting specified for this package"
   },
   "keywords": [],
