@@ -137,7 +137,7 @@ importers:
       '@types/rdfjs__data-model': ^2.0.1
       '@types/rdfjs__parser-n3': ^2.0.0
       '@types/rdfjs__serializer-jsonld-ext': ^2.0.5
-      '@types/readable-stream': ^2.3.15
+      '@types/readable-stream': ^4.0.0
       '@typescript-eslint/eslint-plugin': ^6.0.0
       '@typescript-eslint/parser': ^6.0.0
       ava: ^5.2.0
@@ -175,7 +175,7 @@ importers:
       '@types/rdfjs__data-model': 2.0.3
       '@types/rdfjs__parser-n3': 2.0.1
       '@types/rdfjs__serializer-jsonld-ext': 2.0.5
-      '@types/readable-stream': 2.3.15
+      '@types/readable-stream': 4.0.0
       '@typescript-eslint/eslint-plugin': 6.1.0_3z6q7ysnoxdmrsmk5tia7jsri4
       '@typescript-eslint/parser': 6.1.0_jgkqkwom7vrxl4kyi454n2sy2i
       ava: 5.2.0
@@ -1330,7 +1330,7 @@ packages:
   /@types/http-link-header/1.0.3:
     resolution: {integrity: sha512-y8HkoD/vyid+5MrJ3aas0FvU3/BVBGcyG9kgxL0Zn4JwstA8CglFPnrR0RuzOjRCXwqzL5uxWC2IO7Ub0rMU2A==}
     dependencies:
-      '@types/node': 20.4.2
+      '@types/node': 18.16.19
     dev: false
 
   /@types/json-schema/7.0.12:
@@ -1344,7 +1344,7 @@ packages:
   /@types/keyv/3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 20.4.2
+      '@types/node': 18.16.19
     dev: false
 
   /@types/minimist/1.2.2:
@@ -1364,7 +1364,6 @@ packages:
 
   /@types/node/18.16.19:
     resolution: {integrity: sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==}
-    dev: false
 
   /@types/node/18.16.7:
     resolution: {integrity: sha512-MFg7ua/bRtnA1hYE3pVyWxGd/r7aMqjNOdHvlSsXV3n8iaeGKkOaPzpJh6/ovf4bEXWcojkeMJpTsq3mzXW4IQ==}
@@ -1492,8 +1491,16 @@ packages:
   /@types/readable-stream/2.3.15:
     resolution: {integrity: sha512-oM5JSKQCcICF1wvGgmecmHldZ48OZamtMxcGGVICOJA8o8cahXC1zEVAif8iwoc5j8etxFaRFnf095+CDsuoFQ==}
     dependencies:
-      '@types/node': 20.4.2
+      '@types/node': 18.16.19
       safe-buffer: 5.1.2
+    dev: false
+
+  /@types/readable-stream/4.0.0:
+    resolution: {integrity: sha512-s6YqDV111kwuFsT9SwFC+FmZ5n1SEp4H9DXGg6Zqag0lPGeEvBGP9UaLJYpX4cxY7fAFnx2avy1QVvft0LLb7g==}
+    dependencies:
+      '@types/node': 18.16.19
+      safe-buffer: 5.1.2
+    dev: true
 
   /@types/resolve/1.20.2:
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
@@ -1502,7 +1509,7 @@ packages:
   /@types/responselike/1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
     dependencies:
-      '@types/node': 20.4.2
+      '@types/node': 18.16.19
     dev: false
 
   /@types/semver/6.2.3:

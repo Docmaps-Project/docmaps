@@ -48,7 +48,7 @@
     "@types/rdfjs__data-model": "^2.0.1",
     "@types/rdfjs__parser-n3": "^2.0.0",
     "@types/rdfjs__serializer-jsonld-ext": "^2.0.5",
-    "@types/readable-stream": "^2.3.15",
+    "@types/readable-stream": "^4.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "ava": "^5.2.0",
