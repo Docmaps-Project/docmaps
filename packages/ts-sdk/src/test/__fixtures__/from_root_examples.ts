@@ -16,17 +16,20 @@ function loadDataset(filePath: string) {
 export const FromRootExamples = {
   biorxiv_01_nt: loadDatasetNtriples('../../examples/docmaps-example-biorxiv-01.jsonld.nt'),
   elife_01_nt: loadDatasetNtriples('../../examples/docmaps-example-elife-01.jsonld.nt'),
+  elife_02_nt: loadDatasetNtriples('../../examples/docmaps-example-elife-02.jsonld.nt'),
   embo_01_nt: loadDatasetNtriples('../../examples/docmaps-example-embo-01.jsonld.nt'),
+
   biorxiv_01_jsonld: loadDataset('../../examples/docmaps-example-biorxiv-01.jsonld'),
-  // TODO - note the difference in structure of the response here
+  // TODO - note the difference in structure of the loading here
   elife_01_jsonld: loadDataset('../../examples/docmaps-example-elife-01.jsonld')[0],
   elife_02_jsonld: loadDataset('../../examples/docmaps-example-elife-02.jsonld')[0],
-  // TODO - note the difference in structure of the response here
+  // TODO - note the difference in structure of the loading here
   embo_01_jsonld: loadDataset('../../examples/docmaps-example-embo-01.jsonld')['@graph'][0][
     'docmap'
   ],
 }
 
+// valid docmaps we can currently parse
 const el_dm = [
   FromRootExamples.elife_01_jsonld,
   FromRootExamples.elife_02_jsonld,

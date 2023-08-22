@@ -79,6 +79,22 @@ test('Graph Extraction of a Docmap', async (t) => {
   t.deepEqual(Object.keys(dm_elife.steps).sort(), ['_:b0', '_:b2', '_:b3'])
 })
 
+test('Graph extraction of additional docmaps', async (t) => {
+  const dm_embo = (await g.pickStream(
+    FromRootExamples.embo_01_nt,
+    DocmapNormalizedFrame,
+  )) as DocmapsTypes.DocmapT
+
+  t.is(dm_embo.id, 'https://eeb.embo.org/api/v2/docmap/10.1101/2021.03.24.436774')
+
+  const dm_elife_2 = (await g.pickStream(
+    FromRootExamples.elife_02_nt,
+    DocmapNormalizedFrame,
+  )) as DocmapsTypes.DocmapT
+
+  t.is(dm_elife_2.id, FromRootExamples.elife_02_jsonld.id)
+})
+
 // TODO - perhaps parse the actual values by iterating over all allowed types
 //      This test was removed because it assumed that the Type field would be
 //      present on the Publisher. This is a future facing consideration for
