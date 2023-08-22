@@ -5,7 +5,7 @@
  */
 import * as t from 'io-ts'
 import { fromNullable } from 'io-ts-types/lib/fromNullable'
-import { UrlFromString, DateFromUnknown } from './util'
+import { UrlFromString, DateFromUnknown, ArrayUpsertedEmpty } from './util'
 
 function arrayOrOneOf(literalStrings: string[]) {
   const [one, two, ...r] = literalStrings
@@ -269,8 +269,9 @@ export const Thing = t.intersection([
  */
 export const Action = t.intersection([
   t.type({
-    outputs: t.array(Thing),
-    participants: t.array(RoleInTime),
+    // outputs: fromNullable(t.array(Thing), []),
+    outputs: ArrayUpsertedEmpty(Thing),
+    participants: ArrayUpsertedEmpty(RoleInTime),
   }),
   t.partial({
     id: t.string,
@@ -363,14 +364,15 @@ export const Assertion = t.intersection([
  */
 export const Step = t.intersection([
   t.type({
-    actions: t.array(Action),
-    inputs: t.array(Thing),
-    assertions: t.array(Assertion),
+    actions: ArrayUpsertedEmpty(Action),
+    inputs: ArrayUpsertedEmpty(Thing),
+    assertions: ArrayUpsertedEmpty(Assertion),
   }),
   t.partial({
     id: t.string,
-    'next-step': t.string,
-    'previous-step': t.string,
+    // TODO: this is a hacky solution. I would like these fields to be stripped if they are null.
+    'next-step': t.union([t.string, t.null]),
+    'previous-step': t.union([t.string, t.null]),
   }),
 ])
 

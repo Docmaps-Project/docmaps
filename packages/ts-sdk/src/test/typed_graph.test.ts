@@ -1,5 +1,5 @@
 import test from 'ava'
-import { TypedGraph } from '..'
+import { TypedGraph, DocmapNormalizedFrame } from '..'
 import * as DocmapsTypes from '../types'
 import { OneManifestationQuadstore, FromRootExamples } from './__fixtures__/'
 
@@ -48,12 +48,36 @@ test('Parsing JSONLD from concrete embo examples', async (t) => {
   t.is(Object.keys(dm_embo.steps).length, 2)
 })
 
-// test('Graph Extraction of a Docmap', async (t) => {
-//   const dm_elife = await g.pickStream(FromRootExamples.elife_01_nt,
-//     DocmapNormalizedFrame ) as DocmapsTypes.DocmapT;
-//
-//   t.is(dm_elife.id, 'https://data-hub-api.elifesciences.org/enhanced-preprints/docmaps/v1/get-by-doi?preprint_doi=10.1101%2F2022.11.08.515698');
-// });
+test('Graph Extraction of a Docmap', async (t) => {
+  const dm_elife = (await g.pickStream(
+    FromRootExamples.elife_01_nt,
+    DocmapNormalizedFrame,
+  )) as DocmapsTypes.DocmapT
+
+  t.is(
+    dm_elife.id,
+    'https://data-hub-api.elifesciences.org/enhanced-preprints/docmaps/v1/get-by-doi?preprint_doi=10.1101%2F2022.11.08.515698',
+  )
+  t.deepEqual(dm_elife.publisher, {
+    id: 'https://elifesciences.org/',
+    homepage: new URL('https://elifesciences.org/'),
+    logo: new URL(
+      'https://sciety.org/static/groups/elife--b560187e-f2fb-4ff9-a861-a204f3fc0fb0.png',
+    ),
+    name: 'eLife',
+    account: {
+      id: 'https://sciety.org/groups/elife',
+      service: new URL('https://sciety.org'),
+    },
+  })
+
+  if (!dm_elife.steps) {
+    t.fail('no steps found, expected 4')
+    return
+  }
+
+  t.deepEqual(Object.keys(dm_elife.steps).sort(), ['_:b0', '_:b2', '_:b3'])
+})
 
 // TODO - perhaps parse the actual values by iterating over all allowed types
 //      This test was removed because it assumed that the Type field would be

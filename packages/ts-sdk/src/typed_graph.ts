@@ -17,7 +17,7 @@ export type TypedNodeShapeT = t.TypeOf<typeof TypedNodeShape>
 
 export interface NodeShapeCodec<A extends TypedNodeShapeT>
   extends t.Decoder<any, A>,
-    t.Encoder<A, any> {}
+  t.Encoder<A, any> { }
 // TODO : a constructor that accepts a partial (?) or a data table (?) or a rdf-object?
 
 // TODO: make this generic/injectable
@@ -45,9 +45,9 @@ export const DocmapNormalizedFrame: {
 
 export type FrameSelection =
   | {
-      type: TypesFactoryKeys
-      // 'id'?: string,
-    }
+    // 'id'?: string,
+    type: TypesFactoryKeys
+  }
   | typeof DocmapNormalizedFrame
 
 export class TypedGraph {
