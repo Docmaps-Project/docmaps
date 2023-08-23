@@ -2,8 +2,8 @@
 import type { Stream } from '@rdfjs/types/stream'
 import { isLeft } from 'fp-ts/lib/Either'
 import { DocmapsFactory } from './types'
+import * as TE from 'fp-ts/lib/TaskEither'
 import * as t from 'io-ts'
-import util from 'util'
 
 import SerializerJsonld from '@rdfjs/serializer-jsonld-ext'
 
@@ -15,9 +15,6 @@ export const TypedNodeShape = t.type({
 
 export type TypedNodeShapeT = t.TypeOf<typeof TypedNodeShape>
 
-export interface NodeShapeCodec<A extends TypedNodeShapeT>
-  extends t.Decoder<any, A>,
-    t.Encoder<A, any> {}
 // TODO : a constructor that accepts a partial (?) or a data table (?) or a rdf-object?
 
 // TODO: make this generic/injectable
@@ -57,7 +54,18 @@ export class TypedGraph {
     this.factory = factory
   }
 
-  parseJsonld(jsonld: any): TypedNodeShapeT {
+  parseJsonldWithCodec<C extends t.Mixed>(c: C, jsonld: any): t.TypeOf<C> {
+    const typedResult = c.decode(jsonld)
+
+    if (isLeft(typedResult)) {
+      throw new Error('decoding failed', { cause: typedResult.left })
+    }
+
+    return typedResult.right
+  }
+
+  // TODO - is this the flow we want?
+  codecFor(jsonld: any): t.Mixed {
     // console.log(util.inspect(jsonld, {depth: null, colors: true}))
 
     // allow multiple types, whichever is first we should use
@@ -97,21 +105,14 @@ export class TypedGraph {
         continue
       }
 
-      const typedResult = t.decode(jsonld)
-
-      if (isLeft(typedResult)) {
-        errors.push(new Error(`Failed to decode a \`${tIdStr}\``, { cause: typedResult.left }))
-        continue
-      }
-
-      return typedResult.right
+      return t
     }
 
     // did not find a valid parsing
     throw errors
   }
 
-  pickStream(s: Stream, frame: FrameSelection): Promise<TypedNodeShapeT> {
+  pickStream(s: Stream, frame: FrameSelection): TE.TaskEither<Error, TypedNodeShapeT> {
     const context = {
       '@context': {
         '@import': DM_JSONLD_CONTEXT,
@@ -127,16 +128,40 @@ export class TypedGraph {
 
     const output = serializer.import(s)
 
-    return new Promise((res, rej) => {
-      output.on('data', (jsonld) => {
-        try {
-          res(this.parseJsonld(jsonld))
-        } catch (errors) {
-          // TODO better error message handling
-          console.log('error parsing: ', util.inspect(errors, { colors: true, depth: 5 }))
-          rej(new Error('no type annotations were parseable for object', { cause: errors }))
-        }
-      })
-    })
+    return TE.tryCatch(
+      () =>
+        new Promise((res, rej) => {
+          let done = false
+          output
+            // TODO: in what cases does this behave differently from computing on `end` messages?
+            // currentlly it is for sure only handling hte first data object
+            .on('data', (jsonld) => {
+              try {
+                const codec = this.codecFor(jsonld)
+                done = true
+                res(this.parseJsonldWithCodec(codec, jsonld))
+              } catch (errors) {
+                // TODO better error message handling
+                done = true
+                rej(new Error('no type annotations were parseable for object', { cause: errors }))
+              }
+            })
+          output.on('error', (err) => {
+            done = true
+            rej(new Error('error received from upstream', { cause: err }))
+          })
+          output.on('end', () => {
+            if (!done) {
+              rej(new Error('jsonld streaming exited unexpectedly'))
+            }
+          })
+          output.on('close', () => {
+            if (!done) {
+              rej(new Error('jsonld streaming exited unexpectedly'))
+            }
+          })
+        }),
+      (reason) => new Error('unable to pick jsonld from stream', { cause: reason }),
+    )
   }
 }

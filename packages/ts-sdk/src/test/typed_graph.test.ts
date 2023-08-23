@@ -1,31 +1,43 @@
 import test from 'ava'
 import { TypedGraph, DocmapNormalizedFrame } from '..'
 import * as DocmapsTypes from '../types'
+import { rightAnd } from './utils'
 import { OneManifestationQuadstore, FromRootExamples } from './__fixtures__/'
 
 const factory = DocmapsTypes.DocmapsFactory
 const g = new TypedGraph(factory)
 
 test('Graph Extraction of a Manifestation', async (t) => {
-  const mf = (await g.pickStream(OneManifestationQuadstore(), {
+  const mf_te = await g.pickStream(OneManifestationQuadstore(), {
     type: 'web-page', // selects the Publisher
-  })) as DocmapsTypes.ManifestationT
+  })()
 
-  t.is(mf.id, 'https://w3id.org/docmaps/examples/manifestation')
-  t.is(mf.service?.hostname, 'w3id.org')
-  t.is(mf.service?.pathname, '/docmaps/examples/manifestation')
-  t.is(mf.service?.hash, '#HOMEPAGE')
-  t.is(mf.service?.protocol, 'https:')
+  t.true(
+    rightAnd(mf_te, (mf_any) => {
+      const mf = mf_any as DocmapsTypes.ManifestationT
 
-  // TODO: note how the `url` key in the jsonld context has a @type key, and therefore
-  // ALL values for this must have @type specified as `xsd:anyURI` to be safely
-  // parsed by `jsonld.js`. Without type specification in the data, compaction/framing
-  // algorithm will use the CURIE instead of the term.
-  t.is(mf.url?.toString(), 'https://w3id.org/docmaps/examples/manifestation#URL')
+      t.is(mf.id, 'https://w3id.org/docmaps/examples/manifestation')
+      t.is(mf.service?.hostname, 'w3id.org')
+      t.is(mf.service?.pathname, '/docmaps/examples/manifestation')
+      t.is(mf.service?.hash, '#HOMEPAGE')
+      t.is(mf.service?.protocol, 'https:')
+
+      // TODO: note how the `url` key in the jsonld context has a @type key, and therefore
+      // ALL values for this must have @type specified as `xsd:anyURI` to be safely
+      // parsed by `jsonld.js`. Without type specification in the data, compaction/framing
+      // algorithm will use the CURIE instead of the term.
+      t.is(mf.url?.toString(), 'https://w3id.org/docmaps/examples/manifestation#URL')
+    }),
+  )
 })
 
 test('Parsing JSONLD from concrete elife examples', async (t) => {
-  const dm_elife = g.parseJsonld(FromRootExamples.elife_01_jsonld) as DocmapsTypes.DocmapT
+  const jld = FromRootExamples.elife_01_jsonld
+  const codec = g.codecFor(jld)
+
+  t.is(codec, DocmapsTypes.Docmap)
+
+  const dm_elife = g.parseJsonldWithCodec(codec, jld) as DocmapsTypes.DocmapT
 
   t.is(
     dm_elife.id,
@@ -36,7 +48,13 @@ test('Parsing JSONLD from concrete elife examples', async (t) => {
 })
 
 test('Parsing JSONLD from concrete embo examples', async (t) => {
-  const dm_embo = g.parseJsonld(FromRootExamples.embo_01_jsonld) as DocmapsTypes.DocmapT
+  const jld = FromRootExamples.embo_01_jsonld
+
+  const codec = g.codecFor(jld)
+
+  t.is(codec, DocmapsTypes.Docmap)
+
+  const dm_embo = g.parseJsonldWithCodec(codec, jld) as DocmapsTypes.DocmapT
 
   t.is(dm_embo.id, 'https://eeb.embo.org/api/v2/docmap/10.1101/2021.03.24.436774')
   t.deepEqual(dm_embo.created, new Date('2023-02-13T05:43:49.289Z'))
@@ -49,50 +67,57 @@ test('Parsing JSONLD from concrete embo examples', async (t) => {
 })
 
 test('Graph Extraction of a Docmap', async (t) => {
-  const dm_elife = (await g.pickStream(
-    FromRootExamples.elife_01_nt,
-    DocmapNormalizedFrame,
-  )) as DocmapsTypes.DocmapT
+  const dm_elife_te = await g.pickStream(FromRootExamples.elife_01_nt, DocmapNormalizedFrame)()
 
-  t.is(
-    dm_elife.id,
-    'https://data-hub-api.elifesciences.org/enhanced-preprints/docmaps/v1/get-by-doi?preprint_doi=10.1101%2F2022.11.08.515698',
+  t.true(
+    rightAnd(dm_elife_te, (dm_any) => {
+      const dm_elife = dm_any as DocmapsTypes.DocmapT
+
+      t.is(
+        dm_elife.id,
+        'https://data-hub-api.elifesciences.org/enhanced-preprints/docmaps/v1/get-by-doi?preprint_doi=10.1101%2F2022.11.08.515698',
+      )
+      t.deepEqual(dm_elife.publisher, {
+        id: 'https://elifesciences.org/',
+        homepage: new URL('https://elifesciences.org/'),
+        logo: new URL(
+          'https://sciety.org/static/groups/elife--b560187e-f2fb-4ff9-a861-a204f3fc0fb0.png',
+        ),
+        name: 'eLife',
+        account: {
+          id: 'https://sciety.org/groups/elife',
+          service: new URL('https://sciety.org'),
+        },
+      })
+
+      if (!dm_elife.steps) {
+        t.fail('no steps found, expected 4')
+        return
+      }
+
+      t.deepEqual(Object.keys(dm_elife.steps).sort(), ['_:b0', '_:b2', '_:b3'])
+    }),
   )
-  t.deepEqual(dm_elife.publisher, {
-    id: 'https://elifesciences.org/',
-    homepage: new URL('https://elifesciences.org/'),
-    logo: new URL(
-      'https://sciety.org/static/groups/elife--b560187e-f2fb-4ff9-a861-a204f3fc0fb0.png',
-    ),
-    name: 'eLife',
-    account: {
-      id: 'https://sciety.org/groups/elife',
-      service: new URL('https://sciety.org'),
-    },
-  })
-
-  if (!dm_elife.steps) {
-    t.fail('no steps found, expected 4')
-    return
-  }
-
-  t.deepEqual(Object.keys(dm_elife.steps).sort(), ['_:b0', '_:b2', '_:b3'])
 })
 
 test('Graph extraction of additional docmaps', async (t) => {
-  const dm_embo = (await g.pickStream(
-    FromRootExamples.embo_01_nt,
-    DocmapNormalizedFrame,
-  )) as DocmapsTypes.DocmapT
+  const dm_embo = await g.pickStream(FromRootExamples.embo_01_nt, DocmapNormalizedFrame)()
 
-  t.is(dm_embo.id, 'https://eeb.embo.org/api/v2/docmap/10.1101/2021.03.24.436774')
+  t.true(
+    rightAnd(dm_embo, (dm_any) => {
+      const dm = dm_any as DocmapsTypes.DocmapT
+      t.is(dm.id, FromRootExamples.embo_01_jsonld.id)
+    }),
+  )
 
-  const dm_elife_2 = (await g.pickStream(
-    FromRootExamples.elife_02_nt,
-    DocmapNormalizedFrame,
-  )) as DocmapsTypes.DocmapT
+  const dm_elife_2 = await g.pickStream(FromRootExamples.elife_02_nt, DocmapNormalizedFrame)()
 
-  t.is(dm_elife_2.id, FromRootExamples.elife_02_jsonld.id)
+  t.true(
+    rightAnd(dm_elife_2, (dm_any) => {
+      const dm = dm_any as DocmapsTypes.DocmapT
+      t.is(dm.id, FromRootExamples.elife_02_jsonld.id)
+    }),
+  )
 })
 
 // TODO - perhaps parse the actual values by iterating over all allowed types

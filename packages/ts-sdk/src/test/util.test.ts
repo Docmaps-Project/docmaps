@@ -1,16 +1,8 @@
 import test from 'ava'
 import { DateFromUnknown, UrlFromString, ArrayUpsertedEmpty } from '../util'
 import * as iots from 'io-ts'
-import { isRight, Either } from 'fp-ts/lib/Either'
-
-function rightAnd<T>(e: Either<unknown, T>, validation: (res: T) => void) {
-  if (isRight(e)) {
-    validation(e.right)
-    return true
-  } else {
-    return false
-  }
-}
+import { isRight } from 'fp-ts/lib/Either'
+import { rightAnd } from './utils'
 
 test('UrlFromString success cases', (t) => {
   const url1 = UrlFromString.decode('https://docmaps.knowledgefutures.org')

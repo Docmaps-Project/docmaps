@@ -519,7 +519,7 @@ export type ActorT = t.TypeOf<typeof Actor>
  *
  * @since 0.1.0
  */
-export const DocmapsFactory = {
+export const DocmapsFactory: Record<string, t.Mixed> = {
   'web-page': Manifestation,
   docmap: Docmap,
   'https://w3id.org/docmaps/v0/Docmap': Docmap,
