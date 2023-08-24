@@ -16,13 +16,20 @@ export const TypedNodeShape = t.type({
 
 export type TypedNodeShapeT = t.TypeOf<typeof TypedNodeShape>
 
-// TODO : a constructor that accepts a partial (?) or a data table (?) or a rdf-object?
-
 // TODO: make this generic/injectable
 export type TypesFactory = typeof DocmapsFactory
 export type TypesFactoryKeys = keyof TypesFactory
 
-// TODO can this be made shorter , to not repeat?
+/** JSON-LD Framing document for docmaps
+ *
+ *  This is a constant of fixed type. It seems
+ *  to work well for serialization, may not be the
+ *  only thing that does .
+ *
+ * TODO: can this be made shorter , to not repeat?
+ *
+ * @since 0.11.0
+ */
 export const DocmapNormalizedFrame: {
   type: 'docmap'
   'first-step': { '@embed': '@never' }
@@ -41,6 +48,16 @@ export const DocmapNormalizedFrame: {
   },
 }
 
+/** Union type representing allowed Frames.
+ *
+ * It is unclear if the `type`-based frame is
+ * actually needed, because we expect the triples
+ * to be filtered upstream. However we will
+ * continue to support it until clarity emerges
+ * that it is redundant.
+ *
+ * @since 0.11.0
+ */
 export type FrameSelection =
   | {
       // 'id'?: string,
@@ -137,6 +154,7 @@ export class TypedGraph {
     throw errors
   }
 
+  // converts a Stream<Quad> (eventemitter of quad) into a single Object jsonld or error.
   private oneJsonldFrom(s: Stream, frame: FrameSelection): TE.TaskEither<Error, object> {
     const context = {
       '@context': {
@@ -191,8 +209,10 @@ export class TypedGraph {
 
   /** Consumes a Stream, and may produce a typed object.
    *
-   * @param s: Stream a stream of Quads or anything else accepted by `jsonld-serializer-ext`.
    * @param frame: FrameSelection a JSON-LD Frame for serialization. Probably should be the Docmap Frame.
+   * @param codec: Codec any io-ts codec, such as the ones provided in types.ts. This method is type-safe
+   *               guaranteed to return an object of the type corresponding to the chosen Codec (or error).
+   * @param s: Stream a stream of Quads or anything else accepted by `jsonld-serializer-ext`.
    *
    * @since 0.11.0
    */
