@@ -3,7 +3,7 @@ import { PartialExamples as ex } from './__fixtures__'
 import * as dm from '../types'
 import * as E from 'fp-ts/lib/Either'
 import * as util from 'util'
-import { pipe } from 'fp-ts/lib/function'
+import { pipe } from 'fp-ts/lib/pipeable'
 
 function isRightArray<T>(
   t: ExecutionContext,
