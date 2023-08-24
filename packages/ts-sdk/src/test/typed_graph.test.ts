@@ -3,6 +3,10 @@ import { TypedGraph, DocmapNormalizedFrame } from '..'
 import * as DocmapsTypes from '../types'
 import { rightAnd } from './utils'
 import { OneManifestationQuadstore, FromRootExamples } from './__fixtures__/'
+import { Transform, Readable } from 'stream'
+import { isLeft, isRight } from 'fp-ts/lib/Either'
+import EventEmitter from 'events'
+import * as util from 'util'
 
 const factory = DocmapsTypes.DocmapsFactory
 const g = new TypedGraph(factory)
@@ -118,6 +122,44 @@ test('Graph extraction of additional docmaps', async (t) => {
       t.is(dm.id, FromRootExamples.elife_02_jsonld.id)
     }),
   )
+})
+
+test('Graph extraction failure mode when a stream is interrupted', async (t) => {
+  // this is an eventemitter, not an actual stream
+  const wholeStream = FromRootExamples.elife_01_nt
+
+  let i = 0
+  const max = 5
+
+  // a stream that abruptly ends
+  const limitedStream = new Transform({
+    objectMode: true, // This is necessary if your stream is not a stream of Buffers or strings
+    transform(chunk, _enc, callback) {
+      if (i < max) {
+        this.push(chunk)
+        i++
+      } else {
+        this.push(null) // This ends the stream
+      }
+      callback()
+    },
+  })
+
+  const iter = EventEmitter.on(wholeStream, 'data')
+
+  const readable = Readable.from(iter)
+
+  readable.pipe(limitedStream)
+
+  const elife_truncated = await g.pickStream(limitedStream, DocmapNormalizedFrame)()
+
+  if (isRight(elife_truncated)) {
+    t.fail('succeeded to parse when should have failed')
+    return
+  }
+
+  const err = elife_truncated.left
+  t.regex(util.inspect(err, {depth: null}), /error received from upstream/)
 })
 
 // TODO - perhaps parse the actual values by iterating over all allowed types
