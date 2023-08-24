@@ -1,9 +1,10 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 import type { Stream } from '@rdfjs/types/stream'
 import { isLeft } from 'fp-ts/lib/Either'
+import { pipe } from 'fp-ts/lib/pipeable'
 import { DocmapsFactory } from './types'
+import * as TE from 'fp-ts/lib/TaskEither'
 import * as t from 'io-ts'
-import util from 'util'
 
 import SerializerJsonld from '@rdfjs/serializer-jsonld-ext'
 
@@ -15,16 +16,20 @@ export const TypedNodeShape = t.type({
 
 export type TypedNodeShapeT = t.TypeOf<typeof TypedNodeShape>
 
-export interface NodeShapeCodec<A extends TypedNodeShapeT>
-  extends t.Decoder<any, A>,
-    t.Encoder<A, any> {}
-// TODO : a constructor that accepts a partial (?) or a data table (?) or a rdf-object?
-
 // TODO: make this generic/injectable
 export type TypesFactory = typeof DocmapsFactory
 export type TypesFactoryKeys = keyof TypesFactory
 
-// TODO can this be made shorter , to not repeat?
+/** JSON-LD Framing document for docmaps
+ *
+ *  This is a constant of fixed type. It seems
+ *  to work well for serialization, may not be the
+ *  only thing that does .
+ *
+ * TODO: can this be made shorter , to not repeat?
+ *
+ * @since 0.11.0
+ */
 export const DocmapNormalizedFrame: {
   type: 'docmap'
   'first-step': { '@embed': '@never' }
@@ -43,13 +48,35 @@ export const DocmapNormalizedFrame: {
   },
 }
 
+/** Union type representing allowed Frames.
+ *
+ * It is unclear if the `type`-based frame is
+ * actually needed, because we expect the triples
+ * to be filtered upstream. However we will
+ * continue to support it until clarity emerges
+ * that it is redundant.
+ *
+ * @since 0.11.0
+ */
 export type FrameSelection =
   | {
-      type: TypesFactoryKeys
       // 'id'?: string,
+      type: TypesFactoryKeys
     }
   | typeof DocmapNormalizedFrame
 
+/** A type-aware structure for extracting objects from quads.
+ *
+ * This structure is capable of detecting based on the @type key
+ * which of the allowed docmap codecs should be used for validation;
+ * this is done with `pickStream`.
+ * However, because it may create any one of those types, there is
+ * still the need to cast the result or do type matching on it. It
+ * is therefore unclear if this provides much value over having
+ * to know the resulting type in advance.
+ *
+ * @since 0.11.0
+ */
 export class TypedGraph {
   factory: TypesFactory
 
@@ -57,7 +84,30 @@ export class TypedGraph {
     this.factory = factory
   }
 
-  parseJsonld(jsonld: any): TypedNodeShapeT {
+  /** Thin error-throwing wrapper around `.decode`.
+   *
+   * This method exists for compatibility.
+   *
+   * @since 0.11.0
+   */
+  parseJsonldWithCodec<C extends t.Mixed>(c: C, jsonld: any): t.TypeOf<C> {
+    const typedResult = c.decode(jsonld)
+
+    if (isLeft(typedResult)) {
+      throw new Error('decoding failed', { cause: typedResult.left })
+    }
+
+    return typedResult.right
+  }
+
+  /** chooses a codec.
+   *
+   * Returns errors or a Codec, based on the `type` key of
+   * the input object.
+   *
+   * @since 0.11.0
+   */
+  codecFor(jsonld: any): t.Mixed {
     // console.log(util.inspect(jsonld, {depth: null, colors: true}))
 
     // allow multiple types, whichever is first we should use
@@ -97,21 +147,15 @@ export class TypedGraph {
         continue
       }
 
-      const typedResult = t.decode(jsonld)
-
-      if (isLeft(typedResult)) {
-        errors.push(new Error(`Failed to decode a \`${tIdStr}\``, { cause: typedResult.left }))
-        continue
-      }
-
-      return typedResult.right
+      return t
     }
 
     // did not find a valid parsing
     throw errors
   }
 
-  pickStream(s: Stream, frame: FrameSelection): Promise<TypedNodeShapeT> {
+  // converts a Stream<Quad> (eventemitter of quad) into a single Object jsonld or error.
+  private oneJsonldFrom(s: Stream, frame: FrameSelection): TE.TaskEither<Error, object> {
     const context = {
       '@context': {
         '@import': DM_JSONLD_CONTEXT,
@@ -127,16 +171,75 @@ export class TypedGraph {
 
     const output = serializer.import(s)
 
-    return new Promise((res, rej) => {
-      output.on('data', (jsonld) => {
-        try {
-          res(this.parseJsonld(jsonld))
-        } catch (errors) {
-          // TODO better error message handling
-          console.log('error parsing: ', util.inspect(errors, { colors: true, depth: 5 }))
-          rej(new Error('no type annotations were parseable for object', { cause: errors }))
-        }
-      })
-    })
+    return TE.tryCatch(
+      () =>
+        new Promise((res, rej) => {
+          let done = false
+          output
+            // TODO: in what cases does this behave differently from computing on `end` messages?
+            // currentlly it is for sure only handling hte first data object
+            .on('data', (jsonld) => {
+              try {
+                done = true
+                res(jsonld)
+              } catch (errors) {
+                // TODO better error message handling
+                done = true
+                rej(new Error('no type annotations were parseable for object', { cause: errors }))
+              }
+            })
+          output.on('error', (err) => {
+            done = true
+            rej(new Error('error received from upstream', { cause: err }))
+          })
+          output.on('end', () => {
+            if (!done) {
+              rej(new Error('jsonld streaming exited unexpectedly'))
+            }
+          })
+          output.on('close', () => {
+            if (!done) {
+              rej(new Error('jsonld streaming exited unexpectedly'))
+            }
+          })
+        }),
+      (reason) => new Error('unable to pick jsonld from stream', { cause: reason }),
+    )
+  }
+
+  /** Consumes a Stream, and may produce a typed object.
+   *
+   * @param frame: FrameSelection a JSON-LD Frame for serialization. Probably should be the Docmap Frame.
+   * @param codec: Codec any io-ts codec, such as the ones provided in types.ts. This method is type-safe
+   *               guaranteed to return an object of the type corresponding to the chosen Codec (or error).
+   * @param s: Stream a stream of Quads or anything else accepted by `jsonld-serializer-ext`.
+   *
+   * @since 0.11.0
+   */
+  pickStreamWithCodec<C extends t.Mixed>(
+    frame: FrameSelection,
+    codec: C,
+    s: Stream,
+  ): TE.TaskEither<Error, t.TypeOf<C>> {
+    return pipe(
+      this.oneJsonldFrom(s, frame),
+      TE.map((jsonld) => this.parseJsonldWithCodec(codec, jsonld)),
+    )
+  }
+
+  /** Consumes a Stream, and may produce a typed object.
+   *
+   * @param s: Stream a stream of Quads or anything else accepted by `jsonld-serializer-ext`.
+   * @param frame: FrameSelection a JSON-LD Frame for serialization. Probably should be the Docmap Frame.
+   *
+   * @since 0.11.0
+   */
+  pickStream(s: Stream, frame: FrameSelection): TE.TaskEither<Error, TypedNodeShapeT> {
+    return pipe(
+      TE.Do,
+      TE.bind('jsonld', () => this.oneJsonldFrom(s, frame)),
+      TE.bind('codec', ({ jsonld }) => TE.of(this.codecFor(jsonld))),
+      TE.map(({ codec, jsonld }) => this.parseJsonldWithCodec(codec, jsonld)),
+    )
   }
 }

@@ -4,6 +4,7 @@
 import * as t from 'io-ts'
 import { pipe } from 'fp-ts/lib/pipeable'
 import { chain } from 'fp-ts/lib/Either'
+import { fromNullable } from 'io-ts-types'
 
 /**
  * Interface for a codec that parses a string and returns a URL object.
@@ -77,3 +78,15 @@ export const DateFromUnknown: DateFromUnknownC = new t.Type<Date, string, unknow
   },
   (date: Date) => date.toISOString(),
 )
+
+/**
+ * Function that takes a Codec and returns an "optional array" codec.
+ *
+ * It fails-over to returning an empty array if the input is null or absent,
+ * but still errors if input is present and non matching.
+ *
+ * @since 0.11.0
+ */
+export function ArrayUpsertedEmpty<A extends t.Mixed>(item: A) {
+  return fromNullable(t.array(item), [])
+}
