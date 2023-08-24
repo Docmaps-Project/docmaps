@@ -1,6 +1,7 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 import type { Stream } from '@rdfjs/types/stream'
 import { isLeft } from 'fp-ts/lib/Either'
+import { pipe } from 'fp-ts/lib/pipeable'
 import { DocmapsFactory } from './types'
 import * as TE from 'fp-ts/lib/TaskEither'
 import * as t from 'io-ts'
@@ -47,6 +48,18 @@ export type FrameSelection =
     }
   | typeof DocmapNormalizedFrame
 
+/** A type-aware structure for extracting objects from quads.
+ *
+ * This structure is capable of detecting based on the @type key
+ * which of the allowed docmap codecs should be used for validation;
+ * this is done with `pickStream`.
+ * However, because it may create any one of those types, there is
+ * still the need to cast the result or do type matching on it. It
+ * is therefore unclear if this provides much value over having
+ * to know the resulting type in advance.
+ *
+ * @since 0.11.0
+ */
 export class TypedGraph {
   factory: TypesFactory
 
@@ -54,6 +67,12 @@ export class TypedGraph {
     this.factory = factory
   }
 
+  /** Thin error-throwing wrapper around `.decode`.
+   *
+   * This method exists for compatibility.
+   *
+   * @since 0.11.0
+   */
   parseJsonldWithCodec<C extends t.Mixed>(c: C, jsonld: any): t.TypeOf<C> {
     const typedResult = c.decode(jsonld)
 
@@ -64,7 +83,13 @@ export class TypedGraph {
     return typedResult.right
   }
 
-  // TODO - is this the flow we want?
+  /** chooses a codec.
+   *
+   * Returns errors or a Codec, based on the `type` key of
+   * the input object.
+   *
+   * @since 0.11.0
+   */
   codecFor(jsonld: any): t.Mixed {
     // console.log(util.inspect(jsonld, {depth: null, colors: true}))
 
@@ -112,7 +137,7 @@ export class TypedGraph {
     throw errors
   }
 
-  pickStream(s: Stream, frame: FrameSelection): TE.TaskEither<Error, TypedNodeShapeT> {
+  private oneJsonldFrom(s: Stream, frame: FrameSelection): TE.TaskEither<Error, object> {
     const context = {
       '@context': {
         '@import': DM_JSONLD_CONTEXT,
@@ -137,9 +162,8 @@ export class TypedGraph {
             // currentlly it is for sure only handling hte first data object
             .on('data', (jsonld) => {
               try {
-                const codec = this.codecFor(jsonld)
                 done = true
-                res(this.parseJsonldWithCodec(codec, jsonld))
+                res(jsonld)
               } catch (errors) {
                 // TODO better error message handling
                 done = true
@@ -162,6 +186,40 @@ export class TypedGraph {
           })
         }),
       (reason) => new Error('unable to pick jsonld from stream', { cause: reason }),
+    )
+  }
+
+  /** Consumes a Stream, and may produce a typed object.
+   *
+   * @param s: Stream a stream of Quads or anything else accepted by `jsonld-serializer-ext`.
+   * @param frame: FrameSelection a JSON-LD Frame for serialization. Probably should be the Docmap Frame.
+   *
+   * @since 0.11.0
+   */
+  pickStreamWithCodec<C extends t.Mixed>(
+    frame: FrameSelection,
+    codec: C,
+    s: Stream,
+  ): TE.TaskEither<Error, t.TypeOf<C>> {
+    return pipe(
+      this.oneJsonldFrom(s, frame),
+      TE.map((jsonld) => this.parseJsonldWithCodec(codec, jsonld)),
+    )
+  }
+
+  /** Consumes a Stream, and may produce a typed object.
+   *
+   * @param s: Stream a stream of Quads or anything else accepted by `jsonld-serializer-ext`.
+   * @param frame: FrameSelection a JSON-LD Frame for serialization. Probably should be the Docmap Frame.
+   *
+   * @since 0.11.0
+   */
+  pickStream(s: Stream, frame: FrameSelection): TE.TaskEither<Error, TypedNodeShapeT> {
+    return pipe(
+      TE.Do,
+      TE.bind('jsonld', () => this.oneJsonldFrom(s, frame)),
+      TE.bind('codec', ({ jsonld }) => TE.of(this.codecFor(jsonld))),
+      TE.map(({ codec, jsonld }) => this.parseJsonldWithCodec(codec, jsonld)),
     )
   }
 }

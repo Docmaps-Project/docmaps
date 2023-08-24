@@ -13,7 +13,10 @@ function loadDataset(filePath: string) {
   return JSON.parse(fs.readFileSync(filePath).toString())
 }
 
-export const FromRootExamples = {
+// because these create streams in the NTriples, if two tests consume the same
+// stream the second one will fail. This method lets us construct a new tests
+// object anytime.
+export const FromRootExamplesNew = () => ({
   biorxiv_01_nt: loadDatasetNtriples('../../examples/docmaps-example-biorxiv-01.jsonld.nt'),
   elife_01_nt: loadDatasetNtriples('../../examples/docmaps-example-elife-01.jsonld.nt'),
   elife_02_nt: loadDatasetNtriples('../../examples/docmaps-example-elife-02.jsonld.nt'),
@@ -27,7 +30,10 @@ export const FromRootExamples = {
   embo_01_jsonld: loadDataset('../../examples/docmaps-example-embo-01.jsonld')['@graph'][0][
     'docmap'
   ],
-}
+})
+
+// in test suites where the streams are not consumed, duplication is OK.
+export const FromRootExamples = FromRootExamplesNew()
 
 // valid docmaps we can currently parse
 const el_dm = [
