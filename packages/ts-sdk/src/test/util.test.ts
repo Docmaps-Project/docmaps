@@ -1,8 +1,15 @@
 import test from 'ava'
-import { DateFromUnknown, UrlFromString, ArrayUpsertedEmpty } from '../util'
-import * as iots from 'io-ts'
-import { isRight } from 'fp-ts/lib/Either'
-import { rightAnd } from './utils'
+import { DateFromUnknown, UrlFromString } from '../util'
+import { isRight, Either } from 'fp-ts/lib/Either'
+
+function rightAnd<T>(e: Either<unknown, T>, validation: (res: T) => void) {
+  if (isRight(e)) {
+    validation(e.right)
+    return true
+  } else {
+    return false
+  }
+}
 
 test('UrlFromString success cases', (t) => {
   const url1 = UrlFromString.decode('https://docmaps.knowledgefutures.org')
@@ -81,46 +88,4 @@ test('DateFromUnknown failure cases', (t) => {
 
   const d4 = DateFromUnknown.decode({ some: 'thing' })
   t.false(isRight(d4))
-})
-
-test('ArrayUpsertedEmpty success cases', (t) => {
-  const a1 = ArrayUpsertedEmpty(iots.string).decode(['one', 'two'])
-  t.true(
-    rightAnd(a1, (a) => {
-      t.deepEqual(a, ['one', 'two'])
-    }),
-  )
-
-  const a2 = ArrayUpsertedEmpty(iots.string).decode(null)
-  t.true(
-    rightAnd(a2, (a) => {
-      t.deepEqual(a, [])
-    }),
-  )
-
-  const a3 = iots
-    .type({
-      something: ArrayUpsertedEmpty(iots.number),
-    })
-    .decode({})
-  t.true(
-    rightAnd(a3, (a) => {
-      t.deepEqual(a, { something: [] })
-    }),
-  )
-})
-
-test('ArrayUpsertedEmpty failure cases', (t) => {
-  const a1 = ArrayUpsertedEmpty(iots.string).decode([1, 2, 3])
-  t.false(isRight(a1))
-
-  const a2 = ArrayUpsertedEmpty(iots.string).decode('single value')
-  t.false(isRight(a2))
-
-  const a3 = iots
-    .partial({
-      something: ArrayUpsertedEmpty(iots.number),
-    })
-    .decode({ something: ['string not number'] })
-  t.false(isRight(a3))
 })
