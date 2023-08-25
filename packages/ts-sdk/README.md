@@ -30,12 +30,20 @@ where we use `isLeft` to check if the decode failed.
 **For examples of usage of `fp-ts` pipelines with our `io-ts` codecs, review the
 [`ts-etl` implementation](https://github.com/Docmaps-Project/docmaps/blob/main/packages/ts-etl/src/plugins/crossref/api.ts).
 
+### Extended usage with `typed_graph`
+
 Alternatively, the `typed_graph` class is used for choosing the codec to use based on the
 `@type` key present in the jsonld. This is mainly here to support to-be-implemented RDF
 use-cases rather than JsonLD use cases, because it only works when the `@type` field is set
 the input objects, which we generally do not expect except in `Docmap` and `Manifestation`
 at the moment. Generally I recommend you to ignore `typed_graph` until further development
 makes it more useful.
+
+A utility function is available on the `TypedGraph` class that can ingest an RDF Quad stream
+and return a TaskEither that will eventually resolve to a JSONLD object or error. It is async,
+and not time-bound, and so is not recommended for production use at the current time. However
+it does allow type-safe extraction of Docmaps from unstructured in-memory triplestores, such
+as the results of a SPARQL query.
 
 ## Documentation
 
