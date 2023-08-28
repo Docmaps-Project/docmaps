@@ -28,25 +28,26 @@
     "tsconfig.json"
   ],
   "dependencies": {
+    "@rdfjs/data-model": "^2.0.1",
+    "@rdfjs/parser-n3": "^2.0.1",
     "@rdfjs/serializer-jsonld-ext": "~4.0.0",
     "fp-ts": "^2.16.1",
     "io-ts": "^2.2.20",
     "io-ts-types": "^0.5.19",
     "monocle-ts": "^2.3.13",
     "newtype-ts": "^0.3.5",
+    "rdf-ext": "^2.2.0",
     "readable-stream": "^4.0.0"
   },
   "devDependencies": {
-    "@rdfjs/data-model": "^2.0.1",
-    "@rdfjs/parser-n3": "^2.0.1",
     "@rdfjs/types": "^1.1.0",
     "@tsconfig/node-lts-strictest-esm": "^18.12.1",
     "@types/jsonld": "^1.5.8",
     "@types/n3": "^1.10.4",
     "@types/node": "^18.16.2",
     "@types/rdf-ext": "^2.0.0",
-    "@types/rdfjs__data-model": "^2.0.1",
-    "@types/rdfjs__parser-n3": "^2.0.0",
+    "@types/rdfjs__data-model": "^2.0.4",
+    "@types/rdfjs__parser-n3": "^2.0.1",
     "@types/rdfjs__serializer-jsonld-ext": "^2.0.5",
     "@types/readable-stream": "^4.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -57,7 +58,6 @@
     "eslint-plugin-prettier": "^5.0.0",
     "into-stream": "^8.0.0",
     "prettier": "^3.0.0",
-    "rdf-ext": "^2.2.0",
     "ts-node": "^10.9.1",
     "typedoc": "^0.24.8",
     "typescript": "^4.9.5"
