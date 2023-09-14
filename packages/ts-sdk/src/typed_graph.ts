@@ -4,9 +4,11 @@ import { isLeft } from 'fp-ts/lib/Either'
 import { pipe } from 'fp-ts/lib/pipeable'
 import { DocmapsFactory } from './types'
 import * as TE from 'fp-ts/lib/TaskEither'
+import * as E from 'fp-ts/lib/Either'
 import * as t from 'io-ts'
 
 import SerializerJsonld from '@rdfjs/serializer-jsonld-ext'
+import { inspect } from 'util'
 
 const DM_JSONLD_CONTEXT = 'https://w3id.org/docmaps/context.jsonld'
 
@@ -221,9 +223,15 @@ export class TypedGraph {
     codec: C,
     s: Stream,
   ): TE.TaskEither<Error, t.TypeOf<C>> {
+    const te_ld = this.oneJsonldFrom(s, frame)
+
+    const decodeWithError = E.mapLeft(
+      (errors) => new Error('failed to decode a docmap', { cause: errors }),
+    )
+
     return pipe(
-      this.oneJsonldFrom(s, frame),
-      TE.map((jsonld) => this.parseJsonldWithCodec(codec, jsonld)),
+      te_ld,
+      TE.chainEitherK((ld) => pipe(ld, codec.decode, decodeWithError)),
     )
   }
 
