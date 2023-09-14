@@ -12,7 +12,7 @@ importers:
       '@rdfjs/serializer-turtle': ^1.1.1
       multi-semantic-release: ^3.0.2
       rdf-ext: ^2.2.0
-      rdf-validate-shacl: ^0.4.5
+      rdf-validate-shacl: ^0.5.0
       typescript: ^4.9.5
     dependencies:
       '@manypkg/cli': 0.21.0
@@ -23,7 +23,7 @@ importers:
       '@rdfjs/serializer-turtle': 1.1.1
       multi-semantic-release: 3.0.2
       rdf-ext: 2.2.0
-      rdf-validate-shacl: 0.4.5
+      rdf-validate-shacl: 0.5.1
     devDependencies:
       typescript: 4.9.5
 
@@ -905,13 +905,6 @@ packages:
     hasBin: true
     dev: false
 
-  /@rdfjs/dataset/1.1.1:
-    resolution: {integrity: sha512-BNwCSvG0cz0srsG5esq6CQKJc1m8g/M0DZpLuiEp0MMpfwguXX7VeS8TCg4UUG3DV/DqEvhy83ZKSEjdsYseeA==}
-    hasBin: true
-    dependencies:
-      '@rdfjs/data-model': 1.3.4
-    dev: false
-
   /@rdfjs/dataset/2.0.1:
     resolution: {integrity: sha512-hDIaXpUmU/ZdofX/BMFDAchkhN/AjmP5dMCOuVL2VCqWuFjeQxd2KV84E4+7S2Biw8tjEFhPBeQZP7KW+ARV7Q==}
     hasBin: true
@@ -1057,12 +1050,6 @@ packages:
 
   /@rdfjs/term-map/2.0.0:
     resolution: {integrity: sha512-z0K8AgLsJGTrh+dGkXNl/oT9vBdMei4xq1MIeGN360oimA81Q+ruQUKFCbYNRRZS03tVHPBzqXUal/DezFGPEA==}
-    dependencies:
-      '@rdfjs/to-ntriples': 2.0.0
-    dev: false
-
-  /@rdfjs/term-set/1.1.0:
-    resolution: {integrity: sha512-QQ4yzVe1Rvae/GN9SnOhweHNpaxQtnAjeOVciP/yJ0Gfxtbphy2tM56ZsRLV04Qq5qMcSclZIe6irYyEzx/UwQ==}
     dependencies:
       '@rdfjs/to-ntriples': 2.0.0
     dev: false
@@ -1308,6 +1295,16 @@ packages:
     engines: {node: '>= 10'}
     dev: false
 
+  /@tpluscode/rdf-ns-builders/4.1.0:
+    resolution: {integrity: sha512-W1Zzzw5qz8ZF1BwOapUVgkQT7D7fwAc4dUxRb0WpgZhQlcAg8k9712C0HcxQ2jTUcUgARgPR2XKvad+zVobjKg==}
+    dependencies:
+      '@rdfjs/data-model': 2.0.1
+      '@rdfjs/namespace': 2.0.0
+      '@rdfjs/types': 1.1.0
+      '@types/rdfjs__namespace': 2.0.3
+      '@zazuko/prefixes': 2.0.0
+    dev: false
+
   /@tsconfig/node-lts-strictest-esm/18.12.1:
     resolution: {integrity: sha512-LvBLmaC6Q/txTddLc11OeMHF9XjJFzlilkETJuvBlUvHy9pPiMsoH3nxWZM1FMSO53zp4mJP6gzOzxKEq0me7Q==}
     deprecated: TypeScript 5.0 supports combining TSConfigs using array syntax in extends
@@ -1442,7 +1439,6 @@ packages:
     resolution: {integrity: sha512-qJ8KpDby8p6STR8ZeDrhVDfzAnwII0txlrLhCsZz/V+3Mbsz0GzUiY8654ENzCicbjd+ZY8PNiS2fHZ/evY3Dw==}
     dependencies:
       '@rdfjs/types': 1.1.0
-    dev: true
 
   /@types/rdfjs__parser-n3/2.0.1:
     resolution: {integrity: sha512-IPA04Q5LutRlFy9Kz1x48uqj6UaPd5rWandyBww1wj7xzwrCl1Yp3xTVkx7DnWP6o/kYd527/KHKsVkNi4tA9g==}
@@ -1663,6 +1659,14 @@ packages:
       '@typescript-eslint/types': 6.4.1
       eslint-visitor-keys: 3.4.1
     dev: true
+
+  /@vocabulary/sh/1.0.1:
+    resolution: {integrity: sha512-hw/Y0EhVKT9sq6AvyE3Pidj/X1LopPAdiHGqhNTgghWFjRaAQd9jud/K4RGMkq/x+W1iwhGcnj8rrxKKghe9Qw==}
+    dev: false
+
+  /@zazuko/prefixes/2.0.0:
+    resolution: {integrity: sha512-WicT6lMnWFaaxudoBhccRzUOxrej0Tk5jwn9oGj308MP2Dlsqh8f6EEJdGu+nXYp3M1NLLokXbtZpTvtDM11PQ==}
+    dev: false
 
   /JSONStream/1.3.5:
     resolution: {integrity: sha512-E+iruNOY8VV9s4JEbe1aNEm6MiszPRr/UfcHMz0TQh1BXSxHK+ASV1R6W4HpjBhSeS+54PIsAMCBmwD06LLsqQ==}
@@ -2224,6 +2228,12 @@ packages:
     dependencies:
       '@rdfjs/data-model': 1.3.4
       '@rdfjs/namespace': 1.1.0
+    dev: false
+
+  /clownface/2.0.0:
+    resolution: {integrity: sha512-wnSOFWAvqrz9qZ+urzgEmQfvdnWsMt1+jZH/5LBJt+pLdjDwjlR80AMzzPBL+4ZF+yCK4cCLPGTg+d/uq3OIbg==}
+    dependencies:
+      '@rdfjs/environment': 0.1.2
     dev: false
 
   /code-excerpt/4.0.0:
@@ -5049,24 +5059,24 @@ packages:
       rdf-data-factory: 1.1.1
     dev: false
 
-  /rdf-validate-datatype/0.1.5:
-    resolution: {integrity: sha512-gU+cD+AT1LpFwbemuEmTDjwLyFwJDiw21XHyIofKhFnEpXODjShBuxhgDGnZqW3qIEwu/vECjOecuD60e5ngiQ==}
-    engines: {node: '>=10.4'}
+  /rdf-validate-datatype/0.2.0:
+    resolution: {integrity: sha512-Ru7OcqxkPHgMwBrqw/RXCOqJ+hPaL1foelcgdDy5eFdNonP2D6YDLkYlODaeiSo2dgCnUvrD1k/QGi3Spa82fg==}
     dependencies:
-      '@rdfjs/namespace': 1.1.0
-      '@rdfjs/to-ntriples': 2.0.0
+      '@rdfjs/term-map': 2.0.0
+      '@tpluscode/rdf-ns-builders': 4.1.0
     dev: false
 
-  /rdf-validate-shacl/0.4.5:
-    resolution: {integrity: sha512-tGYnssuPzmsPua1dju4hEtGkT1zouvwzVTNrFhNiqj2aZFO5pQ7lvLd9Cv9H9vKAlpIdC/x0zL6btxG3PCss0w==}
+  /rdf-validate-shacl/0.5.1:
+    resolution: {integrity: sha512-KpXLqfkf8BkNy4H7Yxhy+fd3BpedQpRIrPH0SoYhGBUhMR5JNNt8Va+eda1CsiA9DnnfDadXBxQVyKkuSFwhTA==}
     dependencies:
-      '@rdfjs/dataset': 1.1.1
-      '@rdfjs/namespace': 1.1.0
-      '@rdfjs/term-set': 1.1.0
-      clownface: 1.5.1
+      '@rdfjs/environment': 0.1.2
+      '@rdfjs/namespace': 2.0.0
+      '@rdfjs/term-set': 2.0.1
+      '@vocabulary/sh': 1.0.1
+      clownface: 2.0.0
       debug: 4.3.4
       rdf-literal: 1.3.1
-      rdf-validate-datatype: 0.1.5
+      rdf-validate-datatype: 0.2.0
     transitivePeerDependencies:
       - supports-color
     dev: false
