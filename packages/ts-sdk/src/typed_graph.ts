@@ -8,7 +8,6 @@ import * as E from 'fp-ts/lib/Either'
 import * as t from 'io-ts'
 
 import SerializerJsonld from '@rdfjs/serializer-jsonld-ext'
-import { inspect } from 'util'
 
 const DM_JSONLD_CONTEXT = 'https://w3id.org/docmaps/context.jsonld'
 
