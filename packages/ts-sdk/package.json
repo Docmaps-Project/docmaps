@@ -18,6 +18,9 @@
     "build": "tsc",
     "prepare": "tsc --declaration"
   },
+  "engines": {
+    "node": ">=18.14.0"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
