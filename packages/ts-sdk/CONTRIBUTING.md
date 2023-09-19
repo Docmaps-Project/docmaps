@@ -4,7 +4,7 @@ We welcome contributions from anyone interested in improving [Project Name]! Bef
 
 ## Workflow
 1. Fork the repository and clone it locally, or create a branch.
-2. [Recommended] Install pnpm if you haven't already: `npm install -g pnpm`
+2. [Recommended] Install pnpm if you haven't already: `npm install -g pnpm@^8`. Version 8+ is required.
 3. Run pnpm install in the package directory to install all dependencies for the project.
 4. Add, commit, and push your changes to your fork/branch.
 5. Submit a pull request (PR) to the main branch of the `docmaps-project/docmaps` repository.
