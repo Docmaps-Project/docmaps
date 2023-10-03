@@ -510,6 +510,10 @@ export type RoleInTimeT = t.TypeOf<typeof RoleInTime>
  * @since 0.1.0
  */
 export type ActorT = t.TypeOf<typeof Actor>
+/**
+ * @since 0.12.1
+ */
+export type ThingTypeT = t.TypeOf<typeof ThingType>
 
 /**  DocmapsFactory
  *
