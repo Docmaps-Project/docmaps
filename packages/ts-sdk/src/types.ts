@@ -231,6 +231,7 @@ export const Thing = t.intersection([
     id: t.string,
     doi: t.string,
     type: ThingType,
+    url: UrlFromString,
     content: t.array(Manifestation),
   }),
 ])
