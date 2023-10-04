@@ -21,8 +21,10 @@ export const FromRootExamplesNew = () => ({
   elife_01_nt: loadDatasetNtriples('../../examples/docmaps-example-elife-01.jsonld.nt'),
   elife_02_nt: loadDatasetNtriples('../../examples/docmaps-example-elife-02.jsonld.nt'),
   embo_01_nt: loadDatasetNtriples('../../examples/docmaps-example-embo-01.jsonld.nt'),
+  epmc_01_nt: loadDatasetNtriples('../../examples/docmaps-example-epmc-01.jsonld.nt'), // TODO not currently used in any test
 
   biorxiv_01_jsonld: loadDataset('../../examples/docmaps-example-biorxiv-01.jsonld'),
+  epmc_01_jsonld: loadDataset('../../examples/docmaps-example-epmc-01.jsonld'),
   // TODO - note the difference in structure of the loading here
   elife_01_jsonld: loadDataset('../../examples/docmaps-example-elife-01.jsonld')[0],
   elife_02_jsonld: loadDataset('../../examples/docmaps-example-elife-02.jsonld')[0],
@@ -48,6 +50,7 @@ const el_dm = [
   // FromRootExamples.biorxiv_01_jsonld,
 
   FromRootExamples.embo_01_jsonld,
+  FromRootExamples.epmc_01_jsonld,
 ]
 
 const el_dm_publisher = el_dm.flatMap((dm) => dm['publisher'] || [])

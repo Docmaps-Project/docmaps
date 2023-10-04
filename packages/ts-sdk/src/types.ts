@@ -118,6 +118,7 @@ export const Manifestation = t.intersection([
     //    - we are at least aware of EMBO using `type: text`.
     type: arrayOrOneOf([
       'web-page', // correctly used by eLife
+      'web-content', // immediately deprecated
     ]),
   }),
   t.partial({

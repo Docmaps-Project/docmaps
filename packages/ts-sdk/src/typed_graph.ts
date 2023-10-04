@@ -8,6 +8,7 @@ import * as E from 'fp-ts/lib/Either'
 import * as t from 'io-ts'
 
 import SerializerJsonld from '@rdfjs/serializer-jsonld-ext'
+import * as util from "util";
 
 const DM_JSONLD_CONTEXT = 'https://w3id.org/docmaps/context.jsonld'
 
@@ -95,7 +96,7 @@ export class TypedGraph {
     const typedResult = c.decode(jsonld)
 
     if (isLeft(typedResult)) {
-      throw new Error('decoding failed', { cause: typedResult.left })
+      throw new Error(`decoding failed: ${util.inspect(typedResult.left, {depth: 5})}`)
     }
 
     return typedResult.right

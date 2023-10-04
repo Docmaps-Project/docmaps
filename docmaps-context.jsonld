@@ -158,6 +158,7 @@
         "preprint": "fabio:Preprint",
         "review": "fabio:Review",
         "web-page": "fabio:WebPage",
+        "web-content": "fabio:WebContent",
         "reply": "fabio:Reply",
         "evaluation-summary": "fabio:ExecutiveSummary",
         "comment": "fabio:Comment",
