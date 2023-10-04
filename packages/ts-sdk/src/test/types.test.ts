@@ -11,7 +11,6 @@ function isRightArray<T>(
   len: number,
   proc?: (_a: readonly T[]) => void,
 ) {
-
   pipe(
     arr,
     E.sequenceArray,
