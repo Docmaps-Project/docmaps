@@ -192,6 +192,19 @@ test('Graph extraction of additional docmaps', async (t) => {
   )
 })
 
+test('Graph extraction with only one step', async (t) => {
+  const examples = FromRootExamplesNew()
+
+  const dm_epmc = await g.pickStream(examples.epmc_01_nt, DocmapNormalizedFrame)()
+
+  t.true(
+    rightAnd(dm_epmc, (dm_any) => {
+      const dm = dm_any as DocmapsTypes.DocmapT
+      t.is(dm.id, examples.epmc_01_jsonld.id)
+    }),
+  )
+})
+
 test('Graph extraction failure mode when a stream is interrupted', async (t) => {
   const examples = FromRootExamplesNew()
   // this is an eventemitter, not an actual stream
