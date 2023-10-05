@@ -30,23 +30,17 @@ export type TypesFactoryKeys = keyof TypesFactory
  *
  * TODO: can this be made shorter , to not repeat?
  *
- * @since 0.11.0
+ * @since 0.14.0
  */
-export const DocmapNormalizedFrame: {
-  type: 'docmap'
-  'first-step': { '@embed': '@never' }
-  'pwo:hasStep': {
-    '@embed': '@always'
-    'next-step': { '@embed': '@never' }
-    'previous-step': { '@embed': '@never' }
-  }
-} = {
+export const DocmapNormalizedFrame = {
   type: 'docmap',
   'first-step': { '@embed': '@never' },
   'pwo:hasStep': {
     '@embed': '@always',
-    'next-step': { '@embed': '@never' },
-    'previous-step': { '@embed': '@never' },
+    '@requireAll': false,
+    'next-step': { '@embed': '@never', '@omitDefault': true },
+    'previous-step': { '@embed': '@never', '@omitDefault': true },
+    '@id': {},
   },
 }
 
