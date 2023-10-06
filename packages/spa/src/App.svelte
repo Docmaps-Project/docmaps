@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { configureForDoiString, structureError } from './utils.js';
   import '@source-data/render-rev/render-rev.js';
+  import '@docmaps/widget-spike'
   import JsonBox from "./JsonBox.svelte";
 
   let inputDoi = '';
@@ -57,10 +58,17 @@
   <!-- Your other markup and code -->
   <button on:click="{fetchData}">Fetch Data</button>
   <div id="result" bind:this="{placeholder}"></div>
+
   <div class="code-container">
     <b>Derived Docmap contents:</b>
     <JsonBox {json} bind:this="{codeBox}"/>
   </div>
+  <br> <br>
+  <hr class="rounded">
+  <br> <br>
+  <h1>Demo: docmap visualizer widget</h1>
+
+  <docmaps-widget serverurl="https://web-nodejs.onrender.com"></docmaps-widget>
 </main>
 
 <style>

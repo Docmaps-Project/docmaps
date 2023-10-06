@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@docmaps/etl": "workspace:^0.1.2",
+    "@docmaps/widget-spike": "^1.1.9",
     "@source-data/render-rev": "github:source-data/render-rev",
     "@spider-ui/global-event-registry": "^0.2.7",
     "docmaps-sdk": "workspace:^0.0.0",
