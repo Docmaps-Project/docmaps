@@ -67,8 +67,9 @@
   <hr class="rounded">
   <br> <br>
   <h1>Demo: docmap visualizer widget</h1>
-
-  <docmaps-widget serverurl="https://web-nodejs.onrender.com"></docmaps-widget>
+  <div class="docmap-widget" style="text-align: left">
+    <docmaps-widget serverurl="https://web-nodejs.onrender.com"></docmaps-widget>
+  </div>
 </main>
 
 <style>
