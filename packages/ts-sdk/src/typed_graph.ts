@@ -44,6 +44,36 @@ export const DocmapNormalizedFrame = {
   },
 }
 
+/** Any key-value map of flat values.
+ *
+ * This type is used to specify constraints on a JSON-LD
+ * frame for purposes of selecting specific objects
+ * in a small triplestore.
+ *
+ * @since 0.14.0
+ */
+export type FrameConstraint =
+  | {
+      // the recommended selector.
+      id: string
+    }
+  | { [key: string]: any }
+
+/** Union type representing discoverable Typed codecs.
+ *
+ * It is unclear if the `type`-based frame is
+ * actually needed, because we expect the triples
+ * to be filtered upstream. However we will
+ * continue to support it until clarity emerges
+ * that it is redundant.
+ *
+ * @since 0.14.0
+ * @deprecated 0.14.0
+ */
+export type FrameTyper = {
+  // 'id'?: string,
+  type: TypesFactoryKeys
+}
 /** Union type representing allowed Frames.
  *
  * It is unclear if the `type`-based frame is
@@ -54,12 +84,7 @@ export const DocmapNormalizedFrame = {
  *
  * @since 0.11.0
  */
-export type FrameSelection =
-  | {
-      // 'id'?: string,
-      type: TypesFactoryKeys
-    }
-  | typeof DocmapNormalizedFrame
+export type FrameSelection = FrameTyper | typeof DocmapNormalizedFrame | FrameConstraint
 
 /** A type-aware structure for extracting objects from quads.
  *

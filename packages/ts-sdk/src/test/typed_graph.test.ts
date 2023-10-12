@@ -14,7 +14,7 @@ const g = new TypedGraph(factory)
 test('Graph Extraction of a Manifestation with known codec', async (t) => {
   const mf_te = await g.pickStreamWithCodec(
     {
-      type: 'web-page', // selects the Publisher
+      type: 'web-page',
     },
     DocmapsTypes.Manifestation,
     OneManifestationQuadstore(),
@@ -33,6 +33,25 @@ test('Graph Extraction of a Manifestation with known codec', async (t) => {
       // parsed by `jsonld.js`. Without type specification in the data, compaction/framing
       // algorithm will use the CURIE instead of the term.
       t.is(mf.url?.toString(), 'https://w3id.org/docmaps/examples/manifestation#URL')
+    }),
+  )
+})
+
+test('Graph extraction by constraint', async (t) => {
+  const p_te = await g.pickStreamWithCodec(
+    {
+      id: 'https://rapidreviewscovid19.mitpress.mit.edu/',
+    },
+    DocmapsTypes.Publisher,
+    FromRootExamplesNew().epmc_01_nt,
+  )()
+
+  t.true(
+    rightAnd(p_te, (p_any) => {
+      const p = p_any as DocmapsTypes.PublisherT
+
+      t.is(p.account?.id, 'https://sciety.org/groups/rapid-reviews-covid-19')
+      t.is(p.id, 'https://rapidreviewscovid19.mitpress.mit.edu/')
     }),
   )
 })
