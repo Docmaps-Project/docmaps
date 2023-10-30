@@ -4,3 +4,4 @@ packages:
   - 'packages/spa'
   - 'packages/example'
   - 'packages/http-client'
+  - 'packages/widget'
