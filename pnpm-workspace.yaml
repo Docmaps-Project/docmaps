@@ -3,3 +3,4 @@ packages:
   - 'packages/ts-etl'
   - 'packages/spa'
   - 'packages/example'
+  - 'packages/http-client'
