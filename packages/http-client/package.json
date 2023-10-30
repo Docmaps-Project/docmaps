@@ -1,0 +1,61 @@
+{
+  "name": "@docmaps/http-client",
+  "version": "0.1.0",
+  "description": "HTTP client for Docmaps API specification",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "ava",
+    "clean": "rm -rf dist/",
+    "test:integration": "ava test/integration/",
+    "test:cleanup": "docker compose -f test/integration/assets/docker-compose.yml down",
+    "test:unit": "ava test/unit/",
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint --fix .",
+    "start": "tsx dist/httpserver/main.js",
+    "prepare": "tsc --declaration",
+    "build": "tsc --declaration"
+  },
+  "keywords": [],
+  "author": "eve github.com/ships",
+  "license": "ISC",
+  "files": [
+    "dist/",
+    "README.md",
+    "package.json",
+    "tsconfig.json"
+  ],
+  "dependencies": {
+    "@ts-rest/core": "^3.30.2",
+    "@tsconfig/node-lts-strictest-esm": "^18.12.1",
+    "docmaps-sdk": "workspace:^0.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.16.2",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.39.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.0",
+    "ts-mockito": "^2.6.1",
+    "typescript": "^4.9.5",
+    "zod": "^3.22.2"
+  },
+  "ava": {
+    "extensions": {
+      "ts": "module"
+    },
+    "nodeArguments": [
+      "--loader=ts-node/esm",
+      "--experimental-specifier-resolution=node"
+    ],
+    "files": [
+      "**/*.test.ts"
+    ]
+  },
+  "engines": {
+    "node": ">=18.14.0"
+  }
+}

@@ -65,6 +65,49 @@ importers:
         specifier: ^18.16.2
         version: 18.16.7
 
+  packages/http-client:
+    dependencies:
+      '@ts-rest/core':
+        specifier: ^3.30.2
+        version: 3.30.4(zod@3.22.4)
+      '@tsconfig/node-lts-strictest-esm':
+        specifier: ^18.12.1
+        version: 18.12.1
+      docmaps-sdk:
+        specifier: workspace:^0.0.0
+        version: link:../ts-sdk
+    devDependencies:
+      '@types/node':
+        specifier: ^18.16.2
+        version: 18.16.7
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.0.0
+        version: 6.4.1(@typescript-eslint/parser@6.4.1)(eslint@8.40.0)(typescript@4.9.5)
+      '@typescript-eslint/parser':
+        specifier: ^6.0.0
+        version: 6.4.1(eslint@8.40.0)(typescript@4.9.5)
+      eslint:
+        specifier: ^8.39.0
+        version: 8.40.0
+      eslint-config-prettier:
+        specifier: ^9.0.0
+        version: 9.0.0(eslint@8.40.0)
+      eslint-plugin-prettier:
+        specifier: ^5.0.0
+        version: 5.0.0(eslint-config-prettier@9.0.0)(eslint@8.40.0)(prettier@3.0.2)
+      prettier:
+        specifier: ^3.0.0
+        version: 3.0.2
+      ts-mockito:
+        specifier: ^2.6.1
+        version: 2.6.1
+      typescript:
+        specifier: ^4.9.5
+        version: 4.9.5
+      zod:
+        specifier: ^3.22.2
+        version: 3.22.4
+
   packages/spa:
     dependencies:
       '@docmaps/etl':
@@ -593,11 +636,6 @@ packages:
     dependencies:
       eslint: 8.40.0
       eslint-visitor-keys: 3.4.1
-    dev: true
-
-  /@eslint-community/regexpp@4.5.0:
-    resolution: {integrity: sha512-vITaYzIcNmjn5tF5uxcZ/ft7/RXGrMUIS9HalWckEOF6ESiwXKoMzAQf2UW0aVd6rnOeExTJVd5hmWXucBKGXQ==}
-    engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
     dev: true
 
   /@eslint-community/regexpp@4.7.0:
@@ -1388,10 +1426,20 @@ packages:
       '@zazuko/prefixes': 2.0.0
     dev: false
 
+  /@ts-rest/core@3.30.4(zod@3.22.4):
+    resolution: {integrity: sha512-wHI3OHnqpak8jmz2drjzMtgvFVLBrTMvxkkWIUIsGDkEpFwuF/9592RpawkCLIvlxbrxTzp0MzqqwwbzlG6BkA==}
+    peerDependencies:
+      zod: ^3.22.3
+    peerDependenciesMeta:
+      zod:
+        optional: true
+    dependencies:
+      zod: 3.22.4
+    dev: false
+
   /@tsconfig/node-lts-strictest-esm@18.12.1:
     resolution: {integrity: sha512-LvBLmaC6Q/txTddLc11OeMHF9XjJFzlilkETJuvBlUvHy9pPiMsoH3nxWZM1FMSO53zp4mJP6gzOzxKEq0me7Q==}
     deprecated: TypeScript 5.0 supports combining TSConfigs using array syntax in extends
-    dev: true
 
   /@tsconfig/node10@1.0.9:
     resolution: {integrity: sha512-jNsYVVxU8v5g43Erja32laIDHXeoNvFEpX33OK4d6hljo3jDhCBDhx5dhCCTMWUojscpAagGiRkBKxpdl9fxqA==}
@@ -2957,7 +3005,7 @@ packages:
     hasBin: true
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.40.0)
-      '@eslint-community/regexpp': 4.5.0
+      '@eslint-community/regexpp': 4.7.0
       '@eslint/eslintrc': 2.0.3
       '@eslint/js': 8.40.0
       '@humanwhocodes/config-array': 0.11.8
@@ -6457,6 +6505,9 @@ packages:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
     dev: true
+
+  /zod@3.22.4:
+    resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
 
   github.com/source-data/render-rev/e77d8a0840fa6a33ea6663aa57dee6ff0930faed(@spider-ui/global-event-registry@0.2.7)(upgraded-element@0.6.5):
     resolution: {tarball: https://codeload.github.com/source-data/render-rev/tar.gz/e77d8a0840fa6a33ea6663aa57dee6ff0930faed}
