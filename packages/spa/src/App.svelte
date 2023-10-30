@@ -68,7 +68,7 @@
   <br> <br>
   <h1>Demo: docmap visualizer widget</h1>
   <div class="docmap-widget" style="text-align: left">
-    <docmaps-widget serverurl="https://web-nodejs.onrender.com"></docmaps-widget>
+    <docmaps-widget serverurl="http://localhost:9001"></docmaps-widget>
   </div>
 </main>
 
