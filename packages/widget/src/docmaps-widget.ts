@@ -9,6 +9,9 @@ type DeclaredLink = { source: string; target: string };
 // After our Link is rendered, D3 replaces the ids with references to the actual Nodes
 type RenderedLink = { source: Node; target: Node };
 
+const canvasWidth = 500;
+const canvasHeight = 300;
+
 @customElement('docmaps-widget')
 export class DocmapsWidget extends LitElement {
   @property({ type: Number })
@@ -52,7 +55,12 @@ export class DocmapsWidget extends LitElement {
       if (!canvas) {
         throw new Error('SVG element not found');
       }
-      const svg = d3.select(canvas).append('svg').attr('width', 500).attr('height', 300);
+
+      const svg = d3
+        .select(canvas)
+        .append('svg')
+        .attr('width', canvasWidth)
+        .attr('height', canvasHeight);
 
       // d3's simulation mutates the Node and Link lists.
       // We make a copy here so our original lists aren't modified
@@ -72,7 +80,7 @@ export class DocmapsWidget extends LitElement {
         )
         .force('charge', d3.forceManyBody())
         .force('collide', d3.forceCollide(30)) // 25 is the radius for collision detection
-        .force('center', d3.forceCenter(150, 150));
+        .force('center', d3.forceCenter(Math.floor(canvasWidth / 2), Math.floor(canvasHeight / 2)));
 
       // Create link elements
       const linkElements = svg
@@ -134,7 +142,7 @@ export class DocmapsWidget extends LitElement {
       <div id="d3-canvas" style="display: block;"></div>
 
       <div class="card">
-        <button @click="${this._onClick}" part="button">count is ${this.count}</button>
+        <button @click="${this._onClick}" part="button">Add ${this.count + 1}th node</button>
       </div>
     `;
   }

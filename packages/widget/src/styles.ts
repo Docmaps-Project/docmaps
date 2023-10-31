@@ -28,9 +28,6 @@ export const customCss: CSSResult = css`
     padding: 2em;
   }
 
-  .read-the-docs {
-    color: #888;
-  }
 
   ::slotted(h1) {
     font-size: 3.2em;
@@ -54,7 +51,7 @@ export const customCss: CSSResult = css`
     font-size: 1em;
     font-weight: 500;
     font-family: inherit;
-    background-color: rgba(126, 37, 213, 0.47);
+    background-color: rgb(175, 105, 248);
     cursor: pointer;
     transition: border-color 0.25s;
   }
