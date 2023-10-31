@@ -2,12 +2,11 @@ import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { customCss } from './styles'
 import * as d3 from 'd3'
+import { SimulationLinkDatum } from 'd3'
+import { SimulationNodeDatum } from 'd3-force'
 
-type Node = { x: number; y: number; id: string }
+type Node = SimulationNodeDatum & { id: string }
 // Before our Link is rendered, we declare it as a connection between 2 Node ids
-type DeclaredLink = { source: string; target: string }
-// After our Link is rendered, D3 replaces the ids with references to the actual Nodes
-type RenderedLink = { source: Node; target: Node }
 
 const CANVAS_WIDTH: number = 500
 const CANVAS_HEIGHT: number = 300
@@ -25,7 +24,7 @@ export class DocmapsWidget extends LitElement {
     { id: 'N3', x: 200, y: 300 },
   ]
 
-  links: DeclaredLink[] = [
+  links: SimulationLinkDatum<Node>[] = [
     { source: 'N1', target: 'N2' },
     { source: 'N2', target: 'N3' },
     { source: 'N3', target: 'N1' },
@@ -72,17 +71,16 @@ export class DocmapsWidget extends LitElement {
       // d3's simulation mutates the Node and Link lists.
       // We make a copy here so our original lists aren't modified
       const displayNodes: Node[] = JSON.parse(JSON.stringify(this.nodes))
-
-      // The type RenderedLink[] is technically a lie when we first copy this.links,
-      // but becomes true once the graph is rendered and d3 gets its hands on our list
-      const displayLinks: RenderedLink[] = JSON.parse(JSON.stringify(this.links))
+      const displayLinks: SimulationLinkDatum<Node>[] = JSON.parse(
+        JSON.stringify(this.links),
+      )
 
       // Initialize force layout
-      const simulation = d3
+      const simulation: d3.Simulation<Node, SimulationLinkDatum<Node>> = d3
         .forceSimulation(displayNodes)
         .force(
           'link',
-          d3.forceLink(displayLinks).id((d) => {
+          d3.forceLink(displayLinks).id((d: d3.SimulationNodeDatum) => {
             // @ts-ignore
             return d.id
           }),
@@ -91,7 +89,10 @@ export class DocmapsWidget extends LitElement {
         .force('collide', d3.forceCollide(NODE_RADIUS * 1.5))
         .force(
           'center',
-          d3.forceCenter(Math.floor(CANVAS_WIDTH / 2), Math.floor(CANVAS_HEIGHT / 2)),
+          d3.forceCenter(
+            Math.floor(CANVAS_WIDTH / 2),
+            Math.floor(CANVAS_HEIGHT / 2),
+          ),
         )
 
       // Create link elements
@@ -132,13 +133,14 @@ export class DocmapsWidget extends LitElement {
       // Update positions on each simulation tick
       simulation.on('tick', () => {
         linkElements
-          .attr('x1', (d) => d.source.x)
-          .attr('y1', (d) => d.source.y)
-          .attr('x2', (d) => d.target.x)
-          .attr('y2', (d) => d.target.y)
+          .attr('x1', (d) => (d.source as Node).x ?? 0)
+          .attr('y1', (d) => (d.source as Node).y ?? 0)
+          .attr('x2', (d) => (d.target as Node).x ?? 0)
+          .attr('y2', (d) => (d.target as Node).y ?? 0)
 
-        nodeElements.attr('cx', (d) => d.x).attr('cy', (d) => d.y)
-        labels.attr('x', (d) => d.x).attr('y', (d) => d.y)
+        nodeElements.attr('cx', getNodeX).attr('cy', getNodeY)
+
+        labels.attr('x', getNodeX).attr('y', getNodeY)
       })
     }
   }
@@ -154,7 +156,9 @@ export class DocmapsWidget extends LitElement {
       <div id="${CANVAS_ID}" style="display: block;"></div>
 
       <div class="card">
-        <button @click="${this._onClick}" part="button">Add ${this.count + 1}th node</button>
+        <button @click="${this._onClick}" part="button">
+          Add ${this.count + 1}th node
+        </button>
       </div>
     `
   }
@@ -165,3 +169,6 @@ declare global {
     'docmaps-widget': DocmapsWidget
   }
 }
+
+const getNodeX = (d: Node) => d.x ?? 0
+const getNodeY = (d: Node) => d.y ?? 0
