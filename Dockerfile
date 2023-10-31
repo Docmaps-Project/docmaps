@@ -51,8 +51,8 @@ FROM prod AS runtime
 
 # Copy the production dependencies from the deps stage and also
 # the built application from the build stage into the image.
-COPY --from=build /app/packages/runtime/dist /app/packages/runtime/dist
-WORKDIR /app/packages/runtime
+COPY --from=build /app/packages/http-server/dist /app/packages/http-server/dist
+WORKDIR /app/packages/http-server
 
 # Use production node environment by default.
 ENV NODE_ENV production

@@ -1,5 +1,5 @@
 {
-  "name": "@docmaps/ts-api-server/runtime",
+  "name": "@docmaps/http-server",
   "version": "0.1.0",
   "description": "Node.js runtime for serving docmaps using other composed docmaps-related npm modules",
   "type": "module",
