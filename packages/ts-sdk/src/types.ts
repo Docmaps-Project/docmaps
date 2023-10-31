@@ -273,6 +273,7 @@ export const Action = t.intersection([
   t.type({
     // outputs: fromNullable(t.array(Thing), []),
     outputs: ArrayUpsertedEmpty(Thing),
+    inputs: ArrayUpsertedEmpty(Thing),
     participants: ArrayUpsertedEmpty(RoleInTime),
   }),
   t.partial({
@@ -367,11 +368,11 @@ export const Assertion = t.intersection([
 export const Step = t.intersection([
   t.type({
     actions: ArrayUpsertedEmpty(Action),
-    inputs: ArrayUpsertedEmpty(Thing),
     assertions: ArrayUpsertedEmpty(Assertion),
   }),
   t.partial({
     id: t.string,
+    inputs: ArrayUpsertedEmpty(Thing),
     // TODO: this is a hacky solution. I would like these fields to be stripped if they are null.
     'next-step': t.union([t.string, t.null]),
     'previous-step': t.union([t.string, t.null]),
