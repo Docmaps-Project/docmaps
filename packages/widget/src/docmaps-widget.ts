@@ -37,13 +37,18 @@ export class DocmapsWidget extends LitElement {
     this.count++
 
     // Create a new node with a unique ID
-    const newNode = { id: 'N' + this.count, x: Math.random() * 215, y: Math.random() * 175 }
+    const newNode: Node = {
+      id: 'N' + this.count,
+      x: Math.random() * 215,
+      y: Math.random() * 175,
+    }
 
     // Connect the new node to a random existing node
-    const existingNode = this.nodes[Math.floor(Math.random() * this.nodes.length)]
-    this.links.push({ source: newNode.id, target: existingNode.id })
+    const targetNode = this.nodes[Math.floor(Math.random() * this.nodes.length)]
+    this.links.push({ source: newNode.id, target: targetNode.id })
 
-    // Add the node after the link so the node isn't linked to itself
+    // Order matters here. We add the node to this.nodes after selecting our targetNode so the
+    // new node doesn't get linked to itself.
     this.nodes.push(newNode)
 
     // Re-render the graph
@@ -70,7 +75,7 @@ export class DocmapsWidget extends LitElement {
 
       // The type RenderedLink[] is technically a lie when we first copy this.links,
       // but becomes true once the graph is rendered and d3 gets its hands on our list
-      const displayLinks: RenderedLink[] =JSON.parse(JSON.stringify(this.links))
+      const displayLinks: RenderedLink[] = JSON.parse(JSON.stringify(this.links))
 
       // Initialize force layout
       const simulation = d3
