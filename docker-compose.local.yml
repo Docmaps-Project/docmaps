@@ -1,0 +1,20 @@
+name: docmaps-api-server-local
+services:
+  oxigraph:
+    image: ghcr.io/oxigraph/oxigraph
+    ports:
+      - "33378:7878"
+    volumes:
+      - "./tmp/oxigraph_data:/data"
+  server:
+    build:
+      context: .
+    command: start
+    environment:
+      NODE_ENV: production
+      DM_SERVER_API_URL: http://localhost:8080
+      DM_SERVER_PORT: 8080
+      DM_BACKEND_TYPE: sparql-endpoint
+      DM_BACKEND_SPARQL_ENDPOINT_URL: http://oxigraph:7878/query
+    ports:
+      - 8080:8080
