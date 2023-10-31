@@ -1,6 +1,6 @@
 import * as D from 'docmaps-sdk'
 import * as E from 'fp-ts/lib/Either'
-import { pipe } from 'fp-ts/lib/pipeable'
+import { pipe } from 'fp-ts/lib/function'
 import type { ErrorOrDocmap } from '../types'
 
 /*   *******

@@ -6,7 +6,7 @@ import { CrossrefPlugin } from '../../../src/plugins/crossref'
 import { stepsForIdRecursive } from '../../../src/processor'
 import * as cm from '../__fixtures__/crossref'
 import * as TE from 'fp-ts/lib/TaskEither'
-import { pipe } from 'fp-ts/lib/pipeable'
+import { pipe } from 'fp-ts/lib/function'
 
 function makeRoutine(c: CrossrefClient) {
   const plugin = CrossrefPlugin(c)

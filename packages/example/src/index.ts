@@ -1,7 +1,7 @@
 import * as D from 'docmaps-sdk'
 import * as E from 'fp-ts/lib/Either'
 import * as A from 'fp-ts/lib/Array'
-import {pipe} from 'fp-ts/lib/pipeable'
+import {pipe} from 'fp-ts/lib/function'
 import * as t from 'io-ts'
 import util from "util";
 import { readFileSync } from 'fs';

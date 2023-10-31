@@ -2,7 +2,7 @@
  * @since 0.1.0
  */
 import * as t from 'io-ts'
-import { pipe } from 'fp-ts/lib/pipeable'
+import { pipe } from 'fp-ts/lib/function'
 import { chain } from 'fp-ts/lib/Either'
 import { fromNullable } from 'io-ts-types'
 
