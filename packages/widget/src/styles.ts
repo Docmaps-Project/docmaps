@@ -41,7 +41,7 @@ export const customCss: CSSResult = css`
   }
 
   a:hover {
-    color: #535bf2;
+    color: #747bff;
   }
 
   button {
@@ -53,6 +53,7 @@ export const customCss: CSSResult = css`
     font-family: inherit;
     background-color: rgb(175, 105, 248);
     cursor: pointer;
+    color: white;
     transition: border-color 0.25s;
   }
 
@@ -63,15 +64,5 @@ export const customCss: CSSResult = css`
   button:focus,
   button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
-  }
-
-  @media (prefers-color-scheme: light) {
-    a:hover {
-      color: #747bff;
-    }
-
-    button {
-      background-color: #f9f9f9;
-    }
   }
 `

@@ -101,7 +101,7 @@ export class DocmapsWidget extends LitElement {
       .data(displayLinks)
       .enter()
       .append('line')
-      .attr('stroke', 'white')
+      .attr('stroke', 'black')
       .attr('class', 'link')
 
     const nodeElements = svg
