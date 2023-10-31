@@ -6,7 +6,7 @@ import { SimulationLinkDatum } from 'd3'
 import { SimulationNodeDatum } from 'd3-force'
 
 type Node = SimulationNodeDatum & { id: string }
-// Before our Link is rendered, we declare it as a connection between 2 Node ids
+type Link = SimulationLinkDatum<Node>
 
 const CANVAS_WIDTH: number = 500
 const CANVAS_HEIGHT: number = 300
@@ -24,7 +24,7 @@ export class DocmapsWidget extends LitElement {
     { id: 'N3', x: 200, y: 300 },
   ]
 
-  links: SimulationLinkDatum<Node>[] = [
+  links: Link[] = [
     { source: 'N1', target: 'N2' },
     { source: 'N2', target: 'N3' },
     { source: 'N3', target: 'N1' },
@@ -64,16 +64,18 @@ export class DocmapsWidget extends LitElement {
     if (!canvas) {
       throw new Error('SVG element not found')
     }
+
     const svg = d3
       .select(canvas)
       .append('svg')
       .attr('width', CANVAS_WIDTH)
       .attr('height', CANVAS_HEIGHT)
+
+    // Make copy of Nodes and Links because d3 mutates whatever Nodes/Links we pass it
     const displayNodes: Node[] = JSON.parse(JSON.stringify(this.nodes))
-    const displayLinks: SimulationLinkDatum<Node>[] = JSON.parse(
-      JSON.stringify(this.links),
-    )
-    const simulation: d3.Simulation<Node, SimulationLinkDatum<Node>> = d3
+    const displayLinks: Link[] = JSON.parse(JSON.stringify(this.links))
+
+    const simulation: d3.Simulation<Node, Link> = d3
       .forceSimulation(displayNodes)
       .force(
         'link',
@@ -91,6 +93,7 @@ export class DocmapsWidget extends LitElement {
           Math.floor(CANVAS_HEIGHT / 2),
         ),
       )
+
     const linkElements = svg
       .append('g')
       .attr('class', 'links')
@@ -100,6 +103,7 @@ export class DocmapsWidget extends LitElement {
       .append('line')
       .attr('stroke', 'white')
       .attr('class', 'link')
+
     const nodeElements = svg
       .append('g')
       .attr('class', 'nodes')
@@ -110,6 +114,7 @@ export class DocmapsWidget extends LitElement {
       .attr('class', 'node')
       .attr('fill', 'green')
       .attr('r', NODE_RADIUS)
+
     const labels = svg
       .append('g')
       .attr('class', 'labels')
@@ -121,6 +126,7 @@ export class DocmapsWidget extends LitElement {
       .attr('dy', '.35em') // Vertically center
       .attr('fill', 'white')
       .text((d) => d.id)
+
     simulation.on('tick', () => {
       linkElements
         .attr('x1', (d) => (d.source as Node).x ?? 0)
