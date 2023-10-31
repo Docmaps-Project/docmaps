@@ -18,6 +18,17 @@ cross-package behavior, such as release automation.
 **Releases and tags:** Github Actions uses [multi-semantic-release](https://github.com/dhoulb/multi-semantic-release) to automatically generate semvers based on commit history for each package in the repository. Multiple tags
 are generated for a single commit if it updates multiple packages.
 
+**Dependencies:** The workspace root builds a Docker image for the http-server. In addition to the
+npm package dependencies, to do local development you should have the following tools installed:
+
+```bash
+pnpm # @^8.7
+node # @^18
+docker # with docker-compose available
+```
+
+see [CONTRIBUTING.md](/CONTRIBUTING.md) for more info about local development.
+
 ## Persistent URLs
 
 Documentation: https://w3id.org/docmaps
@@ -35,6 +46,11 @@ that library natively integrates with `fp-ts` and enables easy encoding & decodi
 from raw data types at runtime by creating Prototypical classes in runtime namespace
 along with the types/interfaces in type namespace.
 
+### [http-server](/packages/http-server)
+
+This package is a Node server that serves docmaps. It is the Typescript 
+reference implementation of Docmaps Project RFC#001 API Server Interoperability Protocol.
+
 ### [ts-etl](/packages/ts-etl)
 
 This package contains a CLI tool based on `commander.js` for generating docmaps. Currently,
@@ -47,6 +63,7 @@ still in a pre-release state while we gather feedback.
 This Single-page App (SPA) is a simple demonstration of the above tools in action. It is
 accessible [live on Github Pages](https://docmaps-project.github.io/docmaps/demo/) where you can
 plug in a DOI and get a best-effort view of a Docmap as inferred from Crossref's API.
+
 
 ## Governance
 
