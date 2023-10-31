@@ -6,6 +6,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "install:browsers": "playwright install",
     "test": "playwright test",
     "test:server": "vite --port 9005",
     "test:ui": "playwright test --ui"
