@@ -1,5 +1,6 @@
 import {css, CSSResult} from "lit";
 
+// These are the styles used within the lit component
 export const customCss: CSSResult = css`
   :host {
     max-width: 1280px;

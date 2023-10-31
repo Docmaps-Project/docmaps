@@ -1,7 +1,7 @@
 /*
  * This is the stylesheet for ../index.html
  * These styles are not used in the lit component. Instead, they are used in the example page
- * the component is mounted within for test purposes.
+ * that the component is mounted within for test purposes.
  */
 :root {
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
