@@ -1,0 +1,6 @@
+name: docmaps-integration-tests
+services:
+  oxigraph:
+    image: ghcr.io/oxigraph/oxigraph
+    ports:
+      - "33078:7878"
