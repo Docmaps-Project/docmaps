@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "playwright test",
+    "test:server": "vite --port 9005",
+    "test:ui": "playwright test --ui"
   },
   "exports": {
     ".": "./dist/index.js"
@@ -17,7 +20,9 @@
     "lit": "^2.7.6"
   },
   "devDependencies": {
+    "@playwright/test": "^1.39.0",
     "@types/d3": "^7.4.2",
+    "@types/node": "^18.16.2",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.39.0",
