@@ -19,6 +19,8 @@ env:
 jobs:
   test-ts-sdk:
     uses: ./.github/workflows/ts-sdk-tests.yaml
+  test-ts-http-server:
+    uses: ./.github/workflows/http-server-tests.yaml
   test-ts-etl:
     uses: ./.github/workflows/ts-etl-tests.yaml
   test-example:
@@ -76,7 +78,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         # must ignore spa because we need spa in the workspace file for development, but spa is not released.
-        run: npx multi-semantic-release --ignore-packages=packages/spa,packages/example,packages/widget
+        run: npx multi-semantic-release --ignore-packages=packages/spa,packages/example,packages/widget,packages/http-server
 
   release-github-pages-docs:
     uses: ./.github/workflows/gh-pages.yaml
