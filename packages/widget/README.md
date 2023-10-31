@@ -6,7 +6,7 @@ An embeddable widget for displaying docmaps data, built with Lit and D3.
 
 ## Usage
 
-### Run the server locally
+### Running the server locally
 
 ```shell
 pnpm run dev
@@ -14,7 +14,7 @@ pnpm run dev
 
 This starts the server on http://localhost:5173
 
-### Testing
+### Running the tests
 
 The first time you run the tests, you will need to install browsers for Playwright to use
 
