@@ -148,10 +148,12 @@ export class DocmapsWidget extends LitElement {
     return html`
       <h1>Docmaps</h1>
 
-      <div id="${CANVAS_ID}" style="display: block;"></div>
+      <div id='${CANVAS_ID}'
+           style='display: block; border-style: groove; width: ${CANVAS_WIDTH}; height: ${CANVAS_HEIGHT}'>
+      </div>
 
-      <div class="card">
-        <button @click="${this._onClick}" part="button">
+      <div class='card'>
+        <button @click='${this._onClick}' part='button'>
           Add ${this.count + 1}th node
         </button>
       </div>
