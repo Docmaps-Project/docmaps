@@ -54,7 +54,7 @@ export const customCss: CSSResult = css`
     font-size: 1em;
     font-weight: 500;
     font-family: inherit;
-    background-color: #1a1a1a;
+    background-color: rgba(126, 37, 213, 0.47);
     cursor: pointer;
     transition: border-color 0.25s;
   }

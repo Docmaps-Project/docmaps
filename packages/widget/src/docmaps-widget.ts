@@ -4,7 +4,9 @@ import { customCss } from './styles';
 import * as d3 from 'd3';
 
 type Node = { x: number; y: number; id: string };
-type LinkDeclaration = { source: string; target: string };
+// Before our Link is rendered, we declare it as a connection between 2 Node ids
+type DeclaredLink = { source: string; target: string };
+// After our Link is rendered, D3 replaces the ids with references to the actual Nodes
 type RenderedLink = { source: Node; target: Node };
 
 @customElement('docmaps-widget')
@@ -13,15 +15,15 @@ export class DocmapsWidget extends LitElement {
   count = 3;
 
   nodes: Node[] = [
-    { id: 'A', x: 100, y: 150 },
-    { id: 'B', x: 300, y: 150 },
-    { id: 'C', x: 200, y: 300 },
+    { id: 'N1', x: 100, y: 150 },
+    { id: 'N2', x: 300, y: 150 },
+    { id: 'N3', x: 200, y: 300 },
   ];
 
-  links: LinkDeclaration[] = [
-    { source: 'A', target: 'B' },
-    { source: 'B', target: 'C' },
-    { source: 'C', target: 'A' },
+  links: DeclaredLink[] = [
+    { source: 'N1', target: 'N2' },
+    { source: 'N2', target: 'N3' },
+    { source: 'N3', target: 'N1' },
   ];
 
   static styles = [customCss];
@@ -52,8 +54,12 @@ export class DocmapsWidget extends LitElement {
       }
       const svg = d3.select(canvas).append('svg').attr('width', 500).attr('height', 300);
 
+      // d3's simulation mutates the Node and Link lists.
+      // We make a copy here so our original lists aren't modified
       const displayNodes: Node[] = JSON.parse(JSON.stringify(this.nodes));
-      const displayLinks: RenderedLink[] = JSON.parse(JSON.stringify(this.links));
+      const displayLinks: RenderedLink[] = // RenderedLink is technically a lie right now, but becomes true once the graph is rendered
+        JSON.parse(JSON.stringify(this.links));
+
       // Initialize force layout
       const simulation = d3
         .forceSimulation(displayNodes)
@@ -69,7 +75,7 @@ export class DocmapsWidget extends LitElement {
         .force('center', d3.forceCenter(150, 150));
 
       // Create link elements
-      const link = svg
+      const linkElements = svg
         .append('g')
         .attr('class', 'links')
         .selectAll('line')
@@ -80,7 +86,7 @@ export class DocmapsWidget extends LitElement {
         .attr('class', 'link');
 
       // Create node elements
-      const node = svg
+      const nodeElements = svg
         .append('g')
         .attr('class', 'nodes')
         .selectAll('circle')
@@ -105,13 +111,13 @@ export class DocmapsWidget extends LitElement {
 
       // Update positions on each simulation tick
       simulation.on('tick', () => {
-        link
+        linkElements
           .attr('x1', (d) => d.source.x)
           .attr('y1', (d) => d.source.y)
           .attr('x2', (d) => d.target.x)
           .attr('y2', (d) => d.target.y);
 
-        node.attr('cx', (d) => d.x).attr('cy', (d) => d.y);
+        nodeElements.attr('cx', (d) => d.x).attr('cy', (d) => d.y);
         labels.attr('x', (d) => d.x).attr('y', (d) => d.y);
       });
     }
