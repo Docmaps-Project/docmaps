@@ -24,6 +24,12 @@ export class DocmapsWidget extends LitElement {
   @property({type: Number})
   count = 0
 
+  static styles = [customCss]
+
+  private _onClick() {
+    this.count++
+  }
+
   render() {
     return html`
         <div>
@@ -43,12 +49,6 @@ export class DocmapsWidget extends LitElement {
         <p class="read-the-docs">${this.docsHint}</p>
     `
   }
-
-  private _onClick() {
-    this.count++
-  }
-
-  static styles = [customCss]
 }
 
 declare global {
