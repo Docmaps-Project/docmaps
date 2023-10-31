@@ -149,7 +149,7 @@ export class DocmapsWidget extends LitElement {
       <h1>Docmaps</h1>
 
       <div id='${CANVAS_ID}'
-           style='display: block; border-style: groove; width: ${CANVAS_WIDTH}; height: ${CANVAS_HEIGHT}'>
+           style='display: block; width: ${CANVAS_WIDTH}; height: ${CANVAS_HEIGHT}'>
       </div>
 
       <div class='card'>

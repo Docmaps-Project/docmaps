@@ -3,10 +3,10 @@ import {css, CSSResult} from "lit";
 // These are the styles used within the lit component
 export const customCss: CSSResult = css`
   :host {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
-    text-align: center;
+    width: 500px;
+    height: 500px;
+    background: #EDEDED;
+    border: 1px solid
   }
 
   .logo {
