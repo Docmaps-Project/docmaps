@@ -323,9 +323,6 @@ importers:
 
   packages/widget:
     dependencies:
-      '@types/d3-force':
-        specifier: ^3.0.7
-        version: 3.0.7
       d3:
         specifier: ^7.8.5
         version: 7.8.5
@@ -339,6 +336,9 @@ importers:
       '@types/d3':
         specifier: ^7.4.2
         version: 7.4.2
+      '@types/d3-force':
+        specifier: ^3.0.7
+        version: 3.0.7
       '@types/node':
         specifier: ^18.16.2
         version: 18.16.7
@@ -1901,6 +1901,7 @@ packages:
 
   /@types/d3-force@3.0.7:
     resolution: {integrity: sha512-rsok4CEvPLyVWRPsFiBhanJc3up03H/EARVz4d8soPh8drv82YMuAckYy4yv8g4/81JwCng5U5/o9aj9d0T6bQ==}
+    dev: true
 
   /@types/d3-format@3.0.3:
     resolution: {integrity: sha512-kxuLXSAEJykTeL/EI3tUiEfGqru7PRdqEy099YBnqFl+fF167UVSB4+wntlZv86ZdoYf0DHjsRHnTIm8kcH7qw==}
