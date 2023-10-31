@@ -2,7 +2,7 @@ import * as D from 'docmaps-sdk'
 import type { Plugin, RecursiveStepDataChain } from './types'
 import * as TE from 'fp-ts/lib/TaskEither'
 import * as A from 'fp-ts/lib/Array'
-import { pipe } from 'fp-ts/lib/pipeable'
+import { pipe } from 'fp-ts/lib/function'
 import { stepArrayToDocmap, mapLeftToUnknownError } from './utils'
 import type { ErrorOrDocmap } from './types'
 

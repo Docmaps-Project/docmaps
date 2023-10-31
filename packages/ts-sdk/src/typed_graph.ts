@@ -1,7 +1,7 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 import type { Stream } from '@rdfjs/types/stream'
 import { isLeft } from 'fp-ts/lib/Either'
-import { pipe } from 'fp-ts/lib/pipeable'
+import { pipe } from 'fp-ts/lib/function'
 import { DocmapsFactory } from './types'
 import * as TE from 'fp-ts/lib/TaskEither'
 import * as E from 'fp-ts/lib/Either'
