@@ -1,7 +1,5 @@
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import litLogo from './assets/lit.svg';
-import viteLogo from '/vite.svg';
 import { customCss } from './styles';
 import * as d3 from 'd3';
 
@@ -16,36 +14,54 @@ export class DocmapsWidget extends LitElement {
   @property({ type: Number })
   count = 3;
 
+  nodes = [
+    { id: 'A', x: 100, y: 150 },
+    { id: 'B', x: 300, y: 150 },
+    { id: 'C', x: 200, y: 300 },
+  ];
+
+  links = [
+    { source: 'A', target: 'B' },
+    { source: 'B', target: 'C' },
+    { source: 'C', target: 'A' },
+  ];
+
   static styles = [customCss];
 
   private _onClick() {
     this.count++;
+
+    // Create a new node with a unique ID
+    const newNode = { id: 'N' + this.count, x: Math.random() * 500, y: Math.random() * 300 };
+    this.nodes.push(newNode);
+    console.log(this.nodes)
+    // Connect the new node to a random existing node
+    const existingNode = this.nodes[Math.floor(Math.random() * this.nodes.length)];
+    this.links.push({ source: newNode.id, target: existingNode.id });
+    // Re-render the graph
+    this.drawGraph();
   }
 
   private drawGraph() {
     if (this.shadowRoot) {
+      d3.select(this.shadowRoot.querySelector('#d3-canvas svg')).remove();
       const canvas = this.shadowRoot.querySelector('#d3-canvas');
       if (!canvas) {
         throw new Error('SVG element not found');
       }
       const svg = d3.select(canvas).append('svg').attr('width', 500).attr('height', 300);
-      const nodes = [{ id: 'A', x: 100, y: 150 }, { id: 'B', x: 300, y: 150 }, { id: 'C', x: 200, y: 300 }];
 
-      const links = [
-        { source: 'A', target: 'B' },
-        { source: 'B', target: 'C' },
-        { source: 'C', target: 'A' },
-      ];
-
+      const displayNodes = JSON.parse(JSON.stringify(this.nodes));
+      const displayLinks = JSON.parse(JSON.stringify(this.links));
       // Initialize force layout
       const simulation = d3
-        .forceSimulation(nodes)
+        .forceSimulation(displayNodes)
         .force(
           'link',
-          d3.forceLink(links).id((d) => d.id),
+          d3.forceLink(displayLinks).id((d) => d.id),
         )
         .force('charge', d3.forceManyBody())
-        .force('collide', d3.forceCollide(35)) // 25 is the radius for collision detection
+        .force('collide', d3.forceCollide(30)) // 25 is the radius for collision detection
         .force('center', d3.forceCenter(150, 150));
 
       // Create link elements
@@ -53,10 +69,10 @@ export class DocmapsWidget extends LitElement {
         .append('g')
         .attr('class', 'links')
         .selectAll('line')
-        .data(links)
+        .data(displayLinks)
         .enter()
         .append('line')
-        .attr("stroke", 'white')
+        .attr('stroke', 'white')
         .attr('class', 'link');
 
       // Create node elements
@@ -64,7 +80,7 @@ export class DocmapsWidget extends LitElement {
         .append('g')
         .attr('class', 'nodes')
         .selectAll('circle')
-        .data(nodes)
+        .data(displayNodes)
         .enter()
         .append('circle')
         .attr('class', 'node')
@@ -92,7 +108,7 @@ export class DocmapsWidget extends LitElement {
     return html`
       <h1>Docmaps</h1>
 
-      <div id="d3-canvas" style='display: block;'></div>
+      <div id="d3-canvas" style="display: block;"></div>
 
       <div class="card">
         <button @click="${this._onClick}" part="button">count is ${this.count}</button>
