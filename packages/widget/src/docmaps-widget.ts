@@ -55,94 +55,83 @@ export class DocmapsWidget extends LitElement {
   }
 
   private drawGraph() {
-    if (this.shadowRoot) {
-      d3.select(this.shadowRoot.querySelector(`#${CANVAS_ID} svg`)).remove()
-      const canvas = this.shadowRoot.querySelector(`#${CANVAS_ID}`)
-      if (!canvas) {
-        throw new Error('SVG element not found')
-      }
-
-      const svg = d3
-        .select(canvas)
-        .append('svg')
-        .attr('width', CANVAS_WIDTH)
-        .attr('height', CANVAS_HEIGHT)
-
-      // d3's simulation mutates the Node and Link lists.
-      // We make a copy here so our original lists aren't modified
-      const displayNodes: Node[] = JSON.parse(JSON.stringify(this.nodes))
-      const displayLinks: SimulationLinkDatum<Node>[] = JSON.parse(
-        JSON.stringify(this.links),
-      )
-
-      // Initialize force layout
-      const simulation: d3.Simulation<Node, SimulationLinkDatum<Node>> = d3
-        .forceSimulation(displayNodes)
-        .force(
-          'link',
-          d3.forceLink(displayLinks).id((d: d3.SimulationNodeDatum) => {
-            // @ts-ignore
-            return d.id
-          }),
-        )
-        .force('charge', d3.forceManyBody())
-        .force('collide', d3.forceCollide(NODE_RADIUS * 1.5))
-        .force(
-          'center',
-          d3.forceCenter(
-            Math.floor(CANVAS_WIDTH / 2),
-            Math.floor(CANVAS_HEIGHT / 2),
-          ),
-        )
-
-      // Create link elements
-      const linkElements = svg
-        .append('g')
-        .attr('class', 'links')
-        .selectAll('line')
-        .data(displayLinks)
-        .enter()
-        .append('line')
-        .attr('stroke', 'white')
-        .attr('class', 'link')
-
-      // Create node elements
-      const nodeElements = svg
-        .append('g')
-        .attr('class', 'nodes')
-        .selectAll('circle')
-        .data(displayNodes)
-        .enter()
-        .append('circle')
-        .attr('class', 'node')
-        .attr('fill', 'green')
-        .attr('r', NODE_RADIUS)
-
-      const labels = svg
-        .append('g')
-        .attr('class', 'labels')
-        .selectAll('text')
-        .data(displayNodes)
-        .enter()
-        .append('text')
-        .attr('text-anchor', 'middle')
-        .attr('dy', '.35em') // Vertically center
-        .attr('fill', 'white')
-        .text((d) => d.id)
-
-      // Update positions on each simulation tick
-      simulation.on('tick', () => {
-        linkElements
-          .attr('x1', (d) => (d.source as Node).x ?? 0)
-          .attr('y1', (d) => (d.source as Node).y ?? 0)
-          .attr('x2', (d) => (d.target as Node).x ?? 0)
-          .attr('y2', (d) => (d.target as Node).y ?? 0)
-
-        nodeElements.attr('cx', getNodeX).attr('cy', getNodeY)
-
-        labels.attr('x', getNodeX).attr('y', getNodeY)
-      })
+    if (!this.shadowRoot) {
+      return
     }
+
+    d3.select(this.shadowRoot.querySelector(`#${CANVAS_ID} svg`)).remove()
+    const canvas = this.shadowRoot.querySelector(`#${CANVAS_ID}`)
+    if (!canvas) {
+      throw new Error('SVG element not found')
+    }
+    const svg = d3
+      .select(canvas)
+      .append('svg')
+      .attr('width', CANVAS_WIDTH)
+      .attr('height', CANVAS_HEIGHT)
+    const displayNodes: Node[] = JSON.parse(JSON.stringify(this.nodes))
+    const displayLinks: SimulationLinkDatum<Node>[] = JSON.parse(
+      JSON.stringify(this.links),
+    )
+    const simulation: d3.Simulation<Node, SimulationLinkDatum<Node>> = d3
+      .forceSimulation(displayNodes)
+      .force(
+        'link',
+        d3.forceLink(displayLinks).id((d: d3.SimulationNodeDatum) => {
+          // @ts-ignore
+          return d.id
+        }),
+      )
+      .force('charge', d3.forceManyBody())
+      .force('collide', d3.forceCollide(NODE_RADIUS * 1.5))
+      .force(
+        'center',
+        d3.forceCenter(
+          Math.floor(CANVAS_WIDTH / 2),
+          Math.floor(CANVAS_HEIGHT / 2),
+        ),
+      )
+    const linkElements = svg
+      .append('g')
+      .attr('class', 'links')
+      .selectAll('line')
+      .data(displayLinks)
+      .enter()
+      .append('line')
+      .attr('stroke', 'white')
+      .attr('class', 'link')
+    const nodeElements = svg
+      .append('g')
+      .attr('class', 'nodes')
+      .selectAll('circle')
+      .data(displayNodes)
+      .enter()
+      .append('circle')
+      .attr('class', 'node')
+      .attr('fill', 'green')
+      .attr('r', NODE_RADIUS)
+    const labels = svg
+      .append('g')
+      .attr('class', 'labels')
+      .selectAll('text')
+      .data(displayNodes)
+      .enter()
+      .append('text')
+      .attr('text-anchor', 'middle')
+      .attr('dy', '.35em') // Vertically center
+      .attr('fill', 'white')
+      .text((d) => d.id)
+    simulation.on('tick', () => {
+      linkElements
+        .attr('x1', (d) => (d.source as Node).x ?? 0)
+        .attr('y1', (d) => (d.source as Node).y ?? 0)
+        .attr('x2', (d) => (d.target as Node).x ?? 0)
+        .attr('y2', (d) => (d.target as Node).y ?? 0)
+
+      nodeElements.attr('cx', getNodeX).attr('cy', getNodeY)
+
+      labels.attr('x', getNodeX).attr('y', getNodeY)
+    })
   }
 
   firstUpdated() {
