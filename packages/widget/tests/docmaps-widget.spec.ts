@@ -1,5 +1,10 @@
 import { expect, Page, test } from '@playwright/test'
 
+test('The header bar is displayed in the graph view', async ({page}) => {
+  await page.goto('/')
+  await expect(page.locator(".widget-header")).toHaveText("DOCMAP")
+})
+
 
 test('clicking button increments the count', async ({ page }) => {
   await page.goto('/')

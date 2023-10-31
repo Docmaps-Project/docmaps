@@ -1,6 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { customCss } from './styles'
+import { logo } from './assets/logo';
 import * as d3 from 'd3'
 import { SimulationLinkDatum } from 'd3'
 import { SimulationNodeDatum } from 'd3-force'
@@ -8,9 +9,9 @@ import { SimulationNodeDatum } from 'd3-force'
 type Node = SimulationNodeDatum & { id: string }
 type Link = SimulationLinkDatum<Node>
 
-const CANVAS_WIDTH: number = 500
-const CANVAS_HEIGHT: number = 300
-const CANVAS_ID: string = 'd3-canvas'
+const WIDGET_SIZE: number = 500
+const GRAPH_CANVAS_HEIGHT: number = 375
+const GRAPH_CANVAS_ID: string = 'd3-canvas'
 const NODE_RADIUS: number = 20
 
 @customElement('docmaps-widget')
@@ -59,8 +60,8 @@ export class DocmapsWidget extends LitElement {
       return
     }
 
-    d3.select(this.shadowRoot.querySelector(`#${CANVAS_ID} svg`)).remove()
-    const canvas = this.shadowRoot.querySelector(`#${CANVAS_ID}`)
+    d3.select(this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID} svg`)).remove()
+    const canvas = this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID}`)
     if (!canvas) {
       throw new Error('SVG element not found')
     }
@@ -68,8 +69,8 @@ export class DocmapsWidget extends LitElement {
     const svg = d3
       .select(canvas)
       .append('svg')
-      .attr('width', CANVAS_WIDTH)
-      .attr('height', CANVAS_HEIGHT)
+      .attr('width', WIDGET_SIZE)
+      .attr('height', GRAPH_CANVAS_HEIGHT)
 
     // Make copy of Nodes and Links because d3 mutates whatever Nodes/Links we pass it
     const displayNodes: Node[] = JSON.parse(JSON.stringify(this.nodes))
@@ -89,8 +90,8 @@ export class DocmapsWidget extends LitElement {
       .force(
         'center',
         d3.forceCenter(
-          Math.floor(CANVAS_WIDTH / 2),
-          Math.floor(CANVAS_HEIGHT / 2),
+          Math.floor(WIDGET_SIZE / 2),
+          Math.floor(GRAPH_CANVAS_HEIGHT / 2),
         ),
       )
 
@@ -146,10 +147,14 @@ export class DocmapsWidget extends LitElement {
 
   render() {
     return html`
-      <h1>Docmaps</h1>
+      <div class='widget-header'>
+        ${logo}
+        <span>DOCMAP</span>
+      </div>
 
-      <div id='${CANVAS_ID}'
-           style='display: block; width: ${CANVAS_WIDTH}; height: ${CANVAS_HEIGHT}'>
+
+      <div id='${GRAPH_CANVAS_ID}'
+           style='display: block; width: ${WIDGET_SIZE}; height: ${GRAPH_CANVAS_HEIGHT}'>
       </div>
 
       <div class='card'>

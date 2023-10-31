@@ -65,4 +65,27 @@ export const customCss: CSSResult = css`
   button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
   }
+
+  .widget-header {
+    width: 500px;
+    height: 25px;
+    background: #043945;
+    display: flex;
+    align-items: center;
+  }
+
+  .widget-header span {
+    color: white;
+    font-size: 12px;
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 2.40px;
+    word-wrap: break-word;
+  }
+
+  .docmap-logo {
+    display: inline-block;
+    margin: 7px 13px 6px 11px
+  }
 `
