@@ -7,10 +7,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "install:browsers": "playwright install --with-deps",
-    "test": "playwright test",
-    "test:server": "vite --port 9005",
-    "test:ui": "playwright test --ui",
-    "test-ct": "playwright test -c playwright-ct.config.ts"
+    "test": "playwright test -c playwright-ct.config.ts",
+    "test:ui": "playwright test -c playwright-ct.config.ts --ui"
   },
   "exports": {
     ".": "./dist/index.js"

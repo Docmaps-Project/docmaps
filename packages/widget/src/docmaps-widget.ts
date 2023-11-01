@@ -1,7 +1,7 @@
 import { html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { customCss } from './styles'
-import { logo } from './assets/logo';
+import { logo } from './assets/logo'
 import * as d3 from 'd3'
 import { SimulationLinkDatum } from 'd3'
 import { SimulationNodeDatum } from 'd3-force'
@@ -16,8 +16,11 @@ const NODE_RADIUS: number = 20
 
 @customElement('docmaps-widget')
 export class DocmapsWidget extends LitElement {
+  @property({ type: String })
+  doi: string = ''
+
   @property({ type: Number })
-  count = 3
+  count: number = 3
 
   nodes: Node[] = [
     { id: 'N1', x: 100, y: 150 },
@@ -152,10 +155,12 @@ export class DocmapsWidget extends LitElement {
         <span>DOCMAP</span>
       </div>
 
+      <h2>${this.doi}</h2>
 
-      <div id='${GRAPH_CANVAS_ID}'
-           style='display: block; width: ${WIDGET_SIZE}; height: ${GRAPH_CANVAS_HEIGHT}'>
-      </div>
+      <div
+        id='${GRAPH_CANVAS_ID}'
+        style='display: block; width: ${WIDGET_SIZE}; height: ${GRAPH_CANVAS_HEIGHT}'
+      ></div>
 
       <div class='card'>
         <button @click='${this._onClick}' part='button'>
