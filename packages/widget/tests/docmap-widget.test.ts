@@ -20,11 +20,6 @@ for (const doi of dois) {
   })
 }
 
-test('The DOI can be passed in', async ({ mount }) => {
-  const component = await mount(DocmapsWidget, defaultOptions)
-  await expect(component).toContainText('test-doi')
-})
-
 test('The header bar is displayed in the graph view', async ({ mount }) => {
   const component = await mount(DocmapsWidget, defaultOptions)
   await expect(component.locator('.widget-header')).toContainText('DOCMAP')
