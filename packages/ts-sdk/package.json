@@ -15,8 +15,7 @@
     "docs:generate": "typedoc src/index.ts",
     "docs:check": "npm run docs:generate && git add -N . && git diff --exit-code -I 'Defined in.*blob'",
     "clean": "rm -rf dist/",
-    "build": "tsc",
-    "prepare": "tsc --declaration"
+    "build": "tsc --declaration"
   },
   "engines": {
     "node": ">=18.14.0"

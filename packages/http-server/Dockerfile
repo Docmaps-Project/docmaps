@@ -4,6 +4,9 @@
 # If you need more help, visit the Dockerfile reference guide at
 # https://docs.docker.com/engine/reference/builder/
 
+# NOTE: due to use of pnpm workspace, this dockerfile needs to be built
+# from the repository root context.
+
 ARG NODE_VERSION=18.14.0
 ARG PNPM_VERSION=8.7.6
 
@@ -26,9 +29,10 @@ FROM base AS build
 # "devDependencies" to be installed to build. If you don't need this, remove this step.
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
       pnpm install \
+      --filter "@docmaps/http-server" \
       --frozen-lockfile
 
-RUN pnpm run -r build
+RUN pnpm --filter "@docmaps/http-server" run build
 
 ################################################################################
 # Download dependencies as a separate step to take advantage of Docker's caching.
@@ -41,12 +45,16 @@ RUN npm i -g typescript@4.9.5
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
       pnpm install \
+      --filter "@docmaps/http-server" \
       --prod \
       --frozen-lockfile
 
 ################################################################################
 # Create a new stage to run the application with minimal runtime dependencies
 # where the necessary files are copied from the build stage.
+
+# FIXME: build from Prod instead, once we have resolved the prepare script issue:
+#   https://github.com/Docmaps-Project/docmaps/issues/118
 FROM prod AS runtime
 
 # Copy the production dependencies from the deps stage and also

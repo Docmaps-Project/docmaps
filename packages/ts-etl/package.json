@@ -12,8 +12,7 @@
     "start": "tsx dist/cli.js",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
-    "prepare": "tsc --declaration",
-    "build": "tsc"
+    "build": "tsc --declaration"
   },
   "bin": {
     "docmaps-etl": "dist/cli.js"
