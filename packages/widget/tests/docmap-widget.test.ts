@@ -1,9 +1,11 @@
-import { expect, MountOptions, test } from '@sand4rt/experimental-ct-web';
+import { expect, MountOptions, test } from '@sand4rt/experimental-ct-web'
 import { DocmapsWidget } from '../src'
 import { Locator } from '@playwright/test'
-import { JsonObject } from '@playwright/experimental-ct-core/types/component';
+import { JsonObject } from '@playwright/experimental-ct-core/types/component'
 
-const defaultOptions: MountOptions<JsonObject, DocmapsWidget> = { props: { doi: 'test-doi' } }
+const options: MountOptions<JsonObject, DocmapsWidget> = {
+  props: { doi: 'test-doi' },
+}
 
 const dois = ['doi-1', 'doi-2']
 for (const doi of dois) {
@@ -14,12 +16,12 @@ for (const doi of dois) {
 }
 
 test('The header bar is displayed in the graph view', async ({ mount }) => {
-  const widget: Locator = await mount(DocmapsWidget, defaultOptions)
+  const widget: Locator = await mount(DocmapsWidget, options)
   await expect(widget.locator('.widget-header')).toContainText('DOCMAP')
 })
 
 test('Clicking button increments the count', async ({ mount }) => {
-  const widget: Locator = await mount(DocmapsWidget, defaultOptions)
+  const widget: Locator = await mount(DocmapsWidget, options)
   await expect(widget.locator('circle')).toHaveCount(3)
   await expect(
     widget.getByRole('button', { name: 'Add 4th Node' }),
