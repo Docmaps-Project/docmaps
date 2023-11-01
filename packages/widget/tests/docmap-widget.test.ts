@@ -8,6 +8,18 @@ const defaultOptions = {
   },
 }
 
+const dois = ['doi-1', 'doi-2']
+for (const doi of dois) {
+  test(`It renders the DOI: ${doi}`, async ({ mount }) => {
+    const component = await mount(DocmapsWidget, {
+      props: {
+        doi,
+      },
+    })
+    await expect(component).toContainText(doi)
+  })
+}
+
 test('The DOI can be passed in', async ({ mount }) => {
   const component = await mount(DocmapsWidget, defaultOptions)
   await expect(component).toContainText('test-doi')
