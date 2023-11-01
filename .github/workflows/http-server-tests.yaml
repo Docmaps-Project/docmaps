@@ -71,7 +71,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.14.0, 18.18.0]
+        node-version: [18.18.0]
 
     # Service containers to run with `runner-job`
     services:
