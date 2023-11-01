@@ -32,7 +32,10 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
       --filter "@docmaps/http-server" \
       --frozen-lockfile
 
-RUN pnpm --filter "@docmaps/http-server" run build
+# Build the dependencies from this workspace
+RUN pnpm --filter docmaps-sdk --filter @docmaps/http-client run build
+# Build the application
+RUN pnpm --filter @docmaps/http-server run build
 
 ################################################################################
 # Download dependencies as a separate step to take advantage of Docker's caching.
@@ -60,6 +63,10 @@ FROM prod AS runtime
 # Copy the production dependencies from the deps stage and also
 # the built application from the build stage into the image.
 COPY --from=build /app/packages/http-server/dist /app/packages/http-server/dist
+
+# Copy built sub-dependencies from this same package
+COPY --from=build /app/packages/http-client/dist /app/packages/http-server/node_modules/@docmaps/http-client/dist
+COPY --from=build /app/packages/ts-sdk/dist /app/packages/http-server/node_modules/docmaps-sdk/dist
 WORKDIR /app/packages/http-server
 
 # Use production node environment by default.
