@@ -7,8 +7,10 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "install:browsers": "playwright install --with-deps",
-    "test": "playwright test",
-    "test:ui": "playwright test --ui"
+    "test": "pnpm run test:unit && pnpm run test:integration",
+    "test:unit": "ava",
+    "test:integration": "playwright test",
+    "test:integration:ui": "playwright test --ui"
   },
   "exports": {
     ".": "./dist/index.js"
@@ -16,9 +18,9 @@
   "types": "./dist/index.d.ts",
   "dependencies": {
     "@docmaps/http-client": "workspace:^0.1.0",
-    "docmaps-sdk": "workspace:^0.0.0",
     "@lit/task": "^1.0.0",
     "d3": "^7.8.5",
+    "docmaps-sdk": "workspace:^0.0.0",
     "lit": "^2.7.6"
   },
   "devDependencies": {
@@ -30,13 +32,27 @@
     "@types/node": "^18.16.2",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "ava": "^5.2.0",
     "eslint": "^8.39.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "^3.0.0",
+    "ts-node": "^10.9.1",
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
     "vite-plugin-dts": "^3.6.3"
+  },
+  "ava": {
+    "extensions": {
+      "ts": "module"
+    },
+    "nodeArguments": [
+      "--loader=ts-node/esm",
+      "--experimental-specifier-resolution=node"
+    ],
+    "files": [
+      "test/unit/**/*.test.ts"
+    ]
   },
   "files": [
     "dist",

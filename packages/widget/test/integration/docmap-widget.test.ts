@@ -1,5 +1,5 @@
 import { expect, MountOptions, test } from '@sand4rt/experimental-ct-web'
-import { DocmapsWidget } from '../src'
+import { DocmapsWidget } from '../../src'
 import { BrowserContext, Locator, Request, Route } from '@playwright/test'
 import { JsonObject } from '@playwright/experimental-ct-core/types/component'
 import elifeDocmap1 from './fixtures/elife-docmap-1'
