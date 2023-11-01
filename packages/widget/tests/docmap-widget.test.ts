@@ -8,27 +8,27 @@ const defaultOptions: MountOptions<JsonObject, DocmapsWidget> = { props: { doi: 
 const dois = ['doi-1', 'doi-2']
 for (const doi of dois) {
   test(`It renders the DOI: ${doi}`, async ({ mount }) => {
-    const component: Locator = await mount(DocmapsWidget, { props: { doi } })
-    await expect(component).toContainText(doi)
+    const widget: Locator = await mount(DocmapsWidget, { props: { doi } })
+    await expect(widget).toContainText(doi)
   })
 }
 
 test('The header bar is displayed in the graph view', async ({ mount }) => {
-  const component: Locator = await mount(DocmapsWidget, defaultOptions)
-  await expect(component.locator('.widget-header')).toContainText('DOCMAP')
+  const widget: Locator = await mount(DocmapsWidget, defaultOptions)
+  await expect(widget.locator('.widget-header')).toContainText('DOCMAP')
 })
 
 test('Clicking button increments the count', async ({ mount }) => {
-  const component: Locator = await mount(DocmapsWidget, defaultOptions)
-  await expect(component.locator('circle')).toHaveCount(3)
+  const widget: Locator = await mount(DocmapsWidget, defaultOptions)
+  await expect(widget.locator('circle')).toHaveCount(3)
   await expect(
-    component.getByRole('button', { name: 'Add 4th Node' }),
+    widget.getByRole('button', { name: 'Add 4th Node' }),
   ).toBeVisible()
 
-  await component.getByRole('button', { name: 'Add 4th Node' }).click()
+  await widget.getByRole('button', { name: 'Add 4th Node' }).click()
 
   await expect(
-    component.getByRole('button', { name: 'Add 5th Node' }),
+    widget.getByRole('button', { name: 'Add 5th Node' }),
   ).toBeVisible()
-  await expect(component.locator('circle')).toHaveCount(4)
+  await expect(widget.locator('circle')).toHaveCount(4)
 })
