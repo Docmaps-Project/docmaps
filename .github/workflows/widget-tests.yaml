@@ -56,7 +56,7 @@ jobs:
       - name: Verify builds
         run: |
           cd ${{env.PKG_DIR}}
-          pnpm build;
+          pnpm run -r build;
 
       - name: Install Playwright Browsers
         run: |
