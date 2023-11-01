@@ -18,13 +18,12 @@ domain logic into queries for your specific backend (such as a relational databa
 
 ## Development and Testing
 
-See the readme in repository root for general info about this monorepo.
-
 Dependencies for local development include:
 
 ```
 pnpm
-docker # with docker-compose
+node # @^18
+docker # with docker-compose available
 curl
 ```
 
@@ -38,10 +37,6 @@ pnpm test:integration
 
 **WARN:** If you have never done this before, the tests may timeout due to invoking a `docker pull` for the `oxigraph` image, which
 is used for a local triplestore to use during integration tests.
-
-## Running locally with Docker and Oxigraph
-
-See the instructions in repository root. You can invoke workspace root scripts like `pnpm run -w compose:up` wihout changing directory.
 
 ### Misc
 
