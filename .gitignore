@@ -136,4 +136,4 @@ dist
 # IntelliJ files
 .idea/**/*
 
-/tmp
+**/tmp

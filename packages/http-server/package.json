@@ -10,6 +10,8 @@
     "test:integration": "ava test/integration/",
     "test:cleanup": "docker compose -f test/integration/assets/docker-compose.yml down",
     "test:unit": "ava test/unit/",
+    "compose:repave": "rm -rf tmp/oxigraph_data/*",
+    "compose:up": "docker compose -f $INIT_CWD/docker-compose.local.yml up --build",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
     "start": "tsx dist/httpserver/main.js",
