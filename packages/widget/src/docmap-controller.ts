@@ -37,12 +37,35 @@ export const getDocmap: TaskFunction<[string, string], string> = async ([
   return rawDocmap.id;
 };
 
-export function getSteps(docmap: any): StepT[] {
-  const stepsMaybe = pipe(docmap, Docmap.decode);
+// This function is general enough we could move it elsewhere
+export function getSteps(docmapPerhaps: any): StepT[] {
+  const stepsMaybe = pipe(docmapPerhaps, Docmap.decode);
 
   if (E.isLeft(stepsMaybe)) {
-    throw new TypeError(`Could not parse docmap: ${JSON.stringify(docmap)}`);
+    throw new TypeError(
+      `Could not parse Docmap: ${JSON.stringify(docmapPerhaps)}`,
+    );
   }
 
-  return [];
+  const docmap = stepsMaybe.right;
+  let nextStepId: string | null | undefined = docmap['first-step'];
+  if (!nextStepId || !docmap.steps) {
+    return [];
+  }
+
+  const visitedSteps: Set<string> = new Set(); // we keep track of visited steps for loop detection
+  const orderedSteps: StepT[] = [];
+
+  while (
+    nextStepId &&
+    nextStepId in docmap.steps &&
+    !visitedSteps.has(nextStepId)
+  ) {
+    visitedSteps.add(nextStepId);
+    const step: StepT = docmap.steps[nextStepId];
+    orderedSteps.push(step);
+    nextStepId = step['next-step'];
+  }
+
+  return orderedSteps;
 }
