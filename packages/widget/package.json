@@ -8,7 +8,6 @@
     "preview": "vite preview",
     "install:browsers": "playwright install --with-deps",
     "test": "playwright test",
-    "test:server": "vite --port 9005",
     "test:ui": "playwright test --ui"
   },
   "exports": {
@@ -20,7 +19,9 @@
     "lit": "^2.7.6"
   },
   "devDependencies": {
+    "@playwright/experimental-ct-core": "^1.39.0",
     "@playwright/test": "^1.39.0",
+    "@sand4rt/experimental-ct-web": "^1.39.0",
     "@types/d3": "^7.4.2",
     "@types/d3-force": "^3.0.7",
     "@types/node": "^18.16.2",

@@ -3,10 +3,10 @@ import {css, CSSResult} from "lit";
 // These are the styles used within the lit component
 export const customCss: CSSResult = css`
   :host {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
-    text-align: center;
+    width: 500px;
+    height: 500px;
+    background: #EDEDED;
+    border: 1px solid
   }
 
   .logo {
@@ -64,5 +64,28 @@ export const customCss: CSSResult = css`
   button:focus,
   button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
+  }
+
+  .widget-header {
+    width: 500px;
+    height: 25px;
+    background: #043945;
+    display: flex;
+    align-items: center;
+  }
+
+  .widget-header span {
+    color: white;
+    font-size: 12px;
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 2.40px;
+    word-wrap: break-word;
+  }
+
+  .docmap-logo {
+    display: inline-block;
+    margin: 7px 13px 6px 11px
   }
 `
