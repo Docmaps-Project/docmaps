@@ -2,7 +2,7 @@ import { expect, MountOptions, test } from '@sand4rt/experimental-ct-web'
 import { DocmapsWidget } from '../../src'
 import { BrowserContext, Locator, Request, Route } from '@playwright/test'
 import { JsonObject } from '@playwright/experimental-ct-core/types/component'
-import elifeDocmap1 from './fixtures/elife-docmap-1'
+import elifeDocmap1 from '../fixtures/elife-docmap-1'
 
 const options: MountOptions<JsonObject, DocmapsWidget> = {
   props: {
@@ -27,9 +27,7 @@ test('It retrieves a docmap from the server', async ({ mount, context }) => {
     },
   })
 
-  await expect(widget).toContainText(`Docmap ID: ${elifeDocmap1.id}`)
-
-  // await expect(widget.locator('circle')).toHaveCount(4)
+  await expect(widget.locator('circle')).toHaveCount(4)
 })
 
 interface DocmapForResponse {

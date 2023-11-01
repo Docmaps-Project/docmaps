@@ -3,13 +3,9 @@ import { customElement, property } from 'lit/decorators.js'
 import { customCss } from './styles'
 import { logo } from './assets/logo'
 import * as d3 from 'd3'
-import { SimulationLinkDatum } from 'd3'
-import { SimulationNodeDatum } from 'd3-force'
 import { Task } from '@lit/task'
-import { getDocmap } from './docmap-controller'
+import { getDocmap, Node, Link } from './docmap-controller'
 
-type Node = SimulationNodeDatum & { id: string }
-type Link = SimulationLinkDatum<Node>
 
 const WIDGET_SIZE: number = 500
 const GRAPH_CANVAS_HEIGHT: number = 375
