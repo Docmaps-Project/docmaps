@@ -1,12 +1,9 @@
-import { expect, test } from '@sand4rt/experimental-ct-web'
+import { expect, MountOptions, test } from '@sand4rt/experimental-ct-web';
 import { DocmapsWidget } from '../src'
 import { Locator } from '@playwright/test'
+import { JsonObject } from '@playwright/experimental-ct-core/types/component';
 
-const defaultOptions = {
-  props: {
-    doi: 'test-doi',
-  },
-}
+const defaultOptions: MountOptions<JsonObject, DocmapsWidget> = { props: { doi: 'test-doi' } }
 
 const dois = ['doi-1', 'doi-2']
 for (const doi of dois) {
