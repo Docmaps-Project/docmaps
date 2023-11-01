@@ -5,6 +5,9 @@ import { logo } from './assets/logo'
 import * as d3 from 'd3'
 import { SimulationLinkDatum } from 'd3'
 import { SimulationNodeDatum } from 'd3-force'
+import { Task } from '@lit/task'
+import { MakeHttpClient } from '@docmaps/http-client'
+import * as D from 'docmaps-sdk'
 
 type Node = SimulationNodeDatum & { id: string }
 type Link = SimulationLinkDatum<Node>
@@ -19,8 +22,33 @@ export class DocmapsWidget extends LitElement {
   @property({ type: String })
   doi: string = ''
 
+  @property({ type: String })
+  serverUrl: string = ''
+
   @property({ type: Number })
   count: number = 3
+
+  // @ts-ignore
+  #fetchDocmap: Task = new Task(
+    this,
+    async ([doi]) => {
+      const client = MakeHttpClient({
+        baseUrl: this.serverUrl,
+        baseHeaders: {},
+      })
+
+      const resp = await client.getDocmapForDoi({
+        query: { subject: doi },
+      })
+
+      if (resp.status !== 200) {
+        throw new Error('Failed to FETCH docmap')
+      }
+
+      return (resp.body as D.DocmapT).id
+    },
+    () => [this.doi],
+  )
 
   nodes: Node[] = [
     { id: 'N1', x: 100, y: 150 },
@@ -156,11 +184,13 @@ export class DocmapsWidget extends LitElement {
       </div>
 
       <h2>${this.doi}</h2>
+      ${this.#fetchDocmap.render({
+        complete: (id) => html`Docmap ID: ${id}`,
+      })}
 
-      <div
-        id='${GRAPH_CANVAS_ID}'
-        style='display: block; width: ${WIDGET_SIZE}; height: ${GRAPH_CANVAS_HEIGHT}'
-      ></div>
+      <div id='${GRAPH_CANVAS_ID}' style='display: block; width: ${WIDGET_SIZE}; height: ${GRAPH_CANVAS_HEIGHT}'>
+        
+      </div>
 
       <div class='card'>
         <button @click='${this._onClick}' part='button'>

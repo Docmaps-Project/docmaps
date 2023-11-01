@@ -453,9 +453,18 @@ importers:
 
   packages/widget:
     dependencies:
+      '@docmaps/http-client':
+        specifier: workspace:^0.1.0
+        version: link:../http-client
+      '@lit/task':
+        specifier: ^1.0.0
+        version: 1.0.0
       d3:
         specifier: ^7.8.5
         version: 7.8.5
+      docmaps-sdk:
+        specifier: workspace:^0.0.0
+        version: link:../ts-sdk
       lit:
         specifier: ^2.7.6
         version: 2.8.0
@@ -1153,6 +1162,12 @@ packages:
     resolution: {integrity: sha512-rDfl+QnCYjuIGf5xI2sVJWdYIi56CTCwWa+nidKYX6oIuBYwUbT/vX4qbUDlHiZKJ/3FRNQ/tWJui44p6/stSA==}
     dependencies:
       '@lit-labs/ssr-dom-shim': 1.1.1
+    dev: false
+
+  /@lit/task@1.0.0:
+    resolution: {integrity: sha512-7jocGBh3yGlo3kKxQggZph2txK4X5GYNWp2FAsmV9u2spzUypwrzRzXe8I72icAb02B00+k2nlvxVcrQB6vyrw==}
+    dependencies:
+      '@lit/reactive-element': 1.6.2
     dev: false
 
   /@manypkg/cli@0.21.0:
