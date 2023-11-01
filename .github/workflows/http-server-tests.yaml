@@ -54,7 +54,7 @@ jobs:
       - name: Verify builds
         run: |
           cd ${{env.PKG_DIR}} ;
-          pnpm --filter docmaps-sdk run -r build;
+          pnpm run -r build;
 
       - name: Test
         run: |
@@ -121,7 +121,7 @@ jobs:
       - name: Build cross-workspace deps
         run: |
           cd ${{env.PKG_DIR}} ;
-          pnpm --filter docmaps-sdk run -r build;
+          pnpm run -r build;
 
       - name: Test
         run: |
