@@ -21,7 +21,7 @@ WORKDIR /app
 
 ################################################################################
 # Create a stage for building the application.
-FROM base AS build
+FROM base AS prod
 # Download additional development dependencies before building, as some projects require
 # "devDependencies" to be installed to build. If you don't need this, remove this step.
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
@@ -29,15 +29,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
       --frozen-lockfile
 
 RUN pnpm run -r build
-
-################################################################################
-# Download dependencies as a separate step to take advantage of Docker's caching.
-# Leverage a cache mount to /root/.local/share/pnpm/store to speed up subsequent builds.
-# Leverage bind mounts to package.json and pnpm-lock.yaml to avoid having to copy them
-# into this layer.
-FROM base AS prod
-
-RUN npm i -g typescript@4.9.5
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
       pnpm install \
@@ -49,9 +40,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
 # where the necessary files are copied from the build stage.
 FROM prod AS runtime
 
-# Copy the production dependencies from the deps stage and also
-# the built application from the build stage into the image.
-COPY --from=build /app/packages/http-server/dist /app/packages/http-server/dist
 WORKDIR /app/packages/http-server
 
 # Use production node environment by default.
