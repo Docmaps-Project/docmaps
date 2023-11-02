@@ -31,6 +31,7 @@ const typeToLabel: { [type: string]: string } = {
   editorial: 'ED',
   comment: 'CO',
   reply: 'RE',
+  '??': ''
 };
 
 // TODO name should be singular not plural
@@ -52,46 +53,7 @@ export class DocmapsWidget extends LitElement {
       (): DocmapFetchingParams => [this.serverUrl, this.doi],
     );
 
-  // nodes: Node[] = [
-  //   { id: 'N1', x: 100, y: 150 },
-  //   { id: 'N2', x: 300, y: 150 },
-  //   { id: 'N3', x: 200, y: 300 },
-  // ];
-  //
-  // links: Link[] = [
-  //   { source: 'N1', target: 'N2' },
-  //   { source: 'N2', target: 'N3' },
-  //   { source: 'N3', target: 'N1' },
-  // ];
-
   static styles = [customCss];
-
-  // private _onClick() {
-  //   this.count++;
-  //
-  //   // Create a new node with a unique ID
-  //   const newNode: Node = {
-  //     id: 'N' + this.count,
-  //     x: Math.random() * 215,
-  //     y: Math.random() * 175,
-  //   };
-  //
-  //   // Connect the new node to a random existing node
-  //   const targetNode =
-  //     this.nodes[Math.floor(Math.random() * this.nodes.length)];
-  //   this.links.push({ source: newNode.id, target: targetNode.id });
-  //
-  //   // Order matters here. We add the node to this.nodes after selecting our targetNode so the
-  //   // new node doesn't get linked to itself.
-  //   this.nodes.push(newNode);
-  //
-  //   // Re-render the graph
-  //   this.drawGraph();
-  // }
-
-  // firstUpdated() {
-  //   this.drawGraph();
-  // }
 
   render() {
     return html`
@@ -140,8 +102,6 @@ export class DocmapsWidget extends LitElement {
     const displayEdges: D3Edge[] = edges.map(
       (edge): D3Edge => ({ source: edge.sourceId, target: edge.targetId }),
     );
-    console.log(JSON.stringify(displayNodes));
-    console.log(JSON.stringify(displayEdges));
 
     const simulation: d3.Simulation<D3Node, D3Edge> = d3
       .forceSimulation(displayNodes)
