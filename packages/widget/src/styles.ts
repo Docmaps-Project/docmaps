@@ -2,6 +2,8 @@ import {css, CSSResult} from "lit";
 
 // These are the styles used within the lit component
 export const customCss: CSSResult = css`
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap');
+
   :host {
     width: 500px;
     height: 500px;
@@ -88,4 +90,17 @@ export const customCss: CSSResult = css`
     display: inline-block;
     margin: 7px 13px 6px 11px
   }
+
+  .tooltip {
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    position: absolute;
+    text-align: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
 `
