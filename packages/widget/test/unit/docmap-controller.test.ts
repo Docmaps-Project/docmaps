@@ -1,5 +1,10 @@
 import test from 'ava';
-import { getSteps } from '../../src/docmap-controller';
+import {
+  getSteps,
+  sortDisplayObjectEdges,
+  sortDisplayObjects,
+  stepsToGraph,
+} from '../../src/docmap-controller';
 import docmapWithOneStep from '../fixtures/sciety-docmap-1';
 import docmapWithMultipleSteps from '../fixtures/elife-docmap-1';
 
@@ -71,4 +76,97 @@ test('getSteps on docmaps without a first step', (t) => {
 test('getSteps on docmaps with no steps', (t) => {
   const result = getSteps({ ...docmapWithOneStep, steps: undefined });
   t.deepEqual(result, []);
+});
+
+test('stepsToGraph for a docmap with one step', (t) => {
+  const steps = getSteps(docmapWithOneStep);
+  const graph = stepsToGraph(steps);
+  const { nodes, edges } = graph;
+
+  t.is(nodes.length, 2);
+
+  const sortedNodes = sortDisplayObjects(nodes);
+
+  t.like(sortedNodes[0], {
+    nodeId: '10.21203/rs.3.rs-1043992/v1',
+    doi: '10.21203/rs.3.rs-1043992/v1',
+    type: '??',
+  });
+
+  t.like(sortedNodes[1], {
+    nodeId: 'n1',
+    type: 'review-article',
+  });
+
+  t.deepEqual(edges, [
+    {
+      sourceId: '10.21203/rs.3.rs-1043992/v1',
+      targetId: 'n1',
+    },
+  ]);
+});
+
+test('stepsToGraph for a docmap with multiple steps', (t) => {
+  const steps = getSteps(docmapWithMultipleSteps);
+  const graph = stepsToGraph(steps);
+  const { nodes, edges } = graph;
+
+  t.is(nodes.length, 6);
+
+  const sortedNodes = sortDisplayObjects(nodes);
+  t.like(sortedNodes[0], {
+    doi: '10.1101/2022.11.08.515698',
+    nodeId: '10.1101/2022.11.08.515698',
+    type: 'preprint',
+  });
+
+  t.like(sortedNodes[1], {
+    doi: '10.7554/eLife.85111.1',
+    nodeId: '10.7554/eLife.85111.1',
+    type: 'preprint',
+  });
+  t.like(sortedNodes[2], {
+    doi: '10.7554/eLife.85111.1.sa1',
+    nodeId: '10.7554/eLife.85111.1.sa1',
+    type: 'reply',
+  });
+  t.like(sortedNodes[3], {
+    doi: '10.7554/eLife.85111.1.sa2',
+    nodeId: '10.7554/eLife.85111.1.sa2',
+    type: 'review-article',
+  });
+  t.like(sortedNodes[4], {
+    doi: '10.7554/eLife.85111.1.sa3',
+    nodeId: '10.7554/eLife.85111.1.sa3',
+    type: 'review-article',
+  });
+  t.like(sortedNodes[5], {
+    doi: '10.7554/eLife.85111.1.sa4',
+    nodeId: '10.7554/eLife.85111.1.sa4',
+    type: 'evaluation-summary',
+  });
+
+  const sortedEdges = sortDisplayObjectEdges(edges);
+  t.deepEqual(sortedEdges, [
+    {
+      sourceId: '10.1101/2022.11.08.515698',
+      targetId: '10.7554/eLife.85111.1',
+    },
+    {
+      sourceId: '10.1101/2022.11.08.515698',
+      targetId: '10.7554/eLife.85111.1.sa2',
+    },
+    {
+      sourceId: '10.1101/2022.11.08.515698',
+      targetId: '10.7554/eLife.85111.1.sa1',
+    },
+    {
+      sourceId: '10.1101/2022.11.08.515698',
+      targetId: '10.7554/eLife.85111.1.sa4',
+    },
+    {
+      sourceId: '10.1101/2022.11.08.515698',
+      targetId: '10.7554/eLife.85111.1.sa3',
+    },
+  ]);
 });

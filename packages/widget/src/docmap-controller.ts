@@ -1,13 +1,23 @@
 import { MakeHttpClient } from '@docmaps/http-client';
 import { TaskFunction } from '@lit/task';
-import { SimulationNodeDatum } from 'd3-force';
-import { SimulationLinkDatum } from 'd3';
-import { Docmap, DocmapT, StepT } from 'docmaps-sdk';
+import { ActionT, Docmap, DocmapT, StepT, ThingT } from 'docmaps-sdk';
 import { pipe } from 'fp-ts/lib/function';
 import * as E from 'fp-ts/lib/Either';
 
-export type Node = SimulationNodeDatum & { id: string };
-export type Link = SimulationLinkDatum<Node>;
+// Each input and output of the Docmap's steps is converted into one of these
+export interface DisplayObject {
+  nodeId: string; // Used internally to construct graph, never rendered
+  type: string;
+  doi?: string;
+  id?: string;
+  published?: string;
+  url?: URL;
+}
+
+export interface DisplayObjectEdge {
+  sourceId: string;
+  targetId: string;
+}
 
 export const getDocmap: TaskFunction<[string, string], string> = async ([
   serverUrl,
@@ -64,4 +74,73 @@ function getOrderedSteps(docmap: DocmapT): StepT[] {
   }
 
   return orderedSteps;
+}
+
+export function stepsToGraph(steps: StepT[]): {
+  nodes: DisplayObject[];
+  edges: DisplayObjectEdge[];
+} {
+  const edges: DisplayObjectEdge[] = [];
+
+  const seenIds: Set<string> = new Set();
+  const nodesById: { [id: string]: DisplayObject } = {};
+  let idCounter: number = 1;
+
+  const processThing = (thing: ThingT) => {
+    let inputId = thing.doi || thing.id;
+    if (!inputId) {
+      inputId = `n${idCounter}`;
+      idCounter++;
+    }
+
+    if (!seenIds.has(inputId)) {
+      nodesById[inputId] = thingToDisplayObject(thing, inputId);
+    }
+
+    for (const id of [thing.doi, thing.id]) {
+      if (id) {
+        seenIds.add(id);
+      }
+    }
+    return inputId;
+  };
+
+  steps.forEach((step: StepT) => {
+    // Process step inputs
+    const inputIds: string[] = step.inputs.map(processThing);
+
+    // Process step outputs
+    step.actions.forEach((action: ActionT) => {
+      action.outputs.map((output: ThingT) => {
+        const outputId = processThing(output);
+
+        // Add an edge from every step input to this node
+        inputIds.forEach((inputId: string) =>
+          edges.push({ sourceId: inputId, targetId: outputId }),
+        );
+      });
+    });
+  });
+
+  const nodes: DisplayObject[] = Object.values(nodesById);
+  return { nodes, edges };
+}
+
+function thingToDisplayObject(thing: ThingT, nodeId: string): DisplayObject {
+  const type = Array.isArray(thing.type) ? thing.type[0] : thing.type;
+  return {
+    nodeId,
+    type: type ? type : '??',
+    doi: thing.doi,
+  };
+}
+
+export function sortDisplayObjects(objects: DisplayObject[]): DisplayObject[] {
+  return [...objects].sort((a, b) => a.nodeId.localeCompare(b.nodeId));
+}
+
+export function sortDisplayObjectEdges(
+  edges: DisplayObjectEdge[],
+): DisplayObjectEdge[] {
+  return [...edges].sort((a, b) => a.sourceId.localeCompare(b.sourceId));
 }
