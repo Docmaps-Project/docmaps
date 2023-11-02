@@ -19,10 +19,17 @@ export interface DisplayObjectEdge {
   targetId: string;
 }
 
-export const getDocmap: TaskFunction<[string, string], string> = async ([
-  serverUrl,
-  doi,
-]): Promise<string> => {
+export interface DisplayObjectGraph {
+  nodes: DisplayObject[];
+  edges: DisplayObjectEdge[];
+}
+
+export type DocmapFetchingParams = [string, string]; // [serverUrl, doi]
+
+export const getDocmap: TaskFunction<
+  DocmapFetchingParams,
+  DisplayObjectGraph
+> = async ([serverUrl, doi]): Promise<DisplayObjectGraph> => {
   const client = MakeHttpClient({
     baseUrl: serverUrl,
     baseHeaders: {},
@@ -41,8 +48,7 @@ export const getDocmap: TaskFunction<[string, string], string> = async ([
 
   const rawDocmap = resp.body;
   const steps: StepT[] = getSteps(rawDocmap);
-
-  return rawDocmap.id;
+  return stepsToGraph(steps);
 };
 
 // This function is general enough we could probably move it into the SDK
@@ -76,10 +82,7 @@ function getOrderedSteps(docmap: DocmapT): StepT[] {
   return orderedSteps;
 }
 
-export function stepsToGraph(steps: StepT[]): {
-  nodes: DisplayObject[];
-  edges: DisplayObjectEdge[];
-} {
+export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
   const edges: DisplayObjectEdge[] = [];
 
   const seenIds: Set<string> = new Set();

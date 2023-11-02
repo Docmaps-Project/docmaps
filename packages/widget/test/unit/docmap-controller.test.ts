@@ -6,6 +6,7 @@ import {
   stepsToGraph,
 } from '../../src/docmap-controller';
 import docmapWithOneStep from '../fixtures/sciety-docmap-1';
+import anotherDocmapWithOneStep from '../fixtures/sciety-docmap-2';
 import docmapWithMultipleSteps from '../fixtures/elife-docmap-1';
 
 interface Item {
@@ -80,13 +81,11 @@ test('getSteps on docmaps with no steps', (t) => {
 
 test('stepsToGraph for a docmap with one step', (t) => {
   const steps = getSteps(docmapWithOneStep);
-  const graph = stepsToGraph(steps);
-  const { nodes, edges } = graph;
+  const { nodes, edges } = stepsToGraph(steps);
 
   t.is(nodes.length, 2);
 
   const sortedNodes = sortDisplayObjects(nodes);
-
   t.like(sortedNodes[0], {
     nodeId: '10.21203/rs.3.rs-1043992/v1',
     doi: '10.21203/rs.3.rs-1043992/v1',
@@ -106,10 +105,50 @@ test('stepsToGraph for a docmap with one step', (t) => {
   ]);
 });
 
+test('stepsToGraph for another docmap with one step', (t) => {
+  const steps = getSteps(anotherDocmapWithOneStep);
+  const { nodes, edges } = stepsToGraph(steps);
+
+  t.is(nodes.length, 4);
+
+  const sortedNodes = sortDisplayObjects(nodes);
+  t.like(sortedNodes[0], {
+    doi: '10.21203/rs.3.rs-3171736/v1',
+    nodeId: '10.21203/rs.3.rs-3171736/v1',
+    type: '??',
+  });
+  t.like(sortedNodes[1], {
+    nodeId: 'n1',
+    type: 'review-article',
+  });
+  t.like(sortedNodes[2], {
+    nodeId: 'n2',
+    type: 'review-article',
+  });
+  t.like(sortedNodes[3], {
+    nodeId: 'n3',
+    type: 'review-article',
+  });
+
+  t.deepEqual(edges, [
+    {
+      sourceId: '10.21203/rs.3.rs-3171736/v1',
+      targetId: 'n1',
+    },
+    {
+      sourceId: '10.21203/rs.3.rs-3171736/v1',
+      targetId: 'n2',
+    },
+    {
+      sourceId: '10.21203/rs.3.rs-3171736/v1',
+      targetId: 'n3',
+    },
+  ]);
+});
+
 test('stepsToGraph for a docmap with multiple steps', (t) => {
   const steps = getSteps(docmapWithMultipleSteps);
-  const graph = stepsToGraph(steps);
-  const { nodes, edges } = graph;
+  const { nodes, edges } = stepsToGraph(steps);
 
   t.is(nodes.length, 6);
 
