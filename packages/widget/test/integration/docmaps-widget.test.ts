@@ -13,7 +13,15 @@ const options: MountOptions<JsonObject, DocmapsWidget> = {
   },
 };
 
-test('The header bar is displayed in the graph view', async ({ mount }) => {
+test('The header bar is displayed in the graph view even if the requested docmap does not exist', async ({
+  mount,
+  context,
+}) => {
+  await mockDocmapForEndpoint(
+    context,
+    'not-the-requested-doi',
+    docmapWithOneStep,
+  );
   const widget: Locator = await mount(DocmapsWidget, options);
   await expect(widget.locator('.widget-header')).toContainText('DOCMAP');
 });
@@ -78,11 +86,7 @@ test('Tooltips appear on mouseover', async ({ page, mount, context }) => {
     widget.locator('circle').first(),
     'Preprint',
   );
-  await assertTooltipAppears(
-    widget,
-    widget.locator('circle').nth(3),
-    'Reply',
-  );
+  await assertTooltipAppears(widget, widget.locator('circle').nth(3), 'Reply');
 });
 
 interface DocmapForResponse {
