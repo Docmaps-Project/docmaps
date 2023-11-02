@@ -1,7 +1,9 @@
 import type { InductiveStepResult, Plugin } from '../../../src/types'
 import { mock, instance } from 'ts-mockito'
+
 import type * as D from 'docmaps-sdk'
 import * as TE from 'fp-ts/lib/TaskEither'
+import { MANUSCRIPT_DOI } from './crossref'
 
 class AbstractPlugin implements Plugin<string> {
   stepForId(id: string): TE.TaskEither<Error, InductiveStepResult<string>> {
@@ -36,9 +38,9 @@ export const PREPRINT_THING: D.ThingT = {
 }
 
 export const manuscriptStep: D.StepT = {
-  inputs: [],
   actions: [
     {
+      inputs: [],
       outputs: [
         {
           type: 'journal-article',
@@ -67,9 +69,9 @@ export const manuscriptStep: D.StepT = {
 }
 
 export const preprintStep: D.StepT = {
-  inputs: [],
   actions: [
     {
+      inputs: [],
       outputs: [
         {
           type: 'preprint',
@@ -96,10 +98,12 @@ export const preprintStep: D.StepT = {
 
 export const reviewActions: D.ActionT[] = [
   {
+    inputs: [{ doi: MANUSCRIPT_DOI }],
     outputs: [{ id: REVIEW_1_ID, type: 'review' }],
     participants: [],
   },
   {
+    inputs: [{ doi: MANUSCRIPT_DOI }],
     outputs: [{ id: REVIEW_2_ID, type: 'review' }],
     participants: [],
   },
