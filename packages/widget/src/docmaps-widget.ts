@@ -20,6 +20,7 @@ export type D3Edge = SimulationLinkDatum<D3Node>;
 const WIDGET_SIZE: number = 500;
 const GRAPH_CANVAS_HEIGHT: number = 475;
 const GRAPH_CANVAS_ID: string = 'd3-canvas';
+const FIRST_NODE_RADIUS: number = 50;
 const NODE_RADIUS: number = 37.5;
 
 const typeDisplayOpts: {
@@ -167,7 +168,7 @@ export class DocmapsWidget extends LitElement {
         }),
       )
       .force('charge', d3.forceManyBody())
-      .force('collide', d3.forceCollide(NODE_RADIUS * 1.5))
+      .force('collide', d3.forceCollide(FIRST_NODE_RADIUS * 1.5))
       .force(
         'center',
         d3.forceCenter(
@@ -195,7 +196,7 @@ export class DocmapsWidget extends LitElement {
       .append('circle')
       .attr('class', 'node')
       .attr('fill', (d) => typeDisplayOpts[d.type].backgroundColor)
-      .attr('r', NODE_RADIUS);
+      .attr('r', (d, i) => (i === 0 ? FIRST_NODE_RADIUS : NODE_RADIUS));
 
     const labels = svg
       .append('g')
@@ -207,7 +208,7 @@ export class DocmapsWidget extends LitElement {
       .attr('text-anchor', 'middle')
       .attr('dy', '.35em') // Vertically center
       .attr('fill', (d) => typeDisplayOpts[d.type].textColor) // Set the text color
-      .attr('font-size', '30px')
+      .style('font-size', (d, i) => (i === 0 ? '50px' : '30px'))
       .attr('font-style', 'normal')
       .attr('font-weight', '600')
       .attr('font-family', 'IBM Plex Mono; monospace')
