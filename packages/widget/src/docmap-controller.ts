@@ -9,7 +9,6 @@ import * as E from 'fp-ts/lib/Either';
 export type Node = SimulationNodeDatum & { id: string };
 export type Link = SimulationLinkDatum<Node>;
 
-// TODO this is not really tested
 export const getDocmap: TaskFunction<[string, string], string> = async ([
   serverUrl,
   doi,
@@ -30,9 +29,8 @@ export const getDocmap: TaskFunction<[string, string], string> = async ([
     );
   }
 
-  // TODO parse safely!
-  const rawDocmap = resp.body as DocmapT;
-  // const steps: StepT[] = getSteps(rawDocmap);
+  const rawDocmap = resp.body;
+  const steps: StepT[] = getSteps(rawDocmap);
 
   return rawDocmap.id;
 };
@@ -48,23 +46,25 @@ export function getSteps(docmapPerhaps: any): StepT[] {
   }
 
   const docmap = stepsMaybe.right;
-  let nextStepId: string | null | undefined = docmap['first-step'];
-  if (!nextStepId || !docmap.steps) {
-    return [];
-  }
+  return getOrderedSteps(docmap);
+}
 
-  const visitedSteps: Set<string> = new Set(); // we keep track of visited steps for loop detection
+function getOrderedSteps(docmap: DocmapT): StepT[] {
+  let nextId: string | null | undefined = docmap['first-step'];
+
+  const seen: Set<string> = new Set(); // we keep track of visited steps for loop detection
   const orderedSteps: StepT[] = [];
 
   while (
-    nextStepId &&
-    nextStepId in docmap.steps &&
-    !visitedSteps.has(nextStepId)
+    nextId &&
+    docmap.steps &&
+    nextId in docmap.steps &&
+    !seen.has(nextId)
   ) {
-    visitedSteps.add(nextStepId);
-    const step: StepT = docmap.steps[nextStepId];
+    seen.add(nextId);
+    const step: StepT = docmap.steps[nextId];
     orderedSteps.push(step);
-    nextStepId = step['next-step'];
+    nextId = step['next-step'];
   }
 
   return orderedSteps;
