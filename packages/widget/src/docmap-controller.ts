@@ -50,19 +50,15 @@ export function getSteps(docmapPerhaps: any): StepT[] {
 }
 
 function getOrderedSteps(docmap: DocmapT): StepT[] {
+  const steps = docmap.steps;
   let nextId: string | null | undefined = docmap['first-step'];
 
   const seen: Set<string> = new Set(); // we keep track of visited steps for loop detection
   const orderedSteps: StepT[] = [];
 
-  while (
-    nextId &&
-    docmap.steps &&
-    nextId in docmap.steps &&
-    !seen.has(nextId)
-  ) {
+  while (nextId && steps && nextId in steps && !seen.has(nextId)) {
     seen.add(nextId);
-    const step: StepT = docmap.steps[nextId];
+    const step: StepT = steps[nextId];
     orderedSteps.push(step);
     nextId = step['next-step'];
   }
