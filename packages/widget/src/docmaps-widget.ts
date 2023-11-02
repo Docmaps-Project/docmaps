@@ -13,26 +13,77 @@ import {
   getDocmap,
 } from './docmap-controller';
 import { SimulationNodeDatum } from 'd3-force';
-import { BaseType } from 'd3-selection';
 
 export type D3Node = SimulationNodeDatum & DisplayObject;
 export type D3Edge = SimulationLinkDatum<D3Node>;
 
 const WIDGET_SIZE: number = 500;
-const GRAPH_CANVAS_HEIGHT: number = 375;
+const GRAPH_CANVAS_HEIGHT: number = 475;
 const GRAPH_CANVAS_ID: string = 'd3-canvas';
-const NODE_RADIUS: number = 20;
+const NODE_RADIUS: number = 37.5;
 
-const typeToLabels: { [type: string]: { short: string; long: string } } = {
-  review: { short: 'R', long: 'Review' },
-  preprint: { short: 'P', long: 'Preprint' },
-  'evaluation-summary': { short: 'ES', long: 'Evaluation Summary' },
-  'review-article': { short: 'RA', long: 'Review Article' },
-  'journal-article': { short: 'JA', long: 'Journal Article' },
-  editorial: { short: 'ED', long: 'Editorial' },
-  comment: { short: 'CO', long: 'Comment' },
-  reply: { short: 'RE', long: 'Reply' },
-  '??': { short: '', long: 'Type unknown' },
+const typeDisplayOpts: {
+  [type: string]: {
+    shortLabel: string;
+    longLabel: string;
+    backgroundColor: string;
+    textColor: string;
+  };
+} = {
+  review: {
+    shortLabel: 'R',
+    longLabel: 'Review',
+    backgroundColor: '#222F46',
+    textColor: '#D7E4FD',
+  },
+  preprint: {
+    shortLabel: 'P',
+    longLabel: 'Preprint',
+    backgroundColor: '#077A12',
+    textColor: '#CBFFD0',
+  },
+  'evaluation-summary': {
+    shortLabel: 'ES',
+    longLabel: 'Evaluation Summary',
+    backgroundColor: '#936308',
+    textColor: '#FFF',
+  },
+  'review-article': {
+    shortLabel: 'RA',
+    longLabel: 'Review Article',
+    backgroundColor: '#099CEE',
+    textColor: '#FFF',
+  },
+  'journal-article': {
+    shortLabel: 'JA',
+    longLabel: 'Journal Article',
+    backgroundColor: '#7B1650',
+    textColor: '#FFF',
+  },
+  editorial: {
+    shortLabel: 'ED',
+    longLabel: 'Editorial',
+    backgroundColor: '#468580',
+    textColor: '#FFFFFF',
+  },
+  comment: {
+    shortLabel: 'CO',
+    longLabel: 'Comment',
+    backgroundColor: '#AB664E',
+    textColor: '#FFF',
+  },
+  reply: {
+    shortLabel: 'RE',
+    longLabel: 'Reply',
+    backgroundColor: '#79109E',
+    textColor: '#FFF',
+  },
+  '??': {
+    shortLabel: '',
+    longLabel: 'Type unknown',
+    backgroundColor: '#868f8f',
+    textColor: '#FFF',
+  },
 };
 
 // TODO name should be singular not plural
@@ -143,7 +194,7 @@ export class DocmapsWidget extends LitElement {
       .enter()
       .append('circle')
       .attr('class', 'node')
-      .attr('fill', 'green')
+      .attr('fill', (d) => typeDisplayOpts[d.type].backgroundColor)
       .attr('r', NODE_RADIUS);
 
     const labels = svg
@@ -155,8 +206,12 @@ export class DocmapsWidget extends LitElement {
       .append('text')
       .attr('text-anchor', 'middle')
       .attr('dy', '.35em') // Vertically center
-      .attr('fill', 'white')
-      .text((d) => typeToLabels[d.type].short);
+      .attr('fill', (d) => typeDisplayOpts[d.type].textColor) // Set the text color
+      .attr('font-size', '30px')
+      .attr('font-style', 'normal')
+      .attr('font-weight', '600')
+      .attr('font-family', 'IBM Plex Mono; monospace')
+      .text((d) => typeDisplayOpts[d.type].shortLabel);
 
     simulation.on('tick', () => {
       linkElements
@@ -185,7 +240,7 @@ export class DocmapsWidget extends LitElement {
     selection
       .on('mouseover', function (event, d) {
         tooltip
-          .html(() => typeToLabels[d.type].long)
+          .html(() => typeDisplayOpts[d.type].longLabel)
           .style('visibility', 'visible')
           .style('opacity', 1)
           .style('left', `${event.pageX + 5}px`) // Position the tooltip at the mouse location

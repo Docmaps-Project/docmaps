@@ -2,6 +2,8 @@ import {css, CSSResult} from "lit";
 
 // These are the styles used within the lit component
 export const customCss: CSSResult = css`
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap');
+
   :host {
     width: 500px;
     height: 500px;
