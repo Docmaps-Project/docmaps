@@ -490,6 +490,9 @@ importers:
       '@types/d3-force':
         specifier: ^3.0.7
         version: 3.0.7
+      '@types/d3-selection':
+        specifier: ^3.0.8
+        version: 3.0.8
       '@types/node':
         specifier: ^18.16.2
         version: 18.16.7

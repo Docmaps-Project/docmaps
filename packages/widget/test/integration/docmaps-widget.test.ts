@@ -25,7 +25,10 @@ const docmapsToTest: [any, number][] = [
 ];
 
 for (const [docmap, expectedNodes] of docmapsToTest) {
-  test(`It retrieves a docmap from the server with ${expectedNodes} nodes`, async ({ mount, context }) => {
+  test(`It retrieves a docmap from the server with ${expectedNodes} nodes`, async ({
+    mount,
+    context,
+  }) => {
     const doi: string = 'should-return-something';
     await mockDocmapForEndpoint(context, doi, docmap);
 
@@ -55,6 +58,31 @@ test('It retrieves a different docmap from the server', async ({
   });
 
   await expect(widget.locator('circle')).toHaveCount(6);
+});
+
+test('Tooltips appear on mouseover', async ({ page, mount, context }) => {
+  const docmap = docmapWithMultipleSteps; // Assuming you want to test with this data
+  const doi: string = 'tooltip-doi-test';
+  await mockDocmapForEndpoint(context, doi, docmap);
+
+  const widget: Locator = await mount(DocmapsWidget, {
+    props: {
+      ...options.props,
+      doi,
+    },
+  });
+
+  // Replace 'circle' with the correct selector for the nodes in your graph
+  await assertTooltipAppears(
+    widget,
+    widget.locator('circle').first(),
+    'Preprint',
+  );
+  await assertTooltipAppears(
+    widget,
+    widget.locator('circle').nth(3),
+    'Reply',
+  );
 });
 
 interface DocmapForResponse {
@@ -96,4 +124,34 @@ async function mockDocmapForEndpoint(
   };
 
   await context.route(shouldMockPredicate, mockHandler);
+}
+
+async function assertTooltipAppears(
+  widget: Locator,
+  node: Locator,
+  expectedLabeel: string,
+) {
+  // Hover over the first node to trigger the tooltip
+  await node.hover({ trial: false, force: true });
+
+  // Find the tooltip and assert it is visible and has the correct content
+  // Adjust the selector as needed to match your tooltip's implementation
+  const tooltip = widget.locator('#tooltip');
+  await expect(tooltip).toBeVisible();
+  await expect(tooltip).toHaveText(expectedLabeel); // Replace with the expected tooltip text based on your data
+
+  // Optional: You can also check the position if you want to ensure the tooltip is appearing at the correct location
+  const tooltipBoundingBox = await tooltip.boundingBox();
+  const nodeBoundingBox = await node.boundingBox();
+
+  expect(tooltipBoundingBox).toBeDefined();
+  expect(nodeBoundingBox).toBeDefined();
+
+  if (tooltipBoundingBox && nodeBoundingBox) {
+    // Check if the tooltip is near the node after hovering
+    expect(tooltipBoundingBox.x).toBeGreaterThan(nodeBoundingBox.x);
+    expect(tooltipBoundingBox.y).toBeLessThan(
+      nodeBoundingBox.y + nodeBoundingBox.height,
+    );
+  }
 }

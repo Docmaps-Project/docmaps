@@ -13,6 +13,7 @@ import {
   getDocmap,
 } from './docmap-controller';
 import { SimulationNodeDatum } from 'd3-force';
+import { BaseType } from 'd3-selection';
 
 export type D3Node = SimulationNodeDatum & DisplayObject;
 export type D3Edge = SimulationLinkDatum<D3Node>;
@@ -22,16 +23,16 @@ const GRAPH_CANVAS_HEIGHT: number = 375;
 const GRAPH_CANVAS_ID: string = 'd3-canvas';
 const NODE_RADIUS: number = 20;
 
-const typeToLabel: { [type: string]: string } = {
-  review: 'R',
-  preprint: 'P',
-  'evaluation-summary': 'ES',
-  'review-article': 'RA',
-  'journal-article': 'JA',
-  editorial: 'ED',
-  comment: 'CO',
-  reply: 'RE',
-  '??': ''
+const typeToLabels: { [type: string]: { short: string; long: string } } = {
+  review: { short: 'R', long: 'Review' },
+  preprint: { short: 'P', long: 'Preprint' },
+  'evaluation-summary': { short: 'ES', long: 'Evaluation Summary' },
+  'review-article': { short: 'RA', long: 'Review Article' },
+  'journal-article': { short: 'JA', long: 'Journal Article' },
+  editorial: { short: 'ED', long: 'Editorial' },
+  comment: { short: 'CO', long: 'Comment' },
+  reply: { short: 'RE', long: 'Reply' },
+  '??': { short: '', long: 'Type unknown' },
 };
 
 // TODO name should be singular not plural
@@ -66,6 +67,8 @@ export class DocmapsWidget extends LitElement {
         id="${GRAPH_CANVAS_ID}"
         style="width: ${WIDGET_SIZE}; height: ${GRAPH_CANVAS_HEIGHT}"
       ></div>
+
+      <div id="tooltip" class="tooltip" style="opacity:0;"></div>
 
       ${this.#docmapFetchingTask.render({
         complete: this.renderDocmap.bind(this),
@@ -153,7 +156,7 @@ export class DocmapsWidget extends LitElement {
       .attr('text-anchor', 'middle')
       .attr('dy', '.35em') // Vertically center
       .attr('fill', 'white')
-      .text((d) => typeToLabel[d.type]);
+      .text((d) => typeToLabels[d.type].short);
 
     simulation.on('tick', () => {
       linkElements
@@ -166,6 +169,31 @@ export class DocmapsWidget extends LitElement {
 
       labels.attr('x', getNodeX).attr('y', getNodeY);
     });
+
+    this.setUpTooltips(nodeElements);
+    this.setUpTooltips(labels);
+  }
+
+  private setUpTooltips(
+    selection: d3.Selection<any, D3Node, SVGGElement, unknown>,
+  ) {
+    if (!this.shadowRoot) {
+      return;
+    }
+    const tooltip = d3.select(this.shadowRoot.querySelector('#tooltip'));
+
+    selection
+      .on('mouseover', function (event, d) {
+        tooltip
+          .html(() => typeToLabels[d.type].long)
+          .style('visibility', 'visible')
+          .style('opacity', 1)
+          .style('left', `${event.pageX + 5}px`) // Position the tooltip at the mouse location
+          .style('top', `${event.pageY - 28}px`);
+      })
+      .on('mouseout', () => {
+        tooltip.style('visibility', 'hidden').style('opacity', 0);
+      });
   }
 }
 

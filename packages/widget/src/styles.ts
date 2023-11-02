@@ -88,4 +88,17 @@ export const customCss: CSSResult = css`
     display: inline-block;
     margin: 7px 13px 6px 11px
   }
+
+  .tooltip {
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    position: absolute;
+    text-align: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
 `

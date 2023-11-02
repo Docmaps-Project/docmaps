@@ -31,6 +31,7 @@
     "@sand4rt/experimental-ct-web": "^1.39.0",
     "@types/d3": "^7.4.2",
     "@types/d3-force": "^3.0.7",
+    "@types/d3-selection": "^3.0.8",
     "@types/node": "^18.16.2",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
