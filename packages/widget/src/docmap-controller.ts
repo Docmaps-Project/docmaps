@@ -35,7 +35,7 @@ export const getDocmap: TaskFunction<[string, string], string> = async ([
   return rawDocmap.id;
 };
 
-// This function is general enough we could move it elsewhere
+// This function is general enough we could probably move it into the SDK
 export function getSteps(docmapPerhaps: any): StepT[] {
   const stepsMaybe = pipe(docmapPerhaps, Docmap.decode);
 
