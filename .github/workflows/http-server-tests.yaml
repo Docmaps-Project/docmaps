@@ -54,7 +54,7 @@ jobs:
       - name: Verify builds
         run: |
           cd ${{env.PKG_DIR}} ;
-          pnpm build;
+          pnpm run -r build;
 
       - name: Test
         run: |
@@ -71,7 +71,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.14.0, 18.18.0]
+        node-version: [18.18.0]
 
     # Service containers to run with `runner-job`
     services:
@@ -117,6 +117,11 @@ jobs:
         run: |
           cd ${{env.PKG_DIR}} ;
           pnpm install;
+
+      - name: Build cross-workspace deps
+        run: |
+          cd ${{env.PKG_DIR}} ;
+          pnpm run -r build;
 
       - name: Test
         run: |

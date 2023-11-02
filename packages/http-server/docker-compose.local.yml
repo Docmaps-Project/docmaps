@@ -8,7 +8,8 @@ services:
       - "./tmp/oxigraph_data:/data"
   server:
     build:
-      context: .
+      dockerfile: ./packages/http-server/Dockerfile
+      context: ./../../
     command: start
     environment:
       NODE_ENV: production

@@ -5,8 +5,6 @@
   "description": "Top-level Docmaps specification module -- not intended for direct npm consumption.",
   "scripts": {
     "clean": "manypkg exec $npm_execpath run clean && rm -rf node_modules",
-    "compose:repave": "rm -rf tmp/oxigraph_data/*",
-    "compose:up": "docker compose -f $INIT_CWD/docker-compose.local.yml up --build",
     "test": "node scripts/package-tests.js",
     "test:packages": "manypkg exec $npm_execpath test",
     "test:all": "$npm_execpath run test && $npm_execpath run test:packages"
