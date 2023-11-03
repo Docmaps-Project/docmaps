@@ -69,6 +69,9 @@ test('Codec parsing Action', (t) => {
     return dm.Action.decode(x)
   })
   isRightArray(t, v, 18)
+
+  // assert that the steps->actiuons->inputs were all found
+  t.is(ex.elife.ActionInputs.length, 3)
 })
 
 test('Codec parsing Assertion', (t) => {
