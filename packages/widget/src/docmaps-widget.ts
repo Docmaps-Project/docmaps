@@ -200,7 +200,7 @@ export class DocmapsWidget extends LitElement {
       .enter()
       .append('text')
       .attr('text-anchor', 'middle')
-      .attr('dy', '.35em') // Vertically center
+      .attr('dominant-baseline', 'central')
       .attr('fill', (d) => typeDisplayOpts[d.type].textColor) // Set the text color
       .text((d) => typeDisplayOpts[d.type].shortLabel);
 
@@ -212,8 +212,9 @@ export class DocmapsWidget extends LitElement {
         .attr('y2', (d) => (d.target as D3Node).y ?? 0);
 
       nodeElements.attr('cx', getNodeX).attr('cy', getNodeY);
-
-      labels.attr('x', getNodeX).attr('y', getNodeY);
+      labels
+        .attr('x', (d: D3Node) => getNodeX(d) + .8) // We offset slightly because otherwise the label looks very slightly off-center horizontally
+        .attr('y', getNodeY);
     });
 
     this.setUpTooltips(nodeElements);
