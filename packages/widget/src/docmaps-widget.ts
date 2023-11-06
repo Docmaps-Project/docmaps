@@ -13,6 +13,7 @@ import {
   getDocmap,
 } from './docmap-controller';
 import { SimulationNodeDatum } from 'd3-force';
+import * as Dagre from 'dagre';
 
 export type D3Node = SimulationNodeDatum & DisplayObject;
 export type D3Edge = SimulationLinkDatum<D3Node>;
@@ -22,6 +23,7 @@ const GRAPH_CANVAS_HEIGHT: number = 475;
 const GRAPH_CANVAS_ID: string = 'd3-canvas';
 const FIRST_NODE_RADIUS: number = 50;
 const NODE_RADIUS: number = 37.5;
+const RANK_SEPARATION: number = 100;
 
 type TypeDisplayOption = {
   shortLabel: string;
@@ -150,7 +152,16 @@ export class DocmapsWidget extends LitElement {
       .attr('width', WIDGET_SIZE)
       .attr('height', GRAPH_CANVAS_HEIGHT);
 
-    const displayNodes: D3Node[] = nodes.map((node) => ({ ...node }));
+    // We use dagre to calculate the initial layout of the graph
+    const dagreGraph: Dagre.graphlib.Graph<DisplayObject> = getDagreGraph(nodes, edges);
+    const displayNodes: D3Node[] = dagreGraph.nodes().map((nodeId) => {
+      const node = dagreGraph.node(nodeId);
+      return {
+        ...node,
+        // We fix the nodes' vertical position to whatever dagre decided, but not the horizontal position since we want some nice easing into the final position
+        fy: node.y,
+      };
+    });
     const displayEdges: D3Edge[] = edges.map(
       (edge): D3Edge => ({ source: edge.sourceId, target: edge.targetId }),
     );
@@ -159,13 +170,17 @@ export class DocmapsWidget extends LitElement {
       .forceSimulation(displayNodes)
       .force(
         'link',
-        d3.forceLink(displayEdges).id((d: d3.SimulationNodeDatum) => {
-          // @ts-ignore
-          return d.nodeId;
-        }),
+        d3
+          .forceLink(displayEdges)
+          .id((d: d3.SimulationNodeDatum) => {
+            // @ts-ignore
+            return d.nodeId;
+          })
+          .distance(RANK_SEPARATION * 1.7)
+          .strength(0.2),
       )
       .force('charge', d3.forceManyBody())
-      .force('collide', d3.forceCollide(FIRST_NODE_RADIUS * 1.5))
+      .force('collide', d3.forceCollide(FIRST_NODE_RADIUS))
       .force(
         'center',
         d3.forceCenter(Math.floor(WIDGET_SIZE / 2), Math.floor(GRAPH_CANVAS_HEIGHT / 2)),
@@ -213,7 +228,7 @@ export class DocmapsWidget extends LitElement {
 
       nodeElements.attr('cx', getNodeX).attr('cy', getNodeY);
       labels
-        .attr('x', (d: D3Node) => getNodeX(d) + .8) // We offset slightly because otherwise the label looks very slightly off-center horizontally
+        .attr('x', (d: D3Node) => getNodeX(d) + 0.8) // We offset slightly because otherwise the label looks very slightly off-center horizontally
         .attr('y', getNodeY);
     });
 
@@ -240,6 +255,42 @@ export class DocmapsWidget extends LitElement {
         tooltip.style('visibility', 'hidden').style('opacity', 0);
       });
   }
+}
+
+// One limitation of using Dagre is we have no control over the ordering of nodes within the same rank.
+function getDagreGraph(
+  nodes: DisplayObject[],
+  edges: DisplayObjectEdge[],
+): Dagre.graphlib.Graph<DisplayObject> {
+  const g: Dagre.graphlib.Graph<DisplayObject> = new Dagre.graphlib.Graph();
+
+  g.setGraph({
+    nodesep: 50,
+    marginy: 100,
+    marginx: 30,
+    ranksep: RANK_SEPARATION,
+    width: WIDGET_SIZE,
+    height: GRAPH_CANVAS_HEIGHT,
+  });
+
+  // Default to assigning a new object as a label for each new edge.
+  g.setDefaultEdgeLabel(function () {
+    return {};
+  });
+
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+    const size = i === 0 ? FIRST_NODE_RADIUS : NODE_RADIUS;
+    g.setNode(node.nodeId, { ...node, width: size, height: size });
+  }
+
+  for (const edge of edges) {
+    g.setEdge(edge.sourceId, edge.targetId);
+  }
+
+  Dagre.layout(g);
+
+  return g;
 }
 
 declare global {

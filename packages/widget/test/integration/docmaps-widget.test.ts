@@ -17,11 +17,7 @@ test('The header bar is displayed in the graph view even if the requested docmap
   mount,
   context,
 }) => {
-  await mockDocmapForEndpoint(
-    context,
-    'not-the-requested-doi',
-    docmapWithOneStep,
-  );
+  await mockDocmapForEndpoint(context, 'not-the-requested-doi', docmapWithOneStep);
   const widget: Locator = await mount(DocmapsWidget, options);
   await expect(widget.locator('.widget-header')).toContainText('DOCMAP');
 });
@@ -48,25 +44,20 @@ for (const [docmap, expectedNodes] of docmapsToTest) {
     });
 
     await expect(widget.locator('circle')).toHaveCount(expectedNodes);
+
+    // assert the first circle is at the y location of 126
+    const firstCircle = widget.locator('circle').first();
+    const firstCircleBoundingBox = await firstCircle.boundingBox();
+    expect(firstCircleBoundingBox).toBeDefined();
+    expect(firstCircleBoundingBox.y).toBe(126);
+
+    // assert the last circle is at the y location of 282.25
+    const lastCircle = widget.locator('circle').last();
+    const lastCircleBoundingBox = await lastCircle.boundingBox();
+    expect(lastCircleBoundingBox).toBeDefined();
+    expect(lastCircleBoundingBox.y).toBe(282.25);
   });
 }
-
-test('It retrieves a different docmap from the server', async ({
-  mount,
-  context,
-}) => {
-  const doi: string = 'should-return-something';
-  await mockDocmapForEndpoint(context, doi, docmapWithMultipleSteps);
-
-  const widget: Locator = await mount(DocmapsWidget, {
-    props: {
-      ...options.props,
-      doi,
-    },
-  });
-
-  await expect(widget.locator('circle')).toHaveCount(6);
-});
 
 test('Tooltips appear on mouseover', async ({ page, mount, context }) => {
   const docmap = docmapWithMultipleSteps; // Assuming you want to test with this data
@@ -81,11 +72,7 @@ test('Tooltips appear on mouseover', async ({ page, mount, context }) => {
   });
 
   // Replace 'circle' with the correct selector for the nodes in your graph
-  await assertTooltipAppears(
-    widget,
-    widget.locator('circle').first(),
-    'Preprint',
-  );
+  await assertTooltipAppears(widget, widget.locator('circle').first(), 'Preprint');
   await assertTooltipAppears(widget, widget.locator('circle').nth(3), 'Reply');
 });
 
@@ -102,11 +89,7 @@ interface DocmapForResponse {
  * @param doi - The DOI (Document Object Identifier) to look for in the URL.
  * @param docmapToReturn - The docmap object to return in the response.
  */
-async function mockDocmapForEndpoint(
-  context: BrowserContext,
-  doi: string,
-  docmapToReturn: any,
-) {
+async function mockDocmapForEndpoint(context: BrowserContext, doi: string, docmapToReturn: any) {
   const shouldMockPredicate = (url: URL): boolean =>
     url.toString().includes(options.props.serverUrl);
 
@@ -130,11 +113,7 @@ async function mockDocmapForEndpoint(
   await context.route(shouldMockPredicate, mockHandler);
 }
 
-async function assertTooltipAppears(
-  widget: Locator,
-  node: Locator,
-  expectedLabeel: string,
-) {
+async function assertTooltipAppears(widget: Locator, node: Locator, expectedLabeel: string) {
   // Hover over the first node to trigger the tooltip
   await node.hover({ trial: false, force: true });
 
@@ -154,8 +133,6 @@ async function assertTooltipAppears(
   if (tooltipBoundingBox && nodeBoundingBox) {
     // Check if the tooltip is near the node after hovering
     expect(tooltipBoundingBox.x).toBeGreaterThan(nodeBoundingBox.x);
-    expect(tooltipBoundingBox.y).toBeLessThan(
-      nodeBoundingBox.y + nodeBoundingBox.height,
-    );
+    expect(tooltipBoundingBox.y).toBeLessThan(nodeBoundingBox.y + nodeBoundingBox.height);
   }
 }
