@@ -152,26 +152,14 @@ export class DocmapsWidget extends LitElement {
       .attr('width', WIDGET_SIZE)
       .attr('height', GRAPH_CANVAS_HEIGHT);
 
-    // We use dagre to calculate the initial layout of the graph
-    const dagreGraph: Dagre.graphlib.Graph<DisplayObject> = getDagreGraph(nodes, edges);
-    const displayNodes: D3Node[] = dagreGraph.nodes().map((nodeId) => {
-      const node = dagreGraph.node(nodeId);
-      return {
-        ...node,
-        // We fix the nodes' vertical position to whatever dagre decided, but not the horizontal position since we want some nice easing into the final position
-        fy: node.y,
-      };
-    });
-    const displayEdges: D3Edge[] = edges.map(
-      (edge): D3Edge => ({ source: edge.sourceId, target: edge.targetId }),
-    );
+    const { d3Nodes, d3Edges } = prepareGraphForSimulation(nodes, edges);
 
     const simulation: d3.Simulation<D3Node, D3Edge> = d3
-      .forceSimulation(displayNodes)
+      .forceSimulation(d3Nodes)
       .force(
         'link',
         d3
-          .forceLink(displayEdges)
+          .forceLink(d3Edges)
           .id((d: d3.SimulationNodeDatum) => {
             // @ts-ignore
             return d.nodeId;
@@ -190,7 +178,7 @@ export class DocmapsWidget extends LitElement {
       .append('g')
       .attr('class', 'links')
       .selectAll('line')
-      .data(displayEdges)
+      .data(d3Edges)
       .enter()
       .append('line')
       .attr('stroke', 'black')
@@ -200,7 +188,7 @@ export class DocmapsWidget extends LitElement {
       .append('g')
       .attr('class', 'nodes')
       .selectAll('circle')
-      .data(displayNodes)
+      .data(d3Nodes)
       .enter()
       .append('circle')
       .attr('class', 'node')
@@ -211,7 +199,7 @@ export class DocmapsWidget extends LitElement {
       .append('g')
       .attr('class', 'labels')
       .selectAll('text')
-      .data(displayNodes)
+      .data(d3Nodes)
       .enter()
       .append('text')
       .attr('text-anchor', 'middle')
@@ -228,7 +216,8 @@ export class DocmapsWidget extends LitElement {
 
       nodeElements.attr('cx', getNodeX).attr('cy', getNodeY);
       labels
-        .attr('x', (d: D3Node) => getNodeX(d) + 0.8) // We offset slightly because otherwise the label looks very slightly off-center horizontally
+        // We offset x slightly because otherwise the label looks a tiny bit off-center horizontally
+        .attr('x', (d: D3Node) => getNodeX(d) + 0.8)
         .attr('y', getNodeY);
     });
 
@@ -257,7 +246,10 @@ export class DocmapsWidget extends LitElement {
   }
 }
 
-// One limitation of using Dagre is we have no control over the ordering of nodes within the same rank.
+// Dagre is a tool for laying out directed graphs. We use it to generate initial positions for
+// our nodes, which we then pass to d3 to animate into their final positions.
+// Whatever y position we get back from d3 for a given node is fixed in our d3 graph, because
+// we want to maintain a strict vertical hierarchy.
 function getDagreGraph(
   nodes: DisplayObject[],
   edges: DisplayObjectEdge[],
@@ -290,6 +282,35 @@ function getDagreGraph(
   Dagre.layout(g);
 
   return g;
+}
+
+// Convert the naive "DisplayObject" nodes and edges we get from the Docmap controller
+// into the format that d3 expects.
+// Along the way, we also use Dagre to calculate initial positions for the nodes.
+function prepareGraphForSimulation(
+  nodes: DisplayObject[],
+  edges: DisplayObjectEdge[],
+): {
+  d3Nodes: D3Node[];
+  d3Edges: D3Edge[];
+} {
+  const dagreGraph: Dagre.graphlib.Graph<DisplayObject> = getDagreGraph(nodes, edges);
+
+  const displayNodes: D3Node[] = dagreGraph.nodes().map((nodeId) => {
+    const node = dagreGraph.node(nodeId);
+    return {
+      ...node,
+      // We fix the nodes' vertical position to whatever dagre decided,
+      // but not the horizontal position since we want some nice easing into the final position
+      fy: node.y,
+    };
+  });
+
+  const displayEdges: D3Edge[] = edges.map(
+    (edge): D3Edge => ({ source: edge.sourceId, target: edge.targetId }),
+  );
+
+  return { d3Nodes: displayNodes, d3Edges: displayEdges };
 }
 
 declare global {
