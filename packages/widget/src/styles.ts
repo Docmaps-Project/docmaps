@@ -78,12 +78,13 @@ export const customCss: CSSResult = css`
 
   .widget-header span {
     color: white;
+    font-family: 'IBM Plex Mono', 'SF Pro Display', monospace;
     font-size: 12px;
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-style: normal;
     font-weight: 400;
+    line-height: normal;
+    letter-spacing: 2.4px;
     text-transform: uppercase;
-    letter-spacing: 2.40px;
-    word-wrap: break-word;
   }
 
   .docmap-logo {
@@ -101,6 +102,19 @@ export const customCss: CSSResult = css`
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.3s;
+  }
+
+  .labels text {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 30px; /* This is the default size; it will be overridden by specific styles below */
+    font-style: normal;
+    font-weight: 600;
+    text-anchor: middle;
+    //letter-spacing: 10px;
+    text-transform: uppercase;
+  }
+  .labels text:first-child {
+    font-size: 50px;
   }
 
 `

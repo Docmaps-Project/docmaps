@@ -23,14 +23,14 @@ const GRAPH_CANVAS_ID: string = 'd3-canvas';
 const FIRST_NODE_RADIUS: number = 50;
 const NODE_RADIUS: number = 37.5;
 
-const typeDisplayOpts: {
-  [type: string]: {
-    shortLabel: string;
-    longLabel: string;
-    backgroundColor: string;
-    textColor: string;
-  };
-} = {
+type TypeDisplayOption = {
+  shortLabel: string;
+  longLabel: string;
+  backgroundColor: string;
+  textColor: string;
+};
+
+const typeDisplayOpts: { [type: string]: TypeDisplayOption } = {
   review: {
     shortLabel: 'R',
     longLabel: 'Review',
@@ -99,12 +99,11 @@ export class DocmapsWidget extends LitElement {
   @property({ type: Number })
   count: number = 3;
 
-  #docmapFetchingTask: Task<DocmapFetchingParams, DisplayObjectGraph> =
-    new Task(
-      this,
-      getDocmap,
-      (): DocmapFetchingParams => [this.serverUrl, this.doi],
-    );
+  #docmapFetchingTask: Task<DocmapFetchingParams, DisplayObjectGraph> = new Task(
+    this,
+    getDocmap,
+    (): DocmapFetchingParams => [this.serverUrl, this.doi],
+  );
 
   static styles = [customCss];
 
@@ -139,9 +138,7 @@ export class DocmapsWidget extends LitElement {
       return;
     }
 
-    d3.select(
-      this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID} svg`),
-    ).remove();
+    d3.select(this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID} svg`)).remove();
     const canvas = this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID}`);
     if (!canvas) {
       throw new Error('SVG element not found');
@@ -171,10 +168,7 @@ export class DocmapsWidget extends LitElement {
       .force('collide', d3.forceCollide(FIRST_NODE_RADIUS * 1.5))
       .force(
         'center',
-        d3.forceCenter(
-          Math.floor(WIDGET_SIZE / 2),
-          Math.floor(GRAPH_CANVAS_HEIGHT / 2),
-        ),
+        d3.forceCenter(Math.floor(WIDGET_SIZE / 2), Math.floor(GRAPH_CANVAS_HEIGHT / 2)),
       );
 
     const linkElements = svg
@@ -208,10 +202,6 @@ export class DocmapsWidget extends LitElement {
       .attr('text-anchor', 'middle')
       .attr('dy', '.35em') // Vertically center
       .attr('fill', (d) => typeDisplayOpts[d.type].textColor) // Set the text color
-      .style('font-size', (d, i) => (i === 0 ? '50px' : '30px'))
-      .attr('font-style', 'normal')
-      .attr('font-weight', '600')
-      .attr('font-family', 'IBM Plex Mono; monospace')
       .text((d) => typeDisplayOpts[d.type].shortLabel);
 
     simulation.on('tick', () => {
@@ -230,9 +220,7 @@ export class DocmapsWidget extends LitElement {
     this.setUpTooltips(labels);
   }
 
-  private setUpTooltips(
-    selection: d3.Selection<any, D3Node, SVGGElement, unknown>,
-  ) {
+  private setUpTooltips(selection: d3.Selection<any, D3Node, SVGGElement, unknown>) {
     if (!this.shadowRoot) {
       return;
     }
