@@ -13,6 +13,7 @@ import {
   getDocmap,
 } from './docmap-controller';
 import { SimulationNodeDatum } from 'd3-force';
+import * as Dagre from 'dagre';
 
 export type D3Node = SimulationNodeDatum & DisplayObject;
 export type D3Edge = SimulationLinkDatum<D3Node>;
@@ -22,15 +23,16 @@ const GRAPH_CANVAS_HEIGHT: number = 475;
 const GRAPH_CANVAS_ID: string = 'd3-canvas';
 const FIRST_NODE_RADIUS: number = 50;
 const NODE_RADIUS: number = 37.5;
+const RANK_SEPARATION: number = 100;
 
-const typeDisplayOpts: {
-  [type: string]: {
-    shortLabel: string;
-    longLabel: string;
-    backgroundColor: string;
-    textColor: string;
-  };
-} = {
+type TypeDisplayOption = {
+  shortLabel: string;
+  longLabel: string;
+  backgroundColor: string;
+  textColor: string;
+};
+
+const typeDisplayOpts: { [type: string]: TypeDisplayOption } = {
   review: {
     shortLabel: 'R',
     longLabel: 'Review',
@@ -99,12 +101,11 @@ export class DocmapsWidget extends LitElement {
   @property({ type: Number })
   count: number = 3;
 
-  #docmapFetchingTask: Task<DocmapFetchingParams, DisplayObjectGraph> =
-    new Task(
-      this,
-      getDocmap,
-      (): DocmapFetchingParams => [this.serverUrl, this.doi],
-    );
+  #docmapFetchingTask: Task<DocmapFetchingParams, DisplayObjectGraph> = new Task(
+    this,
+    getDocmap,
+    (): DocmapFetchingParams => [this.serverUrl, this.doi],
+  );
 
   static styles = [customCss];
 
@@ -139,9 +140,7 @@ export class DocmapsWidget extends LitElement {
       return;
     }
 
-    d3.select(
-      this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID} svg`),
-    ).remove();
+    d3.select(this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID} svg`)).remove();
     const canvas = this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID}`);
     if (!canvas) {
       throw new Error('SVG element not found');
@@ -153,35 +152,33 @@ export class DocmapsWidget extends LitElement {
       .attr('width', WIDGET_SIZE)
       .attr('height', GRAPH_CANVAS_HEIGHT);
 
-    const displayNodes: D3Node[] = nodes.map((node) => ({ ...node }));
-    const displayEdges: D3Edge[] = edges.map(
-      (edge): D3Edge => ({ source: edge.sourceId, target: edge.targetId }),
-    );
+    const { d3Nodes, d3Edges } = prepareGraphForSimulation(nodes, edges);
 
     const simulation: d3.Simulation<D3Node, D3Edge> = d3
-      .forceSimulation(displayNodes)
+      .forceSimulation(d3Nodes)
       .force(
         'link',
-        d3.forceLink(displayEdges).id((d: d3.SimulationNodeDatum) => {
-          // @ts-ignore
-          return d.nodeId;
-        }),
+        d3
+          .forceLink(d3Edges)
+          .id((d: d3.SimulationNodeDatum) => {
+            // @ts-ignore
+            return d.nodeId;
+          })
+          .distance(RANK_SEPARATION * 1.7)
+          .strength(0.2),
       )
       .force('charge', d3.forceManyBody())
-      .force('collide', d3.forceCollide(FIRST_NODE_RADIUS * 1.5))
+      .force('collide', d3.forceCollide(FIRST_NODE_RADIUS))
       .force(
         'center',
-        d3.forceCenter(
-          Math.floor(WIDGET_SIZE / 2),
-          Math.floor(GRAPH_CANVAS_HEIGHT / 2),
-        ),
+        d3.forceCenter(Math.floor(WIDGET_SIZE / 2), Math.floor(GRAPH_CANVAS_HEIGHT / 2)),
       );
 
     const linkElements = svg
       .append('g')
       .attr('class', 'links')
       .selectAll('line')
-      .data(displayEdges)
+      .data(d3Edges)
       .enter()
       .append('line')
       .attr('stroke', 'black')
@@ -191,7 +188,7 @@ export class DocmapsWidget extends LitElement {
       .append('g')
       .attr('class', 'nodes')
       .selectAll('circle')
-      .data(displayNodes)
+      .data(d3Nodes)
       .enter()
       .append('circle')
       .attr('class', 'node')
@@ -202,16 +199,12 @@ export class DocmapsWidget extends LitElement {
       .append('g')
       .attr('class', 'labels')
       .selectAll('text')
-      .data(displayNodes)
+      .data(d3Nodes)
       .enter()
       .append('text')
       .attr('text-anchor', 'middle')
-      .attr('dy', '.35em') // Vertically center
+      .attr('dominant-baseline', 'central')
       .attr('fill', (d) => typeDisplayOpts[d.type].textColor) // Set the text color
-      .style('font-size', (d, i) => (i === 0 ? '50px' : '30px'))
-      .attr('font-style', 'normal')
-      .attr('font-weight', '600')
-      .attr('font-family', 'IBM Plex Mono; monospace')
       .text((d) => typeDisplayOpts[d.type].shortLabel);
 
     simulation.on('tick', () => {
@@ -222,17 +215,17 @@ export class DocmapsWidget extends LitElement {
         .attr('y2', (d) => (d.target as D3Node).y ?? 0);
 
       nodeElements.attr('cx', getNodeX).attr('cy', getNodeY);
-
-      labels.attr('x', getNodeX).attr('y', getNodeY);
+      labels
+        // We offset x slightly because otherwise the label looks a tiny bit off-center horizontally
+        .attr('x', (d: D3Node) => getNodeX(d) + 0.8)
+        .attr('y', getNodeY);
     });
 
     this.setUpTooltips(nodeElements);
     this.setUpTooltips(labels);
   }
 
-  private setUpTooltips(
-    selection: d3.Selection<any, D3Node, SVGGElement, unknown>,
-  ) {
+  private setUpTooltips(selection: d3.Selection<any, D3Node, SVGGElement, unknown>) {
     if (!this.shadowRoot) {
       return;
     }
@@ -251,6 +244,73 @@ export class DocmapsWidget extends LitElement {
         tooltip.style('visibility', 'hidden').style('opacity', 0);
       });
   }
+}
+
+// Dagre is a tool for laying out directed graphs. We use it to generate initial positions for
+// our nodes, which we then pass to d3 to animate into their final positions.
+// Whatever y position we get back from d3 for a given node is fixed in our d3 graph, because
+// we want to maintain a strict vertical hierarchy.
+function getDagreGraph(
+  nodes: DisplayObject[],
+  edges: DisplayObjectEdge[],
+): Dagre.graphlib.Graph<DisplayObject> {
+  const g: Dagre.graphlib.Graph<DisplayObject> = new Dagre.graphlib.Graph();
+
+  g.setGraph({
+    nodesep: 50,
+    marginy: 100,
+    marginx: 30,
+    ranksep: RANK_SEPARATION,
+    width: WIDGET_SIZE,
+    height: GRAPH_CANVAS_HEIGHT,
+  });
+
+  // Default to assigning a new object as a label for each new edge.
+  g.setDefaultEdgeLabel(function () {
+    return {};
+  });
+
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+    const size = i === 0 ? FIRST_NODE_RADIUS : NODE_RADIUS;
+    g.setNode(node.nodeId, { ...node, width: size, height: size });
+  }
+
+  for (const edge of edges) {
+    g.setEdge(edge.sourceId, edge.targetId);
+  }
+  Dagre.layout(g);
+
+  return g;
+}
+
+// Convert the naive "DisplayObject" nodes and edges we get from the Docmap controller
+// into the format that d3 expects.
+// Along the way, we also use Dagre to calculate initial positions for the nodes.
+function prepareGraphForSimulation(
+  nodes: DisplayObject[],
+  edges: DisplayObjectEdge[],
+): {
+  d3Nodes: D3Node[];
+  d3Edges: D3Edge[];
+} {
+  const dagreGraph: Dagre.graphlib.Graph<DisplayObject> = getDagreGraph(nodes, edges);
+
+  const displayNodes: D3Node[] = dagreGraph.nodes().map((nodeId) => {
+    const node = dagreGraph.node(nodeId);
+    return {
+      ...node,
+      // We fix the nodes' vertical position to whatever dagre decided,
+      // but not the horizontal position since we want some nice easing into the final position
+      fy: node.y,
+    };
+  });
+
+  const displayEdges: D3Edge[] = edges.map(
+    (edge): D3Edge => ({ source: edge.sourceId, target: edge.targetId }),
+  );
+
+  return { d3Nodes: displayNodes, d3Edges: displayEdges };
 }
 
 declare global {
