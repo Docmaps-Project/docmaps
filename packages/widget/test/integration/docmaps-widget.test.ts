@@ -23,9 +23,9 @@ test('The header bar is displayed in the graph view even if the requested docmap
 });
 
 const docmapsToTest: [any, number, string[]][] = [
-  [docmapWithOneStep, 2, ["", "RA"]],
-  [anotherDocmapWithOneStep, 4, ["", "RA", "RA", "RA"]],
-  [docmapWithMultipleSteps, 6, ["P", "P", "RA", "RE", "ES", "RA"]],
+  [docmapWithOneStep, 2, ['', 'RA']],
+  [anotherDocmapWithOneStep, 4, ['', 'RA', 'RA', 'RA']],
+  [docmapWithMultipleSteps, 6, ['P', 'P', 'RA', 'RE', 'ES', 'RA']],
 ];
 
 for (const [docmap, expectedNodes, expectedNodeLabels] of docmapsToTest) {
@@ -49,13 +49,17 @@ for (const [docmap, expectedNodes, expectedNodeLabels] of docmapsToTest) {
     const firstCircle = widget.locator('circle').first();
     const firstCircleBoundingBox = await firstCircle.boundingBox();
     expect(firstCircleBoundingBox).toBeDefined();
-    expect(firstCircleBoundingBox.y).toBe(126);
 
     // assert the last circle is at the y location of 282.25
     const lastCircle = widget.locator('circle').last();
     const lastCircleBoundingBox = await lastCircle.boundingBox();
     expect(lastCircleBoundingBox).toBeDefined();
-    expect(lastCircleBoundingBox.y).toBe(282.25);
+
+    // Assert that lastCircleBoundingBox.y is roughly twice the value of firstCircleBoundingBox.y
+    // Because the first node should appear above the other nodes.
+    // We use this math instead of a fixed value because the exact y values change depending on the browser/platform.
+    expect(lastCircleBoundingBox.y).toBeGreaterThan(firstCircleBoundingBox.y * 1.7);
+    expect(lastCircleBoundingBox.y).toBeLessThan(firstCircleBoundingBox.y * 2.3);
 
     // assert the node labels are in the proper order
     await expect(widget.locator('text')).toHaveCount(expectedNodeLabels.length);
