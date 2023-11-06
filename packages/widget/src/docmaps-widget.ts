@@ -287,7 +287,6 @@ function getDagreGraph(
   for (const edge of edges) {
     g.setEdge(edge.sourceId, edge.targetId);
   }
-
   Dagre.layout(g);
 
   return g;

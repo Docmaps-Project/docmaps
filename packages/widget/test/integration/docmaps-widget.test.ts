@@ -22,13 +22,13 @@ test('The header bar is displayed in the graph view even if the requested docmap
   await expect(widget.locator('.widget-header')).toContainText('DOCMAP');
 });
 
-const docmapsToTest: [any, number][] = [
-  [docmapWithOneStep, 2],
-  [anotherDocmapWithOneStep, 4],
-  [docmapWithMultipleSteps, 6],
+const docmapsToTest: [any, number, string[]][] = [
+  [docmapWithOneStep, 2, ["", "RA"]],
+  [anotherDocmapWithOneStep, 4, ["", "RA", "RA", "RA"]],
+  [docmapWithMultipleSteps, 6, ["P", "P", "RA", "RE", "ES", "RA"]],
 ];
 
-for (const [docmap, expectedNodes] of docmapsToTest) {
+for (const [docmap, expectedNodes, expectedNodeLabels] of docmapsToTest) {
   test(`It retrieves a docmap from the server with ${expectedNodes} nodes`, async ({
     mount,
     context,
@@ -56,6 +56,13 @@ for (const [docmap, expectedNodes] of docmapsToTest) {
     const lastCircleBoundingBox = await lastCircle.boundingBox();
     expect(lastCircleBoundingBox).toBeDefined();
     expect(lastCircleBoundingBox.y).toBe(282.25);
+
+    // assert the node labels are in the proper order
+    await expect(widget.locator('text')).toHaveCount(expectedNodeLabels.length);
+    for (let i = 0; i < expectedNodeLabels.length; i++) {
+      const label = widget.locator('text').nth(i);
+      await expect(label).toHaveText(expectedNodeLabels[i]);
+    }
   });
 }
 
