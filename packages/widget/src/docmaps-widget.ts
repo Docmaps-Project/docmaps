@@ -15,7 +15,7 @@ import {
 import { SimulationNodeDatum } from 'd3-force';
 import * as Dagre from 'dagre';
 
-export type D3Node = SimulationNodeDatum & DisplayObject;
+export type D3Node = SimulationNodeDatum & DisplayObject & { x: number; y: number }; // We override x & y since they're optional in SimulationNodeDatum, but not in our use case
 export type D3Edge = SimulationLinkDatum<D3Node>;
 
 const WIDGET_SIZE: number = 500;
@@ -30,6 +30,7 @@ type TypeDisplayOption = {
   longLabel: string;
   backgroundColor: string;
   textColor: string;
+  dottedBorder?: boolean;
 };
 
 const typeDisplayOpts: { [type: string]: TypeDisplayOption } = {
@@ -84,8 +85,9 @@ const typeDisplayOpts: { [type: string]: TypeDisplayOption } = {
   '??': {
     shortLabel: '',
     longLabel: 'Type unknown',
-    backgroundColor: '#868f8f',
-    textColor: '#FFF',
+    backgroundColor: '#EFEFEF',
+    textColor: '#FFF', // Doesn't actually matter since there's no text
+    dottedBorder: true,
   },
 };
 
@@ -137,10 +139,13 @@ export class DocmapsWidget extends LitElement {
 
   private drawGraph(nodes: DisplayObject[], edges: DisplayObjectEdge[]) {
     if (!this.shadowRoot) {
+      // We cannot draw a graph if we aren't able to find the place we want to draw it
       return;
     }
 
+    // Delete any graphs we drew before
     d3.select(this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID} svg`)).remove();
+
     const canvas = this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID}`);
     if (!canvas) {
       throw new Error('SVG element not found');
@@ -164,7 +169,7 @@ export class DocmapsWidget extends LitElement {
             // @ts-ignore
             return d.nodeId;
           })
-          .distance(RANK_SEPARATION * 1.7)
+          .distance(RANK_SEPARATION * 1.5)
           .strength(0.2),
       )
       .force('charge', d3.forceManyBody())
@@ -193,7 +198,16 @@ export class DocmapsWidget extends LitElement {
       .append('circle')
       .attr('class', 'node')
       .attr('fill', (d) => typeDisplayOpts[d.type].backgroundColor)
-      .attr('r', (d, i) => (i === 0 ? FIRST_NODE_RADIUS : NODE_RADIUS));
+      .attr('r', (d: D3Node, i: number): number => (i === 0 ? FIRST_NODE_RADIUS : NODE_RADIUS))
+      .attr('stroke', (d: D3Node): string =>
+        typeDisplayOpts[d.type].dottedBorder ? '#777' : 'none',
+      )
+      .attr('stroke-width', (d: D3Node): string =>
+        typeDisplayOpts[d.type].dottedBorder ? '2px' : 'none',
+      )
+      .attr('stroke-dasharray', (d: D3Node): string =>
+        typeDisplayOpts[d.type].dottedBorder ? '8 4' : 'none',
+      );
 
     const labels = svg
       .append('g')
@@ -285,8 +299,9 @@ function getDagreGraph(
 }
 
 // Convert the naive "DisplayObject" nodes and edges we get from the Docmap controller
-// into the format that d3 expects.
-// Along the way, we also use Dagre to calculate initial positions for the nodes.
+// into nodes and edges that are ready to render via d3
+//
+// Along the way, we also calculate initial positions for the nodes.
 function prepareGraphForSimulation(
   nodes: DisplayObject[],
   edges: DisplayObjectEdge[],

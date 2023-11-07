@@ -61,6 +61,19 @@ for (const [docmap, expectedNodes, expectedNodeLabels] of docmapsToTest) {
     expect(lastCircleBoundingBox.y).toBeGreaterThan(firstCircleBoundingBox.y * 1.7);
     expect(lastCircleBoundingBox.y).toBeLessThan(firstCircleBoundingBox.y * 2.3);
 
+    // assert the nodes are properly styled
+    await expect(widget.locator('circle')).toHaveCount(expectedNodeLabels.length);
+    for (let i = 0; i < expectedNodeLabels.length; i++) {
+      const node = widget.locator('circle').nth(i);
+      const hasType = !!expectedNodeLabels[i];
+      const expectedStroke: string = hasType ? 'none' : '#777';
+      const expectedStrokeWidth: string = hasType ? 'none' : '2px';
+      const expectedStrokeDasharray: string = hasType ? 'none' : '8 4';
+      await expect(node).toHaveAttribute('stroke', expectedStroke);
+      await expect(node).toHaveAttribute('stroke-width', expectedStrokeWidth);
+      await expect(node).toHaveAttribute('stroke-dasharray', expectedStrokeDasharray);
+    }
+
     // assert the node labels are in the proper order
     await expect(widget.locator('text')).toHaveCount(expectedNodeLabels.length);
     for (let i = 0; i < expectedNodeLabels.length; i++) {
