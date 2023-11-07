@@ -279,30 +279,32 @@ export class DocmapsWidget extends LitElement {
   private renderDetailsScreen(node: DisplayObject) {
     this.clearGraph();
     const displayOpts = typeDisplayOpts[node.type];
+    const isEmpty: boolean = false;
+
+    const body = isEmpty
+      ? html` <div class="metadata-item">
+          <div class="metadata-key">no metadata found</div>
+        </div>`
+      : html` <div class="metadata-grid">
+          ${Object.entries(node).map(
+            ([key, value]) => html`
+              <div class="metadata-grid-item key">${key}</div>
+              <div class="metadata-grid-item value">${value}</div>
+            `,
+          )}
+        </div>`;
+
     return html`
-      <div class='detail-timeline'>
-        ${timelinePlaceholder}
-      </div>
-      
-      <div class='detail-header' style='background: ${displayOpts.backgroundColor};'>
-        <span style='color: ${displayOpts.textColor};'>
-          ${displayOpts.longLabel}
-        </span>
-        <div class='close-button clickable' @click='${this.closeDetailsView}'>
+      <div class="detail-timeline">${timelinePlaceholder}</div>
+
+      <div class="detail-header" style="background: ${displayOpts.backgroundColor};">
+        <span style="color: ${displayOpts.textColor};"> ${displayOpts.longLabel} </span>
+        <div class="close-button clickable" @click="${this.closeDetailsView}">
           ${closeDetailsButton(displayOpts.textColor)}
         </div>
       </div>
 
-      <dl>
-        ${Object.entries(node).map(
-          ([key, value]) => html`
-            <dt>${key}</dt>
-            <dd>${value}</dd>
-          `,
-        )}
-      </dl>
-      <button @click='${this.closeDetailsView}'>Back to Graph</button>
-      </div>
+      <div class="detail-body">${body}</div>
     `;
   }
 

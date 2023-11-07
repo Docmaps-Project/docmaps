@@ -9,7 +9,7 @@ export const customCss: CSSResult = css`
     height: 500px;
     background: #EDEDED;
     border: 1px solid;
-    overflow: hidden;
+    overflow-x: hidden;
   }
 
   .logo {
@@ -30,7 +30,7 @@ export const customCss: CSSResult = css`
   .card {
     padding: 2em;
   }
-  
+
   .clickable {
     cursor: pointer;
   }
@@ -98,7 +98,7 @@ export const customCss: CSSResult = css`
     align-items: center;
     gap: 12px;
   }
-  
+
   .detail-header {
     width: 500px;
     height: 50px;
@@ -116,6 +116,38 @@ export const customCss: CSSResult = css`
     line-height: normal;
     text-transform: uppercase;
     margin-left: 36px;
+  }
+
+  .detail-body {
+    color: #000;
+    font-family: 'IBM Plex Mono', 'SF Pro Display', monospace;
+    font-size: 14px;
+    font-style: normal;
+    line-height: normal;
+    overflow-y: scroll;
+  }
+
+  .metadata-grid {
+    display: grid;
+    grid-template-columns: 131px auto;
+    grid-gap: 0
+  }
+
+  .metadata-grid-item {
+    height: 47px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 0.5px solid #C1C1C1;
+    border-right: 0.5px solid #C1C1C1;
+  }
+
+  .metadata-grid-item.key {
+    font-weight: 400;
+  }
+
+  .metadata-grid-item.value {
+    font-weight: 300;
   }
 
   .detail-header .close-button {
