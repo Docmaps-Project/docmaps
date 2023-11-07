@@ -15,7 +15,7 @@ import {
 import { SimulationNodeDatum } from 'd3-force';
 import * as Dagre from 'dagre';
 
-export type D3Node = SimulationNodeDatum & DisplayObject;
+export type D3Node = SimulationNodeDatum & DisplayObject & { x: number; y: number }; // We override x & y since they're optional in SimulationNodeDatum, but not in our use case
 export type D3Edge = SimulationLinkDatum<D3Node>;
 
 const WIDGET_SIZE: number = 500;
@@ -139,10 +139,13 @@ export class DocmapsWidget extends LitElement {
 
   private drawGraph(nodes: DisplayObject[], edges: DisplayObjectEdge[]) {
     if (!this.shadowRoot) {
+      // We cannot draw a graph if we aren't able to find the place we want to draw it
       return;
     }
 
+    // Delete any graphs we drew before
     d3.select(this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID} svg`)).remove();
+
     const canvas = this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID}`);
     if (!canvas) {
       throw new Error('SVG element not found');
@@ -296,8 +299,9 @@ function getDagreGraph(
 }
 
 // Convert the naive "DisplayObject" nodes and edges we get from the Docmap controller
-// into the format that d3 expects.
-// Along the way, we also use Dagre to calculate initial positions for the nodes.
+// into nodes and edges that are ready to render via d3
+//
+// Along the way, we also calculate initial positions for the nodes.
 function prepareGraphForSimulation(
   nodes: DisplayObject[],
   edges: DisplayObjectEdge[],
