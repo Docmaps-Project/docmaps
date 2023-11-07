@@ -33,7 +33,7 @@ type TypeDisplayOption = {
   dottedBorder?: boolean;
 };
 
-const typeDisplayOpts: { [type: string]: TypeDisplayOption } = {
+export const typeDisplayOpts: { [type: string]: TypeDisplayOption } = {
   review: {
     shortLabel: 'R',
     longLabel: 'Review',
