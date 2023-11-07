@@ -1,7 +1,7 @@
 import { html, LitElement, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { customCss } from './styles';
-import { logo } from './assets/logo';
+import { closeDetailsButton, logo, timelinePlaceholder } from './assets';
 import * as d3 from 'd3';
 import { SimulationLinkDatum } from 'd3';
 import { Task } from '@lit/task';
@@ -86,7 +86,7 @@ export const typeDisplayOpts: { [type: string]: TypeDisplayOption } = {
     shortLabel: '',
     longLabel: 'Type unknown',
     backgroundColor: '#EFEFEF',
-    textColor: '#FFF', // Doesn't actually matter since there's no text
+    textColor: '#043945',
     dottedBorder: true,
   },
 };
@@ -100,8 +100,8 @@ export class DocmapsWidget extends LitElement {
   @property({ type: String })
   serverUrl: string = '';
 
-  @property({ type: Number })
-  count: number = 3;
+  @state()
+  selectedNode?: DisplayObject;
 
   #docmapFetchingTask: Task<DocmapFetchingParams, DisplayObjectGraph> = new Task(
     this,
@@ -112,23 +112,30 @@ export class DocmapsWidget extends LitElement {
   static styles = [customCss];
 
   render() {
+    const content = this.selectedNode
+      ? this.renderDetailsScreen(this.selectedNode)
+      : html` <div id="tooltip" class="tooltip" style="opacity:0;"></div>
+
+          ${this.#docmapFetchingTask.render({
+            complete: this.renderDocmap.bind(this),
+          })}`;
+
     return html`
       <div class="widget-header">
         ${logo}
         <span>DOCMAP</span>
       </div>
 
-      <div
-        id="${GRAPH_CANVAS_ID}"
-        style="width: ${WIDGET_SIZE}; height: ${GRAPH_CANVAS_HEIGHT}"
-      ></div>
+      <div id="${GRAPH_CANVAS_ID}"></div>
 
-      <div id="tooltip" class="tooltip" style="opacity:0;"></div>
-
-      ${this.#docmapFetchingTask.render({
-        complete: this.renderDocmap.bind(this),
-      })}
+      ${content}
     `;
+  }
+
+  // Method to handle node click event
+  private onNodeClick(node: DisplayObject) {
+    this.selectedNode = node;
+    this.requestUpdate(); // Trigger re-render
   }
 
   private renderDocmap({ nodes, edges }: DisplayObjectGraph) {
@@ -143,8 +150,7 @@ export class DocmapsWidget extends LitElement {
       return;
     }
 
-    // Delete any graphs we drew before
-    d3.select(this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID} svg`)).remove();
+    this.clearGraph();
 
     const canvas = this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID}`);
     if (!canvas) {
@@ -196,7 +202,7 @@ export class DocmapsWidget extends LitElement {
       .data(d3Nodes)
       .enter()
       .append('circle')
-      .attr('class', 'node')
+      .attr('class', 'node clickable')
       .attr('fill', (d) => typeDisplayOpts[d.type].backgroundColor)
       .attr('r', (d: D3Node, i: number): number => (i === 0 ? FIRST_NODE_RADIUS : NODE_RADIUS))
       .attr('stroke', (d: D3Node): string =>
@@ -216,6 +222,7 @@ export class DocmapsWidget extends LitElement {
       .data(d3Nodes)
       .enter()
       .append('text')
+      .attr('class', 'label clickable')
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'central')
       .attr('fill', (d) => typeDisplayOpts[d.type].textColor) // Set the text color
@@ -235,8 +242,18 @@ export class DocmapsWidget extends LitElement {
         .attr('y', getNodeY);
     });
 
+    nodeElements.on('click', (event, d) => this.onNodeClick(d));
+    labels.on('click', (event, d) => this.onNodeClick(d));
+
     this.setUpTooltips(nodeElements);
     this.setUpTooltips(labels);
+  }
+
+  private clearGraph() {
+    if (!this.shadowRoot) {
+      return;
+    }
+    d3.select(this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID} svg`)).remove();
   }
 
   private setUpTooltips(selection: d3.Selection<any, D3Node, SVGGElement, unknown>) {
@@ -257,6 +274,42 @@ export class DocmapsWidget extends LitElement {
       .on('mouseout', () => {
         tooltip.style('visibility', 'hidden').style('opacity', 0);
       });
+  }
+
+  private renderDetailsScreen(node: DisplayObject) {
+    this.clearGraph();
+    const displayOpts = typeDisplayOpts[node.type];
+    return html`
+      <div class='detail-timeline'>
+        ${timelinePlaceholder}
+      </div>
+      
+      <div class='detail-header' style='background: ${displayOpts.backgroundColor};'>
+        <span style='color: ${displayOpts.textColor};'>
+          ${displayOpts.longLabel}
+        </span>
+        <div class='close-button clickable' @click='${this.closeDetailsView}'>
+          ${closeDetailsButton(displayOpts.textColor)}
+        </div>
+      </div>
+
+      <dl>
+        ${Object.entries(node).map(
+          ([key, value]) => html`
+            <dt>${key}</dt>
+            <dd>${value}</dd>
+          `,
+        )}
+      </dl>
+      <button @click='${this.closeDetailsView}'>Back to Graph</button>
+      </div>
+    `;
+  }
+
+  // Method to clear the selected node and go back to the graph
+  private closeDetailsView() {
+    this.selectedNode = undefined;
+    this.requestUpdate(); // Trigger re-render
   }
 }
 

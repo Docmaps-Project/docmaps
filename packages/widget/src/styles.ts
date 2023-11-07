@@ -8,7 +8,8 @@ export const customCss: CSSResult = css`
     width: 500px;
     height: 500px;
     background: #EDEDED;
-    border: 1px solid
+    border: 1px solid;
+    overflow: hidden;
   }
 
   .logo {
@@ -29,7 +30,10 @@ export const customCss: CSSResult = css`
   .card {
     padding: 2em;
   }
-
+  
+  .clickable {
+    cursor: pointer;
+  }
 
   ::slotted(h1) {
     font-size: 3.2em;
@@ -87,6 +91,40 @@ export const customCss: CSSResult = css`
     text-transform: uppercase;
   }
 
+  .detail-timeline {
+    height: 67px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .detail-header {
+    width: 500px;
+    height: 50px;
+    outline: 1px solid;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .detail-header span {
+    font-family: 'IBM Plex Mono', 'SF Pro Display', monospace;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-transform: uppercase;
+    margin-left: 36px;
+  }
+
+  .detail-header .close-button {
+    margin-right: 25px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
   .docmap-logo {
     display: inline-block;
     margin: 7px 13px 6px 11px
@@ -113,6 +151,7 @@ export const customCss: CSSResult = css`
     //letter-spacing: 10px;
     text-transform: uppercase;
   }
+
   .labels text:first-child {
     font-size: 50px;
   }
