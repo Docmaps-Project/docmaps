@@ -3,6 +3,7 @@ import { readdirSync } from 'fs'
 import { join as fsjoin } from 'path'
 import { HttpServer } from '../../src'
 import { COUNT_TOTAL_TRIPLES_QUERY } from '../../src/sparql'
+import { testLoggerWithPino } from '../utils'
 
 const OXI_SPARQL_BACKEND_BASEURL = 'http://localhost:33078'
 
@@ -116,17 +117,22 @@ function ensureSparqlBackend(log: (s: string) => void) {
   }
 }
 
-async function setupServer(): Promise<HttpServer> {
-  const s = new HttpServer({
-    server: {
-      port: 33033,
-      apiUrl: 'http://localhost:33033/docmaps/v1/',
+async function setupServer(log: (s: string) => void): Promise<HttpServer> {
+  const s = new HttpServer(
+    {
+      server: {
+        port: 33033,
+        apiUrl: 'http://localhost:33033/docmaps/v1/',
+      },
+      backend: {
+        type: 'sparqlEndpoint',
+        sparqlEndpoint: OXI_SPARQL_BACKEND_CONFIG,
+      },
     },
-    backend: {
-      type: 'sparqlEndpoint',
-      sparqlEndpoint: OXI_SPARQL_BACKEND_CONFIG,
+    {
+      logger: testLoggerWithPino(log),
     },
-  })
+  )
 
   await s.listen()
   return s
@@ -139,7 +145,7 @@ export async function withNewServer(
   const start = new Date().getTime()
   ensureSparqlBackend(log)
   const backend = new Date().getTime()
-  const server = await setupServer()
+  const server = await setupServer(log)
   const setup = new Date().getTime()
   await work(server)
   const worked = new Date().getTime()
