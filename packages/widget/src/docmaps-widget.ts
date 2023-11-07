@@ -30,6 +30,7 @@ type TypeDisplayOption = {
   longLabel: string;
   backgroundColor: string;
   textColor: string;
+  dottedBorder?: boolean;
 };
 
 const typeDisplayOpts: { [type: string]: TypeDisplayOption } = {
@@ -84,8 +85,9 @@ const typeDisplayOpts: { [type: string]: TypeDisplayOption } = {
   '??': {
     shortLabel: '',
     longLabel: 'Type unknown',
-    backgroundColor: '#868f8f',
-    textColor: '#FFF',
+    backgroundColor: '#EFEFEF',
+    textColor: '#FFF', // Doesn't actually matter since there's no text
+    dottedBorder: true,
   },
 };
 
@@ -193,7 +195,16 @@ export class DocmapsWidget extends LitElement {
       .append('circle')
       .attr('class', 'node')
       .attr('fill', (d) => typeDisplayOpts[d.type].backgroundColor)
-      .attr('r', (d, i) => (i === 0 ? FIRST_NODE_RADIUS : NODE_RADIUS));
+      .attr('r', (d: D3Node, i: number): number => (i === 0 ? FIRST_NODE_RADIUS : NODE_RADIUS))
+      .attr('stroke', (d: D3Node): string =>
+        typeDisplayOpts[d.type].dottedBorder ? '#777' : 'none',
+      )
+      .attr('stroke-width', (d: D3Node): string =>
+        typeDisplayOpts[d.type].dottedBorder ? '2px' : 'none',
+      )
+      .attr('stroke-dasharray', (d: D3Node): string =>
+        typeDisplayOpts[d.type].dottedBorder ? '8 4' : 'none',
+      );
 
     const labels = svg
       .append('g')
