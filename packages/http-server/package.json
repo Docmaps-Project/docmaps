@@ -45,6 +45,8 @@
     "isomorphic-fetch": "^3.0.0",
     "n3": "^1.17.1",
     "oxigraph": "^0.3.19",
+    "pino": "^8.16.1",
+    "pino-http": "^8.5.1",
     "streaming-iterables": "^8.0.0",
     "tsx": "^3.12.7"
   },
