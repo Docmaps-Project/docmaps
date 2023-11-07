@@ -166,7 +166,7 @@ export class DocmapsWidget extends LitElement {
             // @ts-ignore
             return d.nodeId;
           })
-          .distance(RANK_SEPARATION * 1.7)
+          .distance(RANK_SEPARATION * 1.5)
           .strength(0.2),
       )
       .force('charge', d3.forceManyBody())
