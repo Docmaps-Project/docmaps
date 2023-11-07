@@ -5,6 +5,8 @@ import { API_VERSION } from '../../src'
 import { MakeHttpClient } from '@docmaps/http-client'
 import { withNewServer } from './utils'
 
+import { ErrorBody } from '@docmaps/http-client'
+
 //FIXME: the close step is by far the longest in server setup, so
 //  these should not shut down express server between tests.
 test.serial('it serves info endpoint', async (t) => {
@@ -109,5 +111,29 @@ test.serial('it serves /docmap_for/doi endpoint', async (t) => {
       logo: 'https://sciety.org/static/groups/elife--b560187e-f2fb-4ff9-a861-a204f3fc0fb0.png',
       name: 'eLife',
     })
+  }, t.log)
+})
+
+test.serial('it errors with helpful body in /docmap_for/doi endpoint', async (t) => {
+  await withNewServer(async (_s) => {
+    const client = MakeHttpClient({
+      baseUrl: 'http://localhost:33033',
+      baseHeaders: {},
+    })
+    const testDoi1 = '10.1101/notPresent'
+
+    const resp = await client.getDocmapForDoi({
+      query: { subject: testDoi1 },
+    })
+
+    t.is(
+      resp.status,
+      404,
+      `expected 404 but got ${resp.status} response: ${inspect(resp, { depth: null })}`,
+    )
+
+    const error = resp.body as ErrorBody
+
+    t.deepEqual(error, { message: 'zero quads found for query' })
   }, t.log)
 })

@@ -10,3 +10,5 @@ export type ApiInfo = {
     api_url: string
   }[]
 }
+
+export type ErrorBody = { message?: string; data?: object }

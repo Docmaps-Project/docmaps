@@ -109,7 +109,7 @@ export class HttpServer {
         if (isLeft(result)) {
           return {
             status: 501, // FIXME: more expressive errors.
-            body: result.left,
+            body: { message: result.left.message },
           }
         }
 
@@ -125,7 +125,7 @@ export class HttpServer {
         if (isLeft(result)) {
           return {
             status: 404, // FIXME: more expressive errors.
-            body: result.left,
+            body: { message: result.left.message },
           }
         }
 
