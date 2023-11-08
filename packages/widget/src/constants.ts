@@ -69,3 +69,5 @@ export const TYPE_DISPLAY_OPTIONS: { [type: string]: TypeDisplayOption } = {
     dottedBorder: true,
   },
 };
+
+export const ALL_KNOWN_TYPES: string[] = Object.keys(TYPE_DISPLAY_OPTIONS);

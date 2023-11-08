@@ -3,7 +3,7 @@ import { TaskFunction } from '@lit/task';
 import { ActionT, Docmap, DocmapT, StepT, ThingT } from 'docmaps-sdk';
 import { pipe } from 'fp-ts/lib/function';
 import * as E from 'fp-ts/lib/Either';
-import { TYPE_DISPLAY_OPTIONS } from './constants';
+import { ALL_KNOWN_TYPES } from './constants';
 
 // Each input and output of the Docmap's steps is converted into one of these
 export interface DisplayObject {
@@ -27,10 +27,10 @@ export interface DisplayObjectGraph {
 
 export type DocmapFetchingParams = [string, string]; // [serverUrl, doi]
 
-export const getDocmap: TaskFunction<
-  DocmapFetchingParams,
-  DisplayObjectGraph
-> = async ([serverUrl, doi]): Promise<DisplayObjectGraph> => {
+export const getDocmap: TaskFunction<DocmapFetchingParams, DisplayObjectGraph> = async ([
+  serverUrl,
+  doi,
+]): Promise<DisplayObjectGraph> => {
   const client = MakeHttpClient({
     baseUrl: serverUrl,
     baseHeaders: {},
@@ -41,9 +41,7 @@ export const getDocmap: TaskFunction<
   if (resp.status !== 200) {
     // TODO this is untested
     throw new Error(
-      `Failed to fetch docmap. ${
-        resp.body ? 'Server response was ' + resp.body : ''
-      }`,
+      `Failed to fetch docmap. ${resp.body ? 'Server response was ' + resp.body : ''}`,
     );
   }
 
@@ -57,9 +55,7 @@ export function getSteps(docmapPerhaps: any): StepT[] {
   const stepsMaybe = pipe(docmapPerhaps, Docmap.decode);
 
   if (E.isLeft(stepsMaybe)) {
-    throw new TypeError(
-      `Could not parse Docmap: ${JSON.stringify(docmapPerhaps)}`,
-    );
+    throw new TypeError(`Could not parse Docmap: ${JSON.stringify(docmapPerhaps)}`);
   }
 
   const docmap = stepsMaybe.right;
@@ -133,7 +129,7 @@ export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
 function thingToDisplayObject(thing: ThingT, nodeId: string): DisplayObject {
   // Make sure type is a string (not an array), and that it's one of the types we support displaying
   const providedType = (Array.isArray(thing.type) ? thing.type[0] : thing.type) ?? '??';
-  const displayType = TYPE_DISPLAY_OPTIONS[providedType] ? providedType : '??';
+  const displayType = ALL_KNOWN_TYPES.indexOf(providedType) >= 0 ? providedType : '??';
 
   return {
     nodeId,
@@ -146,8 +142,6 @@ export function sortDisplayObjects(objects: DisplayObject[]): DisplayObject[] {
   return [...objects].sort((a, b) => a.nodeId.localeCompare(b.nodeId));
 }
 
-export function sortDisplayObjectEdges(
-  edges: DisplayObjectEdge[],
-): DisplayObjectEdge[] {
+export function sortDisplayObjectEdges(edges: DisplayObjectEdge[]): DisplayObjectEdge[] {
   return [...edges].sort((a, b) => a.sourceId.localeCompare(b.sourceId));
 }
