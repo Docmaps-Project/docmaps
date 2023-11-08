@@ -366,13 +366,29 @@ function prepareGraphForSimulation(
 } {
   const dagreGraph: Dagre.graphlib.Graph<DisplayObject> = getDagreGraph(nodes, edges);
 
+  // Group nodes by their y position
+  const yLevelNodeMap = new Map<number, D3Node[]>();
+  dagreGraph.nodes().forEach((nodeId) => {
+    const node = dagreGraph.node(nodeId);
+
+    if (!yLevelNodeMap.has(node.y)) {
+      yLevelNodeMap.set(node.y, []);
+    }
+    yLevelNodeMap.get(node.y)?.push(node);
+  });
+
   const displayNodes: D3Node[] = dagreGraph.nodes().map((nodeId) => {
     const node = dagreGraph.node(nodeId);
+    const nodesOnThisLevel = yLevelNodeMap.get(node.y);
+    const isOnlyNodeOnLevel = nodesOnThisLevel && nodesOnThisLevel.length === 1;
+
     return {
       ...node,
-      // We fix the nodes' vertical position to whatever dagre decided,
-      // but not the horizontal position since we want some nice easing into the final position
+      // We fix the nodes' vertical position to whatever dagre decided to maintain the hierarchy
       fy: node.y,
+
+      // Fix the x coordinate to the center if it's the only node on this level
+      ...(isOnlyNodeOnLevel ? { fx: WIDGET_SIZE / 2 } : {}),
     };
   });
 
