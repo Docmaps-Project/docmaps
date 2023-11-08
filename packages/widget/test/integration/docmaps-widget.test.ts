@@ -167,13 +167,6 @@ test('Clicking a node opens the details view for that node', async ({ page, moun
   await expect(detailsHeader).toContainText('Preprint');
 });
 
-type BoundingBox = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
-
 test('Nodes that are alone on their y level are fixed to the center of the widget horizontally', async ({
   page,
   mount,
@@ -193,12 +186,6 @@ test('Nodes that are alone on their y level are fixed to the center of the widge
 
 // ---------- Test utilities are below this line ----------
 
-interface DocmapForResponse {
-  body: string;
-  status: number;
-  contentType?: string;
-}
-
 /**
  * Mocks out the api server's `/docmap_for/doi?subject=<doi>` endpoint to return a specific docmap
  *
@@ -210,7 +197,11 @@ async function mockDocmapForEndpoint(context: BrowserContext, doi: string, docma
   const urlsToMock = (url: URL): boolean => url.toString().includes(options.props.serverUrl);
 
   const mockHandler = async (route: Route, request: Request) => {
-    let response: DocmapForResponse = {
+    let response: {
+      body: string;
+      status: number;
+      contentType?: string;
+    } = {
       status: 400,
       body: `MOCK SERVER: No docmap found for doi '${doi}'`,
     };
