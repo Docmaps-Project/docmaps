@@ -15,7 +15,8 @@ const options: MountOptions<JsonObject, DocmapsWidget> = {
   },
 };
 
-// TODO I don't love that this is a copy of the giant object in docmaps-widget.ts
+// TODO I don't love that this is basically a copy of the giant object in docmaps-widget.ts
+// But unfortunately it's not as trivial as you'd expect to import the options from there.
 const typeShortLabelToOpts: {
   [key: string]: { longLabel: string; backgroundColor: string; textColor: string };
 } = {
