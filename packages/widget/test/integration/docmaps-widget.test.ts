@@ -75,7 +75,7 @@ test('The header bar is displayed in the graph view even if the requested docmap
   await expect(widget.locator('.widget-header')).toContainText('DOCMAP');
 });
 
-const docmapsToTest: [string, any, string[]][] = [
+const graphDisplayTestCases: [string, any, string[]][] = [
   ['docmapWithOneStep', docmapWithOneStep, ['', 'RA']],
   ['anotherDocmapWithOneStep', anotherDocmapWithOneStep, ['', 'RA', 'RA', 'RA']],
   ['docmapWithMultipleSteps', docmapWithMultipleSteps, ['P', 'P', 'RA', 'RE', 'ES', 'RA']],
@@ -85,12 +85,8 @@ const docmapsToTest: [string, any, string[]][] = [
     ['P', 'P', 'RA', 'JA', 'R', 'RE', 'CO', 'ED', 'ES', ''],
   ],
 ];
-
-for (const [testName, docmap, expectedNodeLabels] of docmapsToTest) {
-  test(`It retrieves the docmap ${testName} from the server with nodes`, async ({
-    mount,
-    context,
-  }) => {
+for (const [testName, docmap, expectedNodeLabels] of graphDisplayTestCases) {
+  test(`It can display ${testName} as a graph`, async ({ mount, context }) => {
     const doi: string = 'should-return-something';
     await mockDocmapForEndpoint(context, doi, docmap);
 
@@ -134,7 +130,7 @@ for (const [testName, docmap, expectedNodeLabels] of docmapsToTest) {
   });
 }
 
-test('Tooltips appear on mouseover', async ({ page, mount, context, browserName }) => {
+test('Tooltips appear on mouseover', async ({ mount, context, browserName }) => {
   const docmap = docmapWithMultipleSteps; // Assuming you want to test with this data
   const doi: string = 'tooltip-doi-test';
   await mockDocmapForEndpoint(context, doi, docmap);
@@ -151,31 +147,37 @@ test('Tooltips appear on mouseover', async ({ page, mount, context, browserName 
   }
 });
 
-test('All nodes are clickable and display details view when clicked', async ({ page, mount }) => {
-  const docmap = fakeDocmapWithTwoLonelyNodes;
-  const doi: string = 'get-me-a-docmap-yo';
-  await mockDocmapForEndpoint(page.context(), doi, docmap);
+const detailViewTestCases: [string, number, string][] = [
+  ['Preprints', 0, 'P'],
+  ['Journal Articles', 4, 'JA'],
+];
+for (const [testName, n, expectedShortLabel] of detailViewTestCases) {
+  test(`Can display details view for ${testName}`, async ({ page, mount }) => {
+    const docmap = fakeDocmapWithTwoLonelyNodes;
+    const doi: string = 'get-me-a-docmap-yo';
+    await mockDocmapForEndpoint(page.context(), doi, docmap);
 
-  const widget: Locator = await mount(DocmapsWidget, { props: { ...options.props, doi } });
+    const widget: Locator = await mount(DocmapsWidget, { props: { ...options.props, doi } });
 
-  await expect(widget.locator('.node')).toHaveCount(5);
-  const opts = typeShortLabelToOpts['JA'];
+    await expect(widget.locator('.node')).toHaveCount(5);
+    const opts = typeShortLabelToOpts[expectedShortLabel];
 
-  const nodeToClick = widget.locator('.node').last();
-  await nodeToClick.click({ force: true });
+    const nodeToClick = widget.locator('.node').nth(n);
+    await nodeToClick.click({ force: true });
 
-  await expect(widget.locator('.node')).toHaveCount(0);
+    await expect(widget.locator('.node')).toHaveCount(0);
 
-  // Assert the details view is visible after the click
-  const detailsHeader = widget.locator('.detail-header');
-  await expect(detailsHeader).toBeVisible();
-  await expect(detailsHeader).toContainText(opts.longLabel);
-  await expect(detailsHeader).toHaveAttribute('style', `background: ${opts.backgroundColor};`);
+    // Assert the details view is visible after the click
+    const detailsHeader = widget.locator('.detail-header');
+    await expect(detailsHeader).toBeVisible();
+    await expect(detailsHeader).toContainText(opts.longLabel);
+    await expect(detailsHeader).toHaveAttribute('style', `background: ${opts.backgroundColor};`);
 
-  const closeButton = widget.locator('.close-button');
-  await closeButton.click({ force: true });
-  await expect(widget.locator('.node')).toHaveCount(5);
-});
+    const closeButton = widget.locator('.close-button');
+    await closeButton.click({ force: true });
+    await expect(widget.locator('.node')).toHaveCount(5);
+  });
+}
 
 test('Nodes that are alone on their y level are fixed to the center of the widget horizontally', async ({
   page,
