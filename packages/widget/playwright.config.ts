@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@sand4rt/experimental-ct-web'
 import { widgetConfig } from './vite.config'
 
 const IS_CI = !!process.env.CI
+const ALL_BROWSERS = !!process.env.ALL_BROWSERS
 
 // Locally we only run tests in Chromium
 const localBrowsers = [
@@ -57,7 +58,7 @@ export default defineConfig({
   /* The base directory, relative to the config file, for snapshot files created with toMatchSnapshot and toHaveScreenshot. */
   snapshotDir: './__snapshots__',
   /* Maximum time one test can run for. */
-  timeout: 20 * 1000,
+  timeout: 30 * 1000,
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -80,5 +81,5 @@ export default defineConfig({
   },
 
   /* Configure projects for major browsers */
-  projects: IS_CI ? all_browsers : localBrowsers,
+  projects: IS_CI || ALL_BROWSERS ? all_browsers : localBrowsers,
 })

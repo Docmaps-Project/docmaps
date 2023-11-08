@@ -10,6 +10,7 @@
     "test": "pnpm run test:unit && pnpm run test:integration",
     "test:unit": "ava",
     "test:integration": "playwright test",
+    "test:integration:all-browsers": "ALL_BROWSERS=true playwright test",
     "test:integration:ui": "playwright test --ui"
   },
   "exports": {
