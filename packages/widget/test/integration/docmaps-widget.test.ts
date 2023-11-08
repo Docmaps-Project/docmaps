@@ -202,8 +202,7 @@ interface DocmapForResponse {
  * @param docmapToReturn - The docmap object to return in the response.
  */
 async function mockDocmapForEndpoint(context: BrowserContext, doi: string, docmapToReturn: any) {
-  const mockTheseEndpoints = (url: URL): boolean =>
-    url.toString().includes(options.props.serverUrl);
+  const urlsToMock = (url: URL): boolean => url.toString().includes(options.props.serverUrl);
 
   const mockHandler = async (route: Route, request: Request) => {
     let response: DocmapForResponse = {
@@ -222,7 +221,7 @@ async function mockDocmapForEndpoint(context: BrowserContext, doi: string, docma
     await route.fulfill(response);
   };
 
-  await context.route(mockTheseEndpoints, mockHandler);
+  await context.route(urlsToMock, mockHandler);
 }
 
 async function assertTooltipAppearsOnHover(
