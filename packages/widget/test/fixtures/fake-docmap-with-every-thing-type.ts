@@ -1,172 +1,194 @@
 // This is a copy of elife-docmap-1.ts but with every supported display type in the last step
 
 export default {
-  "id": "https://example.com/synthetic-docmap-1",
-  "type": "docmap",
-  "created": "2022-11-28T11:30:05.000Z",
-  "publisher": {
-    "id": "https://example.com",
-    "homepage": "https://example.com",
-    "logo": "https://example.com/logo.png",
-    "name": "example.com",
-    "account": {
-      "id": "https://example.com/groups/elife",
-      "service": "https://example.com/"
-    }
-  },
-  "first-step": "_:b7",
-  "steps": {
-    "_:b7": {
-      "assertions": [
-        {
-          "item": {
-            "type": "preprint",
-            "doi": "original-preprint-1"
-          },
-          "status": "manuscript-published"
-        }
-      ],
-      "next-step": "_:b9",
-      "actions": [
-        {
-          "outputs": [
-            {
-              "type": "preprint",
-              "doi": "original-preprint-1",
-              "published": "2022-11-22T00:00:00.000Z",
-              "url": "https://www.biorxiv.org/content/original-preprint-1v2"
-            }
-          ],
-          "participants": []
-        }
-      ],
-      "inputs": []
+    "@context": "https://w3id.org/docmaps/context.jsonld",
+    "type": "docmap",
+    "id": "https://data-hub-api.elifesciences.org/enhanced-preprints/docmaps/v1/get-by-doi?preprint_doi=10.1101%2F2022.11.08.000001",
+    "created": "2022-11-28T11:30:05+00:00",
+    "updated": "2022-11-28T11:30:05+00:00",
+    "publisher": {
+      "account": {
+        "id": "https://sciety.org/groups/elife",
+        "service": "https://sciety.org"
+      },
+      "homepage": "https://elifesciences.org/",
+      "id": "https://elifesciences.org/",
+      "logo": "https://sciety.org/static/groups/elife--b560187e-f2fb-4ff9-a861-a204f3fc0fb0.png",
+      "name": "eLife"
     },
-    "_:b9": {
-      "assertions": [
-        {
-          "item": {
-            "type": "preprint",
-            "doi": "elife-republication-of-preprint"
-          },
-          "status": "draft"
-        },
-        {
-          "item": {
-            "type": "preprint",
-            "doi": "original-preprint-1"
-          },
-          "status": "under-review"
-        }
-      ],
-      "next-step": "_:b16",
-      "previous-step": "_:b7",
-      "inputs": [
-        {
-          "type": "preprint",
-          "doi": "original-preprint-1",
-          "url": "https://www.biorxiv.org/content/original-preprint-1v2"
-        }
-      ],
-      "actions": [
-        {
-          "outputs": [
-            {
+    "first-step": "_:b0",
+    "steps": {
+      "_:b0": {
+        "actions": [
+          {
+            "participants": [],
+            "outputs": [
+              {
+                "type": "preprint",
+                "doi": "10.1101/2022.11.08.000001",
+                "url": "https://www.biorxiv.org/content/10.1101/2022.11.08.000001v2",
+                "published": "2022-11-22",
+                "versionIdentifier": "2"
+              }
+            ]
+          }
+        ],
+        "assertions": [
+          {
+            "item": {
               "type": "preprint",
-              "doi": "elife-republication-of-preprint"
-            }
-          ],
-          "participants": []
-        }
-      ]
-    },
-    "_:b16": {
-      "assertions": [
-        {
-          "item": {
-            "type": "preprint",
-            "doi": "original-preprint-1"
+              "doi": "10.1101/2022.11.08.000001",
+              "versionIdentifier": "2"
+            },
+            "status": "manuscript-published"
+          }
+        ],
+        "inputs": [],
+        "next-step": "_:b1"
+      },
+      "_:b1": {
+        "actions": [
+          {
+            "participants": [],
+            "outputs": [
+              {
+                "identifier": "85111",
+                "versionIdentifier": "",
+                "type": "preprint",
+                "doi": "10.7554/eLife.00001"
+              }
+            ]
+          }
+        ],
+        "assertions": [
+          {
+            "item": {
+              "type": "preprint",
+              "doi": "10.1101/2022.11.08.000001",
+              "versionIdentifier": "2"
+            },
+            "status": "under-review",
+            "happened": "2022-11-28T11:30:05+00:00"
           },
-          "status": "peer-reviewed"
-        }
-      ],
-      "previous-step": "_:b9",
-      "inputs": [
-        {
-          "type": "preprint",
-          "doi": "elife-republication-of-preprint",
-          "url": "https://example.com/elife-republication-of-preprint"
-        }
-      ],
-      "actions": [
-        {
-          "participants": [
-            {
-              "actor": {
-                "type": "person",
-                "name": "Andrew Edstrom"
+          {
+            "item": {
+              "type": "preprint",
+              "doi": "10.7554/eLife.00001",
+              "versionIdentifier": ""
+            },
+            "status": "draft"
+          }
+        ],
+        "inputs": [
+          {
+            "type": "preprint",
+            "doi": "10.1101/2022.11.08.000001",
+            "url": "https://www.biorxiv.org/content/10.1101/2022.11.08.000001v2",
+            "versionIdentifier": "2"
+          }
+        ],
+        "next-step": "_:b2",
+        "previous-step": "_:b0"
+      },
+      "_:b2": {
+        "actions": [
+          {
+            "participants": [
+              {
+                "actor": {
+                  "name": "anonymous",
+                  "type": "person"
+                },
+                "role": "peer-reviewer"
+              }
+            ],
+            "outputs": [
+              {
+                "type": "review-article",
+                "published": "2023-01-23T14:34:44.369019+00:00",
+                "content": [
+                  {
+                    "type": "web-page",
+                    "url": "https://hypothes.is/a/FD5EmpsrEe28RaOWOszMEw"
+                  },
+                  {
+                    "type": "web-page",
+                    "url": "https://sciety.org/articles/activity/10.1101/2022.11.08.000001#hypothesis:FD5EmpsrEe28RaOWOszMEw"
+                  },
+                  {
+                    "type": "web-page",
+                    "url": "https://sciety.org/evaluations/hypothesis:FD5EmpsrEe28RaOWOszMEw/content"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "participants": [
+              {
+                "actor": {
+                  "name": "Andrew Edstrom",
+                  "type": "person"
+                },
+                "role": "editor"
+              }
+            ],
+            "outputs": [
+              {
+                "type": "journal-article",
+                "published": "2023-01-23T14:34:45.299Z",
+                "url": "https://example.com/fake-journal/article/3003"
               },
-              "role": "peer-reviewer"
-            }
-          ],
-          "outputs": [
-            {
-              "type": "review",
-              "doi": "fake-review-1",
-              "published": "2023-01-23T14:34:45.299Z",
-              "url": "https://example.com/fake-review-1"
-            },
-            {
+              {
+                "type": "review",
+                "published": "2023-01-23T14:34:45.299Z",
+                "url": "https://example.com/fake/review/3003"
+              },
+              {
+                "type": "reply",
+                "published": "2023-01-23T14:34:45.299Z",
+                "url": "https://example.com/fake/reply/3003"
+              },
+              {
+                "type": "comment",
+                "published": "2023-01-23T14:34:45.299Z",
+                "url": "https://example.com/fake/comment/3003"
+              },
+              {
+                "type": "editorial",
+                "published": "2023-01-23T14:34:45.299Z",
+                "url": "https://example.com/fake/editorial/3003"
+              },
+              {
+                "type": "evaluation-summary",
+                "published": "2023-01-23T14:34:45.299Z",
+                "url": "https://example.com/fake-evaluation/summary/3003"
+              },
+              {
+                "published": "2023-01-23T14:34:45.299Z",
+                "url": "https://example.com/fake/review/3003"
+              }
+
+            ]
+          }
+        ],
+        "assertions": [
+          {
+            "item": {
               "type": "preprint",
-              "doi": "fake-preprint-1",
-              "published": "2023-01-23T14:34:45.299Z",
-              "url": "https://example.com/fake-preprint-1"
+              "doi": "10.1101/2022.11.08.000001",
+              "versionIdentifier": "2"
             },
-            {
-              "type": "evaluation-summary",
-              "doi": "fake-evaluation-summary-1",
-              "published": "2023-01-23T14:34:45.299Z",
-              "url": "https://example.com/fake-evaluation-summary-1"
-            },
-            {
-              "type": "review-article",
-              "doi": "fake-review-article-1",
-              "published": "2023-01-23T14:34:45.299Z",
-              "url": "https://example.com/fake-review-article-1"
-            },
-            {
-              "type": "journal-article",
-              "doi": "fake-journal-article-1",
-              "published": "2023-01-23T14:34:45.299Z",
-              "url": "https://example.com/fake-journal-article-1"
-            },
-            {
-              "type": "editorial",
-              "doi": "fake-editorial-1",
-              "published": "2023-01-23T14:34:45.299Z",
-              "url": "https://example.com/fake-editorial-1"
-            },
-            {
-              "type": "comment",
-              "doi": "fake-comment-1",
-              "published": "2023-01-23T14:34:45.299Z",
-              "url": "https://example.com/fake-comment-1"
-            },
-            {
-              "type": "reply",
-              "doi": "fake-reply-1",
-              "published": "2023-01-23T14:34:45.299Z",
-              "url": "https://example.com/fake-reply-1"
-            },
-            {
-              "doi": "has-no-type-1",
-              "published": "2023-01-23T14:34:45.299Z",
-              "url": "https://example.com/has-no-type-1"
-            }
-          ]
-        }
-      ]
+            "status": "peer-reviewed"
+          }
+        ],
+        "inputs": [
+          {
+            "type": "preprint",
+            "doi": "10.7554/eLife.00001"
+          }
+        ],
+        "previous-step": "_:b1"
+      }
     }
-  },
-  "@context": "https://w3id.org/docmaps/context.jsonld"
-}
+  }

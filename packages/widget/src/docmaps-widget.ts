@@ -163,7 +163,11 @@ export class DocmapsWidget extends LitElement {
       .attr('width', WIDGET_SIZE)
       .attr('height', GRAPH_CANVAS_HEIGHT);
 
-    const { d3Nodes, d3Edges } = prepareGraphForSimulation(nodes, edges);
+    const { d3Nodes, d3Edges, graphWidth } = prepareGraphForSimulation(nodes, edges);
+
+    if (graphWidth) {
+      svg.attr('viewBox', `0 0 ${graphWidth} ${GRAPH_CANVAS_HEIGHT}`);
+    }
 
     const simulation: d3.Simulation<D3Node, D3Edge> = d3
       .forceSimulation(d3Nodes)
@@ -175,14 +179,14 @@ export class DocmapsWidget extends LitElement {
             // @ts-ignore
             return d.nodeId;
           })
-          .distance(RANK_SEPARATION * 1.5)
+          .distance(RANK_SEPARATION * 1.2)
           .strength(0.2),
       )
       .force('charge', d3.forceManyBody())
-      .force('collide', d3.forceCollide(FIRST_NODE_RADIUS))
+      .force('collide', d3.forceCollide(NODE_RADIUS * 1.3))
       .force(
         'center',
-        d3.forceCenter(Math.floor(WIDGET_SIZE / 2), Math.floor(GRAPH_CANVAS_HEIGHT / 2)),
+        d3.forceCenter(Math.floor(graphWidth / 2), Math.floor(GRAPH_CANVAS_HEIGHT / 2)),
       );
 
     const linkElements = svg
@@ -321,15 +325,12 @@ type DagreGraph = Dagre.graphlib.Graph<DisplayObject>;
 // our nodes, which we then pass to d3 to animate into their final positions.
 // Whatever y position we get back from d3 for a given node is fixed in our d3 graph, because
 // we want to maintain a strict vertical hierarchy.
-function getInitialNodePositions(
-  nodes: DisplayObject[],
-  edges: DisplayObjectEdge[],
-): DagreGraph {
+function getInitialNodePositions(nodes: DisplayObject[], edges: DisplayObjectEdge[]): DagreGraph {
   const g: DagreGraph = new Dagre.graphlib.Graph();
 
   g.setGraph({
     nodesep: 50,
-    marginy: 100,
+    marginy: 70,
     marginx: 30,
     ranksep: RANK_SEPARATION,
     width: WIDGET_SIZE,
@@ -376,11 +377,20 @@ function groupNodesByYCoordinate(nodeIds: string[], dagreGraph: DagreGraph) {
 function prepareGraphForSimulation(
   nodes: DisplayObject[],
   edges: DisplayObjectEdge[],
-): {
-  d3Nodes: D3Node[];
-  d3Edges: D3Edge[];
-} {
+): { d3Edges: D3Edge[]; d3Nodes: D3Node[]; graphWidth: number } {
   const dagreGraph: DagreGraph = getInitialNodePositions(nodes, edges);
+
+  const graphBounds = dagreGraph.graph();
+  let graphWidth = WIDGET_SIZE;
+  if (
+    graphBounds.width &&
+    graphBounds.height &&
+    (graphBounds.width > WIDGET_SIZE || graphBounds.height > GRAPH_CANVAS_HEIGHT)
+  ) {
+    const aspectRatio = (1.1 * graphBounds.width) / graphBounds.height;
+    graphWidth = aspectRatio * GRAPH_CANVAS_HEIGHT;
+  }
+
   const nodeIds: string[] = dagreGraph.nodes();
 
   // Group nodes by their y position
@@ -398,7 +408,7 @@ function prepareGraphForSimulation(
       fy: node.y,
 
       // Fix the x coordinate to the center if it's the only node on this level
-      ...(isOnlyNodeOnLevel ? { fx: Math.floor(WIDGET_SIZE / 2) } : {}),
+      ...(isOnlyNodeOnLevel ? { fx: Math.floor(graphWidth / 2) } : {}),
     };
   });
 
@@ -406,7 +416,7 @@ function prepareGraphForSimulation(
     (edge): D3Edge => ({ source: edge.sourceId, target: edge.targetId }),
   );
 
-  return { d3Nodes: displayNodes, d3Edges: displayEdges };
+  return { d3Nodes: displayNodes, d3Edges: displayEdges, graphWidth };
 }
 
 declare global {

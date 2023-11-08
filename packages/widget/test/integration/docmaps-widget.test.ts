@@ -5,7 +5,8 @@ import { JsonObject } from '@playwright/experimental-ct-core/types/component';
 import docmapWithMultipleSteps from '../fixtures/elife-docmap-1';
 import docmapWithOneStep from '../fixtures/sciety-docmap-1';
 import anotherDocmapWithOneStep from '../fixtures/sciety-docmap-2';
-import fakeDocmapWithEveryThingType from '../fixtures/fake-docmap-with-every-thing-type';
+import fakeDocmapWithEveryType from '../fixtures/fake-docmap-with-every-thing-type';
+import fakeDocmapWithTwoLonelyNodes from '../fixtures/fake-docmap-with-two-lonely-nodes';
 
 const options: MountOptions<JsonObject, DocmapsWidget> = {
   props: {
@@ -15,7 +16,9 @@ const options: MountOptions<JsonObject, DocmapsWidget> = {
 };
 
 // TODO I don't love that this is a copy of the giant object in docmaps-widget.ts
-const expectedColorLabels = {
+const typeShortLabelToOpts: {
+  [key: string]: { longLabel: string; backgroundColor: string; textColor: string };
+} = {
   R: {
     longLabel: 'Review',
     backgroundColor: '#222F46',
@@ -77,9 +80,9 @@ const docmapsToTest: [string, any, string[]][] = [
   ['anotherDocmapWithOneStep', anotherDocmapWithOneStep, ['', 'RA', 'RA', 'RA']],
   ['docmapWithMultipleSteps', docmapWithMultipleSteps, ['P', 'P', 'RA', 'RE', 'ES', 'RA']],
   [
-    'fakeDocmapWithEveryThingType',
-    fakeDocmapWithEveryThingType,
-    ['P', 'P', 'R', 'P', 'ES', 'RA', 'JA', 'ED', 'CO', 'RE', ''],
+    'fakeDocmapWithEveryType',
+    fakeDocmapWithEveryType,
+    ['P', 'P', 'RA', 'JA', 'R', 'RE', 'CO', 'ED', 'ES', ''],
   ],
 ];
 
@@ -93,6 +96,9 @@ for (const [testName, docmap, expectedNodeLabels] of docmapsToTest) {
 
     const widget: Locator = await mount(DocmapsWidget, { props: { ...options.props, doi } });
 
+    // const svgViewport = await widget.locator('svg').getAttribute('viewport');
+    // const canvasWidth = svgViewport.split(' ')[2];
+
     await expect(widget.locator('circle')).toHaveCount(expectedNodeLabels.length);
 
     const firstCircle = widget.locator('circle').first();
@@ -102,12 +108,7 @@ for (const [testName, docmap, expectedNodeLabels] of docmapsToTest) {
     const secondCircle = widget.locator('circle').nth(1);
     const secondCircleBoundingBox = await secondCircle.boundingBox();
     expect(secondCircleBoundingBox).toBeDefined();
-
-    // Assert that secondCircleBoundingBox.y is roughly twice the value of firstCircleBoundingBox.y
-    // Because in all the provided examples, the first node appears above the other nodes.
-    // We use this math instead of a fixed value because the exact y values change depending on the browser/platform.
-    expect(secondCircleBoundingBox.y).toBeGreaterThan(firstCircleBoundingBox.y * 1.7);
-    expect(secondCircleBoundingBox.y).toBeLessThan(firstCircleBoundingBox.y * 2.3);
+    expect(secondCircleBoundingBox.y).toBeGreaterThan(firstCircleBoundingBox.y);
 
     // assert the nodes are properly styled and labeled
     await expect(widget.locator('circle')).toHaveCount(expectedNodeLabels.length);
@@ -117,8 +118,8 @@ for (const [testName, docmap, expectedNodeLabels] of docmapsToTest) {
       const expectedStroke: string = hasType ? 'none' : '#777';
       const expectedStrokeWidth: string = hasType ? 'none' : '2px';
       const expectedStrokeDasharray: string = hasType ? 'none' : '8 4';
-      const expectedBackgroundColor = expectedColorLabels[expectedNodeLabels[i]].backgroundColor;
-      const expectedTextColor = expectedColorLabels[expectedNodeLabels[i]].textColor;
+      const expectedBackgroundColor = typeShortLabelToOpts[expectedNodeLabels[i]].backgroundColor;
+      const expectedTextColor = typeShortLabelToOpts[expectedNodeLabels[i]].textColor;
 
       const node = widget.locator('circle').nth(i);
       await expect(node).toHaveAttribute('fill', expectedBackgroundColor);
@@ -150,29 +151,38 @@ test('Tooltips appear on mouseover', async ({ page, mount, context, browserName 
   }
 });
 
-test('Clicking a node opens the details view for that node', async ({ page, mount }) => {
-  const docmap = fakeDocmapWithEveryThingType;
+test('All nodes are clickable and display details view when clicked', async ({ page, mount }) => {
+  const docmap = fakeDocmapWithTwoLonelyNodes;
   const doi: string = 'get-me-a-docmap-yo';
   await mockDocmapForEndpoint(page.context(), doi, docmap);
 
   const widget: Locator = await mount(DocmapsWidget, { props: { ...options.props, doi } });
 
-  const nodeToClick = widget.locator('circle').first();
+  await expect(widget.locator('.node')).toHaveCount(5);
+  const opts = typeShortLabelToOpts['JA'];
+
+  const nodeToClick = widget.locator('.node').last();
   await nodeToClick.click({ force: true });
 
-  const detailsHeader = widget.locator('.detail-header');
+  await expect(widget.locator('.node')).toHaveCount(0);
 
   // Assert the details view is visible after the click
+  const detailsHeader = widget.locator('.detail-header');
   await expect(detailsHeader).toBeVisible();
-  await expect(detailsHeader).toContainText('Preprint');
+  await expect(detailsHeader).toContainText(opts.longLabel);
+  await expect(detailsHeader).toHaveAttribute('style', `background: ${opts.backgroundColor};`);
+
+  const closeButton = widget.locator('.close-button');
+  await closeButton.click({ force: true });
+  await expect(widget.locator('.node')).toHaveCount(5);
 });
 
 test('Nodes that are alone on their y level are fixed to the center of the widget horizontally', async ({
   page,
   mount,
 }) => {
-  const docmap = fakeDocmapWithEveryThingType;
-  const doi: string = 'this-docmap-has-2-lonely-nodes';
+  const docmap = fakeDocmapWithTwoLonelyNodes;
+  const doi: string = 'this-docmap-has-3-lonely-nodes';
   await mockDocmapForEndpoint(page.context(), doi, docmap);
 
   const widget: Locator = await mount(DocmapsWidget, { props: { ...options.props, doi } });
@@ -197,11 +207,7 @@ async function mockDocmapForEndpoint(context: BrowserContext, doi: string, docma
   const urlsToMock = (url: URL): boolean => url.toString().includes(options.props.serverUrl);
 
   const mockHandler = async (route: Route, request: Request) => {
-    let response: {
-      body: string;
-      status: number;
-      contentType?: string;
-    } = {
+    let response: { body: string; status: number; contentType?: string } = {
       status: 400,
       body: `MOCK SERVER: No docmap found for doi '${doi}'`,
     };
