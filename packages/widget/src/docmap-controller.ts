@@ -3,7 +3,7 @@ import { TaskFunction } from '@lit/task';
 import { ActionT, Docmap, DocmapT, StepT, ThingT } from 'docmaps-sdk';
 import { pipe } from 'fp-ts/lib/function';
 import * as E from 'fp-ts/lib/Either';
-import { typeDisplayOpts } from './docmaps-widget';
+import { TYPE_DISPLAY_OPTIONS } from './constants';
 
 // Each input and output of the Docmap's steps is converted into one of these
 export interface DisplayObject {
@@ -133,7 +133,7 @@ export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
 function thingToDisplayObject(thing: ThingT, nodeId: string): DisplayObject {
   // Make sure type is a string (not an array), and that it's one of the types we support displaying
   const providedType = (Array.isArray(thing.type) ? thing.type[0] : thing.type) ?? '??';
-  const displayType = typeDisplayOpts[providedType] ? providedType : '??';
+  const displayType = TYPE_DISPLAY_OPTIONS[providedType] ? providedType : '??';
 
   return {
     nodeId,

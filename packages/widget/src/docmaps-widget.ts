@@ -14,82 +14,18 @@ import {
 } from './docmap-controller';
 import { SimulationNodeDatum } from 'd3-force';
 import * as Dagre from 'dagre';
+import {
+  FIRST_NODE_RADIUS,
+  GRAPH_CANVAS_HEIGHT,
+  GRAPH_CANVAS_ID,
+  NODE_RADIUS,
+  RANK_SEPARATION,
+  TYPE_DISPLAY_OPTIONS,
+  WIDGET_SIZE,
+} from './constants';
 
 export type D3Node = SimulationNodeDatum & DisplayObject & { x: number; y: number }; // We override x & y since they're optional in SimulationNodeDatum, but not in our use case
 export type D3Edge = SimulationLinkDatum<D3Node>;
-
-const WIDGET_SIZE: number = 500;
-const GRAPH_CANVAS_HEIGHT: number = 475;
-const GRAPH_CANVAS_ID: string = 'd3-canvas';
-const FIRST_NODE_RADIUS: number = 50;
-const NODE_RADIUS: number = 37.5;
-const RANK_SEPARATION: number = 100;
-
-type TypeDisplayOption = {
-  shortLabel: string;
-  longLabel: string;
-  backgroundColor: string;
-  textColor: string;
-  dottedBorder?: boolean;
-};
-
-export const typeDisplayOpts: { [type: string]: TypeDisplayOption } = {
-  review: {
-    shortLabel: 'R',
-    longLabel: 'Review',
-    backgroundColor: '#222F46',
-    textColor: '#D7E4FD',
-  },
-  preprint: {
-    shortLabel: 'P',
-    longLabel: 'Preprint',
-    backgroundColor: '#077A12',
-    textColor: '#CBFFD0',
-  },
-  'evaluation-summary': {
-    shortLabel: 'ES',
-    longLabel: 'Evaluation Summary',
-    backgroundColor: '#936308',
-    textColor: '#FFF',
-  },
-  'review-article': {
-    shortLabel: 'RA',
-    longLabel: 'Review Article',
-    backgroundColor: '#099CEE',
-    textColor: '#FFF',
-  },
-  'journal-article': {
-    shortLabel: 'JA',
-    longLabel: 'Journal Article',
-    backgroundColor: '#7B1650',
-    textColor: '#FFF',
-  },
-  editorial: {
-    shortLabel: 'ED',
-    longLabel: 'Editorial',
-    backgroundColor: '#468580',
-    textColor: '#FFFFFF',
-  },
-  comment: {
-    shortLabel: 'CO',
-    longLabel: 'Comment',
-    backgroundColor: '#AB664E',
-    textColor: '#FFF',
-  },
-  reply: {
-    shortLabel: 'RE',
-    longLabel: 'Reply',
-    backgroundColor: '#79109E',
-    textColor: '#FFF',
-  },
-  '??': {
-    shortLabel: '',
-    longLabel: 'Type unknown',
-    backgroundColor: '#EFEFEF',
-    textColor: '#043945',
-    dottedBorder: true,
-  },
-};
 
 // TODO name should be singular not plural
 @customElement('docmaps-widget')
@@ -132,7 +68,6 @@ export class DocmapsWidget extends LitElement {
     `;
   }
 
-  // Method to handle node click event
   private onNodeClick(node: DisplayObject) {
     this.selectedNode = node;
     this.requestUpdate(); // Trigger re-render
@@ -207,16 +142,16 @@ export class DocmapsWidget extends LitElement {
       .enter()
       .append('circle')
       .attr('class', 'node clickable')
-      .attr('fill', (d) => typeDisplayOpts[d.type].backgroundColor)
-      .attr('r', (d: D3Node, i: number): number => (i === 0 ? FIRST_NODE_RADIUS : NODE_RADIUS))
+      .attr('fill', (d) => TYPE_DISPLAY_OPTIONS[d.type].backgroundColor)
+      .attr('r', (_, i: number): number => (i === 0 ? FIRST_NODE_RADIUS : NODE_RADIUS))
       .attr('stroke', (d: D3Node): string =>
-        typeDisplayOpts[d.type].dottedBorder ? '#777' : 'none',
+        TYPE_DISPLAY_OPTIONS[d.type].dottedBorder ? '#777' : 'none',
       )
       .attr('stroke-width', (d: D3Node): string =>
-        typeDisplayOpts[d.type].dottedBorder ? '2px' : 'none',
+        TYPE_DISPLAY_OPTIONS[d.type].dottedBorder ? '2px' : 'none',
       )
       .attr('stroke-dasharray', (d: D3Node): string =>
-        typeDisplayOpts[d.type].dottedBorder ? '8 4' : 'none',
+        TYPE_DISPLAY_OPTIONS[d.type].dottedBorder ? '8 4' : 'none',
       );
 
     const labels = svg
@@ -229,8 +164,8 @@ export class DocmapsWidget extends LitElement {
       .attr('class', 'label clickable')
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'central')
-      .attr('fill', (d) => typeDisplayOpts[d.type].textColor) // Set the text color
-      .text((d) => typeDisplayOpts[d.type].shortLabel);
+      .attr('fill', (d) => TYPE_DISPLAY_OPTIONS[d.type].textColor) // Set the text color
+      .text((d) => TYPE_DISPLAY_OPTIONS[d.type].shortLabel);
 
     simulation.on('tick', () => {
       linkElements
@@ -246,8 +181,8 @@ export class DocmapsWidget extends LitElement {
         .attr('y', getNodeY);
     });
 
-    nodeElements.on('click', (event, d) => this.onNodeClick(d));
-    labels.on('click', (event, d) => this.onNodeClick(d));
+    nodeElements.on('click', (_event, d) => this.onNodeClick(d));
+    labels.on('click', (_event, d) => this.onNodeClick(d));
 
     this.setUpTooltips(nodeElements);
     this.setUpTooltips(labels);
@@ -269,7 +204,7 @@ export class DocmapsWidget extends LitElement {
     selection
       .on('mouseover', function (event, d) {
         tooltip
-          .html(() => typeDisplayOpts[d.type].longLabel)
+          .html(() => TYPE_DISPLAY_OPTIONS[d.type].longLabel)
           .style('visibility', 'visible')
           .style('opacity', 1)
           .style('left', `${event.pageX + 5}px`) // Position the tooltip at the mouse location
@@ -282,7 +217,7 @@ export class DocmapsWidget extends LitElement {
 
   private renderDetailsScreen(node: DisplayObject) {
     this.clearGraph();
-    const displayOpts = typeDisplayOpts[node.type];
+    const displayOpts = TYPE_DISPLAY_OPTIONS[node.type];
     const isEmpty: boolean = false;
 
     const body = isEmpty
