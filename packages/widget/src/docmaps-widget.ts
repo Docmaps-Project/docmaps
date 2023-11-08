@@ -315,15 +315,17 @@ export class DocmapsWidget extends LitElement {
   }
 }
 
+type DagreGraph = Dagre.graphlib.Graph<DisplayObject>;
+
 // Dagre is a tool for laying out directed graphs. We use it to generate initial positions for
 // our nodes, which we then pass to d3 to animate into their final positions.
 // Whatever y position we get back from d3 for a given node is fixed in our d3 graph, because
 // we want to maintain a strict vertical hierarchy.
-function getDagreGraph(
+function getInitialNodePositions(
   nodes: DisplayObject[],
   edges: DisplayObjectEdge[],
-): Dagre.graphlib.Graph<DisplayObject> {
-  const g: Dagre.graphlib.Graph<DisplayObject> = new Dagre.graphlib.Graph();
+): DagreGraph {
+  const g: DagreGraph = new Dagre.graphlib.Graph();
 
   g.setGraph({
     nodesep: 50,
@@ -335,9 +337,7 @@ function getDagreGraph(
   });
 
   // Default to assigning a new object as a label for each new edge.
-  g.setDefaultEdgeLabel(function () {
-    return {};
-  });
+  g.setDefaultEdgeLabel(() => ({}));
 
   for (let i = 0; i < nodes.length; i++) {
     const node = nodes[i];
@@ -353,6 +353,22 @@ function getDagreGraph(
   return g;
 }
 
+function groupNodesByYCoordinate(nodeIds: string[], dagreGraph: DagreGraph) {
+  const yLevelNodeMap = new Map<number, D3Node[]>();
+  nodeIds.forEach((nodeId) => {
+    const node = dagreGraph.node(nodeId);
+    const yLevel = node.y;
+
+    // Initialize the array for this y level if it doesn't exist yet
+    if (!yLevelNodeMap.has(yLevel)) {
+      yLevelNodeMap.set(yLevel, []);
+    }
+
+    yLevelNodeMap.get(yLevel)?.push(node);
+  });
+  return yLevelNodeMap;
+}
+
 // Convert the naive "DisplayObject" nodes and edges we get from the Docmap controller
 // into nodes and edges that are ready to render via d3
 //
@@ -364,20 +380,14 @@ function prepareGraphForSimulation(
   d3Nodes: D3Node[];
   d3Edges: D3Edge[];
 } {
-  const dagreGraph: Dagre.graphlib.Graph<DisplayObject> = getDagreGraph(nodes, edges);
+  const dagreGraph: DagreGraph = getInitialNodePositions(nodes, edges);
+  const nodeIds: string[] = dagreGraph.nodes();
 
   // Group nodes by their y position
-  const yLevelNodeMap = new Map<number, D3Node[]>();
-  dagreGraph.nodes().forEach((nodeId) => {
-    const node = dagreGraph.node(nodeId);
+  // So we can determine later if a node is the only one on its level
+  const yLevelNodeMap = groupNodesByYCoordinate(nodeIds, dagreGraph);
 
-    if (!yLevelNodeMap.has(node.y)) {
-      yLevelNodeMap.set(node.y, []);
-    }
-    yLevelNodeMap.get(node.y)?.push(node);
-  });
-
-  const displayNodes: D3Node[] = dagreGraph.nodes().map((nodeId) => {
+  const displayNodes: D3Node[] = nodeIds.map((nodeId) => {
     const node = dagreGraph.node(nodeId);
     const nodesOnThisLevel = yLevelNodeMap.get(node.y);
     const isOnlyNodeOnLevel = nodesOnThisLevel && nodesOnThisLevel.length === 1;
@@ -388,7 +398,7 @@ function prepareGraphForSimulation(
       fy: node.y,
 
       // Fix the x coordinate to the center if it's the only node on this level
-      ...(isOnlyNodeOnLevel ? { fx: WIDGET_SIZE / 2 } : {}),
+      ...(isOnlyNodeOnLevel ? { fx: Math.floor(WIDGET_SIZE / 2) } : {}),
     };
   });
 
