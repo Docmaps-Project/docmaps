@@ -11,7 +11,7 @@ import fakeDocmapWithTwoLonelyNodes from '../fixtures/fake-docmap-with-two-lonel
 const options: MountOptions<JsonObject, DocmapsWidget> = {
   props: {
     doi: 'test-doi',
-    serverUrl: 'http://localhost:8080',
+    serverUrl: 'http://example.com',
   },
 };
 
