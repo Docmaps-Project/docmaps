@@ -32,7 +32,7 @@
     "crossref-openapi-client-ts": "^1.3.0",
     "docmaps-sdk": "workspace:^0.0.0",
     "fp-ts": "^2.14.0",
-    "tsx": "^3.12.7",
+    "tsx": "^4.0.0",
     "typescript-collections": "^1.3.3"
   },
   "devDependencies": {
