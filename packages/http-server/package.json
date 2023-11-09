@@ -48,7 +48,7 @@
     "pino": "^8.16.1",
     "pino-http": "^8.5.1",
     "streaming-iterables": "^8.0.0",
-    "tsx": "^3.12.7"
+    "tsx": "^4.0.0"
   },
   "devDependencies": {
     "@rdfjs/types": "^1.1.0",
