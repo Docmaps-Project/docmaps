@@ -215,56 +215,64 @@ export class DocmapsWidget extends LitElement {
       });
   }
 
-  private renderDetailsScreen(node: DisplayObject) {
+  private renderDetailsScreen(node: DisplayObject): TemplateResult<1> {
     this.clearGraph();
-    const displayOpts = TYPE_DISPLAY_OPTIONS[node.type];
-    const isEmpty: boolean = false;
+    const displayOptions = TYPE_DISPLAY_OPTIONS[node.type];
+    const metadataEntries = this.filterMetadataEntries(node);
 
-    const fieldsToDisplay: string[] = ['doi', 'id', 'published', 'url', 'content'];
-    const metadataToDisplay: [string, any][] = Object.entries(node).filter(
-      ([key, value]) => fieldsToDisplay.includes(key) && value,
-    );
-
-    let body: TemplateResult<1> = html`
-      <div class='metadata-item'>
-        <div class='metadata-key'>no metadata found</div>
-      </div>`;
-    
-    if (!isEmpty) {
-      const gridItems = metadataToDisplay.map(([key, value], metadataIdx) => {
-        if (!Array.isArray(value)) {
-          // If it's not an array, just display the key and value as normal
-          return html`
-            <div class="metadata-grid-item key">${key}</div>
-            <div class="metadata-grid-item value">${value}</div>
-          `;
-        } else {
-          const values = value // since it's an array
-          return html`
-            <div class='metadata-grid-item key'
-                 style='grid-row-start: ${metadataIdx + 1}; grid-row-end: ${metadataIdx + values.length + 1};'>
-              ${key}
-            </div>
-            
-            ${values.map( val => html` <div class='metadata-grid-item value content'>${val}</div> `)}  
-          `
-        }
-      });
-      body = html` <div class="metadata-grid">${gridItems}</div>`;
-    }
+    const metadataBody =
+      metadataEntries.length > 0
+        ? this.createMetadataGrid(metadataEntries)
+        : this.emptyMetadataMessage();
 
     return html`
-      <div class="detail-timeline">${timelinePlaceholder}</div>
+      <div class='detail-timeline'>${timelinePlaceholder}</div>
 
-      <div class="detail-header" style="background: ${displayOpts.backgroundColor};">
-        <span style="color: ${displayOpts.textColor};"> ${displayOpts.longLabel} </span>
-        <div class="close-button clickable" @click="${this.closeDetailsView}">
-          ${closeDetailsButton(displayOpts.textColor)}
+      <div class='detail-header' style='background: ${displayOptions.backgroundColor};'>
+        <span style='color: ${displayOptions.textColor};'> ${displayOptions.longLabel} </span>
+        <div class='close-button clickable' @click='${this.closeDetailsView}'>
+          ${closeDetailsButton(displayOptions.textColor)}
         </div>
       </div>
 
-      <div class="detail-body">${body}</div>
+      <div class='detail-body'>${metadataBody}</div>
     `;
+  }
+
+  private filterMetadataEntries(node: DisplayObject): [string, any][] {
+    const fieldsToDisplay = ['doi', 'id', 'published', 'url', 'content'];
+    return Object.entries(node).filter(([key, value]) => fieldsToDisplay.includes(key) && value);
+  }
+
+  private createMetadataGrid(metadataEntries: [string, any][]): TemplateResult<1> {
+    const gridItems = metadataEntries.map((entry, index) => this.createGridItem(entry, index));
+    return html` <div class="metadata-grid">${gridItems}</div>`;
+  }
+
+  private createGridItem([key, value]: [string, any], index: number): TemplateResult<1> {
+    if (!Array.isArray(value)) {
+      return html`
+        <div class="metadata-grid-item key">${key}</div>
+        <div class="metadata-grid-item value">${value}</div>
+      `;
+    }
+
+    const values = value; // since it's an array
+    return html`
+      <div
+        class="metadata-grid-item key"
+        style="grid-row-start: ${index + 1}; grid-row-end: ${index + values.length + 1};"
+      >
+        ${key}
+      </div>
+      ${values.map((val) => html` <div class="metadata-grid-item value content">${val}</div>`)}
+    `;
+  }
+
+  private emptyMetadataMessage(): TemplateResult<1> {
+    return html` <div class="metadata-item">
+      <div class="metadata-key">no metadata found</div>
+    </div>`;
   }
 
   // Method to clear the selected node and go back to the graph
