@@ -131,11 +131,41 @@ function thingToDisplayObject(thing: ThingT, nodeId: string): DisplayObject {
   const providedType = (Array.isArray(thing.type) ? thing.type[0] : thing.type) ?? '??';
   const displayType = ALL_KNOWN_TYPES.indexOf(providedType) >= 0 ? providedType : '??';
 
+  let published: string | undefined =
+    thing.published && thing.published instanceof Date
+      ? formatDate(thing.published)
+      : thing.published;
+
   return {
     nodeId,
     type: displayType,
     doi: thing.doi,
+    id: thing.id,
+    published,
+    url: thing.url,
   };
+}
+
+function formatDate(date: Date) {
+  const yyyy = date.getFullYear();
+
+  // The getMonth() method returns the month (0-11) for the specified date,
+  // so you need to add 1 to get the correct month.
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+
+  // Convert month and day numbers to strings and prefix them with a zero if they're below 10
+  let mm = month.toString();
+  if (month < 10) {
+    mm = '0' + month;
+  }
+
+  let dd = day.toString();
+  if (day < 10) {
+    dd = '0' + day.toString();
+  }
+
+  return yyyy + '-' + mm + '-' + dd;
 }
 
 export function sortDisplayObjects(objects: DisplayObject[]): DisplayObject[] {

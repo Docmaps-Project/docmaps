@@ -26,8 +26,9 @@ export default {
             {
               "type": "preprint",
               "doi": "10.1101/2022.11.08.000002",
-              "url": "https://www.biorxiv.org/content/10.1101/2022.11.08.000002v2",
-              "published": "2022-11-22",
+              "id": "sick-preprint-bro",
+              "url": "http://example.com/sick-preprint-yo",
+              "published": "1993-10-20",
               "versionIdentifier": "2"
             }
           ]
@@ -75,7 +76,7 @@ export default {
         {
           "type": "preprint",
           "doi": "10.1101/2022.11.08.000002",
-          "url": "https://www.biorxiv.org/content/10.1101/2022.11.08.000002v2",
+          "url": "http://example.com/sick-preprint-yo",
           "versionIdentifier": "2"
         }
       ],
@@ -128,21 +129,7 @@ export default {
           "outputs": [
             {
               "type": "review-article",
-              "published": "2023-01-23T14:34:44.369019+00:00",
-              "content": [
-                {
-                  "type": "web-page",
-                  "url": "https://hypothes.is/a/FD5EmpsrEe28RaOWOszMEw"
-                },
-                {
-                  "type": "web-page",
-                  "url": "https://sciety.org/articles/activity/10.1101/2022.11.08.000002#hypothesis:FD5EmpsrEe28RaOWOszMEw"
-                },
-                {
-                  "type": "web-page",
-                  "url": "https://sciety.org/evaluations/hypothesis:FD5EmpsrEe28RaOWOszMEw/content"
-                }
-              ]
+              "published": "2023-01-23T14:34:44.369019+00:00"
             }
           ]
         },
@@ -160,7 +147,21 @@ export default {
             {
               "type": "journal-article",
               "published": "2023-01-23T14:34:45.299Z",
-              "url": "https://example.com/fake-journal/article/3003"
+              "url": "https://example.com/fake-journal/article/3003",
+              "content": [
+                {
+                  "type": "web-page",
+                  "url": "https://hypothes.is/a/FD5EmpsrEe28RaOWOszMEw"
+                },
+                {
+                  "type": "web-page",
+                  "url": "https://sciety.org/articles/activity/10.1101/2022.11.08.000002#hypothesis:FD5EmpsrEe28RaOWOszMEw"
+                },
+                {
+                  "type": "web-page",
+                  "url": "https://sciety.org/evaluations/hypothesis:FD5EmpsrEe28RaOWOszMEw/content"
+                }
+              ]
             }
           ]
         }

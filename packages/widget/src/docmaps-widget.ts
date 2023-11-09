@@ -220,12 +220,17 @@ export class DocmapsWidget extends LitElement {
     const displayOpts = TYPE_DISPLAY_OPTIONS[node.type];
     const isEmpty: boolean = false;
 
+    const fieldsToDisplay: string[] = ['doi', 'id', 'published', 'url'];
+    const metadataToDisplay: [string, any][] = Object.entries(node).filter(
+      ([key, value]) => fieldsToDisplay.includes(key) && value,
+    );
+
     const body = isEmpty
       ? html` <div class="metadata-item">
           <div class="metadata-key">no metadata found</div>
         </div>`
       : html` <div class="metadata-grid">
-          ${Object.entries(node).map(
+          ${metadataToDisplay.map(
             ([key, value]) => html`
               <div class="metadata-grid-item key">${key}</div>
               <div class="metadata-grid-item value">${value}</div>
@@ -348,7 +353,7 @@ function prepareGraphForSimulation(
   });
 
   const displayEdges: D3Edge[] = edges.map(
-    (edge): D3Edge => ({ source: edge.sourceId, target: edge.targetId }),
+    (e: DisplayObjectEdge): D3Edge => ({ source: e.sourceId, target: e.targetId }),
   );
 
   return { d3Nodes: displayNodes, d3Edges: displayEdges, graphWidth };

@@ -148,37 +148,97 @@ test('Tooltips appear on mouseover', async ({ mount, context, browserName }) => 
   }
 });
 
-const detailViewTestCases: [string, number, string][] = [
-  ['Preprints', 0, 'P'],
-  ['Journal Articles', 4, 'JA'],
-];
-for (const [testName, n, expectedShortLabel] of detailViewTestCases) {
-  test(`Can display details view for ${testName}`, async ({ page, mount }) => {
-    const docmap = fakeDocmapWithTwoLonelyNodes;
-    const doi: string = 'get-me-a-docmap-yo';
-    await mockDocmapForEndpoint(page.context(), doi, docmap);
+// TODO test for Thing with no metadata
 
-    const widget: Locator = await mount(DocmapsWidget, { props: { ...options.props, doi } });
+test(`Can display details view for a Preprint with every field`, async ({ page, mount }) => {
+  const docmap = fakeDocmapWithTwoLonelyNodes;
+  const doi: string = 'get-me-a-docmap-yo';
+  await mockDocmapForEndpoint(page.context(), doi, docmap);
 
-    await expect(widget.locator('.node')).toHaveCount(5);
-    const opts = typeShortLabelToOpts[expectedShortLabel];
+  const widget: Locator = await mount(DocmapsWidget, { props: { ...options.props, doi } });
 
-    const nodeToClick = widget.locator('.node').nth(n);
-    await nodeToClick.click({ force: true });
+  await expect(widget.locator('.node')).toHaveCount(5);
+  const nodeToClick = widget.locator('.node').first();
+  await nodeToClick.click({ force: true });
 
-    await expect(widget.locator('.node')).toHaveCount(0);
+  await expect(widget.locator('.node')).toHaveCount(0);
 
-    // Assert the details view is visible after the click
-    const detailsHeader = widget.locator('.detail-header');
-    await expect(detailsHeader).toBeVisible();
-    await expect(detailsHeader).toContainText(opts.longLabel);
-    await expect(detailsHeader).toHaveAttribute('style', `background: ${opts.backgroundColor};`);
+  const detailsHeader = widget.locator('.detail-header');
+  await expect(detailsHeader).toContainText("Preprint");
+  await expect(detailsHeader).toHaveAttribute('style', `background: ${typeShortLabelToOpts['P'].backgroundColor};`);
 
-    const closeButton = widget.locator('.close-button');
-    await closeButton.click({ force: true });
-    await expect(widget.locator('.node')).toHaveCount(5);
-  });
-}
+  const keys = widget.locator('.metadata-grid-item.key');
+  const vals = widget.locator('.metadata-grid-item.value');
+  await expect(keys).toHaveCount(4);
+  await expect(vals).toHaveCount(4);
+
+  await expect(keys.nth(0)).toContainText('doi');
+  await expect(vals.nth(0)).toContainText('10.1101/2022.11.08.000002');
+
+  await expect(keys.nth(1)).toContainText('id');
+  await expect(vals.nth(1)).toContainText('sick-preprint-bro');
+
+  await expect(keys.nth(2)).toContainText('published');
+  await expect(vals.nth(2)).toContainText('1993-10-19');
+
+  await expect(keys.nth(3)).toContainText('url');
+  await expect(vals.nth(3)).toContainText('http://example.com/sick-preprint-yo');
+
+  // Fields that can be visible here:
+  // doi - String
+  // id - String
+  // published - Date
+  // url - String
+  // type - Either a string or a list of strings
+
+
+  // content - a list of urls associated with this thing.
+  // participants - a list of people with names.
+
+  // Assert the details display can be closed
+  await widget.locator('.close-button').click({ force: true });
+  await expect(widget.locator('.node')).toHaveCount(5);
+});
+
+test('Can display details view for a Journal Article with different fields', async ({
+  page,
+  mount,
+}) => {
+  const docmap = fakeDocmapWithTwoLonelyNodes;
+  const doi: string = 'get-me-a-docmap-yo';
+  await mockDocmapForEndpoint(page.context(), doi, docmap);
+
+  const widget: Locator = await mount(DocmapsWidget, { props: { ...options.props, doi } });
+
+  await expect(widget.locator('.node')).toHaveCount(5);
+  const opts = typeShortLabelToOpts['JA'];
+
+  const nodeToClick = widget.locator('.node').nth(4);
+  await nodeToClick.click({ force: true });
+
+  await expect(widget.locator('.node')).toHaveCount(0);
+
+  // Assert the details view is visible after the click
+  const detailsHeader = widget.locator('.detail-header');
+  await expect(detailsHeader).toContainText("Journal Article");
+  await expect(detailsHeader).toHaveAttribute('style', `background: ${opts.backgroundColor};`);
+
+  const keys = widget.locator('.metadata-grid-item.key');
+  const vals = widget.locator('.metadata-grid-item.value');
+  await expect(keys).toHaveCount(2);
+  await expect(vals).toHaveCount(2);
+
+  await expect(keys.nth(0)).toContainText('published');
+  await expect(vals.nth(0)).toContainText('2023-01-23');
+
+  await expect(keys.nth(1)).toContainText('url');
+  await expect(vals.nth(1)).toContainText('https://example.com/fake-journal/article/3003');
+
+  // await expect(keys.nth(0)).toContainText('doi');
+  // await expect(vals.nth(0)).toContainText('10.1101/2022.11.08.000002');
+
+  // await expect(widget.locator('.metadata-grid-item.key').nth(0)).toContainText('');
+});
 
 test('Nodes that are alone on their y level are fixed to the center of the widget horizontally', async ({
   page,

@@ -132,7 +132,7 @@ export const customCss: CSSResult = css`
   }
 
   .metadata-grid-item {
-    height: 47px;
+    min-height: 47px;
     display: flex;
     align-items: center;
     justify-content: center;
