@@ -151,15 +151,15 @@ export default {
               "content": [
                 {
                   "type": "web-page",
-                  "url": "https://hypothes.is/a/FD5EmpsrEe28RaOWOszMEw"
+                  "url": "http://example.com/fake-journal/article/3003.mp4"
                 },
                 {
                   "type": "web-page",
-                  "url": "https://sciety.org/articles/activity/10.1101/2022.11.08.000002#hypothesis:FD5EmpsrEe28RaOWOszMEw"
+                  "url": "http://example.com/fake-journal/article/3003.pdf"
                 },
                 {
                   "type": "web-page",
-                  "url": "https://sciety.org/evaluations/hypothesis:FD5EmpsrEe28RaOWOszMEw/content"
+                  "url": "http://example.com/fake-journal/article/3003.xml"
                 }
               ]
             }

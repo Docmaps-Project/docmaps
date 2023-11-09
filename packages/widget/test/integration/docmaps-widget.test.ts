@@ -225,8 +225,8 @@ test('Can display details view for a Journal Article with different fields', asy
 
   const keys = widget.locator('.metadata-grid-item.key');
   const vals = widget.locator('.metadata-grid-item.value');
-  await expect(keys).toHaveCount(2);
-  await expect(vals).toHaveCount(2);
+  await expect(keys).toHaveCount(3);
+  await expect(vals).toHaveCount(5);
 
   await expect(keys.nth(0)).toContainText('published');
   await expect(vals.nth(0)).toContainText('2023-01-23');
@@ -234,10 +234,10 @@ test('Can display details view for a Journal Article with different fields', asy
   await expect(keys.nth(1)).toContainText('url');
   await expect(vals.nth(1)).toContainText('https://example.com/fake-journal/article/3003');
 
-  // await expect(keys.nth(0)).toContainText('doi');
-  // await expect(vals.nth(0)).toContainText('10.1101/2022.11.08.000002');
-
-  // await expect(widget.locator('.metadata-grid-item.key').nth(0)).toContainText('');
+  await expect(keys.nth(2)).toContainText('content');
+  await expect(vals.nth(2)).toContainText('http://example.com/fake-journal/article/3003.mp4');
+  await expect(vals.nth(3)).toContainText('http://example.com/fake-journal/article/3003.pdf');
+  await expect(vals.nth(4)).toContainText('http://example.com/fake-journal/article/3003.xml');
 });
 
 test('Nodes that are alone on their y level are fixed to the center of the widget horizontally', async ({

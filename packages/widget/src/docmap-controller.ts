@@ -13,6 +13,7 @@ export interface DisplayObject {
   id?: string;
   published?: string;
   url?: URL;
+  content?: string[];
 }
 
 export interface DisplayObjectEdge {
@@ -136,6 +137,14 @@ function thingToDisplayObject(thing: ThingT, nodeId: string): DisplayObject {
       ? formatDate(thing.published)
       : thing.published;
 
+  let content = thing.content
+    ? thing.content
+        .map((manifestation) => {
+          return manifestation.url?.toString();
+        })
+      .filter((url): url is string => url !== undefined)
+    : undefined;
+
   return {
     nodeId,
     type: displayType,
@@ -143,6 +152,7 @@ function thingToDisplayObject(thing: ThingT, nodeId: string): DisplayObject {
     id: thing.id,
     published,
     url: thing.url,
+    content,
   };
 }
 

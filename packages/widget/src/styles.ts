@@ -118,6 +118,7 @@ export const customCss: CSSResult = css`
 
   .detail-body {
     color: #000;
+    width: 500px;
     font-family: 'IBM Plex Mono', 'SF Pro Display', monospace;
     font-size: 14px;
     font-style: normal;
@@ -127,15 +128,21 @@ export const customCss: CSSResult = css`
 
   .metadata-grid {
     display: grid;
-    grid-template-columns: 131px auto;
+    grid-template-columns: 131px 369px;
     grid-gap: 0
   }
 
   .metadata-grid-item {
     min-height: 47px;
+    max-width: 369px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-left: 33px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    white-space: normal;
     border-bottom: 0.5px solid #C1C1C1;
     border-right: 0.5px solid #C1C1C1;
   }
@@ -146,6 +153,15 @@ export const customCss: CSSResult = css`
 
   .metadata-grid-item.value {
     font-weight: 300;
+    max-width: 369px;
+    padding-right: 46px;
+  }
+
+  .metadata-grid-item.value.content {
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 300;
+    line-height: normal;
   }
 
   .detail-header .close-button {
@@ -174,7 +190,7 @@ export const customCss: CSSResult = css`
 
   .labels text {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 30px; /* This is the default size; it will be overridden by specific styles below */
+    font-size: 30px; /* Default size which is overridden for the first node below */
     font-style: normal;
     font-weight: 600;
     text-anchor: middle;
@@ -185,5 +201,4 @@ export const customCss: CSSResult = css`
   .labels text:first-child {
     font-size: 50px;
   }
-
 `

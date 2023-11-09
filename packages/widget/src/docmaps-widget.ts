@@ -1,4 +1,4 @@
-import { html, LitElement, nothing } from 'lit';
+import { html, LitElement, nothing, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { customCss } from './styles';
 import { closeDetailsButton, logo, timelinePlaceholder } from './assets';
@@ -220,23 +220,38 @@ export class DocmapsWidget extends LitElement {
     const displayOpts = TYPE_DISPLAY_OPTIONS[node.type];
     const isEmpty: boolean = false;
 
-    const fieldsToDisplay: string[] = ['doi', 'id', 'published', 'url'];
+    const fieldsToDisplay: string[] = ['doi', 'id', 'published', 'url', 'content'];
     const metadataToDisplay: [string, any][] = Object.entries(node).filter(
       ([key, value]) => fieldsToDisplay.includes(key) && value,
     );
 
-    const body = isEmpty
-      ? html` <div class="metadata-item">
-          <div class="metadata-key">no metadata found</div>
-        </div>`
-      : html` <div class="metadata-grid">
-          ${metadataToDisplay.map(
-            ([key, value]) => html`
-              <div class="metadata-grid-item key">${key}</div>
-              <div class="metadata-grid-item value">${value}</div>
-            `,
-          )}
-        </div>`;
+    let body: TemplateResult<1> = html`
+      <div class='metadata-item'>
+        <div class='metadata-key'>no metadata found</div>
+      </div>`;
+    
+    if (!isEmpty) {
+      const gridItems = metadataToDisplay.map(([key, value], metadataIdx) => {
+        if (!Array.isArray(value)) {
+          // If it's not an array, just display the key and value as normal
+          return html`
+            <div class="metadata-grid-item key">${key}</div>
+            <div class="metadata-grid-item value">${value}</div>
+          `;
+        } else {
+          const values = value // since it's an array
+          return html`
+            <div class='metadata-grid-item key'
+                 style='grid-row-start: ${metadataIdx + 1}; grid-row-end: ${metadataIdx + values.length + 1};'>
+              ${key}
+            </div>
+            
+            ${values.map( val => html` <div class='metadata-grid-item value content'>${val}</div> `)}  
+          `
+        }
+      });
+      body = html` <div class="metadata-grid">${gridItems}</div>`;
+    }
 
     return html`
       <div class="detail-timeline">${timelinePlaceholder}</div>
