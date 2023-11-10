@@ -18,7 +18,7 @@
     "fp-ts": "^2.16.0",
     "io-ts": "^2.2.20",
     "tsx": "^4.0.0",
-    "typescript": "^4.9.5"
+    "typescript": "^5.0.0"
   },
   "devDependencies": {
     "@tsconfig/node-lts-strictest-esm": "^18.12.1",
