@@ -37,14 +37,14 @@ export function MakeCli() {
     .addOption(
       new Option('--logLevel <logLevel>', `the maximum log level to emit to stdout`)
         .env('DM_LOG_LEVEL')
-        .preset('info')
+        .default('info')
         .choices(LOG_LEVELS)
         .makeOptionMandatory(),
     )
     .addOption(
       new Option('--backendType <backendType>', `the plugin source name`)
         .env('DM_BACKEND_TYPE')
-        .preset(BACKEND_TYPES[0])
+        .default(BACKEND_TYPES[0])
         .choices(BACKEND_TYPES)
         .makeOptionMandatory(),
     )
