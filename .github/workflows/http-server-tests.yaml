@@ -121,7 +121,7 @@ jobs:
       - name: Build cross-workspace deps
         run: |
           cd ${{env.PKG_DIR}} ;
-          pnpm run -r build;
+          pnpm run --filter=@docmaps/http-server^... build ;
 
       - name: Test
         run: |
