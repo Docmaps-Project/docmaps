@@ -54,7 +54,7 @@ jobs:
       - name: Verify builds
         run: |
           cd ${{env.PKG_DIR}} ;
-          pnpm run -r build --filter=@docmaps/http-server^...;
+          pnpm run --filter=@docmaps/http-server^... build ;
 
       - name: Test
         run: |
