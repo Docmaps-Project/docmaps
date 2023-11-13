@@ -1,6 +1,5 @@
 import type * as RDF from '@rdfjs/types'
-import { CONSTRUCT, Construct, Describe } from '@tpluscode/sparql-builder'
-import { VALUES } from '@tpluscode/sparql-builder/expressions'
+import type { Construct, Describe } from '@tpluscode/sparql-builder'
 import * as D from 'docmaps-sdk'
 import * as TE from 'fp-ts/lib/TaskEither'
 import * as T from 'fp-ts/lib/Task'
@@ -14,6 +13,7 @@ import { BackendAdapter, ThingSpec } from '../types'
 import { Logger } from 'pino'
 import util from 'util'
 import { Separated } from 'fp-ts/lib/Separated'
+import { DocmapForThingDoiQuery, DocmapForThingIriQuery, FindDocmapQuery } from '../sparql'
 
 /** Inteface for an in-memory or over-the-web mechanism that accepts
  * SPARQL queries and returns triples.
@@ -23,86 +23,6 @@ export interface SparqlProcessor {
   // truthy(query: string): Promise<boolean>
   triples(query: Construct | Describe): TE.TaskEither<Error, AsyncIterable<RDF.Quad>>
   // bindings(query: string): Promise<AsyncIterable<{ [key: string]: RDF.Term }>>
-}
-
-function FindDocmapQuery(iri: string): Construct {
-  const subj = factory.namedNode(iri)
-
-  const values = [{ map: subj }]
-
-  // FIXME: use sparql builder more idiomatically
-  const q = CONSTRUCT`
-    ?s ?p ?o .
-    ?map ?p0 ?o0 .
-  `.WHERE`
-    {
-      SELECT DISTINCT ?s ?p ?o WHERE {
-        ${VALUES(...values)}
-        ?map (!<>)+ ?s .
-        ?s ?p ?o .
-      }
-    }
-    UNION
-    {
-      SELECT DISTINCT ?map ?p0 ?o0 WHERE {
-        ${VALUES(...values)}
-        ?map ?p0 ?o0 .
-      }
-    }
-  `
-
-  return q
-}
-
-function DocmapForThingIriQuery(iri: string): Construct {
-  const subj = factory.namedNode(iri)
-
-  const values = [{ thing: subj }]
-
-  // FIXME: use sparql builder more idiomatically
-  const q = CONSTRUCT`
-    ?s ?p ?o .
-  `.WHERE`
-    {
-      SELECT DISTINCT ?map ?s ?p WHERE {
-        ${VALUES(...values)}
-        ?map (!<>)+ ?s .
-        ?s ?p ?thing .
-      }
-    }
-    UNION
-    {
-      SELECT DISTINCT ?s ?p ?o WHERE {
-        ?map (!<>)+ ?s .
-        ?s ?p ?o .
-      }
-    }
-  `
-
-  return q
-}
-
-function DocmapForThingDoiQuery(doi: string): Construct {
-  const doiLit = factory.literal(doi)
-  const values = [{ doi: doiLit }]
-
-  // FIXME: use UNION to minimize the quads retrieved
-  const q = CONSTRUCT`
-    ?s ?p ?o .
-  `.WHERE`
-    {
-      SELECT DISTINCT ?s ?p ?o WHERE {
-        ${VALUES(...values)}
-        ?s0 <http://prismstandard.org/namespaces/basic/2.0/doi> ?doi .
-        ?map (!<>)+ ?s0 .
-        ?map <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/spar/pwo/Workflow> .
-        ?map (!<>)* ?s .
-        ?s ?p ?o .
-      }
-    }
-  `
-
-  return q
 }
 
 function docmapIrisFromStore(store: n3.Store): Array<string> {
