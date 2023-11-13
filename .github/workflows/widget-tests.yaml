@@ -12,6 +12,7 @@ env:
 jobs:
   nodejs_test:
     runs-on: ubuntu-latest
+    container: mcr.microsoft.com/playwright:v1.39.0
 
     timeout-minutes: 20
 
