@@ -32,7 +32,10 @@ export function stepsForIdRecursive<ID extends D.IRI, P extends Plugin<ID>>(
           ...isr,
           step: {
             ...isr.step,
-            inputs: annotations.inputs,
+            actions: isr.step.actions.map((a) => ({
+              ...a,
+              inputs: annotations.inputs,
+            })),
           },
         })),
       )
@@ -61,11 +64,14 @@ export function stepsForIdRecursive<ID extends D.IRI, P extends Plugin<ID>>(
           // the output `all` should have concatenation of alls, plus the new Head.
           const newStep = {
             ...initialChain.head,
-            inputs: meta.reduce<D.ThingT[]>(
-              (memo, c) =>
-                memo.concat(c.head.actions.reduce<D.ThingT[]>((m, a) => m.concat(a.outputs), [])),
-              initialChain.head.inputs,
-            ),
+            actions: initialChain.head.actions.map((a) => ({
+              ...a,
+              inputs: meta.reduce<D.ThingT[]>(
+                (memo, c) =>
+                  memo.concat(c.head.actions.reduce<D.ThingT[]>((m, a) => m.concat(a.outputs), [])),
+                a.inputs,
+              ),
+            })),
           }
 
           return {
@@ -89,8 +95,10 @@ export function stepsForIdRecursive<ID extends D.IRI, P extends Plugin<ID>>(
         // TODO: this should be batched rather than entirely serialized
         TE.traverseSeqArray((rId) => plugin.actionForReviewId(rId)),
         TE.map((listOfActions) => ({
-          actions: listOfActions,
-          inputs: initialChain.head.actions.reduce<D.ThingT[]>((m, a) => m.concat(a.outputs), []),
+          actions: listOfActions.map((a) => ({
+            ...a,
+            inputs: initialChain.head.actions.reduce<D.ThingT[]>((m, a) => m.concat(a.outputs), []),
+          })),
           assertions: [
             {
               status: 'reviewed', //TODO: choose this key carefully

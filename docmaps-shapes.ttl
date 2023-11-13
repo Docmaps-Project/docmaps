@@ -182,6 +182,10 @@
                 sh:node :DocmapThingShape ;
         ] ;
         sh:property [
+                sh:path pwo:needs ;
+                sh:node :DocmapThingShape ;
+        ] ;
+        sh:property [
                 # "participants", in json-ld documents
                 sh:path pro:isDocumentContextFor ;
                 sh:node :DocmapRoleInTimeShape ;
