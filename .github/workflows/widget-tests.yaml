@@ -12,6 +12,7 @@ env:
 jobs:
   nodejs_test:
     runs-on: ubuntu-latest
+    container: mcr.microsoft.com/playwright:v1.39.0
 
     timeout-minutes: 20
 
@@ -58,15 +59,10 @@ jobs:
           cd ${{env.PKG_DIR}}
           pnpm run -r build;
 
-      - name: Install Playwright Browsers
-        run: |
-          cd ${{env.PKG_DIR}}
-          pnpm run install:browsers
-
       - name: Run Playwright tests
         run: |
           cd ${{env.PKG_DIR}}
-          pnpm run test
+          HOME=/root pnpm run test
 
       - uses: actions/upload-artifact@v3
         if: always()
