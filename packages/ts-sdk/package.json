@@ -13,7 +13,6 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "docs:generate": "typedoc src/index.ts",
-    "docs:check": "npm run docs:generate && git add -N . && git diff --exit-code -I 'Defined in.*blob'",
     "clean": "rm -rf dist/",
     "build": "tsc --declaration"
   },
