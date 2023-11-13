@@ -1,0 +1,19 @@
+{
+  "name": "@docmaps/build-configs",
+  "version": "0.0.0",
+  "repository": "git@github.com:docmaps-project/docmaps.git",
+  "homepage": "https://github.com/Docmaps-Project/docmaps/tree/main/packages/build-tools",
+  "description": "typescript build configurations for shared standards across monorepo",
+  "type": "module",
+  "scripts": {},
+  "keywords": [],
+  "author": "github.com/ships",
+  "license": "ISC",
+  "files": [
+    "/"
+  ],
+  "devDependencies": {
+    "@tsconfig/node-lts": "^18.12.5",
+    "@tsconfig/strictest": "^2.0.2"
+  }
+}

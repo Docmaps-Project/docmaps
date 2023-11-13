@@ -17,11 +17,11 @@
     "docmaps-sdk": "workspace:^0.0.0",
     "fp-ts": "^2.16.0",
     "io-ts": "^2.2.20",
-    "tsx": "^4.0.0",
-    "typescript": "^5.0.0"
+    "tsx": "^4.0.0"
   },
   "devDependencies": {
-    "@tsconfig/node-lts-strictest-esm": "^18.12.1",
-    "@types/node": "^18.16.2"
+    "@docmaps/build-configs": "workspace:^",
+    "@types/node": "^18.16.2",
+    "typescript": "^5.2.2"
   }
 }

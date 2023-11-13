@@ -6,14 +6,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "ava",
     "clean": "rm -rf dist/",
-    "test:integration": "ava test/integration/",
-    "test:cleanup": "docker compose -f test/integration/assets/docker-compose.yml down",
-    "test:unit": "ava test/unit/",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
-    "start": "tsx dist/httpserver/main.js",
     "build": "tsc --declaration"
   },
   "keywords": [],
@@ -27,10 +22,10 @@
   ],
   "dependencies": {
     "@ts-rest/core": "^3.30.2",
-    "@tsconfig/node-lts-strictest-esm": "^18.12.1",
     "docmaps-sdk": "workspace:^0.0.0"
   },
   "devDependencies": {
+    "@docmaps/build-configs": "workspace:^",
     "@types/node": "^18.16.2",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
@@ -39,20 +34,8 @@
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "^3.0.0",
     "ts-mockito": "^2.6.1",
-    "typescript": "^5.0.0",
+    "typescript": "^5.2.2",
     "zod": "^3.22.2"
-  },
-  "ava": {
-    "extensions": {
-      "ts": "module"
-    },
-    "nodeArguments": [
-      "--loader=ts-node/esm",
-      "--experimental-specifier-resolution=node"
-    ],
-    "files": [
-      "**/*.test.ts"
-    ]
   },
   "engines": {
     "node": ">=18.14.0"
