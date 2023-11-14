@@ -68,6 +68,7 @@ jobs:
         run: |
           cd packages/spa ;
           pnpm run build:deps ;
+          pnpm run build ;
 
       - name: Convert symlinks to hard links
           # adapted from https://superuser.com/questions/560597/convert-symlinks-to-hard-links
