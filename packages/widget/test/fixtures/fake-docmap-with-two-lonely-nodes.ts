@@ -170,6 +170,10 @@ export default {
           ],
           "outputs": [
             {
+              "published": "2023-01-23T14:34:45.299Z",
+              "url": "https://example.com/fake-journal/summary/3000",
+            },
+            {
               "type": "journal-article",
               "published": "2023-01-23T14:34:45.299Z",
               "url": "https://example.com/fake-journal/article/3003",

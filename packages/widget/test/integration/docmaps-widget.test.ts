@@ -161,7 +161,8 @@ test(`Can display details view for a Preprint with every field`, async ({ page, 
 
   const widget: Locator = await mount(DocmapsWidget, { props: { ...options.props, doi } });
 
-  await expect(widget.locator('.node')).toHaveCount(5);
+  const expectedNodes = 6;
+  await expect(widget.locator('.node')).toHaveCount(expectedNodes);
   const nodeToClick = widget.locator('.node').first();
   await nodeToClick.click({ force: true });
 
@@ -176,8 +177,8 @@ test(`Can display details view for a Preprint with every field`, async ({ page, 
 
   const keys = widget.locator('.metadata-grid-item.key');
   const vals = widget.locator('.metadata-grid-item.value');
-  await expect(keys).toHaveCount(6);
-  await expect(vals).toHaveCount(7);
+  await expect(keys).toHaveCount(expectedNodes);
+  await expect(vals).toHaveCount(expectedNodes + 1); // +1 for the second content item
 
   await expect(keys.nth(0)).toContainText('doi');
   await expect(vals.nth(0)).toContainText('10.1101/2022.11.08.000002');
@@ -200,7 +201,7 @@ test(`Can display details view for a Preprint with every field`, async ({ page, 
 
   // Assert the details display can be closed
   await widget.locator('.close-button').click({ force: true });
-  await expect(widget.locator('.node')).toHaveCount(5);
+  await expect(widget.locator('.node')).toHaveCount(expectedNodes);
 });
 
 test('Can display details view for a Journal Article with different fields', async ({
@@ -213,10 +214,9 @@ test('Can display details view for a Journal Article with different fields', asy
 
   const widget: Locator = await mount(DocmapsWidget, { props: { ...options.props, doi } });
 
-  await expect(widget.locator('.node')).toHaveCount(5);
   const opts = typeShortLabelToOpts['JA'];
 
-  const nodeToClick = widget.locator('.node').nth(4);
+  const nodeToClick = widget.locator('.node').nth(5);
   await nodeToClick.click({ force: true });
 
   await expect(widget.locator('.node')).toHaveCount(0);
