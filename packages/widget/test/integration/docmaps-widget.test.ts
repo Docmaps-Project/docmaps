@@ -186,8 +186,11 @@ test(`Can display details view for a Preprint with every field`, async ({ page, 
   await expect(keys.nth(1)).toContainText('id');
   await expect(vals.nth(1)).toContainText('sick-preprint-bro');
 
+  // day-of-week omitted because of timezone differences between local and CI environments
+  // The widget doesn't actually handle this date conversion. It's done by the docmaps-sdk so we
+  // should test it there.
   await expect(keys.nth(2)).toContainText('published');
-  await expect(vals.nth(2)).toContainText('1993-10-19');
+  await expect(vals.nth(2)).toContainText('1993-10-');
 
   await expect(keys.nth(3)).toContainText('url');
   await expect(vals.nth(3)).toContainText('https://example.com/sick-preprint-yo');
