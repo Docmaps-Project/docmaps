@@ -176,6 +176,11 @@ export const customCss: CSSResult = css`
     align-items: center;
   }
 
+  .detail-header .close-button:hover {
+    stroke: #ffffff;
+    fill: #ffffff;
+  }
+
   .docmap-logo {
     display: inline-block;
     margin: 7px 13px 6px 11px

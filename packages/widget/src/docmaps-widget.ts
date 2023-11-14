@@ -47,7 +47,7 @@ export class DocmapsWidget extends LitElement {
 
   render() {
     const content = this.selectedNode
-      ? this.renderDetailsScreen(this.selectedNode)
+      ? this.renderDetailsView(this.selectedNode)
       : html` <div id="tooltip" class="tooltip" style="opacity:0;"></div>
 
           ${this.#docmapFetchingTask.render({
@@ -213,7 +213,7 @@ export class DocmapsWidget extends LitElement {
       });
   }
 
-  private renderDetailsScreen(node: DisplayObject): TemplateResult<1> {
+  private renderDetailsView(node: DisplayObject): TemplateResult<1> {
     this.clearGraph();
     const opts = TYPE_DISPLAY_OPTIONS[node.type];
     const metadataEntries = this.filterMetadataEntries(node);

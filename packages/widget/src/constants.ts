@@ -33,13 +33,13 @@ export const TYPE_DISPLAY_OPTIONS: {
     shortLabel: 'ES',
     longLabel: 'Evaluation Summary',
     backgroundColor: '#936308',
-    textColor: '#FFF',
+    textColor: '#FFEDCC',
   },
   'review-article': {
     shortLabel: 'RA',
     longLabel: 'Review Article',
     backgroundColor: '#099CEE',
-    textColor: '#FFF',
+    textColor: '#CEEDFF',
   },
   'journal-article': {
     shortLabel: 'JA',
@@ -63,7 +63,7 @@ export const TYPE_DISPLAY_OPTIONS: {
     shortLabel: 'RE',
     longLabel: 'Reply',
     backgroundColor: '#79109E',
-    textColor: '#FFF',
+    textColor: '#F6DBFF',
   },
   '??': {
     shortLabel: '',

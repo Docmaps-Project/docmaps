@@ -41,12 +41,12 @@ const typeShortLabelToOpts: {
   ES: {
     longLabel: 'Evaluation Summary',
     backgroundColor: '#936308',
-    textColor: '#FFF',
+    textColor: '#FFEDCC',
   },
   RA: {
     longLabel: 'Review Article',
     backgroundColor: '#099CEE',
-    textColor: '#FFF',
+    textColor: '#CEEDFF',
   },
   JA: {
     longLabel: 'Journal Article',
@@ -66,7 +66,7 @@ const typeShortLabelToOpts: {
   RE: {
     longLabel: 'Reply',
     backgroundColor: '#79109E',
-    textColor: '#FFF',
+    textColor: '#F6DBFF',
   },
   '': {
     longLabel: 'Type unknown',
