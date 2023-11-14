@@ -57,7 +57,7 @@ jobs:
       - name: Verify builds
         run: |
           cd ${{env.PKG_DIR}}
-          pnpm run --filter=@docmaps/widget^... build ;
+          pnpm run build:deps ;
 
       - name: Run Playwright tests
         run: |

@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build:deps": "pnpm run --filter=@docmaps/spa^... build",
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public --no-clear",

@@ -15,6 +15,7 @@
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
     "start": "tsx dist/httpserver/main.js",
+    "build:deps": "pnpm run --filter=@docmaps/http-server^... build",
     "build": "tsc --declaration"
   },
   "keywords": [],

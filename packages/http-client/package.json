@@ -9,6 +9,7 @@
     "clean": "rm -rf dist/",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
+    "build:deps": "pnpm run --filter=@docmaps/http-client^... build",
     "build": "tsc --declaration"
   },
   "keywords": [],
