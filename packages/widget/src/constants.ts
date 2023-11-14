@@ -101,6 +101,10 @@ const FieldsToDisplayPrototype: { [K in FieldToDisplay]: null } = {
   actors: null,
 };
 
+export function getFieldsToDisplay(): FieldToDisplay[] {
+  return Object.keys(FieldsToDisplayPrototype) as FieldToDisplay[];
+}
+
 export function isFieldToDisplay(key: string): key is FieldToDisplay {
   return key in FieldsToDisplayPrototype;
 }
