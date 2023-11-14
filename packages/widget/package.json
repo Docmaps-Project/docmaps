@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:deps": "pnpm run --filter=@docmaps/widget^... build",
     "preview": "vite preview",
     "install:browsers": "playwright install --with-deps",
     "test": "pnpm run test:unit && pnpm run test:integration",

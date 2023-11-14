@@ -2,6 +2,10 @@
 name: Deploy static content to Pages
 
 on:
+  # do deploy to github pages on merge to main
+  push:
+    branches:
+      - main
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   workflow_call:
@@ -63,7 +67,7 @@ jobs:
       - name: Build SPA
         run: |
           cd packages/spa ;
-          pnpm build;
+          pnpm run build:deps ;
 
       - name: Convert symlinks to hard links
           # adapted from https://superuser.com/questions/560597/convert-symlinks-to-hard-links
