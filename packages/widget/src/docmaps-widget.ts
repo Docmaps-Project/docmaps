@@ -5,10 +5,7 @@ import { closeDetailsButton, logo, timelinePlaceholder } from './assets';
 import * as d3 from 'd3';
 import { SimulationLinkDatum } from 'd3';
 import { Task } from '@lit/task';
-import {
-  DocmapFetchingParams,
-  getDocmap,
-} from './docmap-controller';
+import { DocmapFetchingParams, getDocmap } from './docmap-controller';
 import { SimulationNodeDatum } from 'd3-force';
 import * as Dagre from 'dagre';
 import {
@@ -218,7 +215,7 @@ export class DocmapsWidget extends LitElement {
 
   private renderDetailsScreen(node: DisplayObject): TemplateResult<1> {
     this.clearGraph();
-    const displayOptions = TYPE_DISPLAY_OPTIONS[node.type];
+    const opts = TYPE_DISPLAY_OPTIONS[node.type];
     const metadataEntries = this.filterMetadataEntries(node);
 
     const metadataBody =
@@ -226,13 +223,18 @@ export class DocmapsWidget extends LitElement {
         ? this.createMetadataGrid(metadataEntries)
         : this.emptyMetadataMessage();
 
+    const backgroundColor = opts.detailBackgroundColor
+      ? opts.detailBackgroundColor
+      : opts.backgroundColor;
+
+    const textColor = opts.detailTextColor ? opts.detailTextColor : opts.textColor;
     return html`
       <div class="detail-timeline">${timelinePlaceholder}</div>
 
-      <div class="detail-header" style="background: ${displayOptions.backgroundColor};">
-        <span style="color: ${displayOptions.textColor};"> ${displayOptions.longLabel} </span>
+      <div class="detail-header" style="background: ${backgroundColor};">
+        <span style="color: ${textColor};"> ${opts.longLabel} </span>
         <div class="close-button clickable" @click="${this.closeDetailsView}">
-          ${closeDetailsButton(displayOptions.textColor)}
+          ${closeDetailsButton(textColor)}
         </div>
       </div>
 
@@ -241,7 +243,9 @@ export class DocmapsWidget extends LitElement {
   }
 
   private filterMetadataEntries(node: DisplayObject): [string, any][] {
-    return Object.entries(node).filter(([key, value]) => DOCMAP_FIELDS_TO_DISPLAY.includes(key) && value);
+    return Object.entries(node).filter(
+      ([key, value]) => DOCMAP_FIELDS_TO_DISPLAY.includes(key) && value,
+    );
   }
 
   private createMetadataGrid(metadataEntries: [string, any][]): TemplateResult<1> {
@@ -253,12 +257,13 @@ export class DocmapsWidget extends LitElement {
     if (Array.isArray(value)) {
       const values: any[] = value; // rename since it's actually plural
       return html`
-        <div class='metadata-grid-item key'
-             style='grid-row-start: ${index + 1}; grid-row-end: ${index + values.length + 1};'>
+        <div
+          class="metadata-grid-item key"
+          style="grid-row-start: ${index + 1}; grid-row-end: ${index + values.length + 1};"
+        >
           ${key}
         </div>
-        ${values.map((val) => html`
-          <div class='metadata-grid-item value content'>${val}</div>`)}
+        ${values.map((val) => html` <div class="metadata-grid-item value content">${val}</div>`)}
       `;
     }
 

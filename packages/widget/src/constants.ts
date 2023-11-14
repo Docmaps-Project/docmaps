@@ -8,6 +8,8 @@ export type TypeDisplayOption = {
   shortLabel: string;
   longLabel: string;
   backgroundColor: string;
+  detailBackgroundColor?: string; // if this is not set, backgroundColor will be used
+  detailTextColor?: string; // if this is not set, textColor will be used
   textColor: string;
   dottedBorder?: boolean;
 };
@@ -66,6 +68,8 @@ export const TYPE_DISPLAY_OPTIONS: { [type: string]: TypeDisplayOption } = {
     longLabel: 'Type unknown',
     backgroundColor: '#EFEFEF',
     textColor: '#043945',
+    detailBackgroundColor: "#777",
+    detailTextColor: "#EFEFEF",
     dottedBorder: true,
   },
 };
@@ -90,9 +94,9 @@ export const DOCMAP_FIELDS_TO_DISPLAY = ['doi', 'id', 'published', 'url', 'conte
 export type DisplayObjectEdge = {
   sourceId: string;
   targetId: string;
-}
+};
 
 export type DisplayObjectGraph = {
   nodes: DisplayObject[];
   edges: DisplayObjectEdge[];
-}
+};

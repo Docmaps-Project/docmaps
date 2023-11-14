@@ -225,6 +225,7 @@ test('Can display details view for a Journal Article with different fields', asy
   const detailsHeader = widget.locator('.detail-header');
   await expect(detailsHeader).toContainText('Journal Article');
   await expect(detailsHeader).toHaveAttribute('style', `background: ${opts.backgroundColor};`);
+  await expect(detailsHeader.locator('span')).toHaveAttribute('style', `color: ${opts.textColor};`);
 
   const keys = widget.locator('.metadata-grid-item.key');
   const vals = widget.locator('.metadata-grid-item.value');
@@ -244,6 +245,24 @@ test('Can display details view for a Journal Article with different fields', asy
 
   await expect(keys.nth(3)).toContainText('actors');
   await expect(vals.nth(5)).toContainText('Emily');
+});
+
+test('displays the right detail header styles when the type is unknown', async ({
+  page,
+  mount,
+}) => {
+  const doi: string = 'get-me-a-docmap-yo';
+  await mockDocmapForEndpoint(page.context(), doi, fakeDocmapWithTwoLonelyNodes);
+  const widget: Locator = await mount(DocmapsWidget, { props: { ...options.props, doi } });
+
+  const nodeToClick = widget.locator('.node').nth(4);
+  await nodeToClick.click({ force: true });
+
+  // Assert the details view is visible after the click
+  const detailsHeader = widget.locator('.detail-header');
+  await expect(detailsHeader).toContainText('Type unknown');
+  await expect(detailsHeader).toHaveAttribute('style', `background: #777;`);
+  await expect(detailsHeader.locator('span')).toHaveAttribute('style', `color: #EFEFEF;`);
 });
 
 test('Nodes that are alone on their y level are fixed to the center of the widget horizontally', async ({
