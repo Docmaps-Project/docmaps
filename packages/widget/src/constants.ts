@@ -71,3 +71,28 @@ export const TYPE_DISPLAY_OPTIONS: { [type: string]: TypeDisplayOption } = {
 };
 
 export const ALL_KNOWN_TYPES: string[] = Object.keys(TYPE_DISPLAY_OPTIONS);
+
+// Each input and output of the Docmap's steps is converted into one of these
+export interface DisplayObject {
+  nodeId: string; // Used internally to construct graph, never rendered
+  type: string;
+  doi?: string;
+  id?: string;
+  published?: string;
+  url?: URL;
+  content?: string[];
+  actors?: string;
+}
+
+// String names of the DisplayObject fields that we want to display
+export const DOCMAP_FIELDS_TO_DISPLAY = ['doi', 'id', 'published', 'url', 'content', 'actors'];
+
+export type DisplayObjectEdge = {
+  sourceId: string;
+  targetId: string;
+}
+
+export type DisplayObjectGraph = {
+  nodes: DisplayObject[];
+  edges: DisplayObjectEdge[];
+}

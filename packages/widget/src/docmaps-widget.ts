@@ -6,15 +6,16 @@ import * as d3 from 'd3';
 import { SimulationLinkDatum } from 'd3';
 import { Task } from '@lit/task';
 import {
-  DisplayObject,
-  DisplayObjectEdge,
-  DisplayObjectGraph,
   DocmapFetchingParams,
   getDocmap,
 } from './docmap-controller';
 import { SimulationNodeDatum } from 'd3-force';
 import * as Dagre from 'dagre';
 import {
+  DisplayObject,
+  DisplayObjectEdge,
+  DisplayObjectGraph,
+  DOCMAP_FIELDS_TO_DISPLAY,
   FIRST_NODE_RADIUS,
   GRAPH_CANVAS_HEIGHT,
   GRAPH_CANVAS_ID,
@@ -240,8 +241,7 @@ export class DocmapsWidget extends LitElement {
   }
 
   private filterMetadataEntries(node: DisplayObject): [string, any][] {
-    const fieldsToDisplay = ['doi', 'id', 'published', 'url', 'content'];
-    return Object.entries(node).filter(([key, value]) => fieldsToDisplay.includes(key) && value);
+    return Object.entries(node).filter(([key, value]) => DOCMAP_FIELDS_TO_DISPLAY.includes(key) && value);
   }
 
   private createMetadataGrid(metadataEntries: [string, any][]): TemplateResult<1> {

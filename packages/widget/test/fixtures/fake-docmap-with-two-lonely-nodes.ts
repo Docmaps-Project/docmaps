@@ -162,10 +162,10 @@ export default {
           "participants": [
             {
               "actor": {
-                "name": "Andrew Edstrom",
+                "name": "Emily",
                 "type": "person"
               },
-              "role": "editor"
+              "role": "Product Manager"
             }
           ],
           "outputs": [

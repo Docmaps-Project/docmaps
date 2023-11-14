@@ -1,30 +1,9 @@
 import { MakeHttpClient } from '@docmaps/http-client';
 import { TaskFunction } from '@lit/task';
-import { ActionT, Docmap, DocmapT, StepT, ThingT } from 'docmaps-sdk';
+import { ActionT, ActorT, Docmap, DocmapT, RoleInTimeT, StepT, ThingT } from 'docmaps-sdk';
 import { pipe } from 'fp-ts/lib/function';
 import * as E from 'fp-ts/lib/Either';
-import { ALL_KNOWN_TYPES } from './constants';
-
-// Each input and output of the Docmap's steps is converted into one of these
-export interface DisplayObject {
-  nodeId: string; // Used internally to construct graph, never rendered
-  type: string;
-  doi?: string;
-  id?: string;
-  published?: string;
-  url?: URL;
-  content?: string[];
-}
-
-export interface DisplayObjectEdge {
-  sourceId: string;
-  targetId: string;
-}
-
-export interface DisplayObjectGraph {
-  nodes: DisplayObject[];
-  edges: DisplayObjectEdge[];
-}
+import { ALL_KNOWN_TYPES, DisplayObject, DisplayObjectEdge, DisplayObjectGraph } from './constants';
 
 export type DocmapFetchingParams = [string, string]; // [serverUrl, doi]
 
@@ -87,7 +66,7 @@ export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
   const nodesById: { [id: string]: DisplayObject } = {};
   let idCounter: number = 1;
 
-  const processThing = (thing: ThingT) => {
+  const processThing = (thing: ThingT, participants: RoleInTimeT[] = []) => {
     let inputId = thing.doi || thing.id;
     if (!inputId) {
       inputId = `n${idCounter}`;
@@ -95,7 +74,7 @@ export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
     }
 
     if (!seenIds.has(inputId)) {
-      nodesById[inputId] = thingToDisplayObject(thing, inputId);
+      nodesById[inputId] = thingToDisplayObject(thing, inputId, participants);
     }
 
     for (const id of [thing.doi, thing.id]) {
@@ -108,12 +87,12 @@ export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
 
   steps.forEach((step: StepT) => {
     // Process step inputs
-    const inputIds: string[] = step.inputs?.map(processThing) || [];
+    const inputIds: string[] = step.inputs?.map((input) => processThing(input)) || [];
 
     // Process step outputs
     step.actions.forEach((action: ActionT) => {
       action.outputs.map((output: ThingT) => {
-        const outputId = processThing(output);
+        const outputId = processThing(output, action.participants);
 
         // Add an edge from every step input to this node
         inputIds.forEach((inputId: string) =>
@@ -127,23 +106,43 @@ export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
   return { nodes, edges };
 }
 
-function thingToDisplayObject(thing: ThingT, nodeId: string): DisplayObject {
+interface NameHaver {
+  name: string;
+}
+
+function thingToDisplayObject(
+  thing: ThingT,
+  nodeId: string,
+  participants: RoleInTimeT[],
+): DisplayObject {
   // Make sure type is a string (not an array), and that it's one of the types we support displaying
   const providedType = (Array.isArray(thing.type) ? thing.type[0] : thing.type) ?? '??';
   const displayType = ALL_KNOWN_TYPES.indexOf(providedType) >= 0 ? providedType : '??';
 
-  let published: string | undefined =
+  const published: string | undefined =
     thing.published && thing.published instanceof Date
       ? formatDate(thing.published)
       : thing.published;
 
-  let content = thing.content
+  const content = thing.content
     ? thing.content
         .map((manifestation) => {
           return manifestation.url?.toString();
         })
-      .filter((url): url is string => url !== undefined)
+        .filter((url): url is string => url !== undefined)
     : undefined;
+
+  const actors = participants
+    .map((participant) => participant.actor)
+    .filter((actor: ActorT): actor is NameHaver => {
+      // Actors can be anything, so we have to check that they have a name
+      // @ts-ignore
+      return actor !== undefined && actor?.name !== undefined;
+    })
+    .map((actor: NameHaver) => {
+      return actor.name;
+    })
+    .join(', ');
 
   return {
     nodeId,
@@ -153,6 +152,7 @@ function thingToDisplayObject(thing: ThingT, nodeId: string): DisplayObject {
     published,
     url: thing.url,
     content,
+    actors,
   };
 }
 

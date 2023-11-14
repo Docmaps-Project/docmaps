@@ -176,8 +176,8 @@ test(`Can display details view for a Preprint with every field`, async ({ page, 
 
   const keys = widget.locator('.metadata-grid-item.key');
   const vals = widget.locator('.metadata-grid-item.value');
-  await expect(keys).toHaveCount(5);
-  await expect(vals).toHaveCount(6);
+  await expect(keys).toHaveCount(6);
+  await expect(vals).toHaveCount(7);
 
   await expect(keys.nth(0)).toContainText('doi');
   await expect(vals.nth(0)).toContainText('10.1101/2022.11.08.000002');
@@ -195,15 +195,8 @@ test(`Can display details view for a Preprint with every field`, async ({ page, 
   await expect(vals.nth(4)).toContainText('https://example.com/fake-journal/article/3003.png');
   await expect(vals.nth(5)).toContainText('https://example.com/fake-journal/article/3003.heic');
 
-  // Fields that can be visible here:
-  // doi - String
-  // id - String
-  // published - Date
-  // url - String
-  // type - Either a string or a list of strings
-
-  // content - a list of urls associated with this thing.
-  // participants - a list of people with names.
+  await expect(keys.nth(5)).toContainText('actors');
+  await expect(vals.nth(6)).toContainText('eve, Andrew Edstrom');
 
   // Assert the details display can be closed
   await widget.locator('.close-button').click({ force: true });
@@ -235,8 +228,8 @@ test('Can display details view for a Journal Article with different fields', asy
 
   const keys = widget.locator('.metadata-grid-item.key');
   const vals = widget.locator('.metadata-grid-item.value');
-  await expect(keys).toHaveCount(3);
-  await expect(vals).toHaveCount(5);
+  await expect(keys).toHaveCount(4);
+  await expect(vals).toHaveCount(6);
 
   await expect(keys.nth(0)).toContainText('published');
   await expect(vals.nth(0)).toContainText('2023-01-23');
@@ -248,6 +241,9 @@ test('Can display details view for a Journal Article with different fields', asy
   await expect(vals.nth(2)).toContainText('https://example.com/fake-journal/article/3003.mp4');
   await expect(vals.nth(3)).toContainText('https://example.com/fake-journal/article/3003.pdf');
   await expect(vals.nth(4)).toContainText('https://example.com/fake-journal/article/3003.xml');
+
+  await expect(keys.nth(3)).toContainText('actors');
+  await expect(vals.nth(5)).toContainText('Emily');
 });
 
 test('Nodes that are alone on their y level are fixed to the center of the widget horizontally', async ({
