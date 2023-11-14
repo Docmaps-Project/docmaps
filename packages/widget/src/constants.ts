@@ -88,8 +88,8 @@ export interface FieldsToDisplay {
 }
 
 // The following 3 statements allow us to use FieldsToDisplay both as a type and as something we can
-// check at runtime. We could also use io-ts for this, but that felt like overkill since this is the
-// only place where we do something like this.
+// check against at runtime. We could also use io-ts for this, but that felt like overkill since this
+// is the only place in the widget where we do something like this.
 export type FieldToDisplay = keyof FieldsToDisplay;
 
 const FieldsToDisplayPrototype: { [K in FieldToDisplay]: null } = {
@@ -101,12 +101,12 @@ const FieldsToDisplayPrototype: { [K in FieldToDisplay]: null } = {
   actors: null,
 };
 
-export function getFieldsToDisplay(): FieldToDisplay[] {
-  return Object.keys(FieldsToDisplayPrototype) as FieldToDisplay[];
-}
-
 export function isFieldToDisplay(key: string): key is FieldToDisplay {
   return key in FieldsToDisplayPrototype;
+}
+
+export function getFieldsToDisplay(): FieldToDisplay[] {
+  return Object.keys(FieldsToDisplayPrototype) as FieldToDisplay[];
 }
 
 // Each input and output of the Docmap's steps is converted into one of these
