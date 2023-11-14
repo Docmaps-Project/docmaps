@@ -226,16 +226,16 @@ export class DocmapsWidget extends LitElement {
         : this.emptyMetadataMessage();
 
     return html`
-      <div class='detail-timeline'>${timelinePlaceholder}</div>
+      <div class="detail-timeline">${timelinePlaceholder}</div>
 
-      <div class='detail-header' style='background: ${displayOptions.backgroundColor};'>
-        <span style='color: ${displayOptions.textColor};'> ${displayOptions.longLabel} </span>
-        <div class='close-button clickable' @click='${this.closeDetailsView}'>
+      <div class="detail-header" style="background: ${displayOptions.backgroundColor};">
+        <span style="color: ${displayOptions.textColor};"> ${displayOptions.longLabel} </span>
+        <div class="close-button clickable" @click="${this.closeDetailsView}">
           ${closeDetailsButton(displayOptions.textColor)}
         </div>
       </div>
 
-      <div class='detail-body'>${metadataBody}</div>
+      <div class="detail-body">${metadataBody}</div>
     `;
   }
 
@@ -250,22 +250,21 @@ export class DocmapsWidget extends LitElement {
   }
 
   private createGridItem([key, value]: [string, any], index: number): TemplateResult<1> {
-    if (!Array.isArray(value)) {
+    if (Array.isArray(value)) {
+      const values: any[] = value; // rename since it's actually plural
       return html`
-        <div class="metadata-grid-item key">${key}</div>
-        <div class="metadata-grid-item value">${value}</div>
+        <div class='metadata-grid-item key'
+             style='grid-row-start: ${index + 1}; grid-row-end: ${index + values.length + 1};'>
+          ${key}
+        </div>
+        ${values.map((val) => html`
+          <div class='metadata-grid-item value content'>${val}</div>`)}
       `;
     }
 
-    const values = value; // since it's an array
     return html`
-      <div
-        class="metadata-grid-item key"
-        style="grid-row-start: ${index + 1}; grid-row-end: ${index + values.length + 1};"
-      >
-        ${key}
-      </div>
-      ${values.map((val) => html` <div class="metadata-grid-item value content">${val}</div>`)}
+      <div class="metadata-grid-item key">${key}</div>
+      <div class="metadata-grid-item value">${value}</div>
     `;
   }
 
@@ -286,8 +285,6 @@ type DagreGraph = Dagre.graphlib.Graph<DisplayObject>;
 
 // Dagre is a tool for laying out directed graphs. We use it to generate initial positions for
 // our nodes, which we then pass to d3 to animate into their final positions.
-// Whatever y position we get back from d3 for a given node is fixed in our d3 graph, because
-// we want to maintain a strict vertical hierarchy.
 function getInitialNodePositions(nodes: DisplayObject[], edges: DisplayObjectEdge[]): DagreGraph {
   const g: DagreGraph = new Dagre.graphlib.Graph();
 

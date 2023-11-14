@@ -27,7 +27,7 @@ export default {
               "type": "preprint",
               "doi": "10.1101/2022.11.08.000002",
               "id": "sick-preprint-bro",
-              "url": "http://example.com/sick-preprint-yo",
+              "url": "https://example.com/sick-preprint-yo",
               "published": "1993-10-20",
               "versionIdentifier": "2"
             }
@@ -76,7 +76,7 @@ export default {
         {
           "type": "preprint",
           "doi": "10.1101/2022.11.08.000002",
-          "url": "http://example.com/sick-preprint-yo",
+          "url": "https://example.com/sick-preprint-yo",
           "versionIdentifier": "2"
         }
       ],
@@ -151,15 +151,15 @@ export default {
               "content": [
                 {
                   "type": "web-page",
-                  "url": "http://example.com/fake-journal/article/3003.mp4"
+                  "url": "https://example.com/fake-journal/article/3003.mp4"
                 },
                 {
                   "type": "web-page",
-                  "url": "http://example.com/fake-journal/article/3003.pdf"
+                  "url": "https://example.com/fake-journal/article/3003.pdf"
                 },
                 {
                   "type": "web-page",
-                  "url": "http://example.com/fake-journal/article/3003.xml"
+                  "url": "https://example.com/fake-journal/article/3003.xml"
                 }
               ]
             }

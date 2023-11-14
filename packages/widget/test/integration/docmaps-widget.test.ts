@@ -8,6 +8,14 @@ import anotherDocmapWithOneStep from '../fixtures/sciety-docmap-2';
 import fakeDocmapWithEveryType from '../fixtures/fake-docmap-with-every-thing-type';
 import fakeDocmapWithTwoLonelyNodes from '../fixtures/fake-docmap-with-two-lonely-nodes';
 
+const fixtures = {
+  docmapWithMultipleSteps,
+  docmapWithOneStep,
+  anotherDocmapWithOneStep,
+  fakeDocmapWithEveryType,
+  fakeDocmapWithTwoLonelyNodes,
+};
+
 const options: MountOptions<JsonObject, DocmapsWidget> = {
   props: {
     doi: 'test-doi',
@@ -16,7 +24,7 @@ const options: MountOptions<JsonObject, DocmapsWidget> = {
 };
 
 // TODO I don't love that this is basically a copy of the giant object in docmaps-widget.ts
-// But unfortunately it's not as trivial as you'd expect to import the options from there.
+// But unfortunately it's not as trivial as you'd expect to import the options from the source code
 const typeShortLabelToOpts: {
   [key: string]: { longLabel: string; backgroundColor: string; textColor: string };
 } = {
@@ -76,28 +84,24 @@ test('The header bar is displayed in the graph view even if the requested docmap
   await expect(widget.locator('.widget-header')).toContainText('DOCMAP');
 });
 
-const graphDisplayTestCases: [string, any, string[]][] = [
-  ['docmapWithOneStep', docmapWithOneStep, ['', 'RA']],
-  ['anotherDocmapWithOneStep', anotherDocmapWithOneStep, ['', 'RA', 'RA', 'RA']],
-  ['docmapWithMultipleSteps', docmapWithMultipleSteps, ['P', 'P', 'RA', 'RE', 'ES', 'RA']],
-  [
-    'fakeDocmapWithEveryType',
-    fakeDocmapWithEveryType,
-    ['P', 'P', 'RA', 'JA', 'R', 'RE', 'CO', 'ED', 'ES', ''],
-  ],
+const graphDisplayTestCases: [string, string[]][] = [
+  ['docmapWithOneStep', ['', 'RA']],
+  ['anotherDocmapWithOneStep', ['', 'RA', 'RA', 'RA']],
+  ['docmapWithMultipleSteps', ['P', 'P', 'RA', 'RE', 'ES', 'RA']],
+  ['fakeDocmapWithEveryType', ['P', 'P', 'RA', 'JA', 'R', 'RE', 'CO', 'ED', 'ES', '']],
 ];
-for (const [testName, docmap, expectedNodeLabels] of graphDisplayTestCases) {
-  test(`It can display ${testName} as a graph`, async ({ mount, context }) => {
+for (const [docmapName, expectedNodeLabels] of graphDisplayTestCases) {
+  test(`It can display ${docmapName} as a graph`, async ({ mount, context }) => {
     const doi: string = 'should-return-something';
+    const docmap = fixtures[docmapName];
     await mockDocmapForEndpoint(context, doi, docmap);
 
     const widget: Locator = await mount(DocmapsWidget, { props: { ...options.props, doi } });
 
-    // const svgViewport = await widget.locator('svg').getAttribute('viewport');
-    // const canvasWidth = svgViewport.split(' ')[2];
-
     await expect(widget.locator('circle')).toHaveCount(expectedNodeLabels.length);
 
+    // all of our test cases have a single root node, meaning the first circle should be located
+    // at the top of the widget, with all other nodes below it
     const firstCircle = widget.locator('circle').first();
     const firstCircleBoundingBox = await firstCircle.boundingBox();
     expect(firstCircleBoundingBox).toBeDefined();
@@ -164,8 +168,11 @@ test(`Can display details view for a Preprint with every field`, async ({ page, 
   await expect(widget.locator('.node')).toHaveCount(0);
 
   const detailsHeader = widget.locator('.detail-header');
-  await expect(detailsHeader).toContainText("Preprint");
-  await expect(detailsHeader).toHaveAttribute('style', `background: ${typeShortLabelToOpts['P'].backgroundColor};`);
+  await expect(detailsHeader).toContainText('Preprint');
+  await expect(detailsHeader).toHaveAttribute(
+    'style',
+    `background: ${typeShortLabelToOpts['P'].backgroundColor};`,
+  );
 
   const keys = widget.locator('.metadata-grid-item.key');
   const vals = widget.locator('.metadata-grid-item.value');
@@ -182,7 +189,7 @@ test(`Can display details view for a Preprint with every field`, async ({ page, 
   await expect(vals.nth(2)).toContainText('1993-10-19');
 
   await expect(keys.nth(3)).toContainText('url');
-  await expect(vals.nth(3)).toContainText('http://example.com/sick-preprint-yo');
+  await expect(vals.nth(3)).toContainText('https://example.com/sick-preprint-yo');
 
   // Fields that can be visible here:
   // doi - String
@@ -190,7 +197,6 @@ test(`Can display details view for a Preprint with every field`, async ({ page, 
   // published - Date
   // url - String
   // type - Either a string or a list of strings
-
 
   // content - a list of urls associated with this thing.
   // participants - a list of people with names.
@@ -220,7 +226,7 @@ test('Can display details view for a Journal Article with different fields', asy
 
   // Assert the details view is visible after the click
   const detailsHeader = widget.locator('.detail-header');
-  await expect(detailsHeader).toContainText("Journal Article");
+  await expect(detailsHeader).toContainText('Journal Article');
   await expect(detailsHeader).toHaveAttribute('style', `background: ${opts.backgroundColor};`);
 
   const keys = widget.locator('.metadata-grid-item.key');
@@ -235,9 +241,9 @@ test('Can display details view for a Journal Article with different fields', asy
   await expect(vals.nth(1)).toContainText('https://example.com/fake-journal/article/3003');
 
   await expect(keys.nth(2)).toContainText('content');
-  await expect(vals.nth(2)).toContainText('http://example.com/fake-journal/article/3003.mp4');
-  await expect(vals.nth(3)).toContainText('http://example.com/fake-journal/article/3003.pdf');
-  await expect(vals.nth(4)).toContainText('http://example.com/fake-journal/article/3003.xml');
+  await expect(vals.nth(2)).toContainText('https://example.com/fake-journal/article/3003.mp4');
+  await expect(vals.nth(3)).toContainText('https://example.com/fake-journal/article/3003.pdf');
+  await expect(vals.nth(4)).toContainText('https://example.com/fake-journal/article/3003.xml');
 });
 
 test('Nodes that are alone on their y level are fixed to the center of the widget horizontally', async ({
