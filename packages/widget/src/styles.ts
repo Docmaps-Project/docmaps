@@ -8,6 +8,7 @@ export const customCss: CSSResult = css`
     background: #EDEDED;
     border: 1px solid;
     overflow-x: hidden;
+    overflow-y: hidden;
   }
 
   .logo {
@@ -123,13 +124,15 @@ export const customCss: CSSResult = css`
     font-size: 14px;
     font-style: normal;
     line-height: normal;
-    overflow-y: scroll;
+    height: 358px; // 500px (whole widget) - 67px (detail timeline) - 50px (detail-header) - 25px (widget-header)
   }
 
   .metadata-grid {
+    max-height: 100%;
     display: grid;
     grid-template-columns: 131px 369px;
-    grid-gap: 0
+    grid-gap: 0;
+    overflow-y: scroll;
   }
 
   .metadata-grid-item {
@@ -162,6 +165,8 @@ export const customCss: CSSResult = css`
     font-style: italic;
     font-weight: 300;
     line-height: normal;
+    padding-top: 7px;
+    padding-bottom: 7px;
   }
 
   .detail-header .close-button {
