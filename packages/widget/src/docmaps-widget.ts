@@ -12,10 +12,10 @@ import {
   DisplayObject,
   DisplayObjectEdge,
   DisplayObjectGraph,
-  DOCMAP_FIELDS_TO_DISPLAY,
   FIRST_NODE_RADIUS,
   GRAPH_CANVAS_HEIGHT,
   GRAPH_CANVAS_ID,
+  isFieldToDisplay,
   NODE_RADIUS,
   RANK_SEPARATION,
   TYPE_DISPLAY_OPTIONS,
@@ -243,9 +243,7 @@ export class DocmapsWidget extends LitElement {
   }
 
   private filterMetadataEntries(node: DisplayObject): [string, any][] {
-    return Object.entries(node).filter(
-      ([key, value]) => DOCMAP_FIELDS_TO_DISPLAY.includes(key) && value,
-    );
+    return Object.entries(node).filter(([key, value]) => isFieldToDisplay(key) && value);
   }
 
   private createMetadataGrid(metadataEntries: [string, any][]): TemplateResult<1> {

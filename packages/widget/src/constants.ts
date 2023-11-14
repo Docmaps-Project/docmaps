@@ -14,7 +14,9 @@ export type TypeDisplayOption = {
   dottedBorder?: boolean;
 };
 
-export const TYPE_DISPLAY_OPTIONS: { [type: string]: TypeDisplayOption } = {
+export const TYPE_DISPLAY_OPTIONS: {
+  [type: string]: TypeDisplayOption;
+} = {
   review: {
     shortLabel: 'R',
     longLabel: 'Review',
@@ -68,18 +70,15 @@ export const TYPE_DISPLAY_OPTIONS: { [type: string]: TypeDisplayOption } = {
     longLabel: 'Type unknown',
     backgroundColor: '#EFEFEF',
     textColor: '#043945',
-    detailBackgroundColor: "#777",
-    detailTextColor: "#EFEFEF",
+    detailBackgroundColor: '#777',
+    detailTextColor: '#EFEFEF',
     dottedBorder: true,
   },
 };
 
 export const ALL_KNOWN_TYPES: string[] = Object.keys(TYPE_DISPLAY_OPTIONS);
 
-// Each input and output of the Docmap's steps is converted into one of these
-export interface DisplayObject {
-  nodeId: string; // Used internally to construct graph, never rendered
-  type: string;
+export interface FieldsToDisplay {
   doi?: string;
   id?: string;
   published?: string;
@@ -88,8 +87,29 @@ export interface DisplayObject {
   actors?: string;
 }
 
-// String names of the DisplayObject fields that we want to display
-export const DOCMAP_FIELDS_TO_DISPLAY = ['doi', 'id', 'published', 'url', 'content', 'actors'];
+// The following 3 statements allow us to use FieldsToDisplay both as a type and as something we can
+// check at runtime. We could also use io-ts for this, but that felt like overkill since this is the
+// only place where we do something like this.
+export type FieldToDisplay = keyof FieldsToDisplay;
+
+const FieldsToDisplayPrototype: { [K in FieldToDisplay]: null } = {
+  doi: null,
+  id: null,
+  published: null,
+  url: null,
+  content: null,
+  actors: null,
+};
+
+export function isFieldToDisplay(key: string): key is FieldToDisplay {
+  return key in FieldsToDisplayPrototype;
+}
+
+// Each input and output of the Docmap's steps is converted into one of these
+export interface DisplayObject extends FieldsToDisplay {
+  nodeId: string; // Used internally to construct graph, never rendered
+  type: string;
+}
 
 export type DisplayObjectEdge = {
   sourceId: string;
