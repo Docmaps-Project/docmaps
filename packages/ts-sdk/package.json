@@ -14,6 +14,7 @@
     "lint:fix": "eslint --fix .",
     "docs:generate": "typedoc src/index.ts",
     "clean": "rm -rf dist/",
+    "build:deps": "pnpm run --filter=docmaps-sdk^... build",
     "build": "tsc --declaration"
   },
   "engines": {

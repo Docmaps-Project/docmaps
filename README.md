@@ -20,10 +20,9 @@ are generated for a single commit if it updates multiple packages.
 
 **Cross-dependencies and typescript:** Several packages depend on `ts-sdk`, and will refer to
 the `dist` directory within that package for their source code when making local changes.
-For that reason, you may need to run `pnpm --filter docmaps-sdk run build` or `pnpm run -r build`
-if you are making local changes to uptream dependencies within this monorepo so that your
-downstream code changes will pull those in.
-
+For that reason, you may need to run `pnpm run build:deps` in a package, or `pnpm run -r build`
+to build all packages, if you are making local changes to uptream dependencies within this
+monorepo so that your downstream code changes will pull those in.
 
 **Dependencies:** The workspace root builds a Docker image for the http-server. In addition to the
 npm package dependencies, to do local development you should have the following tools installed:

@@ -54,7 +54,7 @@ jobs:
       - name: Verify builds
         run: |
           cd ${{env.PKG_DIR}} ;
-          pnpm run --filter=@docmaps/http-server^... build ;
+          pnpm run build:deps ;
 
       - name: Test
         run: |
@@ -121,7 +121,7 @@ jobs:
       - name: Build cross-workspace deps
         run: |
           cd ${{env.PKG_DIR}} ;
-          pnpm run --filter=@docmaps/http-server^... build ;
+          pnpm run build:deps ;
 
       - name: Test
         run: |
