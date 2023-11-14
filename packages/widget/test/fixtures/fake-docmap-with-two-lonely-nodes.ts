@@ -21,7 +21,22 @@ export default {
     "_:b0": {
       "actions": [
         {
-          "participants": [],
+          "participants": [
+            {
+              "actor": {
+                "name": "eve",
+                "type": "person"
+              },
+              "role": "spaceship-builder"
+            },
+            {
+              "actor": {
+                "name": "Andrew Edstrom",
+                "type": "person"
+              },
+              "role": "gun-for-hire"
+            }
+          ],
           "outputs": [
             {
               "type": "preprint",
@@ -29,7 +44,17 @@ export default {
               "id": "sick-preprint-bro",
               "url": "https://example.com/sick-preprint-yo",
               "published": "1993-10-20",
-              "versionIdentifier": "2"
+              "versionIdentifier": "2",
+              "content": [
+                {
+                  "type": "web-page",
+                  "url": "https://example.com/fake-journal/article/3003.png"
+                },
+                {
+                  "type": "web-page",
+                  "url": "https://example.com/fake-journal/article/3003.heic"
+                }
+              ]
             }
           ]
         }

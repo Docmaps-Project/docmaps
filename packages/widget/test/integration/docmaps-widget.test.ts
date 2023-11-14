@@ -176,8 +176,8 @@ test(`Can display details view for a Preprint with every field`, async ({ page, 
 
   const keys = widget.locator('.metadata-grid-item.key');
   const vals = widget.locator('.metadata-grid-item.value');
-  await expect(keys).toHaveCount(4);
-  await expect(vals).toHaveCount(4);
+  await expect(keys).toHaveCount(5);
+  await expect(vals).toHaveCount(6);
 
   await expect(keys.nth(0)).toContainText('doi');
   await expect(vals.nth(0)).toContainText('10.1101/2022.11.08.000002');
@@ -190,6 +190,10 @@ test(`Can display details view for a Preprint with every field`, async ({ page, 
 
   await expect(keys.nth(3)).toContainText('url');
   await expect(vals.nth(3)).toContainText('https://example.com/sick-preprint-yo');
+
+  await expect(keys.nth(4)).toContainText('content');
+  await expect(vals.nth(4)).toContainText('https://example.com/fake-journal/article/3003.png');
+  await expect(vals.nth(5)).toContainText('https://example.com/fake-journal/article/3003.heic');
 
   // Fields that can be visible here:
   // doi - String
