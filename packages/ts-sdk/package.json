@@ -13,7 +13,6 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "docs:generate": "typedoc src/index.ts",
-    "docs:check": "npm run docs:generate && git add -N . && git diff --exit-code -I 'Defined in.*blob'",
     "clean": "rm -rf dist/",
     "build": "tsc --declaration"
   },
@@ -42,11 +41,11 @@
     "readable-stream": "^4.0.0"
   },
   "devDependencies": {
+    "@docmaps/build-configs": "workspace:^",
     "@rdfjs/types": "^1.1.0",
-    "@tsconfig/node-lts-strictest-esm": "^18.12.1",
     "@types/jsonld": "^1.5.8",
     "@types/n3": "^1.10.4",
-    "@types/node": "^18.16.2",
+    "@types/node": "^20.9.0",
     "@types/rdf-ext": "^2.0.0",
     "@types/rdfjs__data-model": "^2.0.4",
     "@types/rdfjs__parser-n3": "^2.0.1",
@@ -60,17 +59,15 @@
     "eslint-plugin-prettier": "^5.0.0",
     "into-stream": "^8.0.0",
     "prettier": "^3.0.0",
-    "ts-node": "^10.9.1",
-    "typedoc": "^0.24.8",
-    "typescript": "^4.9.5"
+    "typedoc": "^0.25.3",
+    "typescript": "^5.2.2"
   },
   "ava": {
     "extensions": {
       "ts": "module"
     },
     "nodeArguments": [
-      "--loader=ts-node/esm",
-      "--experimental-specifier-resolution=node"
+      "--loader=tsx/esm"
     ],
     "files": [
       "**/*.test.ts"

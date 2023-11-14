@@ -55,10 +55,10 @@ jobs:
         run: |
           pnpm install;
 
-      - name: Verify docs
+      - name: Generate docs
         run: |
           cd packages/ts-sdk ;
-          pnpm docs:check;
+          pnpm docs:generate;
 
       - name: Build SPA
         run: |

@@ -11,6 +11,7 @@ import { collect } from 'streaming-iterables'
 import { pipe } from 'fp-ts/lib/function'
 import factory from '@rdfjs/data-model'
 import { BackendAdapter, ThingSpec } from '../types'
+import { Logger } from 'pino'
 import util from 'util'
 import { Separated } from 'fp-ts/lib/Separated'
 
@@ -131,9 +132,11 @@ const docmapMatching: (s: n3.Store) => (iri: string) => TE.TaskEither<Error, D.D
 
 export class SparqlAdapter implements BackendAdapter {
   q: SparqlProcessor
+  logger: Logger
 
-  constructor(q: SparqlProcessor) {
+  constructor(q: SparqlProcessor, logger: Logger) {
     this.q = q
+    this.logger = logger.child({ backend: 'sparql-adapter' })
   }
 
   docmapWithIri(iri: string): TE.TaskEither<Error, D.DocmapT> {
@@ -185,9 +188,12 @@ export class SparqlAdapter implements BackendAdapter {
         ),
       ),
       TE.chainEitherK((quads) => {
-        return quads.length > 0
-          ? E.right(quads)
-          : E.left(new Error('content not found for queried DOI'))
+        this.logger.trace(
+          `got quads for query:\n${quads.map(
+            (q) => `${q.subject.value} ${q.predicate.value} ${q.object.value} .\n`,
+          )}`,
+        )
+        return quads.length > 0 ? E.right(quads) : E.left(new Error('zero quads found for query'))
       }),
       TE.chain((quads: Array<RDF.Quad>) => {
         const store = new n3.Store(quads)
@@ -196,8 +202,12 @@ export class SparqlAdapter implements BackendAdapter {
           docmapIrisFromStore,
           A.map(docmapMatching(store)),
           A.sequence(T.ApplicativePar),
+          // make a Separated<> to group the Lefts apart from the Rights
           T.map<E.Either<Error, D.DocmapT>[], Separated<Error[], D.DocmapT[]>>(A.separate),
           T.map((separated: Separated<Error[], D.DocmapT[]>) => {
+            this.logger.debug(
+              `framing yielded ${separated.right.length} docmaps and ${separated.left.length} errors`,
+            )
             const first = separated.right[0]
             if (!first) {
               return E.left(

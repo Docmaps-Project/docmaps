@@ -245,6 +245,10 @@ export const Thing = t.intersection([
  * import { Validation } from 'io-ts';
  *
  * const C: Validation<ActionT> = Action.decode({
+ *   inputs: [{
+ *     doi: '10.12345/xyz',
+ *     type: 'Article',
+ *   }],
  *   outputs: [{
  *     published: '2020-01-01',
  *     id: '123456',
@@ -273,6 +277,7 @@ export const Action = t.intersection([
   t.type({
     // outputs: fromNullable(t.array(Thing), []),
     outputs: ArrayUpsertedEmpty(Thing),
+    inputs: ArrayUpsertedEmpty(Thing),
     participants: ArrayUpsertedEmpty(RoleInTime),
   }),
   t.partial({
@@ -322,6 +327,10 @@ export const Assertion = t.intersection([
  *
  * const C: Validation<StepT> = Step.decode({
  *   actions: [{
+ *     inputs: [{
+ *       doi: '10.12345/xyz',
+ *       type: 'Article',
+ *     }],
  *     outputs: [{
  *       published: '2020-01-01',
  *       id: '123456',
@@ -341,16 +350,6 @@ export const Assertion = t.intersection([
  *     }],
  *     id: '123456'
  *   }],
- *   inputs: [{
- *     published: '2020-01-01',
- *     id: '123456',
- *     doi: '10.12345/abcdef',
- *     type: 'Article',
- *     content: [{
- *       type: 'text',
- *       text: 'This is an example of a thing'
- *     }]
- *   }],
  *   assertions: [{
  *     item: {
  *       type: 'Article',
@@ -367,10 +366,15 @@ export const Assertion = t.intersection([
 export const Step = t.intersection([
   t.type({
     actions: ArrayUpsertedEmpty(Action),
-    inputs: ArrayUpsertedEmpty(Thing),
     assertions: ArrayUpsertedEmpty(Assertion),
   }),
   t.partial({
+    /**
+     * Prefer placing `inputs` on `actions` directly.
+     *
+     * @deprecated 0.15.0
+     */
+    inputs: ArrayUpsertedEmpty(Thing),
     id: t.string,
     // TODO: this is a hacky solution. I would like these fields to be stripped if they are null.
     'next-step': t.union([t.string, t.null]),

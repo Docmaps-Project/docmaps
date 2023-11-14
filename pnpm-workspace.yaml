@@ -1,8 +1,9 @@
 packages:
-  - 'packages/ts-sdk'
-  - 'packages/ts-etl'
-  - 'packages/http-server'
-  - 'packages/spa'
+  - 'packages/build-configs'
   - 'packages/example'
   - 'packages/http-client'
+  - 'packages/http-server'
+  - 'packages/spa'
+  - 'packages/ts-etl'
+  - 'packages/ts-sdk'
   - 'packages/widget'

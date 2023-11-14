@@ -1,6 +1,7 @@
 import { Command, Option } from '@commander-js/extra-typings'
 import { API_VERSION } from '../api_version'
 import * as hs from './server'
+import pino from 'pino'
 
 // const stdoutWrite = (str: string) => process.stdout.write(str)
 
@@ -21,6 +22,7 @@ export function MakeCli() {
   const cli = new Command()
 
   const BACKEND_TYPES = ['memory', 'sparql-endpoint']
+  const LOG_LEVELS = ['trace', 'debug', 'info', 'warn', 'error', 'fatal']
 
   cli
     .name('docmaps-api-server')
@@ -33,9 +35,16 @@ export function MakeCli() {
     .command('start')
     .description('start the server')
     .addOption(
+      new Option('--logLevel <logLevel>', `the maximum log level to emit to stdout`)
+        .env('DM_LOG_LEVEL')
+        .default('info')
+        .choices(LOG_LEVELS)
+        .makeOptionMandatory(),
+    )
+    .addOption(
       new Option('--backendType <backendType>', `the plugin source name`)
         .env('DM_BACKEND_TYPE')
-        .preset(BACKEND_TYPES[0])
+        .default(BACKEND_TYPES[0])
         .choices(BACKEND_TYPES)
         .makeOptionMandatory(),
     )
@@ -108,11 +117,18 @@ export function MakeCli() {
           throw 'specified illegal backendType: choose one of `memory`,`sparql-endpoint`'
       }
 
-      const server = new hs.HttpServer(config)
+      const logger = pino({ name: '@docmaps/http-server', level: options.logLevel }).child({
+        lang: 'ts',
+        api_version: API_VERSION,
+      })
+
+      const server = new hs.HttpServer(config, { logger: logger })
       // Inject logging into the server config:
       //
       // const writer = cli.configureOutput()?.writeOut || stdoutWrite
       // writer(out)
+
+      logger.info('finished setup')
       await server.listen()
     })
 

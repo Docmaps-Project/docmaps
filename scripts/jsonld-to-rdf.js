@@ -19,7 +19,8 @@ async function processFile(fileName, callback) {
 
     for await (const line of readStream) {
       console.error(
-        `${i} ... Processing graph: ${line.substring(0, 120)} with length ${line.length
+        `${i} ... Processing graph: ${line.substring(0, 120)} with length ${
+          line.length
         }`,
       );
       await callback(line);
@@ -28,6 +29,8 @@ async function processFile(fileName, callback) {
   } catch (err) {
     console.error(err);
   }
+
+  console.error("done");
 }
 
 async function processGraphString(g) {
@@ -53,9 +56,11 @@ async function processGraphString(g) {
       process.stdout.write(d);
     })
       .on("end", () => {
+        console.error("received `end` event");
         res();
       })
       .on("close", (err) => {
+        console.error("received `close` event");
         if (err) {
           rej(err);
         } else {

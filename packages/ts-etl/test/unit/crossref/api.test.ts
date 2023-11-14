@@ -40,7 +40,7 @@ test('fetchPublicationByDoi: happy-path scenario: a manuscript with one preprint
 
   t.is(steps[0]?.inputs?.length, 0)
   t.deepEqual(steps[0]?.actions[0]?.outputs[0]?.doi, cm.PREPRINT_DOI)
-  t.deepEqual(steps[1]?.inputs[0]?.doi, cm.PREPRINT_DOI)
+  t.deepEqual(steps[1]?.actions[0]?.inputs[0]?.doi, cm.PREPRINT_DOI)
   t.deepEqual(steps[1]?.actions[0]?.outputs[0]?.doi, cm.MANUSCRIPT_DOI)
   //TODO: can write stronger assertions as we learn what this should look like
 })
@@ -65,9 +65,9 @@ test('fetchPublicationByDoi: happy-path scenario: a manuscript discovered from i
   t.is(res.right.length, 2)
   const steps = res.right
 
-  t.is(steps[0]?.inputs.length, 0)
+  t.is(steps[0]?.inputs?.length, 0)
   t.deepEqual(steps[0]?.actions[0]?.outputs[0]?.doi, cm.PREPRINT_DOI)
-  t.deepEqual(steps[1]?.inputs[0]?.doi, cm.PREPRINT_DOI)
+  t.deepEqual(steps[1]?.actions[0]?.inputs[0]?.doi, cm.PREPRINT_DOI)
   t.deepEqual(steps[1]?.actions[0]?.outputs[0]?.doi, cm.MANUSCRIPT_DOI)
   //TODO: can write stronger assertions as we learn what this should look like
 })
@@ -90,7 +90,7 @@ test('fetchPublicationByDoi: happy-path scenario: a manuscript with no relations
 
   t.is(res.right.length, 1)
   const steps = res.right
-  t.deepEqual(steps[0]?.inputs.length, 0)
+  t.deepEqual(steps[0]?.inputs?.length, 0)
   t.deepEqual(steps[0]?.actions[0]?.outputs[0]?.doi, cm.MANUSCRIPT_DOI)
 })
 
@@ -124,9 +124,9 @@ test('fetchPublicationByDoi: happy-path scenario: a manuscript with 2 reviews an
   const steps = res.right
   t.is(steps.length, 2)
 
-  t.deepEqual(steps[0]?.inputs.length, 0)
+  t.deepEqual(steps[0]?.inputs?.length, 0)
   t.deepEqual(steps[0]?.actions[0]?.outputs[0]?.doi, cm.MANUSCRIPT_DOI)
-  t.deepEqual(steps[1]?.inputs[0]?.doi, cm.MANUSCRIPT_DOI)
+  t.deepEqual(steps[1]?.actions[0]?.inputs[0]?.doi, cm.MANUSCRIPT_DOI)
   t.deepEqual(steps[1]?.actions[0]?.outputs[0]?.doi, cm.REVIEW_1_DOI)
   t.deepEqual(steps[1]?.actions[1]?.outputs[0]?.doi, cm.REVIEW_2_DOI)
 })

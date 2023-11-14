@@ -28,6 +28,7 @@
     "lit": "^2.7.6"
   },
   "devDependencies": {
+    "@docmaps/build-configs": "workspace:^",
     "@playwright/experimental-ct-core": "^1.39.0",
     "@playwright/test": "^1.39.0",
     "@sand4rt/experimental-ct-web": "^1.39.0",
@@ -43,8 +44,7 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "^3.0.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.0.2",
+    "typescript": "^5.2.2",
     "vite": "^4.4.5",
     "vite-plugin-dts": "^3.6.3"
   },
@@ -53,8 +53,7 @@
       "ts": "module"
     },
     "nodeArguments": [
-      "--loader=ts-node/esm",
-      "--experimental-specifier-resolution=node"
+      "--loader=tsx/esm"
     ],
     "files": [
       "test/unit/**/*.test.ts"

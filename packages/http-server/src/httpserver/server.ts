@@ -8,6 +8,8 @@ import { OxigraphInmemBackend } from '../adapter/oxigraph_inmem'
 import { SparqlAdapter, SparqlFetchBackend } from '../adapter'
 import { isLeft } from 'fp-ts/lib/Either'
 import { BackendAdapter } from '../types'
+import { Logger } from 'pino'
+import phttp from 'pino-http'
 import cors from 'cors'
 
 export type ServerConfig = {
@@ -30,23 +32,37 @@ export type ServerConfig = {
       }
 }
 
+export interface ServerIO {
+  logger: Logger
+}
+
 // TODO: rename?
 export class HttpServer {
   api: ApiInstance
   app: Application
   server: ServerHttp | ServerHttps // FIXME : support https
   config: ServerConfig
+  io: ServerIO
 
-  constructor(config: ServerConfig) {
+  constructor(config: ServerConfig, io: ServerIO) {
     this.config = config
+    this.io = {
+      ...io,
+    }
 
     let adapter: BackendAdapter
     switch (config.backend.type) {
       case 'memory':
-        adapter = new SparqlAdapter(new OxigraphInmemBackend(config.backend.memory.baseIri))
+        adapter = new SparqlAdapter(
+          new OxigraphInmemBackend(config.backend.memory.baseIri),
+          io.logger,
+        )
         break
       case 'sparqlEndpoint':
-        adapter = new SparqlAdapter(new SparqlFetchBackend(config.backend.sparqlEndpoint.url))
+        adapter = new SparqlAdapter(
+          new SparqlFetchBackend(config.backend.sparqlEndpoint.url),
+          io.logger,
+        )
         break
     }
 
@@ -56,6 +72,21 @@ export class HttpServer {
 
     // TODO Allow CORS to be configured in production
     this.app.use(cors())
+
+    // enable per-request logging
+    this.app.use(
+      phttp({
+        // delegate to parent logger
+        logger: this.io.logger,
+        customLogLevel: (_req, res, err) => {
+          if (res.statusCode >= 400 || err) {
+            return 'info'
+          }
+
+          return 'debug'
+        },
+      }),
+    )
 
     // app.use(bodyParser.urlencoded({ extended: false }))
     // app.use(bodyParser.json())
@@ -78,7 +109,7 @@ export class HttpServer {
         if (isLeft(result)) {
           return {
             status: 501, // FIXME: more expressive errors.
-            body: result.left,
+            body: { message: result.left.message },
           }
         }
 
@@ -89,13 +120,12 @@ export class HttpServer {
       },
       getDocmapForDoi: async (req) => {
         const doi = req.query.subject
-        console.log(doi)
         const result = await this.api.get_docmap_for_thing({ identifier: doi, kind: 'doi' })()
 
         if (isLeft(result)) {
           return {
             status: 404, // FIXME: more expressive errors.
-            body: result.left,
+            body: { message: result.left.message },
           }
         }
 
@@ -106,23 +136,16 @@ export class HttpServer {
       },
     })
 
-    // FIXME: resolve this awkward use of typescript ignores. The only
-    // reason I am willing to do this temporarily:
-    // - this function call doesn't affect any types as far as I can tell
-    // - it seems related to known issues in Zod, dependency of ts-rest
-    // - I have an open issue to track: https://github.com/ts-rest/ts-rest/issues/389
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    createExpressEndpoints(contract, router, this.app)
+    createExpressEndpoints(contract, router, this.app, { logInitialization: false })
     this.server = createHttpServer(this.app)
   }
 
   listen(): Promise<void> {
+    this.io.logger.info('opening listener...')
     return new Promise((res, _rej) => {
       // TODO : set listen timeout handling
       this.server.listen(this.config.server.port, () => {
-        // console.log(`Listening at http://localhost:${config.server.port}`)
+        this.io.logger.info(`Listening at http://localhost:${this.config.server.port}`)
         res()
       })
     })
@@ -132,7 +155,7 @@ export class HttpServer {
     return new Promise((res, _rej) => {
       // TODO : set close timeout handling
       this.server.close(() => {
-        // console.log(`Closing server...`)
+        this.io.logger.info(`Closing server...`)
         res()
       })
     })

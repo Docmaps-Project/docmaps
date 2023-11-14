@@ -108,7 +108,7 @@ export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
 
   steps.forEach((step: StepT) => {
     // Process step inputs
-    const inputIds: string[] = step.inputs.map(processThing);
+    const inputIds: string[] = step.inputs?.map(processThing) || [];
 
     // Process step outputs
     step.actions.forEach((action: ActionT) => {

@@ -1,6 +1,6 @@
 import { initContract } from '@ts-rest/core'
 import { DocmapT } from 'docmaps-sdk'
-import { ApiInfo } from './types'
+import { ApiInfo, ErrorBody } from './types'
 
 const c = initContract()
 
@@ -20,6 +20,7 @@ export const contract = c.router({
     // TODO: id as arg?
     responses: {
       200: c.type<DocmapT>(),
+      404: c.type<ErrorBody>(),
     },
     summary: 'Get a docmap matching an IRI exactly',
   },
@@ -31,6 +32,7 @@ export const contract = c.router({
     // TODO: id as arg?
     responses: {
       200: c.type<DocmapT>(),
+      404: c.type<ErrorBody>(),
     },
     summary: 'Get a docmap that describes a research artifact with this DOI',
   },

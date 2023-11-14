@@ -3,11 +3,12 @@ import { SparqlAdapter } from '../../src/adapter'
 import * as E from 'fp-ts/lib/Either'
 import { inspect } from 'util'
 import * as fixtures from '../__fixtures__/docmaps'
+import { testLoggerWithPino } from '../utils'
 
 test('docmapForThing: extracts a realistic docmap from a sparql backend when the steps already exist', async (t) => {
   const backend = fixtures.CreateDatastore()
 
-  const processor = new SparqlAdapter(backend)
+  const processor = new SparqlAdapter(backend, testLoggerWithPino(t.log))
 
   const docmap = await processor.docmapForThing({
     identifier: '10.1101/2022.11.08.515698',
@@ -36,7 +37,7 @@ test('docmapForThing: extracts a realistic docmap from a sparql backend when the
 test('docmapForThing: extracts a realistic docmap from a sparql backend when there are multiple candidates', async (t) => {
   const backend = fixtures.CreateDatastore()
 
-  const processor = new SparqlAdapter(backend)
+  const processor = new SparqlAdapter(backend, testLoggerWithPino(t.log))
 
   const docmap = await processor.docmapForThing({
     identifier: '10.1101/2022.11.08.515698',
@@ -65,7 +66,7 @@ test('docmapForThing: extracts a realistic docmap from a sparql backend when the
 test('docmapForThing: returns a failure case if no docmap can be found for a doi', async (t) => {
   const backend = fixtures.CreateDatastore()
 
-  const processor = new SparqlAdapter(backend)
+  const processor = new SparqlAdapter(backend, testLoggerWithPino(t.log))
 
   const docmap = await processor.docmapForThing({
     identifier: '10.1101/2022.11.08.nonexistent',
@@ -77,13 +78,13 @@ test('docmapForThing: returns a failure case if no docmap can be found for a doi
     return
   }
 
-  t.regex(docmap.left.message, /not found/)
+  t.regex(docmap.left.message, /zero quads/)
 })
 
 test('docmapWithiri: constructs and extracts a realistic docmap from a sparql backend', async (t) => {
   const backend = fixtures.CreateDatastore()
 
-  const processor = new SparqlAdapter(backend)
+  const processor = new SparqlAdapter(backend, testLoggerWithPino(t.log))
 
   const docmap = await processor.docmapWithIri(
     'https://data-hub-api.elifesciences.org/enhanced-preprints/docmaps/v1/get-by-doi?preprint_doi=10.1101%2F2022.11.08.515698',

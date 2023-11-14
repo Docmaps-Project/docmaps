@@ -4,7 +4,7 @@ import * as A from 'fp-ts/lib/Array'
 import { pipe } from 'fp-ts/lib/function'
 import * as D from 'docmaps-sdk'
 import { mapLeftToUnknownError, nameForAuthor } from '../../utils'
-import { eqString } from 'fp-ts/lib/Eq'
+import { Eq } from 'fp-ts/lib/string'
 
 /**
  * Mappings from strings used in Crossref that are not in Docmaps semantics.
@@ -93,6 +93,6 @@ export function relatedDoisForWork(w: Work, relation: string): string[] {
     reviews,
     // get unique IDs
     A.map((wre) => wre.id),
-    A.uniq(eqString),
+    A.uniq(Eq),
   )
 }

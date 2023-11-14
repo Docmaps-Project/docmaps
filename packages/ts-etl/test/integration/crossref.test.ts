@@ -56,6 +56,30 @@ test('single item from crossref with one preprint deduped', async (t) => {
   }
   t.is(Object.keys(steps).length, 2)
 
+  const firstStepId = dmArr[0]?.['first-step']
+  if (!firstStepId) {
+    t.fail('expected a first step!')
+    return
+  }
+
+  const secondStepId = Object.keys(steps).find((s) => s != firstStepId)
+  if (!secondStepId) {
+    t.fail('expected a second step!')
+    return
+  }
+
+  t.deepEqual(steps[firstStepId]?.inputs, [])
+  t.deepEqual(steps[secondStepId]?.inputs, [])
+
+  t.deepEqual(steps[firstStepId]?.actions[0]?.inputs, [])
+  t.deepEqual(steps[secondStepId]?.actions[0]?.inputs, [
+    {
+      doi: '10.5194/acpd-9-13523-2009',
+      published: '2009-06-18T00:00:00.000Z',
+      type: 'preprint',
+    },
+  ])
+
   t.true(stdout.length < 4000) // depends on the actual example chosen. but this is to prevent regressions from explosions of added keys.
 })
 
@@ -107,7 +131,7 @@ test('single item from crossref with both preprint and reviews', async (t) => {
   t.is(steps['_:b2']?.assertions[0]?.['status'], 'published')
   t.is(steps['_:b3']?.assertions[0]?.['status'], 'reviewed')
 
-  t.true(stdout.length < 4000) // depends on the actual example chosen. but this is to prevent regressions from explosions of added keys.
+  t.true(stdout.length < 5000) // depends on the actual example chosen. but this is to prevent regressions from explosions of added keys.
 })
 
 test('item from crossref with complex entanglement does not infinitely recurse', async (t) => {

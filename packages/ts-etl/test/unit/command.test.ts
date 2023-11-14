@@ -50,9 +50,10 @@ test('ItemCmd: crossref: happy-path scenario: a manuscript with one preprint and
     name: 'my_name',
   })
   t.is(dm.steps ? Object.keys(dm.steps).length : 0, 2)
-  t.is(dm.steps?.['_:b0']?.inputs.length, 0)
+  t.is(dm.steps?.['_:b0']?.inputs?.length, 0)
+  t.is(dm.steps?.['_:b0']?.actions[0]?.inputs.length, 0)
   t.deepEqual(dm.steps?.['_:b0']?.actions[0]?.outputs[0]?.doi, cm.PREPRINT_DOI)
-  t.deepEqual(dm.steps?.['_:b1']?.inputs[0]?.doi, cm.PREPRINT_DOI)
+  t.deepEqual(dm.steps?.['_:b1']?.actions[0]?.inputs[0]?.doi, cm.PREPRINT_DOI)
   t.deepEqual(dm.steps?.['_:b1']?.actions[0]?.outputs[0]?.doi, cm.MANUSCRIPT_DOI)
   //TODO: can write stronger assertions as we learn what this should look like
 })
