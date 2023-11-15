@@ -137,11 +137,9 @@ function thingToDisplayObject(
     .filter((actor: ActorT): actor is NameHaver => {
       // Actors can be anything, so we have to check that they have a name
       // @ts-ignore
-      return actor !== undefined && actor?.name !== undefined;
+      return actor && actor?.name;
     })
-    .map((actor: NameHaver) => {
-      return actor.name;
-    })
+    .map((actor: NameHaver) => actor.name)
     .join(', ');
 
   return {
