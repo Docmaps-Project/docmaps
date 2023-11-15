@@ -1,4 +1,4 @@
-import { html, LitElement, nothing, TemplateResult } from 'lit';
+import { html, HTMLTemplateResult, LitElement, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { customCss } from './styles';
 import { closeDetailsButton, logo, timelinePlaceholder } from './assets';
@@ -213,7 +213,7 @@ export class DocmapsWidget extends LitElement {
       });
   }
 
-  private renderDetailsView(node: DisplayObject): TemplateResult<1> {
+  private renderDetailsView(node: DisplayObject): HTMLTemplateResult {
     this.clearGraph();
     const opts = TYPE_DISPLAY_OPTIONS[node.type];
     const metadataEntries = this.filterMetadataEntries(node);
@@ -246,12 +246,12 @@ export class DocmapsWidget extends LitElement {
     return Object.entries(node).filter(([key, value]) => isFieldToDisplay(key) && value);
   }
 
-  private createMetadataGrid(metadataEntries: [string, any][]): TemplateResult<1> {
+  private createMetadataGrid(metadataEntries: [string, any][]): HTMLTemplateResult {
     const gridItems = metadataEntries.map((entry, index) => this.createGridItem(entry, index));
     return html` <div class="metadata-grid">${gridItems}</div>`;
   }
 
-  private createGridItem([key, value]: [string, any], index: number): TemplateResult<1> {
+  private createGridItem([key, value]: [string, any], index: number): HTMLTemplateResult {
     if (Array.isArray(value)) {
       const values: any[] = value; // rename since it's actually plural
       return html`
@@ -271,7 +271,7 @@ export class DocmapsWidget extends LitElement {
     `;
   }
 
-  private emptyMetadataMessage(): TemplateResult<1> {
+  private emptyMetadataMessage(): HTMLTemplateResult {
     return html` <div class="metadata-item">
       <div class="metadata-key">no metadata found</div>
     </div>`;
