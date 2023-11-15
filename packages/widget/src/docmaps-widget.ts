@@ -45,7 +45,7 @@ export class DocmapsWidget extends LitElement {
 
   static styles = [customCss];
 
-  render() {
+  render(): HTMLTemplateResult {
     const content: HTMLTemplateResult = this.selectedNode
       ? this.renderDetailsView(this.selectedNode)
       : html` <div id="tooltip" class="tooltip" style="opacity:0;"></div>
@@ -67,10 +67,10 @@ export class DocmapsWidget extends LitElement {
   }
 
   firstUpdated() {
-    this.loadIBMPlexMonoFont();
+    this.loadFont();
   }
 
-  private loadIBMPlexMonoFont() {
+  private loadFont() {
     // Load IBM Plex Mono font
     // It would be nice if we could do this in styles.ts, but using @import there gives this error in the dev tools:
     // `@import rules are not allowed here. See https://github.com/WICG/construct-stylesheets/issues/119#issuecomment-588352418.`
@@ -205,8 +205,8 @@ export class DocmapsWidget extends LitElement {
         .attr('y', getNodeY);
     });
 
-    nodeElements.on('click', (_event, d) => this.onNodeClick(d));
-    labels.on('click', (_event, d) => this.onNodeClick(d));
+    nodeElements.on('click', (_event, d: D3Node) => this.onNodeClick(d));
+    labels.on('click', (_event, d: D3Node) => this.onNodeClick(d));
 
     this.setUpTooltips(nodeElements);
     this.setUpTooltips(labels);
@@ -234,15 +234,13 @@ export class DocmapsWidget extends LitElement {
           .style('left', `${event.pageX + 5}px`) // Position the tooltip at the mouse location
           .style('top', `${event.pageY - 28}px`);
       })
-      .on('mouseout', () => {
-        tooltip.style('visibility', 'hidden').style('opacity', 0);
-      });
+      .on('mouseout', () => tooltip.style('visibility', 'hidden').style('opacity', 0));
   }
 
   private renderDetailsView(node: DisplayObject): HTMLTemplateResult {
     this.clearGraph();
     const opts = TYPE_DISPLAY_OPTIONS[node.type];
-    const metadataEntries = this.filterMetadataEntries(node);
+    const metadataEntries: [string, any][] = this.filterMetadataEntries(node);
 
     const metadataBody: HTMLTemplateResult =
       metadataEntries.length > 0
@@ -281,13 +279,12 @@ export class DocmapsWidget extends LitElement {
     if (Array.isArray(value)) {
       const values: any[] = value; // rename since it's actually plural
       return html`
-        <div
-          class="metadata-grid-item key"
-          style="grid-row-start: ${index + 1}; grid-row-end: ${index + values.length + 1};"
-        >
+        <div class='metadata-grid-item key'
+             style='grid-row-start: ${index + 1}; grid-row-end: ${index + values.length + 1};'>
           ${key}
         </div>
-        ${values.map((val) => html` <div class="metadata-grid-item value content">${val}</div>`)}
+        ${values.map((val) => html`
+          <div class='metadata-grid-item value content'>${val}</div>`)}
       `;
     }
 
@@ -299,7 +296,9 @@ export class DocmapsWidget extends LitElement {
 
   private emptyMetadataMessage(): HTMLTemplateResult {
     return html` <div class="metadata-item">
-      <div class="metadata-key">no metadata found</div>
+      <div class="metadata-key">
+        no metadata found
+      </div>
     </div>`;
   }
 
@@ -344,7 +343,7 @@ function getInitialNodePositions(nodes: DisplayObject[], edges: DisplayObjectEdg
 }
 
 function groupNodesByYCoordinate(nodeIds: string[], dagreGraph: DagreGraph): Map<number, D3Node[]> {
-  const yLevelNodeMap = new Map<number, D3Node[]>();
+  const yLevelNodeMap: Map<number, D3Node[]> = new Map<number, D3Node[]>();
   nodeIds.forEach((nodeId: string) => {
     const node: Dagre.Node<DisplayObject> = dagreGraph.node(nodeId);
     const yLevel: number = node.y;
@@ -369,14 +368,10 @@ function prepareGraphForSimulation(
 ): { d3Edges: D3Edge[]; d3Nodes: D3Node[]; graphWidth: number } {
   const dagreGraph: DagreGraph = getInitialNodePositions(nodes, edges);
 
-  const graphBounds = dagreGraph.graph();
-  let graphWidth = WIDGET_SIZE;
-  if (
-    graphBounds.width &&
-    graphBounds.height &&
-    (graphBounds.width > WIDGET_SIZE || graphBounds.height > GRAPH_CANVAS_HEIGHT)
-  ) {
-    const aspectRatio: number = (1.1 * graphBounds.width) / graphBounds.height;
+  const { height, width } = dagreGraph.graph();
+  let graphWidth: number = WIDGET_SIZE;
+  if (width && height && (width > WIDGET_SIZE || height > GRAPH_CANVAS_HEIGHT)) {
+    const aspectRatio: number = (1.1 * width) / height;
     graphWidth = aspectRatio * GRAPH_CANVAS_HEIGHT;
   }
 

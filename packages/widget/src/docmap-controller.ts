@@ -67,7 +67,7 @@ export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
   let idCounter: number = 1;
 
   const processThing = (thing: ThingT, participants: RoleInTimeT[] = []) => {
-    let inputId = thing.doi || thing.id;
+    let inputId: string | undefined = thing.doi || thing.id;
     if (!inputId) {
       inputId = `n${idCounter}`;
       idCounter++;
@@ -92,7 +92,7 @@ export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
     // Process step outputs
     step.actions.forEach((action: ActionT) => {
       action.outputs.map((output: ThingT) => {
-        const outputId = processThing(output, action.participants);
+        const outputId: string = processThing(output, action.participants);
 
         // Add an edge from every step input to this node
         inputIds.forEach((inputId: string) =>
@@ -159,8 +159,8 @@ function formatDate(date: Date) {
 
   // The getMonth() method returns the month (0-11) for the specified date,
   // so you need to add 1 to get the correct month.
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
+  const month: number = date.getMonth() + 1;
+  const day: number = date.getDate();
 
   // Convert month and day numbers to strings and prefix them with a zero if they're below 10
   let mm = month.toString();
