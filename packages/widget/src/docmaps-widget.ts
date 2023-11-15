@@ -66,6 +66,29 @@ export class DocmapsWidget extends LitElement {
     `;
   }
 
+  firstUpdated() {
+    this.loadIBMPlexMonoFont();
+  }
+
+  private loadIBMPlexMonoFont() {
+    // Load IBM Plex Mono font
+    // It would be nice if we could do this in styles.ts, but using @import there gives this error in the dev tools:
+    // `@import rules are not allowed here. See https://github.com/WICG/construct-stylesheets/issues/119#issuecomment-588352418.`
+    this.addLinkToDocumentHeader('preconnect', 'https://fonts.googleapis.com');
+    this.addLinkToDocumentHeader('preconnect', 'https://fonts.gstatic.com', "anonymous");
+    this.addLinkToDocumentHeader('stylesheet', 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
+  }
+
+  private addLinkToDocumentHeader(rel: string, href: string, crossorigin?: string) {
+    const link = document.createElement('link');
+    link.rel = rel;
+    link.href = href;
+    if (crossorigin) {
+      link.crossOrigin = crossorigin;
+    }
+    document.head.appendChild(link);
+  }
+
   private onNodeClick(node: DisplayObject) {
     this.selectedNode = node;
     this.requestUpdate(); // Trigger re-render
