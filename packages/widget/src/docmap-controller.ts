@@ -1,6 +1,6 @@
 import { MakeHttpClient } from '@docmaps/http-client';
 import { TaskFunction } from '@lit/task';
-import { ActorT, Docmap, DocmapT, RoleInTimeT, StepT, ThingT } from 'docmaps-sdk';
+import { ActorT, Docmap, DocmapT, ManifestationT, RoleInTimeT, StepT, ThingT } from 'docmaps-sdk';
 import { pipe } from 'fp-ts/lib/function';
 import * as E from 'fp-ts/lib/Either';
 import { ALL_KNOWN_TYPES, DisplayObject, DisplayObjectEdge, DisplayObjectGraph } from './constants';
@@ -118,34 +118,10 @@ function thingToDisplayObject(
   nodeId: string,
   participants: RoleInTimeT[],
 ): DisplayObject {
-  // The specification allows type to be an array
-  // If it is an array, we convert it to a single string and make sure it's one of the types we support displaying
-  const providedType: string = (Array.isArray(thing.type) ? thing.type[0] : thing.type) ?? '??';
-  const displayType: string = ALL_KNOWN_TYPES.indexOf(providedType) >= 0 ? providedType : '??';
-
-  const published: string | undefined =
-    thing.published && thing.published instanceof Date
-      ? formatDate(thing.published)
-      : thing.published;
-
-  let content: string[] | undefined = undefined;
-  if (thing.content) {
-    content = thing.content
-      .map((manifestation) => {
-        return manifestation.url?.toString();
-      })
-      .filter((url): url is string => url !== undefined);
-  }
-
-  const actors = participants
-    .map((participant) => participant.actor)
-    .filter((actor: ActorT): actor is NameHaver => {
-      // Actors can be anything, so we have to check that they have a name
-      // @ts-ignore
-      return actor && actor?.name;
-    })
-    .map((actor: NameHaver) => actor.name)
-    .join(', ');
+  const displayType: string = determineDisplayType(thing.type);
+  const published: string | undefined = formatDateIfAvailable(thing.published);
+  let content: string[] | undefined = extractContentUrls(thing.content);
+  const actors: string = extractActorNames(participants);
 
   return {
     nodeId,
@@ -157,6 +133,33 @@ function thingToDisplayObject(
     content,
     actors,
   };
+}
+
+function formatDateIfAvailable(date: Date | string | undefined) {
+  return date && date instanceof Date ? formatDate(date) : date;
+}
+
+function determineDisplayType(ty: string | string[] | undefined): string {
+  const singleType: string = (Array.isArray(ty) ? ty[0] : ty) ?? '??';
+  return ALL_KNOWN_TYPES.includes(singleType) ? singleType : '??';
+}
+
+function extractContentUrls(content: ManifestationT[] | undefined) {
+  return content
+    ?.map((manifestation: ManifestationT) => manifestation.url?.toString())
+    .filter((url: string | undefined): url is string => url !== undefined);
+}
+
+function extractActorNames(participants: RoleInTimeT[]) {
+  return participants
+    .map((participant) => participant.actor)
+    .filter((actor: ActorT): actor is NameHaver => {
+      // Actors can be anything, so we have to check that they have a name
+      // @ts-ignore
+      return actor && actor?.name;
+    })
+    .map((actor: NameHaver) => actor.name)
+    .join(', ');
 }
 
 function formatDate(date: Date) {
