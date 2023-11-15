@@ -3,12 +3,13 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { customCss } from './styles';
 import { closeDetailsButton, logo, timelinePlaceholder } from './assets';
 import * as d3 from 'd3';
-import { SimulationLinkDatum } from 'd3';
 import { Task } from '@lit/task';
 import { DocmapFetchingParams, getDocmap } from './docmap-controller';
-import { SimulationNodeDatum } from 'd3-force';
 import * as Dagre from 'dagre';
 import {
+  D3Edge,
+  D3Node,
+  DagreGraph,
   DisplayObject,
   DisplayObjectEdge,
   DisplayObjectGraph,
@@ -21,10 +22,6 @@ import {
   TYPE_DISPLAY_OPTIONS,
   WIDGET_SIZE,
 } from './constants';
-
-// We override x & y since they're optional in SimulationNodeDatum, but not in our use case
-export type D3Node = SimulationNodeDatum & DisplayObject & { x: number; y: number };
-export type D3Edge = SimulationLinkDatum<D3Node>;
 
 // TODO name should be singular not plural
 @customElement('docmaps-widget')
@@ -47,7 +44,7 @@ export class DocmapsWidget extends LitElement {
   static styles = [customCss];
 
   firstUpdated() {
-    this.loadFont();
+    loadFont();
   }
 
   render(): HTMLTemplateResult {
@@ -72,137 +69,37 @@ export class DocmapsWidget extends LitElement {
   }
 
   private renderDocmap({ nodes, edges }: DisplayObjectGraph) {
-    this.drawGraph(nodes, edges);
+    if (this.shadowRoot) {
+      const { d3Nodes, d3Edges, graphWidth } = prepareGraphForSimulation(nodes, edges);
+
+      const canvas: Element | null = this.getCanvasElement();
+      const svg = this.createEmptySvgForGraph(canvas, graphWidth);
+      this.drawGraph(d3Nodes, d3Edges, graphWidth, svg);
+    }
+
     // D3 draws the graph for us, so we have nothing to actually render here
     return nothing;
+  }
+
+  private drawGraph(
+    d3Nodes: D3Node[],
+    d3Edges: D3Edge[],
+    graphWidth: number,
+    svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+  ) {
+    const simulation = createForceSimulation(d3Nodes, d3Edges, graphWidth);
+    const linkElements = createLinkElements(svg, d3Edges);
+    const nodeElements = createNodeElements(svg, d3Nodes);
+    const labels = createLabels(svg, d3Nodes);
+    setupSimulationTicks(simulation, linkElements, nodeElements, labels);
+    this.setupInteractivity(nodeElements, labels);
   }
 
   private onNodeClick(node: DisplayObject) {
     this.selectedNode = node;
     this.requestUpdate(); // Trigger re-render
   }
-
-  private drawGraph(nodes: DisplayObject[], edges: DisplayObjectEdge[]) {
-    if (!this.shadowRoot) {
-      return;
-    }
-
-    const { d3Nodes, d3Edges, graphWidth } = prepareGraphForSimulation(nodes, edges);
-
-    const canvas: Element | null = this.getCanvasElement();
-    const svg = this.createSvg(canvas, graphWidth);
-
-    const simulation = this.createForceSimulation(d3Nodes, d3Edges, graphWidth);
-    const linkElements = this.createLinkElements(svg, d3Edges);
-    const nodeElements = this.createNodeElements(svg, d3Nodes);
-    const labels = this.createLabels(svg, d3Nodes);
-
-    this.setupSimulationTicks(simulation, linkElements, nodeElements, labels);
-    this.setupInteractivity(nodeElements, labels);
-  }
-
-  private setupSimulationTicks(
-    simulation: d3.Simulation<D3Node, D3Edge>,
-    linkElements: d3.Selection<SVGLineElement, D3Edge, SVGGElement, unknown>,
-    nodeElements: d3.Selection<SVGCircleElement, D3Node, SVGGElement, unknown>,
-    labels: d3.Selection<SVGTextElement, D3Node, SVGGElement, unknown>,
-  ) {
-    simulation.on('tick', () => {
-      linkElements
-        .attr('x1', (d) => (d.source as D3Node).x ?? 0)
-        .attr('y1', (d) => (d.source as D3Node).y ?? 0)
-        .attr('x2', (d) => (d.target as D3Node).x ?? 0)
-        .attr('y2', (d) => (d.target as D3Node).y ?? 0);
-
-      nodeElements.attr('cx', getNodeX).attr('cy', getNodeY);
-      labels
-        // We offset x slightly because otherwise the label looks a tiny bit off-center horizontally
-        .attr('x', (d: D3Node) => getNodeX(d) + 0.8)
-        .attr('y', getNodeY);
-    });
-  }
-
-  private createLabels(
-    svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
-    d3Nodes: D3Node[],
-  ) {
-    return svg
-      .append('g')
-      .attr('class', 'labels')
-      .selectAll('text')
-      .data(d3Nodes)
-      .enter()
-      .append('text')
-      .attr('class', 'label clickable')
-      .attr('text-anchor', 'middle')
-      .attr('dominant-baseline', 'central')
-      .attr('fill', (d) => TYPE_DISPLAY_OPTIONS[d.type].textColor) // Set the text color
-      .text((d) => TYPE_DISPLAY_OPTIONS[d.type].shortLabel);
-  }
-
-  private createNodeElements(
-    svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
-    d3Nodes: D3Node[],
-  ) {
-    return svg
-      .append('g')
-      .attr('class', 'nodes')
-      .selectAll('circle')
-      .data(d3Nodes)
-      .enter()
-      .append('circle')
-      .attr('class', 'node clickable')
-      .attr('fill', (d) => TYPE_DISPLAY_OPTIONS[d.type].backgroundColor)
-      .attr('r', (_, i: number): number => (i === 0 ? FIRST_NODE_RADIUS : NODE_RADIUS))
-      .attr('stroke', (d: D3Node): string =>
-        TYPE_DISPLAY_OPTIONS[d.type].dottedBorder ? '#777' : 'none',
-      )
-      .attr('stroke-width', (d: D3Node): string =>
-        TYPE_DISPLAY_OPTIONS[d.type].dottedBorder ? '2px' : 'none',
-      )
-      .attr('stroke-dasharray', (d: D3Node): string =>
-        TYPE_DISPLAY_OPTIONS[d.type].dottedBorder ? '8 4' : 'none',
-      );
-  }
-
-  private createLinkElements(
-    svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
-    d3Edges: D3Edge[],
-  ): d3.Selection<SVGLineElement, D3Edge, SVGGElement, unknown> {
-    return svg
-      .append('g')
-      .attr('class', 'links')
-      .selectAll('line')
-      .data(d3Edges)
-      .enter()
-      .append('line')
-      .attr('stroke', 'black')
-      .attr('class', 'link');
-  }
-
-  private createForceSimulation(d3Nodes: D3Node[], d3Edges: D3Edge[], graphWidth: number) {
-    return d3
-      .forceSimulation(d3Nodes)
-      .force(
-        'link',
-        d3
-          .forceLink(d3Edges)
-          .id((d: d3.SimulationNodeDatum) => {
-            // @ts-ignore
-            return d.nodeId;
-          })
-          .distance(RANK_SEPARATION * 1.2)
-          .strength(0.2),
-      )
-      .force('charge', d3.forceManyBody())
-      .force('collide', d3.forceCollide(NODE_RADIUS * 1.3))
-      .force(
-        'center',
-        d3.forceCenter(Math.floor(graphWidth / 2), Math.floor(GRAPH_CANVAS_HEIGHT / 2)),
-      );
-  }
-
-  private createSvg(
+  private createEmptySvgForGraph(
     canvas: Element | null,
     graphWidth: number,
   ): d3.Selection<SVGSVGElement, unknown, null, undefined> {
@@ -340,20 +237,109 @@ export class DocmapsWidget extends LitElement {
       <div class="metadata-key">no metadata found</div>
     </div>`;
   }
-
-  private loadFont() {
-    // Load IBM Plex Mono font
-    // It would be nice to do this in styles.ts, but `@import` is not supported there.
-    addLinkToDocumentHeader('preconnect', 'https://fonts.googleapis.com');
-    addLinkToDocumentHeader('preconnect', 'https://fonts.gstatic.com', 'anonymous');
-    addLinkToDocumentHeader(
-      'stylesheet',
-      'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap',
-    );
-  }
 }
 
-type DagreGraph = Dagre.graphlib.Graph<DisplayObject>;
+function createLabels(
+  svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+  d3Nodes: D3Node[],
+) {
+  return svg
+    .append('g')
+    .attr('class', 'labels')
+    .selectAll('text')
+    .data(d3Nodes)
+    .enter()
+    .append('text')
+    .attr('class', 'label clickable')
+    .attr('text-anchor', 'middle')
+    .attr('dominant-baseline', 'central')
+    .attr('fill', (d) => TYPE_DISPLAY_OPTIONS[d.type].textColor) // Set the text color
+    .text((d) => TYPE_DISPLAY_OPTIONS[d.type].shortLabel);
+}
+
+function createNodeElements(
+  svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+  d3Nodes: D3Node[],
+) {
+  return svg
+    .append('g')
+    .attr('class', 'nodes')
+    .selectAll('circle')
+    .data(d3Nodes)
+    .enter()
+    .append('circle')
+    .attr('class', 'node clickable')
+    .attr('fill', (d) => TYPE_DISPLAY_OPTIONS[d.type].backgroundColor)
+    .attr('r', (_, i: number): number => (i === 0 ? FIRST_NODE_RADIUS : NODE_RADIUS))
+    .attr('stroke', (d: D3Node): string =>
+      TYPE_DISPLAY_OPTIONS[d.type].dottedBorder ? '#777' : 'none',
+    )
+    .attr('stroke-width', (d: D3Node): string =>
+      TYPE_DISPLAY_OPTIONS[d.type].dottedBorder ? '2px' : 'none',
+    )
+    .attr('stroke-dasharray', (d: D3Node): string =>
+      TYPE_DISPLAY_OPTIONS[d.type].dottedBorder ? '8 4' : 'none',
+    );
+}
+
+function createLinkElements(
+  svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+  d3Edges: D3Edge[],
+): d3.Selection<SVGLineElement, D3Edge, SVGGElement, unknown> {
+  return svg
+    .append('g')
+    .attr('class', 'links')
+    .selectAll('line')
+    .data(d3Edges)
+    .enter()
+    .append('line')
+    .attr('stroke', 'black')
+    .attr('class', 'link');
+}
+
+function createForceSimulation(d3Nodes: D3Node[], d3Edges: D3Edge[], graphWidth: number) {
+  return d3
+    .forceSimulation(d3Nodes)
+    .force(
+      'link',
+      d3
+        .forceLink(d3Edges)
+        .id((d: d3.SimulationNodeDatum) => {
+          // @ts-ignore
+          return d.nodeId;
+        })
+        .distance(RANK_SEPARATION * 1.2)
+        .strength(0.2),
+    )
+    .force('charge', d3.forceManyBody())
+    .force('collide', d3.forceCollide(NODE_RADIUS * 1.3))
+    .force(
+      'center',
+      d3.forceCenter(Math.floor(graphWidth / 2), Math.floor(GRAPH_CANVAS_HEIGHT / 2)),
+    );
+}
+
+function setupSimulationTicks(
+  simulation: d3.Simulation<D3Node, D3Edge>,
+  linkElements: d3.Selection<SVGLineElement, D3Edge, SVGGElement, unknown>,
+  nodeElements: d3.Selection<SVGCircleElement, D3Node, SVGGElement, unknown>,
+  labels: d3.Selection<SVGTextElement, D3Node, SVGGElement, unknown>,
+) {
+  simulation.on('tick', () => {
+    linkElements
+      .attr('x1', (d) => (d.source as D3Node).x ?? 0)
+      .attr('y1', (d) => (d.source as D3Node).y ?? 0)
+      .attr('x2', (d) => (d.target as D3Node).x ?? 0)
+      .attr('y2', (d) => (d.target as D3Node).y ?? 0);
+
+    nodeElements.attr('cx', getNodeX).attr('cy', getNodeY);
+    labels
+      // We offset x slightly because otherwise the label looks a tiny bit off-center horizontally
+      .attr('x', (d: D3Node) => getNodeX(d) + 0.8)
+      .attr('y', getNodeY);
+  });
+}
+
 
 // Dagre is a tool for laying out directed graphs. We use it to generate initial positions for
 // our nodes, which we then pass to d3 to animate into their final positions.
@@ -397,16 +383,6 @@ function groupNodesByYCoordinate(nodeIds: string[], dagreGraph: DagreGraph): Map
     yLevelNodeMap.get(yLevel)?.push(node);
   });
   return yLevelNodeMap;
-}
-
-function addLinkToDocumentHeader(rel: string, href: string, crossorigin?: string) {
-  const link = document.createElement('link');
-  link.rel = rel;
-  link.href = href;
-  if (crossorigin) {
-    link.crossOrigin = crossorigin;
-  }
-  document.head.appendChild(link);
 }
 
 // Convert the naive "DisplayObject" nodes and edges we get from the Docmap controller
@@ -470,6 +446,27 @@ function graphIsTooBigForCanvas(width: number, height: number): boolean {
 function calculateGraphWidth(width: number, height: number) {
   const aspectRatio: number = (1.1 * width) / height;
   return aspectRatio * GRAPH_CANVAS_HEIGHT;
+}
+
+function loadFont() {
+  // Load IBM Plex Mono font
+  // It would be nice to do this in styles.ts, but `@import` is not supported there.
+  addLinkToDocumentHeader('preconnect', 'https://fonts.googleapis.com');
+  addLinkToDocumentHeader('preconnect', 'https://fonts.gstatic.com', 'anonymous');
+  addLinkToDocumentHeader(
+    'stylesheet',
+    'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap',
+  );
+}
+
+function addLinkToDocumentHeader(rel: string, href: string, crossorigin?: string) {
+  const link = document.createElement('link');
+  link.rel = rel;
+  link.href = href;
+  if (crossorigin) {
+    link.crossOrigin = crossorigin;
+  }
+  document.head.appendChild(link);
 }
 
 declare global {
