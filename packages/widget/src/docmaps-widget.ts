@@ -73,8 +73,7 @@ export class DocmapsWidget extends LitElement {
 
   private loadFont() {
     // Load IBM Plex Mono font
-    // It would be nice if we could do this in styles.ts, but attempts to use @import there
-    // resulted in the following error: "@import rules are not allowed here."
+    // It would be nice to do this in styles.ts, but `@import` is not supported there.
     addLinkToDocumentHeader('preconnect', 'https://fonts.googleapis.com');
     addLinkToDocumentHeader('preconnect', 'https://fonts.gstatic.com', 'anonymous');
     addLinkToDocumentHeader(
@@ -90,19 +89,18 @@ export class DocmapsWidget extends LitElement {
 
   private renderDocmap({ nodes, edges }: DisplayObjectGraph) {
     this.drawGraph(nodes, edges);
-    // D3 draws the graph for us within the GRAPH_CANVAS_ID div, so we have nothing to actually render here
+    // D3 draws the graph for us, so we have nothing to actually render here
     return nothing;
   }
 
   private drawGraph(nodes: DisplayObject[], edges: DisplayObjectEdge[]) {
     if (!this.shadowRoot) {
-      // We cannot draw a graph if we aren't able to find the place we want to draw it
       return;
     }
 
     this.clearGraph();
 
-    const canvas = this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID}`);
+    const canvas: Element | null = this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID}`);
     if (!canvas) {
       throw new Error('SVG element not found');
     }
