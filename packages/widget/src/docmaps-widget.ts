@@ -216,6 +216,7 @@ export class DocmapsWidget extends LitElement {
     if (!this.shadowRoot) {
       return;
     }
+
     d3.select(this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID} svg`)).remove();
   }
 
@@ -223,6 +224,7 @@ export class DocmapsWidget extends LitElement {
     if (!this.shadowRoot) {
       return;
     }
+
     const tooltip = d3.select(this.shadowRoot.querySelector('#tooltip'));
 
     selection
@@ -247,11 +249,9 @@ export class DocmapsWidget extends LitElement {
         ? this.createMetadataGrid(metadataEntries)
         : this.emptyMetadataMessage();
 
-    const backgroundColor: string = opts.detailBackgroundColor
-      ? opts.detailBackgroundColor
-      : opts.backgroundColor;
+    const backgroundColor = opts.detailBackgroundColor || opts.backgroundColor;
+    const textColor = opts.detailTextColor || opts.textColor;
 
-    const textColor = opts.detailTextColor ? opts.detailTextColor : opts.textColor;
     return html`
       <div class="detail-timeline">${timelinePlaceholder}</div>
 
@@ -279,12 +279,13 @@ export class DocmapsWidget extends LitElement {
     if (Array.isArray(value)) {
       const values: any[] = value; // rename since it's actually plural
       return html`
-        <div class='metadata-grid-item key'
-             style='grid-row-start: ${index + 1}; grid-row-end: ${index + values.length + 1};'>
+        <div
+          class="metadata-grid-item key"
+          style="grid-row-start: ${index + 1}; grid-row-end: ${index + values.length + 1};"
+        >
           ${key}
         </div>
-        ${values.map((val) => html`
-          <div class='metadata-grid-item value content'>${val}</div>`)}
+        ${values.map((val) => html` <div class="metadata-grid-item value content">${val}</div>`)}
       `;
     }
 
@@ -296,9 +297,7 @@ export class DocmapsWidget extends LitElement {
 
   private emptyMetadataMessage(): HTMLTemplateResult {
     return html` <div class="metadata-item">
-      <div class="metadata-key">
-        no metadata found
-      </div>
+      <div class="metadata-key">no metadata found</div>
     </div>`;
   }
 
@@ -334,9 +333,7 @@ function getInitialNodePositions(nodes: DisplayObject[], edges: DisplayObjectEdg
     g.setNode(node.nodeId, { ...node, width: size, height: size });
   }
 
-  for (const edge of edges) {
-    g.setEdge(edge.sourceId, edge.targetId);
-  }
+  edges.forEach((edge) => g.setEdge(edge.sourceId, edge.targetId));
   Dagre.layout(g);
 
   return g;
