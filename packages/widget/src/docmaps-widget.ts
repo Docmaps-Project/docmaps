@@ -71,26 +71,15 @@ export class DocmapsWidget extends LitElement {
     `;
   }
 
-  private loadFont() {
-    // Load IBM Plex Mono font
-    // It would be nice to do this in styles.ts, but `@import` is not supported there.
-    addLinkToDocumentHeader('preconnect', 'https://fonts.googleapis.com');
-    addLinkToDocumentHeader('preconnect', 'https://fonts.gstatic.com', 'anonymous');
-    addLinkToDocumentHeader(
-      'stylesheet',
-      'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap',
-    );
+  private renderDocmap({ nodes, edges }: DisplayObjectGraph) {
+    this.drawGraph(nodes, edges);
+    // D3 draws the graph for us, so we have nothing to actually render here
+    return nothing;
   }
 
   private onNodeClick(node: DisplayObject) {
     this.selectedNode = node;
     this.requestUpdate(); // Trigger re-render
-  }
-
-  private renderDocmap({ nodes, edges }: DisplayObjectGraph) {
-    this.drawGraph(nodes, edges);
-    // D3 draws the graph for us, so we have nothing to actually render here
-    return nothing;
   }
 
   private drawGraph(nodes: DisplayObject[], edges: DisplayObjectEdge[]) {
@@ -109,19 +98,7 @@ export class DocmapsWidget extends LitElement {
     const labels = this.createLabels(svg, d3Nodes);
 
     this.setupSimulationTicks(simulation, linkElements, nodeElements, labels);
-
     this.setupInteractivity(nodeElements, labels);
-  }
-
-  private setupInteractivity(
-    nodeElements: d3.Selection<SVGCircleElement, D3Node, SVGGElement, unknown>,
-    labels: d3.Selection<SVGTextElement, D3Node, SVGGElement, unknown>,
-  ) {
-    nodeElements.on('click', (_event, d: D3Node) => this.onNodeClick(d));
-    labels.on('click', (_event, d: D3Node) => this.onNodeClick(d));
-
-    this.setUpTooltips(nodeElements);
-    this.setUpTooltips(labels);
   }
 
   private setupSimulationTicks(
@@ -262,6 +239,17 @@ export class DocmapsWidget extends LitElement {
     return canvas;
   }
 
+  private setupInteractivity(
+    nodeElements: d3.Selection<SVGCircleElement, D3Node, SVGGElement, unknown>,
+    labels: d3.Selection<SVGTextElement, D3Node, SVGGElement, unknown>,
+  ) {
+    nodeElements.on('click', (_event, d: D3Node) => this.onNodeClick(d));
+    labels.on('click', (_event, d: D3Node) => this.onNodeClick(d));
+
+    this.setUpTooltips(nodeElements);
+    this.setUpTooltips(labels);
+  }
+
   private setUpTooltips(selection: d3.Selection<any, D3Node, SVGGElement, unknown>) {
     if (!this.shadowRoot) {
       return;
@@ -310,6 +298,12 @@ export class DocmapsWidget extends LitElement {
     `;
   }
 
+  // Method to clear the selected node and go back to the graph
+  private closeDetailsView() {
+    this.selectedNode = undefined;
+    this.requestUpdate(); // Trigger re-render
+  }
+
   private filterMetadataEntries(node: DisplayObject): [string, any][] {
     return Object.entries(node).filter(([key, value]) => isFieldToDisplay(key) && value);
   }
@@ -347,10 +341,15 @@ export class DocmapsWidget extends LitElement {
     </div>`;
   }
 
-  // Method to clear the selected node and go back to the graph
-  private closeDetailsView() {
-    this.selectedNode = undefined;
-    this.requestUpdate(); // Trigger re-render
+  private loadFont() {
+    // Load IBM Plex Mono font
+    // It would be nice to do this in styles.ts, but `@import` is not supported there.
+    addLinkToDocumentHeader('preconnect', 'https://fonts.googleapis.com');
+    addLinkToDocumentHeader('preconnect', 'https://fonts.gstatic.com', 'anonymous');
+    addLinkToDocumentHeader(
+      'stylesheet',
+      'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap',
+    );
   }
 }
 
