@@ -48,13 +48,14 @@ export class DocmapsWidget extends LitElement {
   }
 
   render(): HTMLTemplateResult {
-    const content: HTMLTemplateResult = this.selectedNode
-      ? this.renderDetailsView(this.selectedNode)
-      : html` <div id="tooltip" class="tooltip" style="opacity:0;"></div>
-
-          ${this.#docmapFetchingTask.render({
-            complete: this.renderDocmap.bind(this),
-          })}`;
+    let content: HTMLTemplateResult;
+    if (this.selectedNode) {
+      content = this.renderDetailsView(this.selectedNode);
+    } else {
+      content = html`
+        <div id='tooltip' class='tooltip' style='opacity:0;'></div>
+        ${this.#docmapFetchingTask.render({ complete: this.renderDocmap.bind(this) })}`;
+    }
 
     return html`
       <div class="widget-header">
@@ -99,6 +100,7 @@ export class DocmapsWidget extends LitElement {
     this.selectedNode = node;
     this.requestUpdate(); // Trigger re-render
   }
+
   private createEmptySvgForGraph(
     canvas: Element | null,
     graphWidth: number,
@@ -308,7 +310,7 @@ function createForceSimulation(d3Nodes: D3Node[], d3Edges: D3Edge[], graphWidth:
           // @ts-ignore
           return d.nodeId;
         })
-        .distance(RANK_SEPARATION * 1.2)
+        .distance(RANK_SEPARATION * 1.3)
         .strength(0.2),
     )
     .force('charge', d3.forceManyBody())
@@ -339,7 +341,6 @@ function setupSimulationTicks(
       .attr('y', getNodeY);
   });
 }
-
 
 // Dagre is a tool for laying out directed graphs. We use it to generate initial positions for
 // our nodes, which we then pass to d3 to animate into their final positions.
