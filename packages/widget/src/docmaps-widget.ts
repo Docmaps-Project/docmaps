@@ -1,95 +1,29 @@
-import { html, LitElement, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { html, HTMLTemplateResult, LitElement, nothing } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
 import { customCss } from './styles';
-import { logo } from './assets/logo';
+import { closeDetailsButton, logo, timelinePlaceholder } from './assets';
 import * as d3 from 'd3';
 import { SimulationLinkDatum } from 'd3';
 import { Task } from '@lit/task';
+import { DocmapFetchingParams, getDocmap } from './docmap-controller';
+import { SimulationNodeDatum } from 'd3-force';
+import * as Dagre from 'dagre';
 import {
   DisplayObject,
   DisplayObjectEdge,
   DisplayObjectGraph,
-  DocmapFetchingParams,
-  getDocmap,
-} from './docmap-controller';
-import { SimulationNodeDatum } from 'd3-force';
-import * as Dagre from 'dagre';
+  FIRST_NODE_RADIUS,
+  GRAPH_CANVAS_HEIGHT,
+  GRAPH_CANVAS_ID,
+  isFieldToDisplay,
+  NODE_RADIUS,
+  RANK_SEPARATION,
+  TYPE_DISPLAY_OPTIONS,
+  WIDGET_SIZE,
+} from './constants';
 
 export type D3Node = SimulationNodeDatum & DisplayObject & { x: number; y: number }; // We override x & y since they're optional in SimulationNodeDatum, but not in our use case
 export type D3Edge = SimulationLinkDatum<D3Node>;
-
-const WIDGET_SIZE: number = 500;
-const GRAPH_CANVAS_HEIGHT: number = 475;
-const GRAPH_CANVAS_ID: string = 'd3-canvas';
-const FIRST_NODE_RADIUS: number = 50;
-const NODE_RADIUS: number = 37.5;
-const RANK_SEPARATION: number = 100;
-
-type TypeDisplayOption = {
-  shortLabel: string;
-  longLabel: string;
-  backgroundColor: string;
-  textColor: string;
-  dottedBorder?: boolean;
-};
-
-const typeDisplayOpts: { [type: string]: TypeDisplayOption } = {
-  review: {
-    shortLabel: 'R',
-    longLabel: 'Review',
-    backgroundColor: '#222F46',
-    textColor: '#D7E4FD',
-  },
-  preprint: {
-    shortLabel: 'P',
-    longLabel: 'Preprint',
-    backgroundColor: '#077A12',
-    textColor: '#CBFFD0',
-  },
-  'evaluation-summary': {
-    shortLabel: 'ES',
-    longLabel: 'Evaluation Summary',
-    backgroundColor: '#936308',
-    textColor: '#FFF',
-  },
-  'review-article': {
-    shortLabel: 'RA',
-    longLabel: 'Review Article',
-    backgroundColor: '#099CEE',
-    textColor: '#FFF',
-  },
-  'journal-article': {
-    shortLabel: 'JA',
-    longLabel: 'Journal Article',
-    backgroundColor: '#7B1650',
-    textColor: '#FFF',
-  },
-  editorial: {
-    shortLabel: 'ED',
-    longLabel: 'Editorial',
-    backgroundColor: '#468580',
-    textColor: '#FFFFFF',
-  },
-  comment: {
-    shortLabel: 'CO',
-    longLabel: 'Comment',
-    backgroundColor: '#AB664E',
-    textColor: '#FFF',
-  },
-  reply: {
-    shortLabel: 'RE',
-    longLabel: 'Reply',
-    backgroundColor: '#79109E',
-    textColor: '#FFF',
-  },
-  '??': {
-    shortLabel: '',
-    longLabel: 'Type unknown',
-    backgroundColor: '#EFEFEF',
-    textColor: '#FFF', // Doesn't actually matter since there's no text
-    dottedBorder: true,
-  },
-};
 
 // TODO name should be singular not plural
 @customElement('docmaps-widget')
@@ -100,8 +34,8 @@ export class DocmapsWidget extends LitElement {
   @property({ type: String })
   serverUrl: string = '';
 
-  @property({ type: Number })
-  count: number = 3;
+  @state()
+  selectedNode?: DisplayObject;
 
   #docmapFetchingTask: Task<DocmapFetchingParams, DisplayObjectGraph> = new Task(
     this,
@@ -112,23 +46,29 @@ export class DocmapsWidget extends LitElement {
   static styles = [customCss];
 
   render() {
+    const content = this.selectedNode
+      ? this.renderDetailsView(this.selectedNode)
+      : html` <div id="tooltip" class="tooltip" style="opacity:0;"></div>
+
+          ${this.#docmapFetchingTask.render({
+            complete: this.renderDocmap.bind(this),
+          })}`;
+
     return html`
       <div class="widget-header">
         ${logo}
         <span>DOCMAP</span>
       </div>
 
-      <div
-        id="${GRAPH_CANVAS_ID}"
-        style="width: ${WIDGET_SIZE}; height: ${GRAPH_CANVAS_HEIGHT}"
-      ></div>
+      <div id="${GRAPH_CANVAS_ID}"></div>
 
-      <div id="tooltip" class="tooltip" style="opacity:0;"></div>
-
-      ${this.#docmapFetchingTask.render({
-        complete: this.renderDocmap.bind(this),
-      })}
+      ${content}
     `;
+  }
+
+  private onNodeClick(node: DisplayObject) {
+    this.selectedNode = node;
+    this.requestUpdate(); // Trigger re-render
   }
 
   private renderDocmap({ nodes, edges }: DisplayObjectGraph) {
@@ -143,8 +83,7 @@ export class DocmapsWidget extends LitElement {
       return;
     }
 
-    // Delete any graphs we drew before
-    d3.select(this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID} svg`)).remove();
+    this.clearGraph();
 
     const canvas = this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID}`);
     if (!canvas) {
@@ -157,7 +96,11 @@ export class DocmapsWidget extends LitElement {
       .attr('width', WIDGET_SIZE)
       .attr('height', GRAPH_CANVAS_HEIGHT);
 
-    const { d3Nodes, d3Edges } = prepareGraphForSimulation(nodes, edges);
+    const { d3Nodes, d3Edges, graphWidth } = prepareGraphForSimulation(nodes, edges);
+
+    if (graphWidth) {
+      svg.attr('viewBox', `0 0 ${graphWidth} ${GRAPH_CANVAS_HEIGHT}`);
+    }
 
     const simulation: d3.Simulation<D3Node, D3Edge> = d3
       .forceSimulation(d3Nodes)
@@ -169,14 +112,14 @@ export class DocmapsWidget extends LitElement {
             // @ts-ignore
             return d.nodeId;
           })
-          .distance(RANK_SEPARATION * 1.5)
+          .distance(RANK_SEPARATION * 1.2)
           .strength(0.2),
       )
       .force('charge', d3.forceManyBody())
-      .force('collide', d3.forceCollide(FIRST_NODE_RADIUS))
+      .force('collide', d3.forceCollide(NODE_RADIUS * 1.3))
       .force(
         'center',
-        d3.forceCenter(Math.floor(WIDGET_SIZE / 2), Math.floor(GRAPH_CANVAS_HEIGHT / 2)),
+        d3.forceCenter(Math.floor(graphWidth / 2), Math.floor(GRAPH_CANVAS_HEIGHT / 2)),
       );
 
     const linkElements = svg
@@ -196,17 +139,17 @@ export class DocmapsWidget extends LitElement {
       .data(d3Nodes)
       .enter()
       .append('circle')
-      .attr('class', 'node')
-      .attr('fill', (d) => typeDisplayOpts[d.type].backgroundColor)
-      .attr('r', (d: D3Node, i: number): number => (i === 0 ? FIRST_NODE_RADIUS : NODE_RADIUS))
+      .attr('class', 'node clickable')
+      .attr('fill', (d) => TYPE_DISPLAY_OPTIONS[d.type].backgroundColor)
+      .attr('r', (_, i: number): number => (i === 0 ? FIRST_NODE_RADIUS : NODE_RADIUS))
       .attr('stroke', (d: D3Node): string =>
-        typeDisplayOpts[d.type].dottedBorder ? '#777' : 'none',
+        TYPE_DISPLAY_OPTIONS[d.type].dottedBorder ? '#777' : 'none',
       )
       .attr('stroke-width', (d: D3Node): string =>
-        typeDisplayOpts[d.type].dottedBorder ? '2px' : 'none',
+        TYPE_DISPLAY_OPTIONS[d.type].dottedBorder ? '2px' : 'none',
       )
       .attr('stroke-dasharray', (d: D3Node): string =>
-        typeDisplayOpts[d.type].dottedBorder ? '8 4' : 'none',
+        TYPE_DISPLAY_OPTIONS[d.type].dottedBorder ? '8 4' : 'none',
       );
 
     const labels = svg
@@ -216,10 +159,11 @@ export class DocmapsWidget extends LitElement {
       .data(d3Nodes)
       .enter()
       .append('text')
+      .attr('class', 'label clickable')
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'central')
-      .attr('fill', (d) => typeDisplayOpts[d.type].textColor) // Set the text color
-      .text((d) => typeDisplayOpts[d.type].shortLabel);
+      .attr('fill', (d) => TYPE_DISPLAY_OPTIONS[d.type].textColor) // Set the text color
+      .text((d) => TYPE_DISPLAY_OPTIONS[d.type].shortLabel);
 
     simulation.on('tick', () => {
       linkElements
@@ -235,8 +179,18 @@ export class DocmapsWidget extends LitElement {
         .attr('y', getNodeY);
     });
 
+    nodeElements.on('click', (_event, d) => this.onNodeClick(d));
+    labels.on('click', (_event, d) => this.onNodeClick(d));
+
     this.setUpTooltips(nodeElements);
     this.setUpTooltips(labels);
+  }
+
+  private clearGraph() {
+    if (!this.shadowRoot) {
+      return;
+    }
+    d3.select(this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID} svg`)).remove();
   }
 
   private setUpTooltips(selection: d3.Selection<any, D3Node, SVGGElement, unknown>) {
@@ -248,7 +202,7 @@ export class DocmapsWidget extends LitElement {
     selection
       .on('mouseover', function (event, d) {
         tooltip
-          .html(() => typeDisplayOpts[d.type].longLabel)
+          .html(() => TYPE_DISPLAY_OPTIONS[d.type].longLabel)
           .style('visibility', 'visible')
           .style('opacity', 1)
           .style('left', `${event.pageX + 5}px`) // Position the tooltip at the mouse location
@@ -258,21 +212,88 @@ export class DocmapsWidget extends LitElement {
         tooltip.style('visibility', 'hidden').style('opacity', 0);
       });
   }
+
+  private renderDetailsView(node: DisplayObject): HTMLTemplateResult {
+    this.clearGraph();
+    const opts = TYPE_DISPLAY_OPTIONS[node.type];
+    const metadataEntries = this.filterMetadataEntries(node);
+
+    const metadataBody =
+      metadataEntries.length > 0
+        ? this.createMetadataGrid(metadataEntries)
+        : this.emptyMetadataMessage();
+
+    const backgroundColor = opts.detailBackgroundColor
+      ? opts.detailBackgroundColor
+      : opts.backgroundColor;
+
+    const textColor = opts.detailTextColor ? opts.detailTextColor : opts.textColor;
+    return html`
+      <div class="detail-timeline">${timelinePlaceholder}</div>
+
+      <div class="detail-header" style="background: ${backgroundColor};">
+        <span style="color: ${textColor};"> ${opts.longLabel} </span>
+        <div class="close-button clickable" @click="${this.closeDetailsView}">
+          ${closeDetailsButton(textColor)}
+        </div>
+      </div>
+
+      <div class="detail-body">${metadataBody}</div>
+    `;
+  }
+
+  private filterMetadataEntries(node: DisplayObject): [string, any][] {
+    return Object.entries(node).filter(([key, value]) => isFieldToDisplay(key) && value);
+  }
+
+  private createMetadataGrid(metadataEntries: [string, any][]): HTMLTemplateResult {
+    const gridItems = metadataEntries.map((entry, index) => this.createGridItem(entry, index));
+    return html` <div class="metadata-grid">${gridItems}</div>`;
+  }
+
+  private createGridItem([key, value]: [string, any], index: number): HTMLTemplateResult {
+    if (Array.isArray(value)) {
+      const values: any[] = value; // rename since it's actually plural
+      return html`
+        <div
+          class="metadata-grid-item key"
+          style="grid-row-start: ${index + 1}; grid-row-end: ${index + values.length + 1};"
+        >
+          ${key}
+        </div>
+        ${values.map((val) => html` <div class="metadata-grid-item value content">${val}</div>`)}
+      `;
+    }
+
+    return html`
+      <div class="metadata-grid-item key">${key}</div>
+      <div class="metadata-grid-item value">${value}</div>
+    `;
+  }
+
+  private emptyMetadataMessage(): HTMLTemplateResult {
+    return html` <div class="metadata-item">
+      <div class="metadata-key">no metadata found</div>
+    </div>`;
+  }
+
+  // Method to clear the selected node and go back to the graph
+  private closeDetailsView() {
+    this.selectedNode = undefined;
+    this.requestUpdate(); // Trigger re-render
+  }
 }
+
+type DagreGraph = Dagre.graphlib.Graph<DisplayObject>;
 
 // Dagre is a tool for laying out directed graphs. We use it to generate initial positions for
 // our nodes, which we then pass to d3 to animate into their final positions.
-// Whatever y position we get back from d3 for a given node is fixed in our d3 graph, because
-// we want to maintain a strict vertical hierarchy.
-function getDagreGraph(
-  nodes: DisplayObject[],
-  edges: DisplayObjectEdge[],
-): Dagre.graphlib.Graph<DisplayObject> {
-  const g: Dagre.graphlib.Graph<DisplayObject> = new Dagre.graphlib.Graph();
+function getInitialNodePositions(nodes: DisplayObject[], edges: DisplayObjectEdge[]): DagreGraph {
+  const g: DagreGraph = new Dagre.graphlib.Graph();
 
   g.setGraph({
     nodesep: 50,
-    marginy: 100,
+    marginy: 70,
     marginx: 30,
     ranksep: RANK_SEPARATION,
     width: WIDGET_SIZE,
@@ -280,9 +301,7 @@ function getDagreGraph(
   });
 
   // Default to assigning a new object as a label for each new edge.
-  g.setDefaultEdgeLabel(function () {
-    return {};
-  });
+  g.setDefaultEdgeLabel(() => ({}));
 
   for (let i = 0; i < nodes.length; i++) {
     const node = nodes[i];
@@ -298,6 +317,22 @@ function getDagreGraph(
   return g;
 }
 
+function groupNodesByYCoordinate(nodeIds: string[], dagreGraph: DagreGraph) {
+  const yLevelNodeMap = new Map<number, D3Node[]>();
+  nodeIds.forEach((nodeId) => {
+    const node = dagreGraph.node(nodeId);
+    const yLevel = node.y;
+
+    // Initialize the array for this y level if it doesn't exist yet
+    if (!yLevelNodeMap.has(yLevel)) {
+      yLevelNodeMap.set(yLevel, []);
+    }
+
+    yLevelNodeMap.get(yLevel)?.push(node);
+  });
+  return yLevelNodeMap;
+}
+
 // Convert the naive "DisplayObject" nodes and edges we get from the Docmap controller
 // into nodes and edges that are ready to render via d3
 //
@@ -305,27 +340,46 @@ function getDagreGraph(
 function prepareGraphForSimulation(
   nodes: DisplayObject[],
   edges: DisplayObjectEdge[],
-): {
-  d3Nodes: D3Node[];
-  d3Edges: D3Edge[];
-} {
-  const dagreGraph: Dagre.graphlib.Graph<DisplayObject> = getDagreGraph(nodes, edges);
+): { d3Edges: D3Edge[]; d3Nodes: D3Node[]; graphWidth: number } {
+  const dagreGraph: DagreGraph = getInitialNodePositions(nodes, edges);
 
-  const displayNodes: D3Node[] = dagreGraph.nodes().map((nodeId) => {
+  const graphBounds = dagreGraph.graph();
+  let graphWidth = WIDGET_SIZE;
+  if (
+    graphBounds.width &&
+    graphBounds.height &&
+    (graphBounds.width > WIDGET_SIZE || graphBounds.height > GRAPH_CANVAS_HEIGHT)
+  ) {
+    const aspectRatio = (1.1 * graphBounds.width) / graphBounds.height;
+    graphWidth = aspectRatio * GRAPH_CANVAS_HEIGHT;
+  }
+
+  const nodeIds: string[] = dagreGraph.nodes();
+
+  // Group nodes by their y position
+  // So we can determine later if a node is the only one on its level
+  const yLevelNodeMap = groupNodesByYCoordinate(nodeIds, dagreGraph);
+
+  const displayNodes: D3Node[] = nodeIds.map((nodeId) => {
     const node = dagreGraph.node(nodeId);
+    const nodesOnThisLevel = yLevelNodeMap.get(node.y);
+    const isOnlyNodeOnLevel = nodesOnThisLevel && nodesOnThisLevel.length === 1;
+
     return {
       ...node,
-      // We fix the nodes' vertical position to whatever dagre decided,
-      // but not the horizontal position since we want some nice easing into the final position
+      // We fix the nodes' vertical position to whatever dagre decided to maintain the hierarchy
       fy: node.y,
+
+      // Fix the x coordinate to the center if it's the only node on this level
+      ...(isOnlyNodeOnLevel ? { fx: Math.floor(graphWidth / 2) } : {}),
     };
   });
 
   const displayEdges: D3Edge[] = edges.map(
-    (edge): D3Edge => ({ source: edge.sourceId, target: edge.targetId }),
+    (e: DisplayObjectEdge): D3Edge => ({ source: e.sourceId, target: e.targetId }),
   );
 
-  return { d3Nodes: displayNodes, d3Edges: displayEdges };
+  return { d3Nodes: displayNodes, d3Edges: displayEdges, graphWidth };
 }
 
 declare global {
