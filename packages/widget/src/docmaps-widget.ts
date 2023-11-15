@@ -46,7 +46,7 @@ export class DocmapsWidget extends LitElement {
   static styles = [customCss];
 
   render() {
-    const content = this.selectedNode
+    const content: HTMLTemplateResult = this.selectedNode
       ? this.renderDetailsView(this.selectedNode)
       : html` <div id="tooltip" class="tooltip" style="opacity:0;"></div>
 
@@ -75,8 +75,11 @@ export class DocmapsWidget extends LitElement {
     // It would be nice if we could do this in styles.ts, but using @import there gives this error in the dev tools:
     // `@import rules are not allowed here. See https://github.com/WICG/construct-stylesheets/issues/119#issuecomment-588352418.`
     this.addLinkToDocumentHeader('preconnect', 'https://fonts.googleapis.com');
-    this.addLinkToDocumentHeader('preconnect', 'https://fonts.gstatic.com', "anonymous");
-    this.addLinkToDocumentHeader('stylesheet', 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
+    this.addLinkToDocumentHeader('preconnect', 'https://fonts.gstatic.com', 'anonymous');
+    this.addLinkToDocumentHeader(
+      'stylesheet',
+      'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap',
+    );
   }
 
   private addLinkToDocumentHeader(rel: string, href: string, crossorigin?: string) {
@@ -241,12 +244,12 @@ export class DocmapsWidget extends LitElement {
     const opts = TYPE_DISPLAY_OPTIONS[node.type];
     const metadataEntries = this.filterMetadataEntries(node);
 
-    const metadataBody =
+    const metadataBody: HTMLTemplateResult =
       metadataEntries.length > 0
         ? this.createMetadataGrid(metadataEntries)
         : this.emptyMetadataMessage();
 
-    const backgroundColor = opts.detailBackgroundColor
+    const backgroundColor: string = opts.detailBackgroundColor
       ? opts.detailBackgroundColor
       : opts.backgroundColor;
 
@@ -340,11 +343,11 @@ function getInitialNodePositions(nodes: DisplayObject[], edges: DisplayObjectEdg
   return g;
 }
 
-function groupNodesByYCoordinate(nodeIds: string[], dagreGraph: DagreGraph) {
+function groupNodesByYCoordinate(nodeIds: string[], dagreGraph: DagreGraph): Map<number, D3Node[]> {
   const yLevelNodeMap = new Map<number, D3Node[]>();
-  nodeIds.forEach((nodeId) => {
-    const node = dagreGraph.node(nodeId);
-    const yLevel = node.y;
+  nodeIds.forEach((nodeId: string) => {
+    const node: Dagre.Node<DisplayObject> = dagreGraph.node(nodeId);
+    const yLevel: number = node.y;
 
     // Initialize the array for this y level if it doesn't exist yet
     if (!yLevelNodeMap.has(yLevel)) {
@@ -373,7 +376,7 @@ function prepareGraphForSimulation(
     graphBounds.height &&
     (graphBounds.width > WIDGET_SIZE || graphBounds.height > GRAPH_CANVAS_HEIGHT)
   ) {
-    const aspectRatio = (1.1 * graphBounds.width) / graphBounds.height;
+    const aspectRatio: number = (1.1 * graphBounds.width) / graphBounds.height;
     graphWidth = aspectRatio * GRAPH_CANVAS_HEIGHT;
   }
 
@@ -381,12 +384,12 @@ function prepareGraphForSimulation(
 
   // Group nodes by their y position
   // So we can determine later if a node is the only one on its level
-  const yLevelNodeMap = groupNodesByYCoordinate(nodeIds, dagreGraph);
+  const yLevelNodeMap: Map<number, D3Node[]> = groupNodesByYCoordinate(nodeIds, dagreGraph);
 
   const displayNodes: D3Node[] = nodeIds.map((nodeId) => {
-    const node = dagreGraph.node(nodeId);
-    const nodesOnThisLevel = yLevelNodeMap.get(node.y);
-    const isOnlyNodeOnLevel = nodesOnThisLevel && nodesOnThisLevel.length === 1;
+    const node: Dagre.Node<DisplayObject> = dagreGraph.node(nodeId);
+    const nodesOnThisLevel: D3Node[] | undefined = yLevelNodeMap.get(node.y);
+    const isOnlyNodeOnLevel: boolean = nodesOnThisLevel?.length === 1;
 
     return {
       ...node,
