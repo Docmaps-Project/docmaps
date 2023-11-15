@@ -98,56 +98,76 @@ export class DocmapsWidget extends LitElement {
       return;
     }
 
-    this.clearGraph();
-
-    const canvas: Element | null = this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID}`);
-    if (!canvas) {
-      throw new Error('SVG element not found');
-    }
-
-    const svg = d3
-      .select(canvas)
-      .append('svg')
-      .attr('width', WIDGET_SIZE)
-      .attr('height', GRAPH_CANVAS_HEIGHT);
-
     const { d3Nodes, d3Edges, graphWidth } = prepareGraphForSimulation(nodes, edges);
 
-    if (graphWidth) {
-      svg.attr('viewBox', `0 0 ${graphWidth} ${GRAPH_CANVAS_HEIGHT}`);
-    }
+    const canvas: Element | null = this.getCanvasElement();
+    const svg = this.createSvg(canvas, graphWidth);
 
-    const simulation: d3.Simulation<D3Node, D3Edge> = d3
-      .forceSimulation(d3Nodes)
-      .force(
-        'link',
-        d3
-          .forceLink(d3Edges)
-          .id((d: d3.SimulationNodeDatum) => {
-            // @ts-ignore
-            return d.nodeId;
-          })
-          .distance(RANK_SEPARATION * 1.2)
-          .strength(0.2),
-      )
-      .force('charge', d3.forceManyBody())
-      .force('collide', d3.forceCollide(NODE_RADIUS * 1.3))
-      .force(
-        'center',
-        d3.forceCenter(Math.floor(graphWidth / 2), Math.floor(GRAPH_CANVAS_HEIGHT / 2)),
-      );
+    const simulation = this.createForceSimulation(d3Nodes, d3Edges, graphWidth);
+    const linkElements = this.createLinkElements(svg, d3Edges);
+    const nodeElements = this.createNodeElements(svg, d3Nodes);
+    const labels = this.createLabels(svg, d3Nodes);
 
-    const linkElements = svg
+    this.setupSimulationTicks(simulation, linkElements, nodeElements, labels);
+
+    this.setupInteractivity(nodeElements, labels);
+  }
+
+  private setupInteractivity(
+    nodeElements: d3.Selection<SVGCircleElement, D3Node, SVGGElement, unknown>,
+    labels: d3.Selection<SVGTextElement, D3Node, SVGGElement, unknown>,
+  ) {
+    nodeElements.on('click', (_event, d: D3Node) => this.onNodeClick(d));
+    labels.on('click', (_event, d: D3Node) => this.onNodeClick(d));
+
+    this.setUpTooltips(nodeElements);
+    this.setUpTooltips(labels);
+  }
+
+  private setupSimulationTicks(
+    simulation: d3.Simulation<D3Node, D3Edge>,
+    linkElements: d3.Selection<SVGLineElement, D3Edge, SVGGElement, unknown>,
+    nodeElements: d3.Selection<SVGCircleElement, D3Node, SVGGElement, unknown>,
+    labels: d3.Selection<SVGTextElement, D3Node, SVGGElement, unknown>,
+  ) {
+    simulation.on('tick', () => {
+      linkElements
+        .attr('x1', (d) => (d.source as D3Node).x ?? 0)
+        .attr('y1', (d) => (d.source as D3Node).y ?? 0)
+        .attr('x2', (d) => (d.target as D3Node).x ?? 0)
+        .attr('y2', (d) => (d.target as D3Node).y ?? 0);
+
+      nodeElements.attr('cx', getNodeX).attr('cy', getNodeY);
+      labels
+        // We offset x slightly because otherwise the label looks a tiny bit off-center horizontally
+        .attr('x', (d: D3Node) => getNodeX(d) + 0.8)
+        .attr('y', getNodeY);
+    });
+  }
+
+  private createLabels(
+    svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    d3Nodes: D3Node[],
+  ) {
+    return svg
       .append('g')
-      .attr('class', 'links')
-      .selectAll('line')
-      .data(d3Edges)
+      .attr('class', 'labels')
+      .selectAll('text')
+      .data(d3Nodes)
       .enter()
-      .append('line')
-      .attr('stroke', 'black')
-      .attr('class', 'link');
+      .append('text')
+      .attr('class', 'label clickable')
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'central')
+      .attr('fill', (d) => TYPE_DISPLAY_OPTIONS[d.type].textColor) // Set the text color
+      .text((d) => TYPE_DISPLAY_OPTIONS[d.type].shortLabel);
+  }
 
-    const nodeElements = svg
+  private createNodeElements(
+    svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    d3Nodes: D3Node[],
+  ) {
+    return svg
       .append('g')
       .attr('class', 'nodes')
       .selectAll('circle')
@@ -166,39 +186,60 @@ export class DocmapsWidget extends LitElement {
       .attr('stroke-dasharray', (d: D3Node): string =>
         TYPE_DISPLAY_OPTIONS[d.type].dottedBorder ? '8 4' : 'none',
       );
+  }
 
-    const labels = svg
+  private createLinkElements(
+    svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    d3Edges: D3Edge[],
+  ): d3.Selection<SVGLineElement, D3Edge, SVGGElement, unknown> {
+    return svg
       .append('g')
-      .attr('class', 'labels')
-      .selectAll('text')
-      .data(d3Nodes)
+      .attr('class', 'links')
+      .selectAll('line')
+      .data(d3Edges)
       .enter()
-      .append('text')
-      .attr('class', 'label clickable')
-      .attr('text-anchor', 'middle')
-      .attr('dominant-baseline', 'central')
-      .attr('fill', (d) => TYPE_DISPLAY_OPTIONS[d.type].textColor) // Set the text color
-      .text((d) => TYPE_DISPLAY_OPTIONS[d.type].shortLabel);
+      .append('line')
+      .attr('stroke', 'black')
+      .attr('class', 'link');
+  }
 
-    simulation.on('tick', () => {
-      linkElements
-        .attr('x1', (d) => (d.source as D3Node).x ?? 0)
-        .attr('y1', (d) => (d.source as D3Node).y ?? 0)
-        .attr('x2', (d) => (d.target as D3Node).x ?? 0)
-        .attr('y2', (d) => (d.target as D3Node).y ?? 0);
+  private createForceSimulation(d3Nodes: D3Node[], d3Edges: D3Edge[], graphWidth: number) {
+    return d3
+      .forceSimulation(d3Nodes)
+      .force(
+        'link',
+        d3
+          .forceLink(d3Edges)
+          .id((d: d3.SimulationNodeDatum) => {
+            // @ts-ignore
+            return d.nodeId;
+          })
+          .distance(RANK_SEPARATION * 1.2)
+          .strength(0.2),
+      )
+      .force('charge', d3.forceManyBody())
+      .force('collide', d3.forceCollide(NODE_RADIUS * 1.3))
+      .force(
+        'center',
+        d3.forceCenter(Math.floor(graphWidth / 2), Math.floor(GRAPH_CANVAS_HEIGHT / 2)),
+      );
+  }
 
-      nodeElements.attr('cx', getNodeX).attr('cy', getNodeY);
-      labels
-        // We offset x slightly because otherwise the label looks a tiny bit off-center horizontally
-        .attr('x', (d: D3Node) => getNodeX(d) + 0.8)
-        .attr('y', getNodeY);
-    });
+  private createSvg(
+    canvas: Element | null,
+    graphWidth: number,
+  ): d3.Selection<SVGSVGElement, unknown, null, undefined> {
+    this.clearGraph();
+    const svg = d3
+      .select(canvas)
+      .append('svg')
+      .attr('width', WIDGET_SIZE)
+      .attr('height', GRAPH_CANVAS_HEIGHT);
 
-    nodeElements.on('click', (_event, d: D3Node) => this.onNodeClick(d));
-    labels.on('click', (_event, d: D3Node) => this.onNodeClick(d));
-
-    this.setUpTooltips(nodeElements);
-    this.setUpTooltips(labels);
+    if (graphWidth) {
+      svg.attr('viewBox', `0 0 ${graphWidth} ${GRAPH_CANVAS_HEIGHT}`);
+    }
+    return svg;
   }
 
   private clearGraph() {
@@ -207,6 +248,18 @@ export class DocmapsWidget extends LitElement {
     }
 
     d3.select(this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID} svg`)).remove();
+  }
+
+  private getCanvasElement(): Element | null {
+    if (!this.shadowRoot) {
+      return null;
+    }
+
+    const canvas = this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID}`);
+    if (!canvas) {
+      throw new Error('SVG element not found');
+    }
+    return canvas;
   }
 
   private setUpTooltips(selection: d3.Selection<any, D3Node, SVGGElement, unknown>) {
