@@ -1,6 +1,6 @@
 import { MakeHttpClient } from '@docmaps/http-client';
 import { TaskFunction } from '@lit/task';
-import { ActionT, ActorT, Docmap, DocmapT, RoleInTimeT, StepT, ThingT } from 'docmaps-sdk';
+import { ActorT, Docmap, DocmapT, ManifestationT, RoleInTimeT, StepT, ThingT } from 'docmaps-sdk';
 import { pipe } from 'fp-ts/lib/function';
 import * as E from 'fp-ts/lib/Either';
 import { ALL_KNOWN_TYPES, DisplayObject, DisplayObjectEdge, DisplayObjectGraph } from './constants';
@@ -60,50 +60,53 @@ function getOrderedSteps(docmap: DocmapT): StepT[] {
 }
 
 export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
+  const nodesById: { [id: string]: DisplayObject } = {};
   const edges: DisplayObjectEdge[] = [];
 
-  const seenIds: Set<string> = new Set();
-  const nodesById: { [id: string]: DisplayObject } = {};
   let idCounter: number = 1;
-
-  const processThing = (thing: ThingT, participants: RoleInTimeT[] = []) => {
-    let inputId = thing.doi || thing.id;
-    if (!inputId) {
-      inputId = `n${idCounter}`;
-      idCounter++;
-    }
-
-    if (!seenIds.has(inputId)) {
-      nodesById[inputId] = thingToDisplayObject(thing, inputId, participants);
-    }
-
-    for (const id of [thing.doi, thing.id]) {
-      if (id) {
-        seenIds.add(id);
-      }
-    }
-    return inputId;
+  const idGenerator = (): string => {
+    const newId = `n${idCounter}`;
+    idCounter++;
+    return newId;
   };
 
-  steps.forEach((step: StepT) => {
-    // Process step inputs
-    const inputIds: string[] = step.inputs?.map((input) => processThing(input)) || [];
-
-    // Process step outputs
-    step.actions.forEach((action: ActionT) => {
-      action.outputs.map((output: ThingT) => {
-        const outputId = processThing(output, action.participants);
-
-        // Add an edge from every step input to this node
-        inputIds.forEach((inputId: string) =>
-          edges.push({ sourceId: inputId, targetId: outputId }),
-        );
-      });
-    });
-  });
+  steps.forEach((step) => processStep(step, nodesById, edges, idGenerator));
 
   const nodes: DisplayObject[] = Object.values(nodesById);
   return { nodes, edges };
+}
+
+function processStep(
+  step: StepT,
+  nodesById: { [id: string]: DisplayObject },
+  edges: DisplayObjectEdge[],
+  generateId: () => string,
+) {
+  const inputIds: string[] =
+    step.inputs?.map((input) => processThing(input, nodesById, [], generateId)) || [];
+
+  step.actions.forEach((action) => {
+    action.outputs.forEach((output) => {
+      const outputId = processThing(output, nodesById, action.participants, generateId);
+
+      inputIds.forEach((inputId: string) => {
+        edges.push({ sourceId: inputId, targetId: outputId });
+      });
+    });
+  });
+}
+
+function processThing(
+  thing: ThingT,
+  nodesById: { [id: string]: DisplayObject },
+  participants: RoleInTimeT[] = [],
+  generateId: () => string,
+): string {
+  const id: string = thing.doi || thing.id || generateId();
+  if (!(id in nodesById)) {
+    nodesById[id] = thingToDisplayObject(thing, id, participants);
+  }
+  return id;
 }
 
 interface NameHaver {
@@ -115,32 +118,10 @@ function thingToDisplayObject(
   nodeId: string,
   participants: RoleInTimeT[],
 ): DisplayObject {
-  // Make sure type is a string (not an array), and that it's one of the types we support displaying
-  const providedType = (Array.isArray(thing.type) ? thing.type[0] : thing.type) ?? '??';
-  const displayType = ALL_KNOWN_TYPES.indexOf(providedType) >= 0 ? providedType : '??';
-
-  const published: string | undefined =
-    thing.published && thing.published instanceof Date
-      ? formatDate(thing.published)
-      : thing.published;
-
-  const content = thing.content
-    ? thing.content
-        .map((manifestation) => {
-          return manifestation.url?.toString();
-        })
-        .filter((url): url is string => url !== undefined)
-    : undefined;
-
-  const actors = participants
-    .map((participant) => participant.actor)
-    .filter((actor: ActorT): actor is NameHaver => {
-      // Actors can be anything, so we have to check that they have a name
-      // @ts-ignore
-      return actor && actor?.name;
-    })
-    .map((actor: NameHaver) => actor.name)
-    .join(', ');
+  const displayType: string = determineDisplayType(thing.type);
+  const published: string | undefined = formatDateIfAvailable(thing.published);
+  let content: string[] | undefined = extractContentUrls(thing.content);
+  const actors: string = extractActorNames(participants);
 
   return {
     nodeId,
@@ -154,13 +135,40 @@ function thingToDisplayObject(
   };
 }
 
+function formatDateIfAvailable(date: Date | string | undefined) {
+  return date && date instanceof Date ? formatDate(date) : date;
+}
+
+function determineDisplayType(ty: string | string[] | undefined): string {
+  const singleType: string = (Array.isArray(ty) ? ty[0] : ty) ?? '??';
+  return ALL_KNOWN_TYPES.includes(singleType) ? singleType : '??';
+}
+
+function extractContentUrls(content: ManifestationT[] | undefined) {
+  return content
+    ?.map((manifestation: ManifestationT) => manifestation.url?.toString())
+    .filter((url: string | undefined): url is string => url !== undefined);
+}
+
+function extractActorNames(participants: RoleInTimeT[]) {
+  return participants
+    .map((participant) => participant.actor)
+    .filter((actor: ActorT): actor is NameHaver => {
+      // Actors can be anything, so we have to check that they have a name
+      // @ts-ignore
+      return actor && actor?.name;
+    })
+    .map((actor: NameHaver) => actor.name)
+    .join(', ');
+}
+
 function formatDate(date: Date) {
   const yyyy = date.getFullYear();
 
   // The getMonth() method returns the month (0-11) for the specified date,
   // so you need to add 1 to get the correct month.
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
+  const month: number = date.getMonth() + 1;
+  const day: number = date.getDate();
 
   // Convert month and day numbers to strings and prefix them with a zero if they're below 10
   let mm = month.toString();
@@ -177,9 +185,13 @@ function formatDate(date: Date) {
 }
 
 export function sortDisplayObjects(objects: DisplayObject[]): DisplayObject[] {
-  return [...objects].sort((a, b) => a.nodeId.localeCompare(b.nodeId));
+  return [...objects].sort((a: DisplayObject, b: DisplayObject) =>
+    a.nodeId.localeCompare(b.nodeId),
+  );
 }
 
 export function sortDisplayObjectEdges(edges: DisplayObjectEdge[]): DisplayObjectEdge[] {
-  return [...edges].sort((a, b) => a.sourceId.localeCompare(b.sourceId));
+  return [...edges].sort((a: DisplayObjectEdge, b: DisplayObjectEdge) =>
+    a.sourceId.localeCompare(b.sourceId),
+  );
 }

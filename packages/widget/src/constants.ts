@@ -1,3 +1,7 @@
+import { SimulationLinkDatum } from 'd3';
+import { SimulationNodeDatum } from 'd3-force';
+import * as Dagre from 'dagre';
+
 export const WIDGET_SIZE: number = 500;
 export const GRAPH_CANVAS_HEIGHT: number = 475;
 export const GRAPH_CANVAS_ID: string = 'd3-canvas';
@@ -124,3 +128,8 @@ export type DisplayObjectGraph = {
   nodes: DisplayObject[];
   edges: DisplayObjectEdge[];
 };
+
+// We override x & y since they're optional in SimulationNodeDatum, but not in our use case
+export type D3Node = SimulationNodeDatum & DisplayObject & { x: number; y: number };
+export type D3Edge = SimulationLinkDatum<D3Node>;
+export type DagreGraph = Dagre.graphlib.Graph<DisplayObject>;
