@@ -22,7 +22,8 @@ import {
   WIDGET_SIZE,
 } from './constants';
 
-export type D3Node = SimulationNodeDatum & DisplayObject & { x: number; y: number }; // We override x & y since they're optional in SimulationNodeDatum, but not in our use case
+// We override x & y since they're optional in SimulationNodeDatum, but not in our use case
+export type D3Node = SimulationNodeDatum & DisplayObject & { x: number; y: number };
 export type D3Edge = SimulationLinkDatum<D3Node>;
 
 // TODO name should be singular not plural
@@ -45,6 +46,10 @@ export class DocmapsWidget extends LitElement {
 
   static styles = [customCss];
 
+  firstUpdated() {
+    this.loadFont();
+  }
+
   render(): HTMLTemplateResult {
     const content: HTMLTemplateResult = this.selectedNode
       ? this.renderDetailsView(this.selectedNode)
@@ -66,30 +71,16 @@ export class DocmapsWidget extends LitElement {
     `;
   }
 
-  firstUpdated() {
-    this.loadFont();
-  }
-
   private loadFont() {
     // Load IBM Plex Mono font
-    // It would be nice if we could do this in styles.ts, but using @import there gives this error in the dev tools:
-    // `@import rules are not allowed here. See https://github.com/WICG/construct-stylesheets/issues/119#issuecomment-588352418.`
-    this.addLinkToDocumentHeader('preconnect', 'https://fonts.googleapis.com');
-    this.addLinkToDocumentHeader('preconnect', 'https://fonts.gstatic.com', 'anonymous');
-    this.addLinkToDocumentHeader(
+    // It would be nice if we could do this in styles.ts, but attempts to use @import there
+    // resulted in the following error: "@import rules are not allowed here."
+    addLinkToDocumentHeader('preconnect', 'https://fonts.googleapis.com');
+    addLinkToDocumentHeader('preconnect', 'https://fonts.gstatic.com', 'anonymous');
+    addLinkToDocumentHeader(
       'stylesheet',
       'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap',
     );
-  }
-
-  private addLinkToDocumentHeader(rel: string, href: string, crossorigin?: string) {
-    const link = document.createElement('link');
-    link.rel = rel;
-    link.href = href;
-    if (crossorigin) {
-      link.crossOrigin = crossorigin;
-    }
-    document.head.appendChild(link);
   }
 
   private onNodeClick(node: DisplayObject) {
@@ -236,7 +227,9 @@ export class DocmapsWidget extends LitElement {
           .style('left', `${event.pageX + 5}px`) // Position the tooltip at the mouse location
           .style('top', `${event.pageY - 28}px`);
       })
-      .on('mouseout', () => tooltip.style('visibility', 'hidden').style('opacity', 0));
+      .on('mouseout', () => {
+        tooltip.style('visibility', 'hidden').style('opacity', 0);
+      });
   }
 
   private renderDetailsView(node: DisplayObject): HTMLTemplateResult {
@@ -271,7 +264,9 @@ export class DocmapsWidget extends LitElement {
   }
 
   private createMetadataGrid(metadataEntries: [string, any][]): HTMLTemplateResult {
-    const gridItems = metadataEntries.map((entry, index) => this.createGridItem(entry, index));
+    const gridItems: HTMLTemplateResult[] = metadataEntries.map((entry, index) =>
+      this.createGridItem(entry, index),
+    );
     return html` <div class="metadata-grid">${gridItems}</div>`;
   }
 
@@ -345,7 +340,6 @@ function groupNodesByYCoordinate(nodeIds: string[], dagreGraph: DagreGraph): Map
     const node: Dagre.Node<DisplayObject> = dagreGraph.node(nodeId);
     const yLevel: number = node.y;
 
-    // Initialize the array for this y level if it doesn't exist yet
     if (!yLevelNodeMap.has(yLevel)) {
       yLevelNodeMap.set(yLevel, []);
     }
@@ -355,49 +349,77 @@ function groupNodesByYCoordinate(nodeIds: string[], dagreGraph: DagreGraph): Map
   return yLevelNodeMap;
 }
 
+function addLinkToDocumentHeader(rel: string, href: string, crossorigin?: string) {
+  const link = document.createElement('link');
+  link.rel = rel;
+  link.href = href;
+  if (crossorigin) {
+    link.crossOrigin = crossorigin;
+  }
+  document.head.appendChild(link);
+}
+
 // Convert the naive "DisplayObject" nodes and edges we get from the Docmap controller
 // into nodes and edges that are ready to render via d3
-//
 // Along the way, we also calculate initial positions for the nodes.
 function prepareGraphForSimulation(
   nodes: DisplayObject[],
   edges: DisplayObjectEdge[],
 ): { d3Edges: D3Edge[]; d3Nodes: D3Node[]; graphWidth: number } {
+  // Use Dagre to get initial node positions based on graph layout
   const dagreGraph: DagreGraph = getInitialNodePositions(nodes, edges);
 
-  const { height, width } = dagreGraph.graph();
+  // If the graph is too big to fit in the widget, we will need to zoom out
+  const { width, height }: Dagre.GraphLabel = dagreGraph.graph();
   let graphWidth: number = WIDGET_SIZE;
-  if (width && height && (width > WIDGET_SIZE || height > GRAPH_CANVAS_HEIGHT)) {
-    const aspectRatio: number = (1.1 * width) / height;
-    graphWidth = aspectRatio * GRAPH_CANVAS_HEIGHT;
+  if (width && height && graphIsTooBigForCanvas(width, height)) {
+    graphWidth = calculateGraphWidth(width, height);
   }
 
-  const nodeIds: string[] = dagreGraph.nodes();
+  // Group nodes by their y position for level-based processing
+  const yLevelNodeMap: Map<number, D3Node[]> = groupNodesByYCoordinate(
+    dagreGraph.nodes(),
+    dagreGraph,
+  );
 
-  // Group nodes by their y position
-  // So we can determine later if a node is the only one on its level
-  const yLevelNodeMap: Map<number, D3Node[]> = groupNodesByYCoordinate(nodeIds, dagreGraph);
+  // Transform DisplayObjects into D3Nodes with fixed positions as per Dagre layout
+  const d3Nodes: D3Node[] = transformDisplayObjectsToD3Nodes(dagreGraph, yLevelNodeMap, graphWidth);
 
-  const displayNodes: D3Node[] = nodeIds.map((nodeId) => {
+  // Transform DisplayObjectEdges into edges that D3 can use
+  const d3Edges: D3Edge[] = edges.map(
+    (e: DisplayObjectEdge): D3Edge => ({ source: e.sourceId, target: e.targetId }),
+  );
+
+  return { d3Nodes, d3Edges, graphWidth };
+}
+
+function transformDisplayObjectsToD3Nodes(
+  dagreGraph: Dagre.graphlib.Graph<DisplayObject>,
+  yLevelNodeMap: Map<number, D3Node[]>,
+  graphWidth: number,
+) {
+  return dagreGraph.nodes().map((nodeId) => {
     const node: Dagre.Node<DisplayObject> = dagreGraph.node(nodeId);
     const nodesOnThisLevel: D3Node[] | undefined = yLevelNodeMap.get(node.y);
     const isOnlyNodeOnLevel: boolean = nodesOnThisLevel?.length === 1;
 
     return {
       ...node,
-      // We fix the nodes' vertical position to whatever dagre decided to maintain the hierarchy
+      // Always maintain vertical position from Dagre
       fy: node.y,
-
-      // Fix the x coordinate to the center if it's the only node on this level
+      // Fix center horizontally if node is alone on its level. Otherwise, let d3 decide the x position.
       ...(isOnlyNodeOnLevel ? { fx: Math.floor(graphWidth / 2) } : {}),
     };
   });
+}
 
-  const displayEdges: D3Edge[] = edges.map(
-    (e: DisplayObjectEdge): D3Edge => ({ source: e.sourceId, target: e.targetId }),
-  );
+function graphIsTooBigForCanvas(width: number, height: number): boolean {
+  return width > WIDGET_SIZE || height > GRAPH_CANVAS_HEIGHT;
+}
 
-  return { d3Nodes: displayNodes, d3Edges: displayEdges, graphWidth };
+function calculateGraphWidth(width: number, height: number) {
+  const aspectRatio: number = (1.1 * width) / height;
+  return aspectRatio * GRAPH_CANVAS_HEIGHT;
 }
 
 declare global {
