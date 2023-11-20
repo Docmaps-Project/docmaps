@@ -46,7 +46,7 @@ const makeTimeline = (allNodes: DisplayObject[], selectedNode: DisplayObject) =>
     </svg>`;
 };
 
-export const makeDetailNavigationHeader: (
+export const renderDetailNavigationHeader: (
   allNodes: DisplayObject[],
   selectedNode: DisplayObject,
 ) => SVGTemplateResult = (allNodes: DisplayObject[], selectedNode: DisplayObject) => svg`

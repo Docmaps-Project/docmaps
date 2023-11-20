@@ -1,7 +1,7 @@
 import { html, HTMLTemplateResult, LitElement, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { customCss } from './styles';
-import { closeDetailsButton, logo, makeDetailNavigationHeader } from './assets';
+import { closeDetailsButton, logo, renderDetailNavigationHeader } from './assets';
 import * as d3 from 'd3';
 import { Task } from '@lit/task';
 import { DocmapFetchingParams, getDocmap } from './docmap-controller';
@@ -23,7 +23,6 @@ import {
   WIDGET_SIZE,
 } from './constants';
 
-// TODO name should be singular not plural
 @customElement('docmaps-widget')
 export class DocmapsWidget extends LitElement {
   @property({ type: String })
@@ -188,7 +187,7 @@ export class DocmapsWidget extends LitElement {
     const textColor = opts.detailTextColor || opts.textColor;
 
     return html`
-      <div class="detail-timeline">${makeDetailNavigationHeader(this.allNodes, selectedNode)}</div>
+      <div class="detail-timeline">${renderDetailNavigationHeader(this.allNodes, selectedNode)}</div>
 
       <div class="detail-header" style="background: ${backgroundColor};">
         <span style="color: ${textColor};"> ${opts.longLabel} </span>

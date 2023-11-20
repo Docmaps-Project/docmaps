@@ -203,7 +203,6 @@ export const customCss: CSSResult = css`
     font-style: normal;
     font-weight: 600;
     text-anchor: middle;
-    //letter-spacing: 10px;
     text-transform: uppercase;
   }
 
