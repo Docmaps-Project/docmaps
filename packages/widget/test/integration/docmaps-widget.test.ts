@@ -8,12 +8,27 @@ import anotherDocmapWithOneStep from '../fixtures/sciety-docmap-2';
 import fakeDocmapWithEveryType from '../fixtures/fake-docmap-with-every-thing-type';
 import fakeDocmapWithTwoLonelyNodes from '../fixtures/fake-docmap-with-two-lonely-nodes';
 
-const fixtures = {
-  docmapWithMultipleSteps,
-  docmapWithOneStep,
-  anotherDocmapWithOneStep,
-  fakeDocmapWithEveryType,
-  fakeDocmapWithTwoLonelyNodes,
+const fixtures: { [docmapName: string]: { docmap: any; types: string[] } } = {
+  docmapWithMultipleSteps: {
+    docmap: docmapWithMultipleSteps,
+    types: ['P', 'P', 'RA', 'RE', 'ES', 'RA'],
+  },
+  docmapWithOneStep: {
+    docmap: docmapWithOneStep,
+    types: ['', 'RA'],
+  },
+  anotherDocmapWithOneStep: {
+    docmap: anotherDocmapWithOneStep,
+    types: ['', 'RA', 'RA', 'RA'],
+  },
+  fakeDocmapWithEveryType: {
+    docmap: fakeDocmapWithEveryType,
+    types: ['P', 'P', 'RA', 'JA', 'R', 'RE', 'CO', 'ED', 'ES', ''],
+  },
+  fakeDocmapWithTwoLonelyNodes: {
+    docmap: fakeDocmapWithTwoLonelyNodes,
+    types: ['P', 'RA', 'RA', 'RA', '', 'JA'],
+  },
 };
 
 const options: MountOptions<JsonObject, DocmapsWidget> = {
@@ -23,54 +38,56 @@ const options: MountOptions<JsonObject, DocmapsWidget> = {
   },
 };
 
-// TODO I don't love that this is basically a copy of the giant object in docmaps-widget.ts
+const TYPE_UNKNOWN_DETAIL_HEADER_COLOR = '#777';
+
+// TODO I don't like that this is basically a copy of the giant object in docmaps-widget.ts
 // But unfortunately it's not as trivial as you'd expect to import the options from the source code
 const typeShortLabelToOpts: {
   [key: string]: { longLabel: string; backgroundColor: string; textColor: string };
 } = {
   R: {
     longLabel: 'Review',
-    backgroundColor: '#1E2F48', // updated
+    backgroundColor: '#1E2F48',
     textColor: '#D7E4FD',
   },
   P: {
     longLabel: 'Preprint',
-    backgroundColor: '#077A12', // same as before, no change needed
+    backgroundColor: '#077A12',
     textColor: '#CBFFD0',
   },
   ES: {
     longLabel: 'Evaluation Summary',
-    backgroundColor: '#936308', // same as before, no change needed
+    backgroundColor: '#936308',
     textColor: '#FFEDCC',
   },
   RA: {
     longLabel: 'Review Article',
-    backgroundColor: '#099CEE', // same as before, no change needed
+    backgroundColor: '#099CEE',
     textColor: '#CEEDFF',
   },
   JA: {
     longLabel: 'Journal Article',
-    backgroundColor: '#880052', // updated
+    backgroundColor: '#880052',
     textColor: '#FFF',
   },
   ED: {
     longLabel: 'Editorial',
-    backgroundColor: '#2A8781', // updated
+    backgroundColor: '#2A8781',
     textColor: '#FFFFFF',
   },
   CO: {
     longLabel: 'Comment',
-    backgroundColor: '#B66248', // updated
+    backgroundColor: '#B66248',
     textColor: '#FFF',
   },
   RE: {
     longLabel: 'Reply',
-    backgroundColor: '#79109E', // same as before, no change needed
+    backgroundColor: '#79109E',
     textColor: '#F6DBFF',
   },
   '': {
     longLabel: 'Type unknown',
-    backgroundColor: '#CDCDCD', // updated
+    backgroundColor: '#CDCDCD',
     textColor: '#043945',
   },
 };
@@ -84,16 +101,17 @@ test('The header bar is displayed in the graph view even if the requested docmap
   await expect(widget.locator('.widget-header')).toContainText('DOCMAP');
 });
 
-const graphDisplayTestCases: [string, string[]][] = [
-  ['docmapWithOneStep', ['', 'RA']],
-  ['anotherDocmapWithOneStep', ['', 'RA', 'RA', 'RA']],
-  ['docmapWithMultipleSteps', ['P', 'P', 'RA', 'RE', 'ES', 'RA']],
-  ['fakeDocmapWithEveryType', ['P', 'P', 'RA', 'JA', 'R', 'RE', 'CO', 'ED', 'ES', '']],
+const graphDisplayTestCases: string[] = [
+  'docmapWithOneStep',
+  'anotherDocmapWithOneStep',
+  'docmapWithMultipleSteps',
+  'fakeDocmapWithEveryType',
 ];
-for (const [docmapName, expectedNodeLabels] of graphDisplayTestCases) {
+for (const docmapName of graphDisplayTestCases) {
   test(`It can display ${docmapName} as a graph`, async ({ mount, context }) => {
     const doi: string = 'should-return-something';
-    const docmap = fixtures[docmapName];
+    const docmap = fixtures[docmapName].docmap;
+    const expectedNodeLabels = fixtures[docmapName].types;
     await mockDocmapForEndpoint(context, doi, docmap);
 
     const widget: Locator = await mount(DocmapsWidget, { props: { ...options.props, doi } });
@@ -116,7 +134,7 @@ for (const [docmapName, expectedNodeLabels] of graphDisplayTestCases) {
     await expect(widget.locator('text')).toHaveCount(expectedNodeLabels.length);
     for (let i = 0; i < expectedNodeLabels.length; i++) {
       const hasType = !!expectedNodeLabels[i];
-      const expectedStroke: string = hasType ? 'none' : '#777';
+      const expectedStroke: string = hasType ? 'none' : TYPE_UNKNOWN_DETAIL_HEADER_COLOR;
       const expectedStrokeWidth: string = hasType ? 'none' : '2px';
       const expectedStrokeDasharray: string = hasType ? 'none' : '8 4';
       const expectedBackgroundColor = typeShortLabelToOpts[expectedNodeLabels[i]].backgroundColor;
@@ -294,7 +312,7 @@ test('displays real nodes in the timeline', async ({ page, mount }) => {
   expect(nodeXPos).toEqual(outlineXPos);
 
   const outlineColor = await selectedNodeOutlines.first().getAttribute('stroke');
-  const selectedNodeColor = typeToDetailBackgroundColor("");
+  const selectedNodeColor = typeToDetailBackgroundColor('');
   expect(outlineColor).toEqual(selectedNodeColor);
 
   // The vertical line indicating the selected node looks like <path d='M${x} 7L${x} 35' ... />
@@ -381,4 +399,4 @@ async function assertTooltipAppearsOnHover(
 }
 
 const typeToDetailBackgroundColor = (type) =>
-  type === '' ? '#777' : typeShortLabelToOpts[type].backgroundColor;
+  type === '' ? TYPE_UNKNOWN_DETAIL_HEADER_COLOR : typeShortLabelToOpts[type].backgroundColor;
