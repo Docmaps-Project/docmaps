@@ -6,7 +6,8 @@ import {
   DisplayObject,
   DisplayObjectEdge,
   FIRST_NODE_RADIUS,
-  GRAPH_CANVAS_HEIGHT, GRAPH_CANVAS_ID,
+  GRAPH_CANVAS_HEIGHT,
+  GRAPH_CANVAS_ID,
   NODE_RADIUS,
   RANK_SEPARATION,
   TYPE_DISPLAY_OPTIONS,
@@ -228,8 +229,30 @@ export const clearGraph = (shadowRoot: ShadowRoot | null) => {
   }
 
   d3.select(shadowRoot.querySelector(`#${GRAPH_CANVAS_ID} svg`)).remove();
-}
-
+};
 
 const getNodeX = (d: D3Node) => d.x ?? 0;
 const getNodeY = (d: D3Node) => d.y ?? 0;
+export const setUpTooltips = (
+  selection: d3.Selection<any, D3Node, SVGGElement, unknown>,
+  shadowRoot: ShadowRoot | null,
+) => {
+  if (!shadowRoot) {
+    return;
+  }
+
+  const tooltip = d3.select(shadowRoot.querySelector('#tooltip'));
+
+  selection
+    .on('mouseover', function (event, d) {
+      tooltip
+        .html(() => TYPE_DISPLAY_OPTIONS[d.type].longLabel)
+        .style('visibility', 'visible')
+        .style('opacity', 1)
+        .style('left', `${event.pageX + 5}px`) // Position the tooltip at the mouse location
+        .style('top', `${event.pageY - 28}px`);
+    })
+    .on('mouseout', () => {
+      tooltip.style('visibility', 'hidden').style('opacity', 0);
+    });
+};

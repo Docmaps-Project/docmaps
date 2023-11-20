@@ -24,6 +24,7 @@ import {
   createNodeElements,
   prepareGraphForSimulation,
   setupSimulationTicks,
+  setUpTooltips,
 } from './graph-view';
 
 @customElement('docmaps-widget')
@@ -145,9 +146,8 @@ export class DocmapsWidget extends LitElement {
     labels.on('click', (_event, d: D3Node) => this.onNodeClick(d));
 
     setUpTooltips(nodeElements, shadowRoot);
-    setUpTooltips(labels,shadowRoot);
+    setUpTooltips(labels, shadowRoot);
   }
-
 
   private renderDetailsView(selectedNode: DisplayObject): HTMLTemplateResult {
     clearGraph(this.shadowRoot);
@@ -241,27 +241,6 @@ function addLinkToDocumentHeader(rel: string, href: string, crossorigin?: string
     link.crossOrigin = crossorigin;
   }
   document.head.appendChild(link);
-}
-
-const setUpTooltips =(selection: d3.Selection<any, D3Node, SVGGElement, unknown>, shadowRoot: ShadowRoot | null) => {
-  if (!shadowRoot) {
-    return;
-  }
-
-  const tooltip = d3.select(shadowRoot.querySelector('#tooltip'));
-
-  selection
-    .on('mouseover', function (event, d) {
-      tooltip
-        .html(() => TYPE_DISPLAY_OPTIONS[d.type].longLabel)
-        .style('visibility', 'visible')
-        .style('opacity', 1)
-        .style('left', `${event.pageX + 5}px`) // Position the tooltip at the mouse location
-        .style('top', `${event.pageY - 28}px`);
-    })
-    .on('mouseout', () => {
-      tooltip.style('visibility', 'hidden').style('opacity', 0);
-    });
 }
 
 declare global {
