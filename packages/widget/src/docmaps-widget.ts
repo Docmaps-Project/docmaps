@@ -54,18 +54,17 @@ export class DocmapsWidget extends LitElement {
     if (this.selectedNode) {
       content = this.renderDetailsView(this.selectedNode);
     } else {
-      content = html`
-        <div id='tooltip' class='tooltip' style='opacity:0;'></div>
+      content = html` <div id="tooltip" class="tooltip" style="opacity:0;"></div>
         ${this.#docmapFetchingTask.render({ complete: this.renderDocmap.bind(this) })}`;
     }
 
     return html`
-      <div class='docmaps-widget'>
-        <div class='widget-header'>
+      <div class="docmaps-widget">
+        <div class="widget-header">
           ${logo}
           <span>DOCMAP</span>
         </div>
-        <div id='${GRAPH_CANVAS_ID}'></div>
+        <div id="${GRAPH_CANVAS_ID}"></div>
         ${content}
       </div>
     `;
@@ -99,10 +98,10 @@ export class DocmapsWidget extends LitElement {
     this.setupInteractivity(nodeElements, labels);
   }
 
-  private onNodeClick(node: DisplayObject) {
+  private onNodeClick = (node: DisplayObject) => {
     this.selectedNode = node;
     this.requestUpdate(); // Trigger re-render
-  }
+  };
 
   private createEmptySvgForGraph(
     canvas: Element | null,
@@ -187,7 +186,9 @@ export class DocmapsWidget extends LitElement {
     const textColor = opts.detailTextColor || opts.textColor;
 
     return html`
-      <div class="detail-timeline">${renderDetailNavigationHeader(this.allNodes, selectedNode)}</div>
+      <div class="detail-timeline">
+        ${renderDetailNavigationHeader(this.allNodes, selectedNode, this.onNodeClick)}
+      </div>
 
       <div class="detail-header" style="background: ${backgroundColor};">
         <span style="color: ${textColor};"> ${opts.longLabel} </span>
