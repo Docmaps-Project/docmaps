@@ -21,10 +21,10 @@ import {
   createForceSimulation,
   createLabels,
   createLinkElements,
-  createNodeElements,
+  createNodeElements, drawGraph,
   prepareGraphForSimulation,
+  setupInteractivity,
   setupSimulationTicks,
-  setUpTooltips,
 } from './graph-view';
 
 @customElement('docmaps-widget')
@@ -81,25 +81,11 @@ export class DocmapsWidget extends LitElement {
 
       const canvas: Element | null = this.getCanvasElement();
       const svg = this.createEmptySvgForGraph(canvas, graphWidth, this.shadowRoot);
-      this.drawGraph(d3Nodes, d3Edges, graphWidth, svg);
+      drawGraph(d3Nodes, d3Edges, graphWidth, svg, this.shadowRoot, this.onNodeClick);
     }
 
     // D3 draws the graph for us, so we have nothing to actually render here
     return nothing;
-  }
-
-  private drawGraph(
-    d3Nodes: D3Node[],
-    d3Edges: D3Edge[],
-    graphWidth: number,
-    svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
-  ) {
-    const simulation = createForceSimulation(d3Nodes, d3Edges, graphWidth);
-    const linkElements = createLinkElements(svg, d3Edges);
-    const nodeElements = createNodeElements(svg, d3Nodes);
-    const labels = createLabels(svg, d3Nodes);
-    setupSimulationTicks(simulation, linkElements, nodeElements, labels);
-    this.setupInteractivity(nodeElements, labels, this.shadowRoot);
   }
 
   private onNodeClick = (node: DisplayObject) => {
@@ -135,18 +121,6 @@ export class DocmapsWidget extends LitElement {
       throw new Error('SVG element not found');
     }
     return canvas;
-  }
-
-  private setupInteractivity(
-    nodeElements: d3.Selection<SVGCircleElement, D3Node, SVGGElement, unknown>,
-    labels: d3.Selection<SVGTextElement, D3Node, SVGGElement, unknown>,
-    shadowRoot: ShadowRoot | null,
-  ) {
-    nodeElements.on('click', (_event, d: D3Node) => this.onNodeClick(d));
-    labels.on('click', (_event, d: D3Node) => this.onNodeClick(d));
-
-    setUpTooltips(nodeElements, shadowRoot);
-    setUpTooltips(labels, shadowRoot);
   }
 
   private renderDetailsView(selectedNode: DisplayObject): HTMLTemplateResult {

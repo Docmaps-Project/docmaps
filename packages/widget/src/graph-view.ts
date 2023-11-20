@@ -256,3 +256,32 @@ export const setUpTooltips = (
       tooltip.style('visibility', 'hidden').style('opacity', 0);
     });
 };
+
+export const setupInteractivity = (
+  nodeElements: d3.Selection<SVGCircleElement, D3Node, SVGGElement, unknown>,
+  labels: d3.Selection<SVGTextElement, D3Node, SVGGElement, unknown>,
+  shadowRoot: ShadowRoot | null,
+  onNodeClick: (node: DisplayObject) => void,
+) => {
+  nodeElements.on('click', (_event, d: D3Node) => onNodeClick(d));
+  labels.on('click', (_event, d: D3Node) => onNodeClick(d));
+
+  setUpTooltips(nodeElements, shadowRoot);
+  setUpTooltips(labels, shadowRoot);
+};
+
+export const drawGraph = (
+  d3Nodes: D3Node[],
+  d3Edges: D3Edge[],
+  graphWidth: number,
+  svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+  shadowRoot: ShadowRoot | null,
+  onNodeClick: (node: DisplayObject) => void,
+) => {
+  const simulation = createForceSimulation(d3Nodes, d3Edges, graphWidth);
+  const linkElements = createLinkElements(svg, d3Edges);
+  const nodeElements = createNodeElements(svg, d3Nodes);
+  const labels = createLabels(svg, d3Nodes);
+  setupSimulationTicks(simulation, linkElements, nodeElements, labels);
+  setupInteractivity(nodeElements, labels, shadowRoot, onNodeClick);
+};
