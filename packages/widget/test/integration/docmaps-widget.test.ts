@@ -290,7 +290,7 @@ test('displays real nodes in the timeline', async ({ page, mount }) => {
   expect(nodeXPos).toEqual(outlineXPos);
 
   // The vertical line indicating the selected node looks like <path d='M${x} 7L${x} 35' ... />
-  // now assert that the x position of the path is the same as the node's x position
+  // We want to assert that the x position of the path is the same as the node's x position
   const selectedNodeLines = timeline.locator('.selected-node-line');
   await expect(selectedNodeLines).toHaveCount(1);
   const dAttribute = await selectedNodeLines.first().getAttribute('d');
@@ -316,7 +316,7 @@ test('Nodes that are alone on their y level are fixed to the center of the widge
   await expect(secondCircle).toHaveAttribute('cx', '250');
 });
 
-// ---------- Test utilities are below this line ----------
+// ---------- Test utilities below this line ----------
 
 /**
  * Mocks out the api server's `/docmap_for/doi?subject=<doi>` endpoint to return a specific docmap
