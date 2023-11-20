@@ -75,7 +75,6 @@ const typeShortLabelToOpts: {
   },
 };
 
-
 test('The header bar is displayed in the graph view even if the requested docmap does not exist', async ({
   mount,
   context,
@@ -267,6 +266,37 @@ test('displays the right detail header styles when the type is unknown', async (
   await expect(detailsHeader).toContainText('Type unknown');
   await expect(detailsHeader).toHaveAttribute('style', `background: #777;`);
   await expect(detailsHeader.locator('span')).toHaveAttribute('style', `color: #CDCDCD;`);
+});
+
+test('displays real nodes in the timeline', async ({ page, mount }) => {
+  const doi: string = 'fake-and-lonely-docmap';
+  await mockDocmapForEndpoint(page.context(), doi, fakeDocmapWithTwoLonelyNodes);
+  const widget: Locator = await mount(DocmapsWidget, { props: { ...options.props, doi } });
+
+  const n = 4;
+  const thingToClick = widget.locator('.node').nth(n);
+  await thingToClick.click({ force: true });
+
+  // Assert the details view is visible after the click
+  const timeline = widget.locator('.detail-timeline');
+  const timelineNodes = timeline.locator('.timeline-node');
+  await expect(timelineNodes).toHaveCount(6);
+
+  const selectedNodeOutlines = timeline.locator('.selected-node-outline');
+  await expect(selectedNodeOutlines).toHaveCount(1);
+
+  const nodeXPos = await timelineNodes.nth(4).getAttribute('cx');
+  const outlineXPos = await selectedNodeOutlines.first().getAttribute('cx');
+  expect(nodeXPos).toEqual(outlineXPos);
+
+  // The vertical line indicating the selected node looks like <path d='M${x} 7L${x} 35' ... />
+  // now assert that the x position of the path is the same as the node's x position
+  const selectedNodeLines = timeline.locator('.selected-node-line');
+  await expect(selectedNodeLines).toHaveCount(1);
+  const dAttribute = await selectedNodeLines.first().getAttribute('d');
+  const dSplit = dAttribute.split(' ');
+  expect(dSplit[0]).toEqual('M' + nodeXPos);
+  expect(dSplit[1]).toEqual('7L' + nodeXPos);
 });
 
 test('Nodes that are alone on their y level are fixed to the center of the widget horizontally', async ({

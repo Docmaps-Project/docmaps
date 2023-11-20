@@ -1,7 +1,7 @@
 import { html, HTMLTemplateResult, LitElement, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { customCss } from './styles';
-import { closeDetailsButton, logo, timelinePlaceholder } from './assets';
+import { closeDetailsButton, logo, makeDetailNavigationHeader } from './assets';
 import * as d3 from 'd3';
 import { Task } from '@lit/task';
 import { DocmapFetchingParams, getDocmap } from './docmap-controller';
@@ -34,6 +34,9 @@ export class DocmapsWidget extends LitElement {
 
   @state()
   selectedNode?: DisplayObject;
+
+  @state()
+  allNodes: DisplayObject[] = [];
 
   #docmapFetchingTask: Task<DocmapFetchingParams, DisplayObjectGraph> = new Task(
     this,
@@ -71,6 +74,7 @@ export class DocmapsWidget extends LitElement {
 
   private renderDocmap({ nodes, edges }: DisplayObjectGraph) {
     if (this.shadowRoot) {
+      this.allNodes = nodes;
       const { d3Nodes, d3Edges, graphWidth } = prepareGraphForSimulation(nodes, edges);
 
       const canvas: Element | null = this.getCanvasElement();
@@ -170,10 +174,10 @@ export class DocmapsWidget extends LitElement {
       });
   }
 
-  private renderDetailsView(node: DisplayObject): HTMLTemplateResult {
+  private renderDetailsView(selectedNode: DisplayObject): HTMLTemplateResult {
     this.clearGraph();
-    const opts = TYPE_DISPLAY_OPTIONS[node.type];
-    const metadataEntries: [string, any][] = this.filterMetadataEntries(node);
+    const opts = TYPE_DISPLAY_OPTIONS[selectedNode.type];
+    const metadataEntries: [string, any][] = this.filterMetadataEntries(selectedNode);
 
     const metadataBody: HTMLTemplateResult =
       metadataEntries.length > 0
@@ -184,7 +188,7 @@ export class DocmapsWidget extends LitElement {
     const textColor = opts.detailTextColor || opts.textColor;
 
     return html`
-      <div class="detail-timeline">${timelinePlaceholder}</div>
+      <div class="detail-timeline">${makeDetailNavigationHeader(this.allNodes, selectedNode)}</div>
 
       <div class="detail-header" style="background: ${backgroundColor};">
         <span style="color: ${textColor};"> ${opts.longLabel} </span>
