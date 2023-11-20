@@ -277,17 +277,25 @@ test('displays real nodes in the timeline', async ({ page, mount }) => {
   const thingToClick = widget.locator('.node').nth(n);
   await thingToClick.click({ force: true });
 
-  // Assert the details view is visible after the click
   const timeline = widget.locator('.detail-timeline');
   const timelineNodes = timeline.locator('.timeline-node');
   await expect(timelineNodes).toHaveCount(6);
+  const expectedNodes = ['P', 'RA', 'RA', 'RA', '', 'JA'];
+  const expectedNodeColors = expectedNodes.map(typeToDetailBackgroundColor);
+  for (let i = 0; i < expectedNodeColors.length; i++) {
+    const node = timelineNodes.nth(i);
+    await expect(node).toHaveAttribute('fill', expectedNodeColors[i]);
+  }
 
   const selectedNodeOutlines = timeline.locator('.selected-node-outline');
   await expect(selectedNodeOutlines).toHaveCount(1);
-
-  const nodeXPos = await timelineNodes.nth(4).getAttribute('cx');
+  const nodeXPos = await timelineNodes.nth(n).getAttribute('cx');
   const outlineXPos = await selectedNodeOutlines.first().getAttribute('cx');
   expect(nodeXPos).toEqual(outlineXPos);
+
+  const outlineColor = await selectedNodeOutlines.first().getAttribute('stroke');
+  const selectedNodeColor = typeToDetailBackgroundColor("");
+  expect(outlineColor).toEqual(selectedNodeColor);
 
   // The vertical line indicating the selected node looks like <path d='M${x} 7L${x} 35' ... />
   // We want to assert that the x position of the path is the same as the node's x position
@@ -297,6 +305,9 @@ test('displays real nodes in the timeline', async ({ page, mount }) => {
   const dSplit = dAttribute.split(' ');
   expect(dSplit[0]).toEqual('M' + nodeXPos);
   expect(dSplit[1]).toEqual('7L' + nodeXPos);
+
+  const lineColor = await selectedNodeLines.first().getAttribute('stroke');
+  expect(lineColor).toEqual(selectedNodeColor);
 });
 
 test('Nodes that are alone on their y level are fixed to the center of the widget horizontally', async ({
@@ -368,3 +379,6 @@ async function assertTooltipAppearsOnHover(
   expect(tooltipBoundingBox.x).toBeGreaterThan(nodeBoundingBox.x);
   expect(tooltipBoundingBox.y).toBeLessThan(nodeBoundingBox.y + nodeBoundingBox.height);
 }
+
+const typeToDetailBackgroundColor = (type) =>
+  type === '' ? '#777' : typeShortLabelToOpts[type].backgroundColor;

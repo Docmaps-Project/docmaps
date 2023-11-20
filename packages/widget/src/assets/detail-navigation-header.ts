@@ -1,5 +1,5 @@
 import { nothing, svg, SVGTemplateResult } from 'lit';
-import { DisplayObject } from '../constants';
+import { DisplayObject, TYPE_DISPLAY_OPTIONS } from '../constants';
 
 const backButton: SVGTemplateResult = svg`
   <svg width='36' height='36' viewBox='0 0 36 36' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -28,12 +28,14 @@ const makeTimeline = (allNodes: DisplayObject[], selectedNode: DisplayObject) =>
       const spaceBetweenNodes: number = (lastXPosition - firstXPosition) / (allNodes.length - 1);
       x = firstXPosition + spaceBetweenNodes * i;
     }
-    const color = '#077A12';
+    const displayOpts = TYPE_DISPLAY_OPTIONS[node.type];
+    const color = displayOpts.detailBackgroundColor ?? displayOpts.backgroundColor;
 
-    const selectedNodeIndicator = node.nodeId === selectedNode.nodeId
-      ? svg`<circle class='selected-node-outline' cx='${x}' cy='6.5' r='5.5' stroke='${color}'/> <path class='selected-node-line' d='M${x} 7L${x} 35' stroke='${color}' stroke-linecap='round'/>`
-      : nothing;
-    return svg `
+    const selectedNodeIndicator =
+      node.nodeId === selectedNode.nodeId
+        ? svg`<circle class='selected-node-outline' cx='${x}' cy='6.5' r='5.5' stroke='${color}'/> <path class='selected-node-line' d='M${x} 7L${x} 35' stroke='${color}' stroke-linecap='round'/>`
+        : nothing;
+    return svg`
       <circle class='timeline-node' cx='${x}' cy='6.5' r='3.5' fill='${color}'/>
       ${selectedNodeIndicator}
     `;
@@ -41,7 +43,7 @@ const makeTimeline = (allNodes: DisplayObject[], selectedNode: DisplayObject) =>
 
   return svg`
     <svg width='${width}' height='35' viewBox='0 0 ${width} 35' fill='none' xmlns='http://www.w3.org/2000/svg' style='align-self: end;'>
-      <line x1='3' y1='6.75' x2='${width-6}' y2='6.75' stroke='#777777' stroke-width='0.5'/>
+      <line x1='3' y1='6.75' x2='${width - 6}' y2='6.75' stroke='#777777' stroke-width='0.5'/>
       ${timelineNodes}
     </svg>`;
 };
