@@ -6,6 +6,7 @@ import { Task } from '@lit/task';
 import { DocmapFetchingParams, getDocmap } from './docmap-controller';
 import {
   DisplayObject,
+  DisplayObjectEdge,
   DisplayObjectGraph,
   filterMetadataEntries,
   GRAPH_CANVAS_ID,
@@ -13,7 +14,7 @@ import {
 } from './util';
 import {
   clearGraph,
-  createEmptySvgForGraph,
+  createEmptySvgForGraph, displayGraph,
   drawGraph,
   getCanvasElement,
   prepareGraphForSimulation,
@@ -51,7 +52,7 @@ export class DocmapsWidget extends LitElement {
       content = this.renderDetailsView(this.selectedNode);
     } else {
       content = html` <div id="tooltip" class="tooltip" style="opacity:0;"></div>
-        ${this.#docmapFetchingTask.render({ complete: this.renderDocmap.bind(this) })}`;
+        ${this.#docmapFetchingTask.render({ complete: this.renderGraphView.bind(this) })}`;
     }
 
     return html`
@@ -66,14 +67,10 @@ export class DocmapsWidget extends LitElement {
     `;
   }
 
-  private renderDocmap({ nodes, edges }: DisplayObjectGraph) {
+  private renderGraphView({ nodes, edges }: DisplayObjectGraph) {
     if (this.shadowRoot) {
       this.allNodes = nodes;
-      const { d3Nodes, d3Edges, graphWidth } = prepareGraphForSimulation(nodes, edges);
-
-      const canvas: Element | null = getCanvasElement(this.shadowRoot);
-      const svg = createEmptySvgForGraph(canvas, graphWidth, this.shadowRoot);
-      drawGraph(d3Nodes, d3Edges, graphWidth, svg, this.shadowRoot, this.onNodeClick);
+      displayGraph(nodes, edges, this.shadowRoot, this.onNodeClick);
     }
 
     // D3 draws the graph for us, so we have nothing to actually render here

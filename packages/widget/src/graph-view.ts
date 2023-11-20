@@ -15,6 +15,19 @@ import {
 } from './util';
 import * as Dagre from 'dagre';
 
+export const displayGraph = (
+  nodes: DisplayObject[],
+  edges: DisplayObjectEdge[],
+  shadowRoot: ShadowRoot | null,
+  onNodeClick: (node: DisplayObject) => void,
+) => {
+  const { d3Nodes, d3Edges, graphWidth } = prepareGraphForSimulation(nodes, edges);
+
+  const canvas: Element | null = getCanvasElement(shadowRoot);
+  const svg = createEmptySvgForGraph(canvas, graphWidth, shadowRoot);
+  drawGraph(d3Nodes, d3Edges, graphWidth, svg, shadowRoot, onNodeClick);
+};
+
 export function createLabels(
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
   d3Nodes: D3Node[],
