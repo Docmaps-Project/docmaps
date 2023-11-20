@@ -17,7 +17,11 @@ const forwardButton: SVGTemplateResult = svg`
 <!--    <circle cx='24' cy='18' r='3' fill='#474747'/>-->
   </svg>`;
 
-const makeTimeline = (allNodes: DisplayObject[], selectedNode: DisplayObject) => {
+const makeTimeline = (
+  allNodes: DisplayObject[],
+  selectedNode: DisplayObject,
+  updateSelectedNode: (node: DisplayObject) => void,
+) => {
   const width = 368;
   const firstXPosition: number = 6.5;
   const lastXPosition: number = 358.5;
@@ -33,10 +37,12 @@ const makeTimeline = (allNodes: DisplayObject[], selectedNode: DisplayObject) =>
 
     const selectedNodeIndicator =
       node.nodeId === selectedNode.nodeId
-        ? svg`<circle class='selected-node-outline' cx='${x}' cy='6.5' r='5.5' stroke='${color}'/> <path class='selected-node-line' d='M${x} 7L${x} 35' stroke='${color}' stroke-linecap='round'/>`
+        ? svg`
+          <circle class='selected-node-outline' cx='${x}' cy='6.5' r='5.5' stroke='${color}'/> 
+          <path class='selected-node-line' d='M${x} 7L${x} 35' stroke='${color}' stroke-linecap='round'/>`
         : nothing;
     return svg`
-      <circle class='timeline-node' cx='${x}' cy='6.5' r='3.5' fill='${color}'/>
+      <circle class='timeline-node clickable' cx='${x}' cy='6.5' r='3.5' fill='${color}' @click="${() => updateSelectedNode(node)}"/>
       ${selectedNodeIndicator}
     `;
   });
@@ -51,7 +57,8 @@ const makeTimeline = (allNodes: DisplayObject[], selectedNode: DisplayObject) =>
 export const renderDetailNavigationHeader: (
   allNodes: DisplayObject[],
   selectedNode: DisplayObject,
-) => SVGTemplateResult = (allNodes: DisplayObject[], selectedNode: DisplayObject) => svg`
+  updateSelectedNode: (node: DisplayObject) => void,
+) => SVGTemplateResult = (allNodes: DisplayObject[], selectedNode: DisplayObject, updateSelectedNode) => svg`
   ${backButton}
   ${forwardButton}
-  ${makeTimeline(allNodes, selectedNode)}`;
+  ${makeTimeline(allNodes, selectedNode, updateSelectedNode)}`;
