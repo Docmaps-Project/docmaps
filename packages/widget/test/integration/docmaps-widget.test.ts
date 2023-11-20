@@ -38,7 +38,7 @@ const options: MountOptions<JsonObject, DocmapsWidget> = {
   },
 };
 
-const TYPE_UNKNOWN_DETAIL_HEADER_COLOR = '#777';
+const TYPE_UNKNOWN_DETAIL_HEADER_COLOR: string = '#777';
 
 // TODO I don't like that this is basically a copy of the giant object in docmaps-widget.ts
 // But unfortunately it's not as trivial as you'd expect to import the options from the source code
@@ -170,8 +170,6 @@ test('Tooltips appear on mouseover', async ({ mount, context, browserName }) => 
   }
 });
 
-// TODO test for Thing with no metadata
-
 test(`Can display details view for a Preprint with every field`, async ({ page, mount }) => {
   const docmap = fakeDocmapWithTwoLonelyNodes;
   const doi: string = 'get-me-a-docmap-yo';
@@ -282,7 +280,7 @@ test('displays the right detail header styles when the type is unknown', async (
   // Assert the details view is visible after the click
   const detailsHeader = widget.locator('.detail-header');
   await expect(detailsHeader).toContainText('Type unknown');
-  await expect(detailsHeader).toHaveAttribute('style', `background: #777;`);
+  await expect(detailsHeader).toHaveAttribute('style', `background: ${TYPE_UNKNOWN_DETAIL_HEADER_COLOR};`);
   await expect(detailsHeader.locator('span')).toHaveAttribute('style', `color: #CDCDCD;`);
 });
 
