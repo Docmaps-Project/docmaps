@@ -6,19 +6,12 @@ import { Task } from '@lit/task';
 import { DocmapFetchingParams, getDocmap } from './docmap-controller';
 import {
   DisplayObject,
-  DisplayObjectEdge,
   DisplayObjectGraph,
   filterMetadataEntries,
   GRAPH_CANVAS_ID,
   TYPE_DISPLAY_OPTIONS,
 } from './util';
-import {
-  clearGraph,
-  createEmptySvgForGraph, displayGraph,
-  drawGraph,
-  getCanvasElement,
-  prepareGraphForSimulation,
-} from './graph-view';
+import { clearGraph, displayGraph } from './graph-view';
 
 @customElement('docmaps-widget')
 export class DocmapsWidget extends LitElement {
@@ -70,14 +63,14 @@ export class DocmapsWidget extends LitElement {
   private renderGraphView({ nodes, edges }: DisplayObjectGraph) {
     if (this.shadowRoot) {
       this.allNodes = nodes;
-      displayGraph(nodes, edges, this.shadowRoot, this.onNodeClick);
+      displayGraph(nodes, edges, this.shadowRoot, this.displayNodeDetails);
     }
 
     // D3 draws the graph for us, so we have nothing to actually render here
     return nothing;
   }
 
-  private onNodeClick = (node: DisplayObject) => {
+  private displayNodeDetails = (node: DisplayObject) => {
     this.selectedNode = node;
     this.requestUpdate(); // Trigger re-render
   };
@@ -97,7 +90,7 @@ export class DocmapsWidget extends LitElement {
 
     return html`
       <div class="detail-timeline">
-        ${renderDetailNavigationHeader(this.allNodes, selectedNode, this.onNodeClick)}
+        ${renderDetailNavigationHeader(this.allNodes, selectedNode, this.displayNodeDetails)}
       </div>
 
       <div class="detail-header" style="background: ${backgroundColor};">
