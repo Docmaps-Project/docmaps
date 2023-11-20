@@ -11,7 +11,7 @@ function arrayOrOneOf(literalStrings: string[]) {
   const [one, two, ...r] = literalStrings
 
   if (!one) {
-    throw 'Never use arrayOrOneOf zero options!'
+    throw 'Never use arrayOrOneOf with zero options!'
   }
   if (!two) {
     const onlyOption = t.literal(one)
