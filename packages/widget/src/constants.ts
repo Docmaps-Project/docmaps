@@ -24,7 +24,7 @@ export const TYPE_DISPLAY_OPTIONS: {
   review: {
     shortLabel: 'R',
     longLabel: 'Review',
-    backgroundColor: '#222F46',
+    backgroundColor: '#1E2F48',
     textColor: '#D7E4FD',
   },
   preprint: {
@@ -48,19 +48,19 @@ export const TYPE_DISPLAY_OPTIONS: {
   'journal-article': {
     shortLabel: 'JA',
     longLabel: 'Journal Article',
-    backgroundColor: '#7B1650',
+    backgroundColor: '#880052',
     textColor: '#FFF',
   },
   editorial: {
     shortLabel: 'ED',
     longLabel: 'Editorial',
-    backgroundColor: '#468580',
+    backgroundColor: '#2A8781',
     textColor: '#FFFFFF',
   },
   comment: {
     shortLabel: 'CO',
     longLabel: 'Comment',
-    backgroundColor: '#AB664E',
+    backgroundColor: '#B66248',
     textColor: '#FFF',
   },
   reply: {
@@ -72,10 +72,10 @@ export const TYPE_DISPLAY_OPTIONS: {
   '??': {
     shortLabel: '',
     longLabel: 'Type unknown',
-    backgroundColor: '#EFEFEF',
+    backgroundColor: '#CDCDCD',
     textColor: '#043945',
     detailBackgroundColor: '#777',
-    detailTextColor: '#EFEFEF',
+    detailTextColor: '#CDCDCD',
     dottedBorder: true,
   },
 };

@@ -30,50 +30,51 @@ const typeShortLabelToOpts: {
 } = {
   R: {
     longLabel: 'Review',
-    backgroundColor: '#222F46',
+    backgroundColor: '#1E2F48', // updated
     textColor: '#D7E4FD',
   },
   P: {
     longLabel: 'Preprint',
-    backgroundColor: '#077A12',
+    backgroundColor: '#077A12', // same as before, no change needed
     textColor: '#CBFFD0',
   },
   ES: {
     longLabel: 'Evaluation Summary',
-    backgroundColor: '#936308',
+    backgroundColor: '#936308', // same as before, no change needed
     textColor: '#FFEDCC',
   },
   RA: {
     longLabel: 'Review Article',
-    backgroundColor: '#099CEE',
+    backgroundColor: '#099CEE', // same as before, no change needed
     textColor: '#CEEDFF',
   },
   JA: {
     longLabel: 'Journal Article',
-    backgroundColor: '#7B1650',
+    backgroundColor: '#880052', // updated
     textColor: '#FFF',
   },
   ED: {
     longLabel: 'Editorial',
-    backgroundColor: '#468580',
+    backgroundColor: '#2A8781', // updated
     textColor: '#FFFFFF',
   },
   CO: {
     longLabel: 'Comment',
-    backgroundColor: '#AB664E',
+    backgroundColor: '#B66248', // updated
     textColor: '#FFF',
   },
   RE: {
     longLabel: 'Reply',
-    backgroundColor: '#79109E',
+    backgroundColor: '#79109E', // same as before, no change needed
     textColor: '#F6DBFF',
   },
   '': {
     longLabel: 'Type unknown',
-    backgroundColor: '#EFEFEF',
+    backgroundColor: '#CDCDCD', // updated
     textColor: '#043945',
   },
 };
+
 
 test('The header bar is displayed in the graph view even if the requested docmap does not exist', async ({
   mount,
@@ -265,7 +266,7 @@ test('displays the right detail header styles when the type is unknown', async (
   const detailsHeader = widget.locator('.detail-header');
   await expect(detailsHeader).toContainText('Type unknown');
   await expect(detailsHeader).toHaveAttribute('style', `background: #777;`);
-  await expect(detailsHeader.locator('span')).toHaveAttribute('style', `color: #EFEFEF;`);
+  await expect(detailsHeader.locator('span')).toHaveAttribute('style', `color: #CDCDCD;`);
 });
 
 test('Nodes that are alone on their y level are fixed to the center of the widget horizontally', async ({
