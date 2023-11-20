@@ -67,7 +67,7 @@
     padding-top: 3em;
     padding-bottom: 3em;
     margin: auto;
-    max-width: 600px;
+    max-width: 500px;
   }
 
   .code-container {
