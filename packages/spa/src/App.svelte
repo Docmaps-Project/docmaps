@@ -1,7 +1,6 @@
 <script>
   import { onMount } from 'svelte';
   import { configureForDoiString, structureError } from './utils.js';
-  import '@source-data/render-rev/render-rev.js';
   import JsonBox from "./JsonBox.svelte";
   import '@docmaps/widget';
 

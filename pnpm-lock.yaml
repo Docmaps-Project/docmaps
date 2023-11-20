@@ -258,9 +258,6 @@ importers:
       '@docmaps/widget':
         specifier: workspace:^0.0.0
         version: link:../widget
-      '@source-data/render-rev':
-        specifier: github:source-data/render-rev
-        version: github.com/source-data/render-rev/2631e306181b9c330acf516d979e44ac41efd7ce(@spider-ui/global-event-registry@0.2.7)(upgraded-element@0.6.5)
       '@spider-ui/global-event-registry':
         specifier: ^0.2.7
         version: 0.2.7
@@ -1856,16 +1853,6 @@ packages:
 
   /@spider-ui/global-event-registry@0.2.7:
     resolution: {integrity: sha512-HXmMcZ/swKb2wC2JUbU4eRM9e9fOVZ/b8ExkNEUa04R+148KUAo36vd+UnmnpVgGQXVBB/pBL1yVIfC1CwZ+yg==}
-    dev: false
-
-  /@spider-ui/tooltip@0.2.7(@spider-ui/global-event-registry@0.2.7)(upgraded-element@0.6.5):
-    resolution: {integrity: sha512-TPIRqJGf4Re5uT7SEhurK0Wxyp8/9stQEbgR3MJ2NlDspau3Wx+V+7vZpeEk0SFQgD2d68779QzB5sdnQrWGQA==}
-    peerDependencies:
-      '@spider-ui/global-event-registry': '>= 0.2.3'
-      upgraded-element: '>= 0.4.3'
-    dependencies:
-      '@spider-ui/global-event-registry': 0.2.7
-      upgraded-element: 0.6.5
     dev: false
 
   /@szmarczak/http-timer@1.1.2:
@@ -4110,10 +4097,6 @@ packages:
     engines: {node: '>=6.0.0'}
     dependencies:
       esutils: 2.0.3
-
-  /dompurify@2.4.5:
-    resolution: {integrity: sha512-jggCCd+8Iqp4Tsz0nIvpcb22InKEBrGz5dw3EQJMs8HPJDsKbFIO3STYtAvCfDx26Muevn1MHVI0XxjgFfmiSA==}
-    dev: false
 
   /dot-prop@5.3.0:
     resolution: {integrity: sha512-QM8q3zDe58hqUqjraQOmzZ1LIH9SWQJTlEKCH4kJ2oQvLZk7RbQXvtDM2XEq3fwkV9CCvvH4LA0AV+ogFsBM2Q==}
@@ -8682,17 +8665,3 @@ packages:
 
   /zod@3.22.4:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
-
-  github.com/source-data/render-rev/2631e306181b9c330acf516d979e44ac41efd7ce(@spider-ui/global-event-registry@0.2.7)(upgraded-element@0.6.5):
-    resolution: {tarball: https://codeload.github.com/source-data/render-rev/tar.gz/2631e306181b9c330acf516d979e44ac41efd7ce}
-    id: github.com/source-data/render-rev/2631e306181b9c330acf516d979e44ac41efd7ce
-    name: '@source-data/render-rev'
-    version: 0.1.35
-    dependencies:
-      '@spider-ui/tooltip': 0.2.7(@spider-ui/global-event-registry@0.2.7)(upgraded-element@0.6.5)
-      dompurify: 2.4.5
-      lit: 2.8.0
-    transitivePeerDependencies:
-      - '@spider-ui/global-event-registry'
-      - upgraded-element
-    dev: false
