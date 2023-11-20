@@ -35,7 +35,7 @@ const forwardButton = (
     </svg>`;
 };
 
-const makeTimeline = (
+const timeline = (
   allNodes: DisplayObject[],
   selectedNode: DisplayObject,
   updateSelectedNode: (node: DisplayObject) => void,
@@ -84,4 +84,4 @@ export const renderDetailNavigationHeader: (
 ) => svg`
   ${backButton(allNodes, selectedNode, updateSelectedNode)}
   ${forwardButton(allNodes, selectedNode, updateSelectedNode)}
-  ${makeTimeline(allNodes, selectedNode, updateSelectedNode)}`;
+  ${timeline(allNodes, selectedNode, updateSelectedNode)}`;
