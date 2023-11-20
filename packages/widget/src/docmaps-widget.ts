@@ -60,14 +60,14 @@ export class DocmapsWidget extends LitElement {
     }
 
     return html`
-      <div class="widget-header">
-        ${logo}
-        <span>DOCMAP</span>
+      <div class='docmaps-widget'>
+        <div class='widget-header'>
+          ${logo}
+          <span>DOCMAP</span>
+        </div>
+        <div id='${GRAPH_CANVAS_ID}'></div>
+        ${content}
       </div>
-
-      <div id="${GRAPH_CANVAS_ID}"></div>
-
-      ${content}
     `;
   }
 

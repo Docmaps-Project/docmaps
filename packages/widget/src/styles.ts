@@ -2,7 +2,7 @@ import {css, CSSResult} from "lit";
 
 // These are the styles used within the lit component
 export const customCss: CSSResult = css`
-  :host {
+  .docmaps-widget {
     width: 500px;
     height: 500px;
     background: #EDEDED;
