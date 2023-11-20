@@ -101,7 +101,6 @@ export const customCss: CSSResult = css`
   .detail-header {
     width: 500px;
     height: 50px;
-    outline: 1px solid;
     display: flex;
     justify-content: space-between;
     align-items: center;
