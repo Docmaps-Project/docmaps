@@ -1,5 +1,5 @@
 import { nothing, svg, SVGTemplateResult } from 'lit';
-import { DisplayObject, TYPE_DISPLAY_OPTIONS } from '../constants';
+import { DisplayObject, TYPE_DISPLAY_OPTIONS } from '../util';
 
 const backButton = (
   allNodes: DisplayObject[],

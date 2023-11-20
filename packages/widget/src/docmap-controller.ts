@@ -3,7 +3,7 @@ import { TaskFunction } from '@lit/task';
 import { ActorT, Docmap, DocmapT, ManifestationT, RoleInTimeT, StepT, ThingT } from 'docmaps-sdk';
 import { pipe } from 'fp-ts/lib/function';
 import * as E from 'fp-ts/lib/Either';
-import { ALL_KNOWN_TYPES, DisplayObject, DisplayObjectEdge, DisplayObjectGraph } from './constants';
+import { ALL_KNOWN_TYPES, DisplayObject, DisplayObjectEdge, DisplayObjectGraph } from './util';
 
 export type DocmapFetchingParams = [string, string]; // [serverUrl, doi]
 

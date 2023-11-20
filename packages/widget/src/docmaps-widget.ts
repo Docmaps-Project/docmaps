@@ -10,7 +10,7 @@ import {
   filterMetadataEntries,
   GRAPH_CANVAS_ID,
   TYPE_DISPLAY_OPTIONS,
-} from './constants';
+} from './util';
 import {
   clearGraph,
   createEmptySvgForGraph,

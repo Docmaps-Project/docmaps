@@ -12,7 +12,7 @@ import {
   RANK_SEPARATION,
   TYPE_DISPLAY_OPTIONS,
   WIDGET_SIZE,
-} from './constants.ts';
+} from './util';
 import * as Dagre from 'dagre';
 
 export function createLabels(
