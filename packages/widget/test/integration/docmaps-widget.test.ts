@@ -101,13 +101,12 @@ test('The header bar is displayed in the graph view even if the requested docmap
   await expect(widget.locator('.widget-header')).toContainText('DOCMAP');
 });
 
-const graphDisplayTestCases: string[] = [
+[
   'docmapWithOneStep',
   'anotherDocmapWithOneStep',
   'docmapWithMultipleSteps',
   'fakeDocmapWithEveryType',
-];
-for (const docmapName of graphDisplayTestCases) {
+].forEach((docmapName) => {
   test(`It can display ${docmapName} as a graph`, async ({ mount, context }) => {
     const doi: string = 'should-return-something';
     const docmap = fixtures[docmapName].docmap;
@@ -151,7 +150,7 @@ for (const docmapName of graphDisplayTestCases) {
       await expect(label).toHaveAttribute('fill', expectedTextColor);
     }
   });
-}
+});
 
 test('Tooltips appear on mouseover', async ({ mount, context, browserName }) => {
   const docmap = docmapWithMultipleSteps; // Assuming you want to test with this data
@@ -280,7 +279,10 @@ test('displays the right detail header styles when the type is unknown', async (
   // Assert the details view is visible after the click
   const detailsHeader = widget.locator('.detail-header');
   await expect(detailsHeader).toContainText('Type unknown');
-  await expect(detailsHeader).toHaveAttribute('style', `background: ${TYPE_UNKNOWN_DETAIL_HEADER_COLOR};`);
+  await expect(detailsHeader).toHaveAttribute(
+    'style',
+    `background: ${TYPE_UNKNOWN_DETAIL_HEADER_COLOR};`,
+  );
   await expect(detailsHeader.locator('span')).toHaveAttribute('style', `color: #CDCDCD;`);
 });
 
