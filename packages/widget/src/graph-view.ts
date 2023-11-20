@@ -285,3 +285,33 @@ export const drawGraph = (
   setupSimulationTicks(simulation, linkElements, nodeElements, labels);
   setupInteractivity(nodeElements, labels, shadowRoot, onNodeClick);
 };
+
+export const createEmptySvgForGraph = (
+  canvas: Element | null,
+  graphWidth: number,
+  shadowRoot: ShadowRoot | null,
+): d3.Selection<SVGSVGElement, unknown, null, undefined> => {
+  clearGraph(shadowRoot);
+  const svg = d3
+    .select(canvas)
+    .append('svg')
+    .attr('width', WIDGET_SIZE)
+    .attr('height', GRAPH_CANVAS_HEIGHT);
+
+  if (graphWidth) {
+    svg.attr('viewBox', `0 0 ${graphWidth} ${GRAPH_CANVAS_HEIGHT}`);
+  }
+  return svg;
+};
+
+export const getCanvasElement = (shadowRoot: ShadowRoot | null): Element | null => {
+  if (!shadowRoot) {
+    return null;
+  }
+
+  const canvas = shadowRoot.querySelector(`#${GRAPH_CANVAS_ID}`);
+  if (!canvas) {
+    throw new Error('SVG element not found');
+  }
+  return canvas;
+};

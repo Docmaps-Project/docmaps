@@ -2,29 +2,21 @@ import { html, HTMLTemplateResult, LitElement, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { customCss } from './styles';
 import { closeDetailsButton, logo, renderDetailNavigationHeader } from './assets';
-import * as d3 from 'd3';
 import { Task } from '@lit/task';
 import { DocmapFetchingParams, getDocmap } from './docmap-controller';
 import {
-  D3Edge,
-  D3Node,
   DisplayObject,
   DisplayObjectGraph,
-  GRAPH_CANVAS_HEIGHT,
   GRAPH_CANVAS_ID,
   isFieldToDisplay,
   TYPE_DISPLAY_OPTIONS,
-  WIDGET_SIZE,
 } from './constants';
 import {
   clearGraph,
-  createForceSimulation,
-  createLabels,
-  createLinkElements,
-  createNodeElements, drawGraph,
+  createEmptySvgForGraph,
+  drawGraph,
+  getCanvasElement,
   prepareGraphForSimulation,
-  setupInteractivity,
-  setupSimulationTicks,
 } from './graph-view';
 
 @customElement('docmaps-widget')
@@ -79,8 +71,8 @@ export class DocmapsWidget extends LitElement {
       this.allNodes = nodes;
       const { d3Nodes, d3Edges, graphWidth } = prepareGraphForSimulation(nodes, edges);
 
-      const canvas: Element | null = this.getCanvasElement();
-      const svg = this.createEmptySvgForGraph(canvas, graphWidth, this.shadowRoot);
+      const canvas: Element | null = getCanvasElement(this.shadowRoot);
+      const svg = createEmptySvgForGraph(canvas, graphWidth, this.shadowRoot);
       drawGraph(d3Nodes, d3Edges, graphWidth, svg, this.shadowRoot, this.onNodeClick);
     }
 
@@ -92,36 +84,6 @@ export class DocmapsWidget extends LitElement {
     this.selectedNode = node;
     this.requestUpdate(); // Trigger re-render
   };
-
-  private createEmptySvgForGraph = (
-    canvas: Element | null,
-    graphWidth: number,
-    shadowRoot: ShadowRoot | null,
-  ): d3.Selection<SVGSVGElement, unknown, null, undefined> => {
-    clearGraph(shadowRoot);
-    const svg = d3
-      .select(canvas)
-      .append('svg')
-      .attr('width', WIDGET_SIZE)
-      .attr('height', GRAPH_CANVAS_HEIGHT);
-
-    if (graphWidth) {
-      svg.attr('viewBox', `0 0 ${graphWidth} ${GRAPH_CANVAS_HEIGHT}`);
-    }
-    return svg;
-  };
-
-  private getCanvasElement(): Element | null {
-    if (!this.shadowRoot) {
-      return null;
-    }
-
-    const canvas = this.shadowRoot.querySelector(`#${GRAPH_CANVAS_ID}`);
-    if (!canvas) {
-      throw new Error('SVG element not found');
-    }
-    return canvas;
-  }
 
   private renderDetailsView(selectedNode: DisplayObject): HTMLTemplateResult {
     clearGraph(this.shadowRoot);
