@@ -7,8 +7,8 @@ import { DocmapFetchingParams, getDocmap } from './docmap-controller';
 import {
   DisplayObject,
   DisplayObjectGraph,
+  filterMetadataEntries,
   GRAPH_CANVAS_ID,
-  isFieldToDisplay,
   TYPE_DISPLAY_OPTIONS,
 } from './constants';
 import {
@@ -88,7 +88,7 @@ export class DocmapsWidget extends LitElement {
   private renderDetailsView(selectedNode: DisplayObject): HTMLTemplateResult {
     clearGraph(this.shadowRoot);
     const opts = TYPE_DISPLAY_OPTIONS[selectedNode.type];
-    const metadataEntries: [string, any][] = this.filterMetadataEntries(selectedNode);
+    const metadataEntries: [string, any][] = filterMetadataEntries(selectedNode);
 
     const metadataBody: HTMLTemplateResult =
       metadataEntries.length > 0
@@ -118,10 +118,6 @@ export class DocmapsWidget extends LitElement {
   private closeDetailsView() {
     this.selectedNode = undefined;
     this.requestUpdate(); // Trigger re-render
-  }
-
-  private filterMetadataEntries(node: DisplayObject): [string, any][] {
-    return Object.entries(node).filter(([key, value]) => isFieldToDisplay(key) && value);
   }
 
   private createMetadataGrid(metadataEntries: [string, any][]): HTMLTemplateResult {

@@ -133,3 +133,6 @@ export type DisplayObjectGraph = {
 export type D3Node = SimulationNodeDatum & DisplayObject & { x: number; y: number };
 export type D3Edge = SimulationLinkDatum<D3Node>;
 export type DagreGraph = Dagre.graphlib.Graph<DisplayObject>;
+
+export const filterMetadataEntries = (node: DisplayObject): [string, any][] =>
+  Object.entries(node).filter(([key, value]) => isFieldToDisplay(key) && value);
