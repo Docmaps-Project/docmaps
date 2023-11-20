@@ -71,14 +71,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pnpm install;
+          pnpm install
+      - name: Build everything
+        run: |
+          pnpm run -r build
 
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         # must ignore spa because we need spa in the workspace file for development, but spa is not released.
-        run: npx multi-semantic-release --ignore-packages=packages/spa,packages/example,packages/widget,packages/http-server,packages/build-configs
+        run: npx multi-semantic-release --ignore-packages=packages/spa,packages/example,packages/http-server,packages/build-configs
 
   release-github-pages-docs:
     uses: ./.github/workflows/gh-pages.yaml
