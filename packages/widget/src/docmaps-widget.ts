@@ -1,7 +1,7 @@
 import { html, HTMLTemplateResult, LitElement, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { customCss } from './styles';
-import { closeDetailsButton, logo, timelinePlaceholder } from './assets';
+import { closeDetailsButton, logo, renderDetailNavigationHeader } from './assets';
 import * as d3 from 'd3';
 import { Task } from '@lit/task';
 import { DocmapFetchingParams, getDocmap } from './docmap-controller';
@@ -23,7 +23,6 @@ import {
   WIDGET_SIZE,
 } from './constants';
 
-// TODO name should be singular not plural
 @customElement('docmaps-widget')
 export class DocmapsWidget extends LitElement {
   @property({ type: String })
@@ -34,6 +33,9 @@ export class DocmapsWidget extends LitElement {
 
   @state()
   selectedNode?: DisplayObject;
+
+  @state()
+  allNodes: DisplayObject[] = [];
 
   #docmapFetchingTask: Task<DocmapFetchingParams, DisplayObjectGraph> = new Task(
     this,
@@ -48,28 +50,30 @@ export class DocmapsWidget extends LitElement {
   }
 
   render(): HTMLTemplateResult {
-    const content: HTMLTemplateResult = this.selectedNode
-      ? this.renderDetailsView(this.selectedNode)
-      : html` <div id="tooltip" class="tooltip" style="opacity:0;"></div>
-
-          ${this.#docmapFetchingTask.render({
-            complete: this.renderDocmap.bind(this),
-          })}`;
+    let content: HTMLTemplateResult;
+    if (this.selectedNode) {
+      content = this.renderDetailsView(this.selectedNode);
+    } else {
+      content = html`
+        <div id='tooltip' class='tooltip' style='opacity:0;'></div>
+        ${this.#docmapFetchingTask.render({ complete: this.renderDocmap.bind(this) })}`;
+    }
 
     return html`
-      <div class="widget-header">
-        ${logo}
-        <span>DOCMAP</span>
+      <div class='docmaps-widget'>
+        <div class='widget-header'>
+          ${logo}
+          <span>DOCMAP</span>
+        </div>
+        <div id='${GRAPH_CANVAS_ID}'></div>
+        ${content}
       </div>
-
-      <div id="${GRAPH_CANVAS_ID}"></div>
-
-      ${content}
     `;
   }
 
   private renderDocmap({ nodes, edges }: DisplayObjectGraph) {
     if (this.shadowRoot) {
+      this.allNodes = nodes;
       const { d3Nodes, d3Edges, graphWidth } = prepareGraphForSimulation(nodes, edges);
 
       const canvas: Element | null = this.getCanvasElement();
@@ -99,6 +103,7 @@ export class DocmapsWidget extends LitElement {
     this.selectedNode = node;
     this.requestUpdate(); // Trigger re-render
   }
+
   private createEmptySvgForGraph(
     canvas: Element | null,
     graphWidth: number,
@@ -168,10 +173,10 @@ export class DocmapsWidget extends LitElement {
       });
   }
 
-  private renderDetailsView(node: DisplayObject): HTMLTemplateResult {
+  private renderDetailsView(selectedNode: DisplayObject): HTMLTemplateResult {
     this.clearGraph();
-    const opts = TYPE_DISPLAY_OPTIONS[node.type];
-    const metadataEntries: [string, any][] = this.filterMetadataEntries(node);
+    const opts = TYPE_DISPLAY_OPTIONS[selectedNode.type];
+    const metadataEntries: [string, any][] = this.filterMetadataEntries(selectedNode);
 
     const metadataBody: HTMLTemplateResult =
       metadataEntries.length > 0
@@ -182,7 +187,7 @@ export class DocmapsWidget extends LitElement {
     const textColor = opts.detailTextColor || opts.textColor;
 
     return html`
-      <div class="detail-timeline">${timelinePlaceholder}</div>
+      <div class="detail-timeline">${renderDetailNavigationHeader(this.allNodes, selectedNode)}</div>
 
       <div class="detail-header" style="background: ${backgroundColor};">
         <span style="color: ${textColor};"> ${opts.longLabel} </span>
@@ -308,7 +313,7 @@ function createForceSimulation(d3Nodes: D3Node[], d3Edges: D3Edge[], graphWidth:
           // @ts-ignore
           return d.nodeId;
         })
-        .distance(RANK_SEPARATION * 1.2)
+        .distance(RANK_SEPARATION * 1.3)
         .strength(0.2),
     )
     .force('charge', d3.forceManyBody())
@@ -339,7 +344,6 @@ function setupSimulationTicks(
       .attr('y', getNodeY);
   });
 }
-
 
 // Dagre is a tool for laying out directed graphs. We use it to generate initial positions for
 // our nodes, which we then pass to d3 to animate into their final positions.

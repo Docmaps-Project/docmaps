@@ -2,7 +2,7 @@ import {css, CSSResult} from "lit";
 
 // These are the styles used within the lit component
 export const customCss: CSSResult = css`
-  :host {
+  .docmaps-widget {
     width: 500px;
     height: 500px;
     background: #EDEDED;
@@ -101,7 +101,6 @@ export const customCss: CSSResult = css`
   .detail-header {
     width: 500px;
     height: 50px;
-    outline: 1px solid;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -204,7 +203,6 @@ export const customCss: CSSResult = css`
     font-style: normal;
     font-weight: 600;
     text-anchor: middle;
-    //letter-spacing: 10px;
     text-transform: uppercase;
   }
 
