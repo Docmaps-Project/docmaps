@@ -306,6 +306,45 @@ test(`clicking a node in the timeline takes you to that node`, async ({ context,
   await expect(widget.locator('.detail-header')).toContainText('Journal Article');
 });
 
+
+test(`clicking the back button takes you to the previous node`, async ({ context, mount }) => {
+  const docmapName: string = 'fakeDocmapWithTwoLonelyNodes';
+  const widget = await renderWidgetWithDocmap(
+    docmapName,
+    fixtures[docmapName].docmap,
+    context,
+    mount,
+  );
+
+  const secondNode = widget.locator('.node').nth(1);
+  await secondNode.click({ force: true });
+
+  await expect(widget.locator('.detail-header')).toContainText('Review Article');
+
+  const backButton = widget.locator('.docmaps-timeline-back').first();
+  await backButton.click({ force: true });
+  await expect(widget.locator('.detail-header')).toContainText('Preprint');
+});
+
+test(`clicking the forward button takes you to the next node`, async ({ context, mount }) => {
+  const docmapName: string = 'fakeDocmapWithTwoLonelyNodes';
+  const widget = await renderWidgetWithDocmap(
+    docmapName,
+    fixtures[docmapName].docmap,
+    context,
+    mount,
+  );
+
+  const secondNode = widget.locator('.node').nth(4);
+  await secondNode.click({ force: true });
+
+  await expect(widget.locator('.detail-header')).toContainText('Type unknown');
+
+  const backButton = widget.locator('.docmaps-timeline-forward').first();
+  await backButton.click({ force: true });
+  await expect(widget.locator('.detail-header')).toContainText('Journal Article');
+});
+
 test('Nodes that are alone on their y level are fixed to the center of the widget horizontally', async ({
   context,
   mount,
