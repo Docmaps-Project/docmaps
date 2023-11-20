@@ -3,10 +3,11 @@
   import { configureForDoiString, structureError } from './utils.js';
   import '@source-data/render-rev/render-rev.js';
   import JsonBox from "./JsonBox.svelte";
+  import '@docmaps/widget';
 
   let inputDoi = '';
   let placeholder;
-  let renderRevElement;
+  let widgetElement;
 
   let codeBox;
   let json = undefined;
@@ -18,26 +19,19 @@
       }
     }
 
-    renderRevElement.configure({
-      ...config,
-      docmaps: data,
-    });
-
     json=data;
   }
 
   function handleError(error) {
-    renderRevElement.configure({
-      docmaps: error, // hacky solution
-    });
-
     json=structureError(error);
   }
 
   async function fetchData() {
-    if (!renderRevElement) {
-      renderRevElement = document.createElement('render-rev');
-      placeholder.appendChild(renderRevElement);
+    if (!widgetElement) {
+      widgetElement = document.createElement('docmaps-widget');
+      widgetElement.setAttribute('serverurl', 'https://web-nodejs.onrender.com')
+      widgetElement.setAttribute('doi', inputDoi)
+      placeholder.appendChild(widgetElement);
     }
     await configureForDoiString(
       inputDoi,

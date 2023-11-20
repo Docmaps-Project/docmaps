@@ -255,6 +255,9 @@ importers:
       '@docmaps/etl':
         specifier: workspace:^0.1.2
         version: link:../ts-etl
+      '@docmaps/widget':
+        specifier: workspace:^0.0.0
+        version: link:../widget
       '@source-data/render-rev':
         specifier: github:source-data/render-rev
         version: github.com/source-data/render-rev/2631e306181b9c330acf516d979e44ac41efd7ce(@spider-ui/global-event-registry@0.2.7)(upgraded-element@0.6.5)
