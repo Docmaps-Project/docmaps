@@ -146,11 +146,11 @@ export const customCss: CSSResult = css`
     word-break: break-all;
     white-space: normal;
     border-bottom: 0.5px solid #C1C1C1;
-    border-right: 0.5px solid #C1C1C1;
   }
 
   .metadata-grid-item.key {
     font-weight: 400;
+    border-right: 0.5px solid #C1C1C1;
   }
 
   .metadata-grid-item.value {
