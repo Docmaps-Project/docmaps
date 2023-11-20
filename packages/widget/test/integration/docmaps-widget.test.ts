@@ -286,46 +286,51 @@ test('displays the right detail header styles when the type is unknown', async (
   await expect(detailsHeader.locator('span')).toHaveAttribute('style', `color: #CDCDCD;`);
 });
 
-test('displays real nodes in the timeline', async ({ page, mount }) => {
-  const doi: string = 'fake-and-lonely-docmap';
-  await mockDocmapForEndpoint(page.context(), doi, fakeDocmapWithTwoLonelyNodes);
-  const widget: Locator = await mount(DocmapsWidget, { props: { ...options.props, doi } });
+const timelineTestCases: [string, number][] = [
+  ['fakeDocmapWithTwoLonelyNodes', 4],
+  ['fakeDocmapWithEveryType', 6],
+];
+timelineTestCases.forEach(([docmapName, nodeToClickIndex]) => {
+  test(`displays real nodes in the timeline for ${docmapName}`, async ({ page, mount }) => {
+    const doi: string = docmapName;
+    await mockDocmapForEndpoint(page.context(), doi, fixtures[docmapName].docmap);
+    const widget: Locator = await mount(DocmapsWidget, { props: { ...options.props, doi } });
 
-  const n = 4;
-  const thingToClick = widget.locator('.node').nth(n);
-  await thingToClick.click({ force: true });
+    const thingToClick = widget.locator('.node').nth(nodeToClickIndex);
+    await thingToClick.click({ force: true });
 
-  const timeline = widget.locator('.detail-timeline');
-  const timelineNodes = timeline.locator('.timeline-node');
-  await expect(timelineNodes).toHaveCount(6);
-  const expectedNodes = ['P', 'RA', 'RA', 'RA', '', 'JA'];
-  const expectedNodeColors = expectedNodes.map(typeToDetailBackgroundColor);
-  for (let i = 0; i < expectedNodeColors.length; i++) {
-    const node = timelineNodes.nth(i);
-    await expect(node).toHaveAttribute('fill', expectedNodeColors[i]);
-  }
+    const timeline = widget.locator('.detail-timeline');
+    const timelineNodes = timeline.locator('.timeline-node');
+    const expectedNodes = fixtures[docmapName].types;
+    await expect(timelineNodes).toHaveCount(expectedNodes.length);
+    const expectedNodeColors = expectedNodes.map(typeToDetailBackgroundColor);
+    for (let i = 0; i < expectedNodeColors.length; i++) {
+      const node = timelineNodes.nth(i);
+      await expect(node).toHaveAttribute('fill', expectedNodeColors[i]);
+    }
 
-  const selectedNodeOutlines = timeline.locator('.selected-node-outline');
-  await expect(selectedNodeOutlines).toHaveCount(1);
-  const nodeXPos = await timelineNodes.nth(n).getAttribute('cx');
-  const outlineXPos = await selectedNodeOutlines.first().getAttribute('cx');
-  expect(nodeXPos).toEqual(outlineXPos);
+    const selectedNodeOutlines = timeline.locator('.selected-node-outline');
+    await expect(selectedNodeOutlines).toHaveCount(1);
+    const nodeXPos = await timelineNodes.nth(nodeToClickIndex).getAttribute('cx');
+    const outlineXPos = await selectedNodeOutlines.first().getAttribute('cx');
+    expect(nodeXPos).toEqual(outlineXPos);
 
-  const outlineColor = await selectedNodeOutlines.first().getAttribute('stroke');
-  const selectedNodeColor = typeToDetailBackgroundColor('');
-  expect(outlineColor).toEqual(selectedNodeColor);
+    const outlineColor = await selectedNodeOutlines.first().getAttribute('stroke');
+    const selectedNodeColor = typeToDetailBackgroundColor(expectedNodes[nodeToClickIndex]);
+    expect(outlineColor).toEqual(selectedNodeColor);
 
-  // The vertical line indicating the selected node looks like <path d='M${x} 7L${x} 35' ... />
-  // We want to assert that the x position of the path is the same as the node's x position
-  const selectedNodeLines = timeline.locator('.selected-node-line');
-  await expect(selectedNodeLines).toHaveCount(1);
-  const dAttribute = await selectedNodeLines.first().getAttribute('d');
-  const dSplit = dAttribute.split(' ');
-  expect(dSplit[0]).toEqual('M' + nodeXPos);
-  expect(dSplit[1]).toEqual('7L' + nodeXPos);
+    // The vertical line indicating the selected node looks like <path d='M${x} 7L${x} 35' ... />
+    // We want to assert that the x position of the path is the same as the node's x position
+    const selectedNodeLines = timeline.locator('.selected-node-line');
+    await expect(selectedNodeLines).toHaveCount(1);
+    const dAttribute = await selectedNodeLines.first().getAttribute('d');
+    const dSplit = dAttribute.split(' ');
+    expect(dSplit[0]).toEqual('M' + nodeXPos);
+    expect(dSplit[1]).toEqual('7L' + nodeXPos);
 
-  const lineColor = await selectedNodeLines.first().getAttribute('stroke');
-  expect(lineColor).toEqual(selectedNodeColor);
+    const lineColor = await selectedNodeLines.first().getAttribute('stroke');
+    expect(lineColor).toEqual(selectedNodeColor);
+  });
 });
 
 test('Nodes that are alone on their y level are fixed to the center of the widget horizontally', async ({
@@ -398,5 +403,5 @@ async function assertTooltipAppearsOnHover(
   expect(tooltipBoundingBox.y).toBeLessThan(nodeBoundingBox.y + nodeBoundingBox.height);
 }
 
-const typeToDetailBackgroundColor = (type) =>
+const typeToDetailBackgroundColor = (type: string) =>
   type === '' ? TYPE_UNKNOWN_DETAIL_HEADER_COLOR : typeShortLabelToOpts[type].backgroundColor;
