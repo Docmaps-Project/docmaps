@@ -22,14 +22,40 @@ The first time you run the tests, you will need to install browsers for Playwrig
 pnpm run install:browsers
 ```
 
-After that, you can run the tests with
+#### All tests
 
 ```shell
 pnpm run test
 ```
 
-To see the tests run visually, step-by-step, you can open the Playwright UI like this:
+#### Unit tests
 
 ```shell
-pnpm run test:ui
+pnpm run test:unit
+```
+
+#### Integration tests
+
+To see the tests run in step-by-step, you can open the Playwright UI like this. The Playwright UI is an amazing tool
+because it lets you see screenshots of each step of the test, and it automatically reruns the tests when you make
+changes.
+
+```shell
+pnpm run test:integration:ui
+```
+
+Alternatively, you can run the tests headlessly and see results in the terminal:
+
+```shell
+pnpm run test:integration
+```
+
+By default, the tests only run in chromium locally. To run in chromium, firefox, and webkit, you can run:
+
+```shell
+# Headless
+pnpm run test:integration:all-browsers
+
+# With UI
+pnpm run test:integration:ui:all-browsers
 ```
