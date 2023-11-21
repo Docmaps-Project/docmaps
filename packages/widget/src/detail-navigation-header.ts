@@ -53,12 +53,13 @@ const timeline = (
     const displayOpts = TYPE_DISPLAY_OPTIONS[node.type];
     const color = displayOpts.detailBackgroundColor ?? displayOpts.backgroundColor;
 
-    const selectedNodeIndicator =
-      node.nodeId === selectedNode.nodeId
-        ? svg`
+    const thisNodeIsSelected: boolean = node.nodeId === selectedNode.nodeId;
+    const selectedNodeIndicator = thisNodeIsSelected
+      ? svg`
           <circle class='selected-node-outline' cx='${x}' cy='6.5' r='5.5' stroke='${color}'/> 
           <path class='selected-node-line' d='M${x} 7L${x} 35' stroke='${color}' stroke-linecap='round'/>`
-        : nothing;
+      : nothing;
+
     return svg`
       <circle class='timeline-node clickable' cx='${x}' cy='6.5' r='3.5' fill='${color}'
         @click='${() => updateSelectedNode(node)}'/>
