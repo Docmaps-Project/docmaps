@@ -66,9 +66,9 @@ export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
   let edges: DisplayObjectEdge[] = [];
 
   for (const step of steps) {
-    const result = processStep(step, nodesById);
-    nodesById = result.nodesById;
-    edges = [...edges, ...result.edges];
+    const { newNodesById, newEdges } = processStep(step, nodesById);
+    nodesById = newNodesById;
+    edges = [...edges, ...newEdges];
   }
 
   const nodes: DisplayObject[] = Object.values(nodesById);
@@ -78,8 +78,8 @@ export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
 function processStep(
   step: StepT,
   nodesById: NodesById,
-): { nodesById: NodesById; edges: DisplayObjectEdge[] } {
-  let newNodesById = { ...nodesById };
+): { newNodesById: NodesById; newEdges: DisplayObjectEdge[] } {
+  let newNodesById: NodesById = { ...nodesById };
   let newEdges: DisplayObjectEdge[] = [];
 
   const inputIds =
@@ -100,7 +100,7 @@ function processStep(
     }
   }
 
-  return { nodesById: newNodesById, edges: newEdges };
+  return { newNodesById, newEdges: newEdges };
 }
 
 function processThing(
