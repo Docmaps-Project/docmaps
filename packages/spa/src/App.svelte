@@ -13,7 +13,7 @@
   function handleData(data) {
     let config = {
       display: {
-        publisherName: name => name || 'Preprint posted on Crossref',
+        publisherName: name => name || 'Preprint Posted on Crossref',
       },
     };
 
@@ -27,7 +27,7 @@
   async function fetchData() {
     if (!widgetElement) {
       const widgetExplanation = document.createElement('b');
-      widgetExplanation.appendChild(document.createTextNode('Docmaps Widget (data fetched from docmaps staging server)'));
+      widgetExplanation.appendChild(document.createTextNode('Docmaps Widget (Data fetched from the Docmaps staging server)'));
       placeholder.appendChild(widgetExplanation);
       placeholder.appendChild(document.createElement('br'));
 
@@ -51,13 +51,12 @@
 </script>
 
 <main>
-  <h1>Demo: crossref-to-docmap</h1>
-  <input type='text' bind:value='{inputDoi}' on:keyup={handleKeyup} placeholder='Enter your DOI here' />
-  <!-- Your other markup and code -->
+  <h1>Demo: CrossRef to Docmap</h1>
+  <input type='text' bind:value='{inputDoi}' on:keyup='{handleKeyup}' placeholder='Enter Your DOI Here' />
   <button on:click='{fetchData}'>Fetch Data</button>
   <div id='result' bind:this='{placeholder}'></div>
   <div class='code-container'>
-    <b>Raw docmap (derived from crossref):</b>
+    <b>Raw Docmap (Derived From CrossRef):</b>
     <JsonBox {json} bind:this='{codeBox}' />
   </div>
 </main>
