@@ -1,6 +1,10 @@
 import { nothing, svg, SVGTemplateResult } from 'lit';
 import { DisplayObject, TYPE_DISPLAY_OPTIONS } from './util';
 
+const TIMELINE_WIDTH: number = 368;
+const FIRST_TIMELINE_NODE_X: number = 6.5;
+const LAST_TIMELINE_NODE_X: number = TIMELINE_WIDTH - 9.5;
+
 const backButton = (
   allNodes: DisplayObject[],
   selectedNode: DisplayObject,
@@ -40,15 +44,12 @@ const timeline = (
   selectedNode: DisplayObject,
   updateSelectedNode: (node: DisplayObject) => void,
 ) => {
-  const width = 368;
-  const firstXPosition: number = 6.5;
-  const lastXPosition: number = 358.5;
-
   const timelineNodes = allNodes.map((node, i) => {
-    let x = firstXPosition;
+    let x = FIRST_TIMELINE_NODE_X;
     if (i > 0) {
-      const spaceBetweenNodes: number = (lastXPosition - firstXPosition) / (allNodes.length - 1);
-      x = firstXPosition + spaceBetweenNodes * i;
+      const spaceBetweenNodes: number =
+        (LAST_TIMELINE_NODE_X - FIRST_TIMELINE_NODE_X) / (allNodes.length - 1);
+      x = FIRST_TIMELINE_NODE_X + spaceBetweenNodes * i;
     }
     const displayOpts = TYPE_DISPLAY_OPTIONS[node.type];
     const color = displayOpts.detailBackgroundColor ?? displayOpts.backgroundColor;
@@ -67,17 +68,21 @@ const timeline = (
   });
 
   return svg`
-    <svg width='${width}' height='35' viewBox='0 0 ${width} 35' fill='none' xmlns='http://www.w3.org/2000/svg' style='align-self: end;'>
-      <line x1='3' y1='6.75' x2='${width - 6}' y2='6.75' stroke='#777777' stroke-width='0.5'/>
+    <svg width='${TIMELINE_WIDTH}' height='35' viewBox='0 0 ${TIMELINE_WIDTH} 35' fill='none' xmlns='http://www.w3.org/2000/svg' style='align-self: end;'>
+      <line x1='3' y1='6.75' x2='${
+        TIMELINE_WIDTH - 6
+      }' y2='6.75' stroke='#777777' stroke-width='0.5'/>
       ${timelineNodes}
     </svg>`;
 };
 
-export const renderDetailNavigationHeader: (
+type RenderDetailNavigationHeader = (
   allNodes: DisplayObject[],
   selectedNode: DisplayObject,
   updateSelectedNode: (node: DisplayObject) => void,
-) => SVGTemplateResult = (
+) => SVGTemplateResult;
+
+export const renderDetailNavigationHeader: RenderDetailNavigationHeader = (
   allNodes: DisplayObject[],
   selectedNode: DisplayObject,
   updateSelectedNode,
