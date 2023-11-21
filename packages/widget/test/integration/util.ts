@@ -53,6 +53,7 @@ async function mockDocmapForEndpoint(page: Page, doi: string, docmapToReturn: an
 }
 
 export const TYPE_UNKNOWN_DETAIL_HEADER_COLOR: string = '#777';
+
 // TODO I don't like that this is basically a copy of the giant object in docmaps-widget.ts
 // But unfortunately it's not as trivial as you'd expect to import the options from the source code
 export const typeShortLabelToOpts: {
@@ -104,3 +105,6 @@ export const typeShortLabelToOpts: {
     textColor: '#043945',
   },
 };
+
+export const typeToDetailBackgroundColor = (type: string) =>
+  type === '' ? TYPE_UNKNOWN_DETAIL_HEADER_COLOR : typeShortLabelToOpts[type].backgroundColor;
