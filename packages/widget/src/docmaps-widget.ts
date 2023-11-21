@@ -68,10 +68,12 @@ export class DocmapsWidget extends LitElement {
       return nothing; // D3 draws the graph for us, so we have nothing to actually render here
     };
 
-    return html` <div id="tooltip" class="tooltip" style="opacity:0;"></div>
-      ${this.#docmapFetchingTask.render({
-        complete: onFetchComplete,
-      })}`;
+    // this function usually returns a template result, but we don't need it currently since d3 draws the graph for us
+    this.#docmapFetchingTask.render({
+      complete: onFetchComplete,
+    });
+
+    return html` <div id="tooltip" class="tooltip" style="opacity:0;"></div>`;
   }
 
   private detailView() {
@@ -79,6 +81,7 @@ export class DocmapsWidget extends LitElement {
     if (!this.selectedNode) {
       return nothing;
     }
+
     return renderDetailsView(
       this.selectedNode,
       this.allNodes,
