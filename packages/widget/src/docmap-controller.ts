@@ -60,17 +60,14 @@ function getOrderedSteps(docmap: DocmapT): StepT[] {
 }
 
 export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
-  const nodesById: { [id: string]: DisplayObject } = {};
-  const edges: DisplayObjectEdge[] = [];
+  let nodesById: { [id: string]: DisplayObject } = {};
+  let edges: DisplayObjectEdge[] = [];
 
-  let idCounter: number = 1;
-  const idGenerator = (): string => {
-    const newId = `n${idCounter}`;
-    idCounter++;
-    return newId;
-  };
-
-  steps.forEach((step) => processStep(step, nodesById, edges, idGenerator));
+  steps.forEach((step) => {
+    const result = processStep(step, nodesById);
+    nodesById = result.nodesById;
+    edges = [...edges, ...result.edges];
+  });
 
   const nodes: DisplayObject[] = Object.values(nodesById);
   return { nodes, edges };
@@ -79,34 +76,54 @@ export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
 function processStep(
   step: StepT,
   nodesById: { [id: string]: DisplayObject },
-  edges: DisplayObjectEdge[],
-  generateId: () => string,
-) {
-  const inputIds: string[] =
-    step.inputs?.map((input) => processThing(input, nodesById, [], generateId)) || [];
+): { nodesById: { [id: string]: DisplayObject }; edges: DisplayObjectEdge[] } {
+  let newNodesById = { ...nodesById };
+  let newEdges: DisplayObjectEdge[] = [];
+
+  const inputIds =
+    step.inputs?.map((input) => {
+      const result = processThing(input, newNodesById);
+      newNodesById = result.nodesById;
+      return result.id;
+    }) || [];
 
   step.actions.forEach((action) => {
     action.outputs.forEach((output) => {
-      const outputId = processThing(output, nodesById, action.participants, generateId);
+      const result = processThing(output, newNodesById, action.participants);
+      newNodesById = result.nodesById;
 
-      inputIds.forEach((inputId: string) => {
-        edges.push({ sourceId: inputId, targetId: outputId });
+      inputIds.forEach((inputId) => {
+        newEdges.push({ sourceId: inputId, targetId: result.id });
       });
     });
   });
+
+  return { nodesById: newNodesById, edges: newEdges };
 }
 
 function processThing(
   thing: ThingT,
   nodesById: { [id: string]: DisplayObject },
   participants: RoleInTimeT[] = [],
-  generateId: () => string,
-): string {
-  const id: string = thing.doi || thing.id || generateId();
-  if (!(id in nodesById)) {
-    nodesById[id] = thingToDisplayObject(thing, id, participants);
+): { id: string; nodesById: { [id: string]: DisplayObject } } {
+  const newNodesById = { ...nodesById };
+  const id = thing.doi || thing.id || generateId(newNodesById);
+
+  if (!(id in newNodesById)) {
+    newNodesById[id] = thingToDisplayObject(thing, id, participants);
   }
-  return id;
+
+  return { id, nodesById: newNodesById };
+}
+
+function generateId(nodesById: { [id: string]: DisplayObject }): string {
+  let idCounter = 1;
+  let newId;
+  do {
+    newId = `n${idCounter}`;
+    idCounter++;
+  } while (newId in nodesById);
+  return newId;
 }
 
 interface NameHaver {
