@@ -94,13 +94,18 @@ function processStep(
       const result = processThing(output, newNodesById, action.participants);
       newNodesById = result.nodesById;
 
-      for (const inputId of inputIds) {
-        newEdges.push({ sourceId: inputId, targetId: result.id });
-      }
+      const edgesForThisOutput: DisplayObjectEdge[] = inputIds.map(
+        (inputId): DisplayObjectEdge => ({
+          sourceId: inputId,
+          targetId: result.id,
+        }),
+      );
+      newEdges = [...newEdges, ...edgesForThisOutput];
     }
   }
 
-  return { newNodesById, newEdges: newEdges };
+  // Return the newly created objects instead of the mutated ones
+  return { newNodesById, newEdges };
 }
 
 function processThing(
@@ -111,7 +116,7 @@ function processThing(
   id: string;
   nodesById: NodesById;
 } {
-  const newNodesById = { ...nodesById };
+  const newNodesById: NodesById = { ...nodesById };
   const id = thing.doi || thing.id || generateId(newNodesById);
 
   if (!(id in newNodesById)) {
@@ -122,8 +127,8 @@ function processThing(
 }
 
 function generateId(nodesById: NodesById): string {
-  let idCounter = 1;
-  let newId = `n${idCounter}`;
+  let idCounter: number = 1;
+  let newId: string = `n${idCounter}`;
 
   while (newId in nodesById) {
     idCounter++;
@@ -131,10 +136,6 @@ function generateId(nodesById: NodesById): string {
   }
 
   return newId;
-}
-
-interface NameHaver {
-  name: string;
 }
 
 function thingToDisplayObject(
@@ -172,6 +173,10 @@ function extractContentUrls(content: ManifestationT[] | undefined) {
   return content
     ?.map((manifestation: ManifestationT) => manifestation.url?.toString())
     .filter((url: string | undefined): url is string => url !== undefined);
+}
+
+interface NameHaver {
+  name: string;
 }
 
 function extractActorNames(participants: RoleInTimeT[]) {
