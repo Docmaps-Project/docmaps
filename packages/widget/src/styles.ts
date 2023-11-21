@@ -9,6 +9,7 @@ export const customCss: CSSResult = css`
     border: 1px solid;
     overflow-x: hidden;
     overflow-y: hidden;
+    text-align: start;
   }
 
   .logo {
