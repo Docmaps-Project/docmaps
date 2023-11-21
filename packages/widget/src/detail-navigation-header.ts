@@ -2,8 +2,8 @@ import { nothing, svg, SVGTemplateResult } from 'lit';
 import { DisplayObject, TYPE_DISPLAY_OPTIONS } from './util';
 
 const TIMELINE_WIDTH: number = 368;
-const FIRST_TIMELINE_NODE_X: number = 6.5;
-const LAST_TIMELINE_NODE_X: number = TIMELINE_WIDTH - 9.5;
+const FIRST_NODE_X: number = 6.5;
+const LAST_NODE_X: number = TIMELINE_WIDTH - 9.5;
 
 const backButton = (
   allNodes: DisplayObject[],
@@ -39,11 +39,9 @@ const forwardButton = (
     </svg>`;
 };
 
-function getXPositionForNode(i: number, numberOfNodes: number): number {
-  return i > 0
-    ? FIRST_TIMELINE_NODE_X +
-        ((LAST_TIMELINE_NODE_X - FIRST_TIMELINE_NODE_X) / (numberOfNodes - 1)) * i
-    : FIRST_TIMELINE_NODE_X;
+function getNodeX(i: number, numberOfNodes: number): number {
+  const interval = (LAST_NODE_X - FIRST_NODE_X) / (numberOfNodes - 1);
+  return FIRST_NODE_X + interval * i;
 }
 
 const timeline = (
@@ -52,7 +50,7 @@ const timeline = (
   updateSelectedNode: (node: DisplayObject) => void,
 ) => {
   const timelineNodes: SVGTemplateResult[] = allNodes.map((node, i) => {
-    const x = getXPositionForNode(i, allNodes.length);
+    const x = getNodeX(i, allNodes.length);
     const displayOpts = TYPE_DISPLAY_OPTIONS[node.type];
     const color = displayOpts.detailBackgroundColor ?? displayOpts.backgroundColor;
 
