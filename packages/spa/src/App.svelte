@@ -1,12 +1,11 @@
 <script>
-  import { onMount } from 'svelte';
   import { configureForDoiString, structureError } from './utils.js';
-  import '@source-data/render-rev/render-rev.js';
-  import JsonBox from "./JsonBox.svelte";
+  import JsonBox from './JsonBox.svelte';
+  import '@docmaps/widget';
 
   let inputDoi = '';
   let placeholder;
-  let renderRevElement;
+  let widgetElement;
 
   let codeBox;
   let json = undefined;
@@ -14,30 +13,31 @@
   function handleData(data) {
     let config = {
       display: {
-	publisherName: name => name || "Preprint posted on Crossref"
-      }
-    }
+        publisherName: name => name || 'Preprint Posted on Crossref',
+      },
+    };
 
-    renderRevElement.configure({
-      ...config,
-      docmaps: data,
-    });
-
-    json=data;
+    json = data;
   }
 
   function handleError(error) {
-    renderRevElement.configure({
-      docmaps: error, // hacky solution
-    });
-
-    json=structureError(error);
+    json = structureError(error);
   }
 
   async function fetchData() {
-    if (!renderRevElement) {
-      renderRevElement = document.createElement('render-rev');
-      placeholder.appendChild(renderRevElement);
+    if (!widgetElement) {
+      const widgetTitle = document.createElement('h2');
+      widgetTitle.appendChild(document.createTextNode('Docmaps Widget'));
+      placeholder.appendChild(widgetTitle);
+      const widgetExplanation = document.createElement('h4');
+      widgetExplanation.appendChild(document.createTextNode('(Docmap fetched from staging server)'));
+      placeholder.appendChild(widgetExplanation);
+      placeholder.appendChild(document.createElement('br'));
+
+      widgetElement = document.createElement('docmaps-widget');
+      widgetElement.setAttribute('serverurl', 'https://web-nodejs.onrender.com');
+      widgetElement.setAttribute('doi', inputDoi);
+      placeholder.appendChild(widgetElement);
     }
     await configureForDoiString(
       inputDoi,
@@ -45,55 +45,57 @@
       handleError,
     );
   }
+
+  function handleKeyup(event) {
+    if (event.key === 'Enter') {
+      fetchData();
+    }
+  }
 </script>
 
 <main>
-  <h1>Demo: crossref-to-docmap</h1>
-  <input
-    type="text"
-    bind:value="{inputDoi}"
-    placeholder="Enter your DOI here"
-  />
-  <!-- Your other markup and code -->
-  <button on:click="{fetchData}">Fetch Data</button>
-  <div id="result" bind:this="{placeholder}"></div>
-  <div class="code-container">
-    <b>Derived Docmap contents:</b>
-    <JsonBox {json} bind:this="{codeBox}"/>
+  <h1>Demo: CrossRef to Docmap</h1>
+  <input type='text' bind:value='{inputDoi}' on:keyup='{handleKeyup}' placeholder='Enter Your DOI Here' />
+  <button on:click='{fetchData}'>Fetch Docmap</button>
+  <div id='result' bind:this='{placeholder}'></div>
+  <div class='code-container'>
+    <h2>Raw Docmap</h2>
+    <h4>(Docmap derived from CrossRef)</h4>
+    <JsonBox {json} bind:this='{codeBox}' />
   </div>
 </main>
 
 <style>
-  main {
-    text-align: center;
-    padding: 1em;
-    margin: 0 auto;
-  }
-
-  #result {
-    padding-top: 3em;
-    padding-bottom: 3em;
-    margin: auto;
-    max-width: 600px;
-  }
-
-  .code-container {
-  }
-
-  h1 {
-    color: #ff3e00;
-    text-transform: uppercase;
-    font-size: 4em;
-    font-weight: 100;
-  }
-
-  input {
-    min-width: 400px;
-  }
-
-  @media (min-width: 640px) {
     main {
-      max-width: none;
+        text-align: center;
+        padding: 1em;
+        margin: 0 auto;
     }
-  }
+
+    #result {
+        padding-top: 1em;
+        padding-bottom: 1em;
+        margin: auto;
+        max-width: 510px;
+    }
+
+    .code-container {
+    }
+
+    h1 {
+        color: #ff3e00;
+        text-transform: uppercase;
+        font-size: 4em;
+        font-weight: 100;
+    }
+
+    input {
+        min-width: 400px;
+    }
+
+    @media (min-width: 640px) {
+        main {
+            max-width: none;
+        }
+    }
 </style>
