@@ -1,10 +1,44 @@
 # Official Docmaps Widget
 
-_Note: This is still a work in progress and should not yet be used in any production context._
-
 An embeddable widget for displaying docmaps data, built with Lit and D3.
 
 ## Usage
+
+To add the widget to your project:
+
+```shell
+pnpm install @docmaps/widget
+```
+
+Then, add the widget to your page:
+
+```html
+<script>
+  import '@docmaps/widget';
+</script>
+
+<docmaps-widget doi="doi-to-render" serverurl="http://example.com"></docmaps-widget>
+```
+
+### Supported attributes
+These attributes can be added to the `<docmaps-widget>` tag to configure the widget's behavior.
+
+| Attribute   | Description                                                                                                                                                                                                                                                                                                                                                                                                          |
+|-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `doi`       | The DOI of the paper to render                                                                                                                                                                                                                                                                                                                                                                                       |
+| `serverurl` | The URL of the server from which the docmap will be fetched. The widget will make a request to this server's `GET /docmap_for/doi?subject={doi}` endpoint, which must be implemented by the server in accordance with the [official Docmaps API spec](https://github.com/Docmaps-Project/rfcs/blob/ships/1/APIProtocol/proposals/001_interop.md#convenience-endpoints-for-one-shot-noninteractive-docmap-retrieval). |
+
+## Screenshots
+
+Graph view:
+
+![Screenshot of the widget's graph view](./images-for-readme/graph-view.jpeg)
+
+Clicking a node opens the detail view:
+
+![Screenshot of the widget's detailview](./images-for-readme/detail-view.jpeg)
+
+## Development
 
 ### Running the server locally
 
