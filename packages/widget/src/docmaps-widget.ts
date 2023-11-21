@@ -22,10 +22,9 @@ export class DocmapsWidget extends LitElement {
   @property({ type: String })
   serverUrl: string = '';
 
-  @state()
+  @state() // if the selectedNode changes, this means we trigger a rerender (to show the details view)
   selectedNode?: DisplayObject;
 
-  @state()
   allNodes: DisplayObject[] = [];
 
   #docmapFetchingTask: Task<DocmapFetchingParams, DisplayObjectGraph> = new Task(
@@ -64,16 +63,15 @@ export class DocmapsWidget extends LitElement {
   private renderGraphView({ nodes, edges }: DisplayObjectGraph) {
     if (this.shadowRoot) {
       this.allNodes = nodes;
-      displayGraph(nodes, edges, this.shadowRoot, this.displayNodeDetails);
+      displayGraph(nodes, edges, this.shadowRoot, this.displayDetailsViewForNode);
     }
 
     // D3 draws the graph for us, so we have nothing to actually render here
     return nothing;
   }
 
-  private displayNodeDetails = (node: DisplayObject) => {
+  private displayDetailsViewForNode = (node: DisplayObject) => {
     this.selectedNode = node;
-    this.requestUpdate(); // Trigger re-render
   };
 
   private renderDetailsView(selectedNode: DisplayObject): HTMLTemplateResult {
@@ -91,7 +89,7 @@ export class DocmapsWidget extends LitElement {
 
     return html`
       <div class="detail-timeline">
-        ${renderDetailNavigationHeader(this.allNodes, selectedNode, this.displayNodeDetails)}
+        ${renderDetailNavigationHeader(this.allNodes, selectedNode, this.displayDetailsViewForNode)}
       </div>
 
       <div class="detail-header" style="background: ${backgroundColor};">
@@ -108,7 +106,6 @@ export class DocmapsWidget extends LitElement {
   // Method to clear the selected node and go back to the graph
   private closeDetailsView() {
     this.selectedNode = undefined;
-    this.requestUpdate(); // Trigger re-render
   }
 
   private createMetadataGrid(metadataEntries: [string, any][]): HTMLTemplateResult {
