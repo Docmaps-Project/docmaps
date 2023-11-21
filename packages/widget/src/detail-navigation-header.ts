@@ -39,23 +39,25 @@ const forwardButton = (
     </svg>`;
 };
 
+function getXPositionForNode(i: number, numberOfNodes: number): number {
+  return i > 0
+    ? FIRST_TIMELINE_NODE_X +
+        ((LAST_TIMELINE_NODE_X - FIRST_TIMELINE_NODE_X) / (numberOfNodes - 1)) * i
+    : FIRST_TIMELINE_NODE_X;
+}
+
 const timeline = (
   allNodes: DisplayObject[],
   selectedNode: DisplayObject,
   updateSelectedNode: (node: DisplayObject) => void,
 ) => {
-  const timelineNodes = allNodes.map((node, i) => {
-    let x = FIRST_TIMELINE_NODE_X;
-    if (i > 0) {
-      const spaceBetweenNodes: number =
-        (LAST_TIMELINE_NODE_X - FIRST_TIMELINE_NODE_X) / (allNodes.length - 1);
-      x = FIRST_TIMELINE_NODE_X + spaceBetweenNodes * i;
-    }
+  const timelineNodes: SVGTemplateResult[] = allNodes.map((node, i) => {
+    const x = getXPositionForNode(i, allNodes.length);
     const displayOpts = TYPE_DISPLAY_OPTIONS[node.type];
     const color = displayOpts.detailBackgroundColor ?? displayOpts.backgroundColor;
 
     const thisNodeIsSelected: boolean = node.nodeId === selectedNode.nodeId;
-    const selectedNodeIndicator = thisNodeIsSelected
+    const selectedNodeIndicator: SVGTemplateResult | typeof nothing = thisNodeIsSelected
       ? svg`<circle class='selected-node-outline' cx='${x}' cy='6.5' r='5.5' stroke='${color}'/>
           <path class='selected-node-line' d='M${x} 7L${x} 35' stroke='${color}' stroke-linecap='round'/>`
       : nothing;
@@ -67,11 +69,13 @@ const timeline = (
     `;
   });
 
+  const timeline = svg`<line x1='3' y1='6.75' x2='${
+    TIMELINE_WIDTH - 6
+  }' y2='6.75' stroke='#777777' stroke-width='0.5'/`;
+
   return svg`
     <svg width='${TIMELINE_WIDTH}' height='35' viewBox='0 0 ${TIMELINE_WIDTH} 35' fill='none' xmlns='http://www.w3.org/2000/svg' style='align-self: end;'>
-      <line x1='3' y1='6.75' x2='${
-        TIMELINE_WIDTH - 6
-      }' y2='6.75' stroke='#777777' stroke-width='0.5'/>
+      ${timeline}>
       ${timelineNodes}
     </svg>`;
 };
