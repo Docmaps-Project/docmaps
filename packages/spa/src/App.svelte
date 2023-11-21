@@ -26,8 +26,11 @@
 
   async function fetchData() {
     if (!widgetElement) {
-      const widgetExplanation = document.createElement('b');
-      widgetExplanation.appendChild(document.createTextNode('Docmaps Widget (Data fetched from the Docmaps staging server)'));
+      const widgetTitle = document.createElement('h2');
+      widgetTitle.appendChild(document.createTextNode('Docmaps Widget'));
+      placeholder.appendChild(widgetTitle);
+      const widgetExplanation = document.createElement('h4');
+      widgetExplanation.appendChild(document.createTextNode('(Docmap fetched from staging server)'));
       placeholder.appendChild(widgetExplanation);
       placeholder.appendChild(document.createElement('br'));
 
@@ -53,10 +56,11 @@
 <main>
   <h1>Demo: CrossRef to Docmap</h1>
   <input type='text' bind:value='{inputDoi}' on:keyup='{handleKeyup}' placeholder='Enter Your DOI Here' />
-  <button on:click='{fetchData}'>Fetch Data</button>
+  <button on:click='{fetchData}'>Fetch Docmap</button>
   <div id='result' bind:this='{placeholder}'></div>
   <div class='code-container'>
-    <b>Raw Docmap (Derived From CrossRef):</b>
+    <h2>Raw Docmap</h2>
+    <h4>(Docmap derived from CrossRef)</h4>
     <JsonBox {json} bind:this='{codeBox}' />
   </div>
 </main>
@@ -69,10 +73,10 @@
     }
 
     #result {
-        padding-top: 3em;
-        padding-bottom: 3em;
+        padding-top: 1em;
+        padding-bottom: 1em;
         margin: auto;
-        max-width: 500px;
+        max-width: 510px;
     }
 
     .code-container {
