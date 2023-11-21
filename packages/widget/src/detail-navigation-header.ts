@@ -55,8 +55,7 @@ const timeline = (
 
     const thisNodeIsSelected: boolean = node.nodeId === selectedNode.nodeId;
     const selectedNodeIndicator = thisNodeIsSelected
-      ? svg`
-          <circle class='selected-node-outline' cx='${x}' cy='6.5' r='5.5' stroke='${color}'/> 
+      ? svg`<circle class='selected-node-outline' cx='${x}' cy='6.5' r='5.5' stroke='${color}'/>
           <path class='selected-node-line' d='M${x} 7L${x} 35' stroke='${color}' stroke-linecap='round'/>`
       : nothing;
 
