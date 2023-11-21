@@ -65,11 +65,11 @@ export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
   let nodesById: NodesById = {};
   let edges: DisplayObjectEdge[] = [];
 
-  steps.forEach((step) => {
+  for (const step of steps) {
     const result = processStep(step, nodesById);
     nodesById = result.nodesById;
     edges = [...edges, ...result.edges];
-  });
+  }
 
   const nodes: DisplayObject[] = Object.values(nodesById);
   return { nodes, edges };
@@ -89,16 +89,16 @@ function processStep(
       return result.id;
     }) || [];
 
-  step.actions.forEach((action) => {
-    action.outputs.forEach((output) => {
+  for (const action of step.actions) {
+    for (const output of action.outputs) {
       const result = processThing(output, newNodesById, action.participants);
       newNodesById = result.nodesById;
 
-      inputIds.forEach((inputId) => {
+      for (const inputId of inputIds) {
         newEdges.push({ sourceId: inputId, targetId: result.id });
-      });
-    });
-  });
+      }
+    }
+  }
 
   return { nodesById: newNodesById, edges: newEdges };
 }
