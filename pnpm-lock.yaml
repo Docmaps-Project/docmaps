@@ -493,15 +493,9 @@ importers:
       '@docmaps/build-configs':
         specifier: workspace:^
         version: link:../build-configs
-      '@playwright/experimental-ct-core':
-        specifier: ^1.39.0
-        version: 1.39.0(@types/node@18.16.7)
       '@playwright/test':
-        specifier: ^1.39.0
-        version: 1.39.0
-      '@sand4rt/experimental-ct-web':
-        specifier: ^1.39.0
-        version: 1.39.0(@playwright/test@1.39.0)(@types/node@18.16.7)
+        specifier: ^1.40.0
+        version: 1.40.0
       '@types/d3':
         specifier: ^7.4.2
         version: 7.4.2
@@ -1229,30 +1223,12 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /@playwright/experimental-ct-core@1.39.0(@types/node@18.16.7):
-    resolution: {integrity: sha512-1b/qrlB5A/CdEZns8f2RDkWFmSnGkNyec8n72iinmw07+GHsdMP8fIpazeFB0umxWfo+gPLhkjhTGdB3WXJTBw==}
+  /@playwright/test@1.40.0:
+    resolution: {integrity: sha512-PdW+kn4eV99iP5gxWNSDQCbhMaDVej+RXL5xr6t04nbKLCBwYtA046t7ofoczHOm8u6c+45hpDKQVZqtqwkeQg==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
-      playwright: 1.39.0
-      playwright-core: 1.39.0
-      vite: 4.5.0(@types/node@18.16.7)
-    transitivePeerDependencies:
-      - '@types/node'
-      - less
-      - lightningcss
-      - sass
-      - stylus
-      - sugarss
-      - terser
-    dev: true
-
-  /@playwright/test@1.39.0:
-    resolution: {integrity: sha512-3u1iFqgzl7zr004bGPYiN/5EZpRUSFddQBra8Rqll5N0/vfpqlP9I9EXqAoGacuAbX6c9Ulg/Cjqglp5VkK6UQ==}
-    engines: {node: '>=16'}
-    hasBin: true
-    dependencies:
-      playwright: 1.39.0
+      playwright: 1.40.0
     dev: true
 
   /@pnpm/config.env-replace@1.1.0:
@@ -1730,26 +1706,6 @@ packages:
       argparse: 1.0.10
       colors: 1.2.5
       string-argv: 0.3.2
-    dev: true
-
-  /@sand4rt/experimental-ct-web@1.39.0(@playwright/test@1.39.0)(@types/node@18.16.7):
-    resolution: {integrity: sha512-J5TsTl9MGYB2GlosFNtM/bRpmf6bLY5BSHDxOnShSPGkLls/3fSnjTh7C3FcOkZLKkHfqPNlmh//lleNvXET0Q==}
-    engines: {node: '>=14'}
-    hasBin: true
-    peerDependencies:
-      '@playwright/test': '>=1.39.0'
-    dependencies:
-      '@playwright/experimental-ct-core': 1.39.0(@types/node@18.16.7)
-      '@playwright/test': 1.39.0
-      vite: 4.5.0(@types/node@18.16.7)
-    transitivePeerDependencies:
-      - '@types/node'
-      - less
-      - lightningcss
-      - sass
-      - stylus
-      - sugarss
-      - terser
     dev: true
 
   /@semantic-release/commit-analyzer@9.0.2(semantic-release@19.0.5):
@@ -6749,18 +6705,18 @@ packages:
       find-up: 5.0.0
     dev: false
 
-  /playwright-core@1.39.0:
-    resolution: {integrity: sha512-+k4pdZgs1qiM+OUkSjx96YiKsXsmb59evFoqv8SKO067qBA+Z2s/dCzJij/ZhdQcs2zlTAgRKfeiiLm8PQ2qvw==}
+  /playwright-core@1.40.0:
+    resolution: {integrity: sha512-fvKewVJpGeca8t0ipM56jkVSU6Eo0RmFvQ/MaCQNDYm+sdvKkMBBWTE1FdeMqIdumRaXXjZChWHvIzCGM/tA/Q==}
     engines: {node: '>=16'}
     hasBin: true
     dev: true
 
-  /playwright@1.39.0:
-    resolution: {integrity: sha512-naE5QT11uC/Oiq0BwZ50gDmy8c8WLPRTEWuSSFVG2egBka/1qMoSqYQcROMT9zLwJ86oPofcTH2jBY/5wWOgIw==}
+  /playwright@1.40.0:
+    resolution: {integrity: sha512-gyHAgQjiDf1m34Xpwzaqb76KgfzYrhK7iih+2IzcOCoZWr/8ZqmdBw+t0RU85ZmfJMgtgAiNtBQ/KS2325INXw==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
-      playwright-core: 1.39.0
+      playwright-core: 1.40.0
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
