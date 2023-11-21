@@ -1,7 +1,7 @@
 import { html, HTMLTemplateResult, LitElement, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { customCss } from './styles';
-import { closeDetailsButton, logo, renderDetailNavigationHeader } from './assets';
+import { closeDetailsButton, logo } from './assets';
 import { Task } from '@lit/task';
 import { DocmapFetchingParams, getDocmap } from './docmap-controller';
 import {
@@ -12,6 +12,7 @@ import {
   TYPE_DISPLAY_OPTIONS,
 } from './util';
 import { clearGraph, displayGraph } from './graph-view';
+import { renderDetailNavigationHeader } from './detail-navigation-header';
 
 @customElement('docmaps-widget')
 export class DocmapsWidget extends LitElement {
