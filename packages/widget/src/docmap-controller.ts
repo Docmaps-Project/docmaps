@@ -59,18 +59,19 @@ function getOrderedSteps(docmap: DocmapT): StepT[] {
   return orderedSteps;
 }
 
+interface NodesById {
+  [id: string]: DisplayObject;
+}
+
 export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
-  const nodesById: { [id: string]: DisplayObject } = {};
-  const edges: DisplayObjectEdge[] = [];
+  let nodesById: NodesById = {};
+  let edges: DisplayObjectEdge[] = [];
 
-  let idCounter: number = 1;
-  const idGenerator = (): string => {
-    const newId = `n${idCounter}`;
-    idCounter++;
-    return newId;
-  };
-
-  steps.forEach((step) => processStep(step, nodesById, edges, idGenerator));
+  for (const step of steps) {
+    const { newNodesById, newEdges } = processStep(step, nodesById);
+    nodesById = newNodesById;
+    edges = [...edges, ...newEdges];
+  }
 
   const nodes: DisplayObject[] = Object.values(nodesById);
   return { nodes, edges };
@@ -78,39 +79,62 @@ export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
 
 function processStep(
   step: StepT,
-  nodesById: { [id: string]: DisplayObject },
-  edges: DisplayObjectEdge[],
-  generateId: () => string,
-) {
-  const inputIds: string[] =
-    step.inputs?.map((input) => processThing(input, nodesById, [], generateId)) || [];
+  nodesById: NodesById,
+): { newNodesById: NodesById; newEdges: DisplayObjectEdge[] } {
+  let newNodesById: NodesById = { ...nodesById };
+  let newEdges: DisplayObjectEdge[] = [];
 
-  step.actions.forEach((action) => {
-    action.outputs.forEach((output) => {
-      const outputId = processThing(output, nodesById, action.participants, generateId);
+  const inputIds =
+    step.inputs?.map((input) => {
+      const result = processThing(input, newNodesById);
+      newNodesById = result.newNodesById;
+      return result.id;
+    }) || [];
 
-      inputIds.forEach((inputId: string) => {
-        edges.push({ sourceId: inputId, targetId: outputId });
-      });
-    });
-  });
+  for (const action of step.actions) {
+    for (const output of action.outputs) {
+      const result = processThing(output, newNodesById, action.participants);
+      newNodesById = result.newNodesById;
+
+      const edgesForThisOutput: DisplayObjectEdge[] = inputIds.map(
+        (inputId): DisplayObjectEdge => ({
+          sourceId: inputId,
+          targetId: result.id,
+        }),
+      );
+      newEdges = [...newEdges, ...edgesForThisOutput];
+    }
+  }
+
+  // Return the newly created objects instead of the mutated ones
+  return { newNodesById, newEdges };
 }
 
 function processThing(
   thing: ThingT,
-  nodesById: { [id: string]: DisplayObject },
+  inputNodes: NodesById,
   participants: RoleInTimeT[] = [],
-  generateId: () => string,
-): string {
-  const id: string = thing.doi || thing.id || generateId();
-  if (!(id in nodesById)) {
-    nodesById[id] = thingToDisplayObject(thing, id, participants);
+): { id: string; newNodesById: NodesById } {
+  const newNodesById: NodesById = { ...inputNodes };
+  const id = thing.doi || thing.id || generateId(newNodesById);
+
+  if (!(id in newNodesById)) {
+    newNodesById[id] = thingToDisplayObject(thing, id, participants);
   }
-  return id;
+
+  return { id, newNodesById };
 }
 
-interface NameHaver {
-  name: string;
+function generateId(nodesById: NodesById): string {
+  let idCounter: number = 1;
+  let newId: string = `n${idCounter}`;
+
+  while (newId in nodesById) {
+    idCounter++;
+    newId = `n${idCounter}`;
+  }
+
+  return newId;
 }
 
 function thingToDisplayObject(
@@ -150,6 +174,10 @@ function extractContentUrls(content: ManifestationT[] | undefined) {
     .filter((url: string | undefined): url is string => url !== undefined);
 }
 
+interface NameHaver {
+  name: string;
+}
+
 function extractActorNames(participants: RoleInTimeT[]) {
   return participants
     .map((participant) => participant.actor)
@@ -184,6 +212,7 @@ function formatDate(date: Date) {
   return yyyy + '-' + mm + '-' + dd;
 }
 
+// These sort functions are only used by tests currently, but seem universally useful
 export function sortDisplayObjects(objects: DisplayObject[]): DisplayObject[] {
   return [...objects].sort((a: DisplayObject, b: DisplayObject) =>
     a.nodeId.localeCompare(b.nodeId),
