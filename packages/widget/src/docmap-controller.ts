@@ -213,6 +213,7 @@ function formatDate(date: Date) {
   return yyyy + '-' + mm + '-' + dd;
 }
 
+// These sort functions are only used by tests currently, but seem universally useful
 export function sortDisplayObjects(objects: DisplayObject[]): DisplayObject[] {
   return [...objects].sort((a: DisplayObject, b: DisplayObject) =>
     a.nodeId.localeCompare(b.nodeId),

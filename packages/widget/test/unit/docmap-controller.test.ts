@@ -4,9 +4,9 @@ import {
   sortDisplayObjectEdges,
   sortDisplayObjects,
   stepsToGraph,
-} from '../../src/docmap-controller';
-import docmapWithOneStep from '../fixtures/sciety-docmap-1';
-import anotherDocmapWithOneStep from '../fixtures/sciety-docmap-2';
+} from '../../src';
+import smallDocmapWithOneStep from '../fixtures/sciety-docmap-1';
+import largeDocmapWithOneStep from '../fixtures/sciety-docmap-2';
 import docmapWithMultipleSteps from '../fixtures/elife-docmap-1';
 
 interface Item {
@@ -15,7 +15,7 @@ interface Item {
 }
 
 test('getSteps when there is only one step', (t) => {
-  const steps = getSteps(docmapWithOneStep);
+  const steps = getSteps(smallDocmapWithOneStep);
   t.is(steps.length, 1);
   const step = steps[0];
   t.is(step.inputs[0].doi, '10.21203/rs.3.rs-1043992/v1');
@@ -70,17 +70,17 @@ test('getSteps on non-docmaps', (t) => {
 });
 
 test('getSteps on docmaps without a first step', (t) => {
-  const result = getSteps({ ...docmapWithOneStep, 'first-step': undefined });
+  const result = getSteps({ ...smallDocmapWithOneStep, 'first-step': undefined });
   t.deepEqual(result, []);
 });
 
 test('getSteps on docmaps with no steps', (t) => {
-  const result = getSteps({ ...docmapWithOneStep, steps: undefined });
+  const result = getSteps({ ...smallDocmapWithOneStep, steps: undefined });
   t.deepEqual(result, []);
 });
 
 test('stepsToGraph for a docmap with one step', (t) => {
-  const steps = getSteps(docmapWithOneStep);
+  const steps = getSteps(smallDocmapWithOneStep);
   const { nodes, edges } = stepsToGraph(steps);
 
   t.is(nodes.length, 2);
@@ -105,8 +105,8 @@ test('stepsToGraph for a docmap with one step', (t) => {
   ]);
 });
 
-test('stepsToGraph for another docmap with one step', (t) => {
-  const steps = getSteps(anotherDocmapWithOneStep);
+test('stepsToGraph for a larger docmap with one step', (t) => {
+  const steps = getSteps(largeDocmapWithOneStep);
   const { nodes, edges } = stepsToGraph(steps);
 
   t.is(nodes.length, 4);
