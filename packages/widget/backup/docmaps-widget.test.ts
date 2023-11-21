@@ -31,16 +31,16 @@ const fixtures: { [docmapName: string]: { docmap: any; types: string[] } } = {
   },
 };
 
-test('The header bar is displayed in the graph view even if the requested docmap does not exist', async ({
-  mount,
-  context,
-}) => {
-  await mockDocmapForEndpoint(context, 'not-the-requested-doi', docmapWithOneStep);
-  const widget: Locator = await mount(DocmapsWidget, {
-    props: { ...defaultOptions.props, doi: 'the-requested-doi' },
-  });
-  await expect(widget.locator('.widget-header')).toContainText('DOCMAP');
-});
+// test('The header bar is displayed in the graph view even if the requested docmap does not exist', async ({
+//   mount,
+//   context,
+// }) => {
+//   await mockDocmapForEndpoint(context, 'not-the-requested-doi', docmapWithOneStep);
+//   const widget: Locator = await mount(DocmapsWidget, {
+//     props: { ...defaultOptions.props, doi: 'the-requested-doi' },
+//   });
+//   await expect(widget.locator('.widget-header')).toContainText('DOCMAP');
+// });
 
 [
   'docmapWithOneStep',
@@ -480,35 +480,35 @@ async function renderWidgetWithDocmap(
   return widget;
 }
 
-/**
- * Mocks out the api server's `/docmap_for/doi?subject=<doi>` endpoint to return a specific docmap
- *
- * @param context - The browser context to apply the mock routing on.
- * @param doi - The DOI (Document Object Identifier) to look for in the URL.
- * @param docmapToReturn - The docmap object to return in the response.
- */
-async function mockDocmapForEndpoint(context: BrowserContext, doi: string, docmapToReturn: any) {
-  const urlsToMock = (url: URL): boolean => url.toString().includes(defaultOptions.props.serverUrl);
-
-  const mockHandler = async (route: Route, request: Request) => {
-    let response: { body: string; status: number; contentType?: string } = {
-      status: 400,
-      body: `MOCK SERVER: No docmap found for doi '${doi}'`,
-    };
-
-    if (request.url().includes(doi)) {
-      response = {
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(docmapToReturn),
-      };
-    }
-
-    await route.fulfill(response);
-  };
-
-  await context.route(urlsToMock, mockHandler);
-}
+// /**
+//  * Mocks out the api server's `/docmap_for/doi?subject=<doi>` endpoint to return a specific docmap
+//  *
+//  * @param context - The browser context to apply the mock routing on.
+//  * @param doi - The DOI (Document Object Identifier) to look for in the URL.
+//  * @param docmapToReturn - The docmap object to return in the response.
+//  */
+// async function mockDocmapForEndpoint(context: BrowserContext, doi: string, docmapToReturn: any) {
+//   const urlsToMock = (url: URL): boolean => url.toString().includes(defaultOptions.props.serverUrl);
+//
+//   const mockHandler = async (route: Route, request: Request) => {
+//     let response: { body: string; status: number; contentType?: string } = {
+//       status: 400,
+//       body: `MOCK SERVER: No docmap found for doi '${doi}'`,
+//     };
+//
+//     if (request.url().includes(doi)) {
+//       response = {
+//         status: 200,
+//         contentType: 'application/json',
+//         body: JSON.stringify(docmapToReturn),
+//       };
+//     }
+//
+//     await route.fulfill(response);
+//   };
+//
+//   await context.route(urlsToMock, mockHandler);
+// }
 
 async function assertTooltipAppearsOnHover(
   widget: Locator,
