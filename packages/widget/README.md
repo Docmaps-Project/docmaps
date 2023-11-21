@@ -1,6 +1,7 @@
 # Official Docmaps Widget
+[![npm version](https://badge.fury.io/js/@docmaps%2Fwidget.svg)](https://badge.fury.io/js/@docmaps%2Fwidget)
 
-An embeddable widget for displaying docmaps data, built with Lit and D3.
+An embeddable widget for displaying Docmaps data, built with Lit and D3.
 
 ## Usage
 

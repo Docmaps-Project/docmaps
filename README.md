@@ -1,6 +1,7 @@
 # Docmaps
 
-A community-endorsed framework for representing research object-level (e.g. journal article, preprint, or dataset) review/editorial processes in a machine-readable, discoverable, and extensible format.
+A community-endorsed framework for representing research object-level (e.g. journal article, preprint, or dataset)
+review/editorial processes in a machine-readable, discoverable, and extensible format.
 
 More info: https://docmaps.knowledgefutures.org
 
@@ -12,10 +13,12 @@ It also contains the Typescript-based libraries (initially, just `packages/ts-sd
 
 ### Monorepo usage
 
-This repository is an NPM Module Monorepo. This top-level directory includes no distributed packages, but some reference material as well as automation scripts for the
+This repository is an NPM Module Monorepo. This top-level directory includes no distributed packages, but some reference
+material as well as automation scripts for the
 cross-package behavior, such as release automation.
 
-**Releases and tags:** Github Actions uses [multi-semantic-release](https://github.com/dhoulb/multi-semantic-release) to automatically generate semvers based on commit history for each package in the repository. Multiple tags
+**Releases and tags:** Github Actions uses [multi-semantic-release](https://github.com/dhoulb/multi-semantic-release) to
+automatically generate semvers based on commit history for each package in the repository. Multiple tags
 are generated for a single commit if it updates multiple packages.
 
 **Cross-dependencies and typescript:** Several packages depend on `ts-sdk`, and will refer to
@@ -41,7 +44,6 @@ Documentation: https://w3id.org/docmaps
 
 Latest @context: https://w3id.org/docmaps/context.jsonld
 
-
 ## Packages
 
 ### [ts-sdk](/packages/ts-sdk)
@@ -54,7 +56,7 @@ along with the types/interfaces in type namespace.
 
 ### [http-server](/packages/http-server)
 
-This package is a Node server that serves docmaps. It is the Typescript 
+This package is a Node server that serves docmaps. It is the Typescript
 reference implementation of Docmaps Project RFC#001 API Server Interoperability Protocol.
 
 ### [ts-etl](/packages/ts-etl)
@@ -70,8 +72,13 @@ This Single-page App (SPA) is a simple demonstration of the above tools in actio
 accessible [live on Github Pages](https://docmaps-project.github.io/docmaps/demo/) where you can
 plug in a DOI and get a best-effort view of a Docmap as inferred from Crossref's API.
 
+### [Widget](/packages/widget)
+
+This package contains a web component that can be embedded in any webpage to display a docmap.
+
 ## Governance
 
 As stated in [CODE_OF_CONDUCT.md](/CODE_OF_CONDUCT.md):
 
-This project is governed by the [Knowledge Futures, Inc Organizational Code of Conduct](https://github.com/knowledgefutures/general/blob/master/CODE_OF_CONDUCT.md).
+This project is governed by
+the [Knowledge Futures, Inc Organizational Code of Conduct](https://github.com/knowledgefutures/general/blob/master/CODE_OF_CONDUCT.md).
