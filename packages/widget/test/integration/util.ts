@@ -8,15 +8,14 @@ export async function renderWidgetWithDocmap(page: Page, doi: string, docmap: an
 }
 
 async function renderWidget(page: Page, doi: string) {
+  // This approach is inspired by https://github.com/microsoft/playwright/issues/14241#issuecomment-1488829515
   await page.goto('/');
   await page.evaluate(
     ({ serverUrl, doi }) => {
       const root = document.querySelector('#root');
       if (root) {
         console.log('body found');
-        root.innerHTML = `<div style='height:200px; background-color: red;'>
-            <docmaps-widget serverurl='${serverUrl}' doi='${doi}'></docmaps-widget>
-            </div>`;
+        root.innerHTML = `<docmaps-widget serverurl='${serverUrl}' doi='${doi}'></docmaps-widget>`;
       }
     },
     { serverUrl: STAGING_SERVER_URL, doi }, // This is not a regular closure, so we need to pass in the variables we want to use
