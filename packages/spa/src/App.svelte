@@ -42,11 +42,17 @@
       handleError,
     );
   }
+
+  function handleKeyup(event) {
+    if (event.key === 'Enter') {
+      fetchData();
+    }
+  }
 </script>
 
 <main>
   <h1>Demo: crossref-to-docmap</h1>
-  <input type='text' bind:value='{inputDoi}' placeholder='Enter your DOI here' />
+  <input type='text' bind:value='{inputDoi}' on:keyup={handleKeyup} placeholder='Enter your DOI here' />
   <!-- Your other markup and code -->
   <button on:click='{fetchData}'>Fetch Data</button>
   <div id='result' bind:this='{placeholder}'></div>
