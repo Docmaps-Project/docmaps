@@ -59,7 +59,9 @@ function getOrderedSteps(docmap: DocmapT): StepT[] {
   return orderedSteps;
 }
 
-type NodesById = { [id: string]: DisplayObject };
+interface NodesById {
+  [id: string]: DisplayObject;
+}
 
 export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
   let nodesById: NodesById = {};
@@ -85,14 +87,14 @@ function processStep(
   const inputIds =
     step.inputs?.map((input) => {
       const result = processThing(input, newNodesById);
-      newNodesById = result.nodesById;
+      newNodesById = result.newNodesById;
       return result.id;
     }) || [];
 
   for (const action of step.actions) {
     for (const output of action.outputs) {
       const result = processThing(output, newNodesById, action.participants);
-      newNodesById = result.nodesById;
+      newNodesById = result.newNodesById;
 
       const edgesForThisOutput: DisplayObjectEdge[] = inputIds.map(
         (inputId): DisplayObjectEdge => ({
@@ -110,20 +112,17 @@ function processStep(
 
 function processThing(
   thing: ThingT,
-  nodesById: NodesById,
+  inputNodes: NodesById,
   participants: RoleInTimeT[] = [],
-): {
-  id: string;
-  nodesById: NodesById;
-} {
-  const newNodesById: NodesById = { ...nodesById };
+): { id: string; newNodesById: NodesById } {
+  const newNodesById: NodesById = { ...inputNodes };
   const id = thing.doi || thing.id || generateId(newNodesById);
 
   if (!(id in newNodesById)) {
     newNodesById[id] = thingToDisplayObject(thing, id, participants);
   }
 
-  return { id, nodesById: newNodesById };
+  return { id, newNodesById };
 }
 
 function generateId(nodesById: NodesById): string {
