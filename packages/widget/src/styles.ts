@@ -12,42 +12,8 @@ export const customCss: CSSResult = css`
     text-align: start;
   }
 
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
-  }
-
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-  }
-
-  .logo.lit:hover {
-    filter: drop-shadow(0 0 2em #325cffaa);
-  }
-
-  .card {
-    padding: 2em;
-  }
-
   .clickable {
     cursor: pointer;
-  }
-
-  ::slotted(h1) {
-    font-size: 3.2em;
-    line-height: 1.1;
-  }
-
-  a {
-    font-weight: 500;
-    color: #646cff;
-    text-decoration: inherit;
-  }
-
-  a:hover {
-    color: #747bff;
   }
 
   button {
@@ -167,6 +133,16 @@ export const customCss: CSSResult = css`
     line-height: normal;
     padding-top: 7px;
     padding-bottom: 7px;
+  }
+
+  .metadata-link {
+    color: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .metadata-link:hover {
+    color: #C1C1C1;
   }
 
   .detail-header .close-button {
