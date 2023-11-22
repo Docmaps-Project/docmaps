@@ -132,20 +132,22 @@ test(`Can display details view for a Preprint with every field`, async ({ page }
   await expect(keys.nth(3)).toContainText('url');
   const urlValue: string = 'https://example.com/sick-preprint-yo';
   await expect(vals.nth(3)).toContainText(urlValue);
+  await expect(widget.locator(`a[href="${urlValue}"]`)).toHaveCount(1);
 
-  await expect(keys.nth(4)).toContainText('content');
+  const contentKeyLocator = keys.nth(4);
+  await expect(contentKeyLocator).toContainText('content');
+  await expect(contentKeyLocator).toHaveAttribute('style', 'grid-row-start: 5; grid-row-end: 7;');
+
   const contentUrlPng = 'https://example.com/fake-journal/article/3003.png';
-  await expect(vals.nth(4)).toContainText(contentUrlPng);
   const contentUrlHeic = 'https://example.com/fake-journal/article/3003.heic';
+  await expect(vals.nth(4)).toContainText(contentUrlPng);
   await expect(vals.nth(5)).toContainText(contentUrlHeic);
+  await expect(widget.locator(`a[href="${contentUrlPng}"]`)).toHaveCount(1);
+  await expect(widget.locator(`a[href="${contentUrlHeic}"]`)).toHaveCount(1);
 
   await expect(keys.nth(5)).toContainText('actors');
   await expect(vals.nth(6)).toContainText('eve, Andrew Edstrom');
 
-  // Check that values for `url` and `content` are actual links
-  await expect(widget.locator(`a[href="${urlValue}"]`)).toHaveCount(1);
-  await expect(widget.locator(`a[href="${contentUrlPng}"]`)).toHaveCount(1);
-  await expect(widget.locator(`a[href="${contentUrlHeic}"]`)).toHaveCount(1);
 
   // Assert the details display can be closed
   await widget.locator('.close-button').click({ force: true });

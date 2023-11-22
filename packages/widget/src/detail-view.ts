@@ -41,28 +41,56 @@ const createMetadataGrid = (metadataEntries: [string, any][]): HTMLTemplateResul
   return html` <div class="metadata-grid">${gridItems}</div>`;
 };
 
-const createGridItem = (key: string, value: any, index: number): HTMLTemplateResult => {
-  let content: HTMLTemplateResult;
+function displayMetadataKey(key: string, value: any, index: number): HTMLTemplateResult {
+  if (Array.isArray(value)) {
+    // This key has multiple values, so we need to span multiple rows
+    const start = index + 1;
+    const end = index + value.length + 1;
+    return html` <div
+      class="metadata-grid-item key"
+      style="grid-row-start: ${start}; grid-row-end: ${end};"
+    >
+      ${key}
+    </div>`;
+  }
+  return html` <div class="metadata-grid-item key">${key}</div>`;
+}
+
+function displayMetadataValue(key: string, value: any): HTMLTemplateResult {
   if (key === 'url') {
-    content = html` <a href='${value}' target='_blank' class='metadata-grid-item value metadata-link'>${value}</a>`;
-  } else if (key === 'content' && Array.isArray(value)) {
-    content = html`${value.map(
-      (val) =>
-        html` <a href='${val}' target='_blank' class='metadata-grid-item value content metadata-link'>${val}</a>`,
-    )}`;
-  } else if (Array.isArray(value)) {
-    content = html`${value.map(
-      (val) => html` <div class="metadata-grid-item value content">${val}</div>`,
-    )}`;
-  } else {
-    content = html`
-      <div class='metadata-grid-item value'>${value}</div>`;
+    // display as clickable link
+    return html` <a href="${value}" target="_blank" class="metadata-grid-item value metadata-link">
+      ${value}
+    </a>`;
   }
 
-  return html`
-    <div class="metadata-grid-item key">${key}</div>
-    ${content}
-  `;
+  if (key === 'content' && Array.isArray(value)) {
+    // display as list of clickable links
+    return html` ${value.map(
+      (val) =>
+        html` <a
+          href="${val}"
+          target="_blank"
+          class="metadata-grid-item value content metadata-link"
+        >
+          ${val}
+        </a>`,
+    )}`;
+  }
+
+  if (Array.isArray(value)) {
+    // display as list
+    return html`${value.map(
+      (val) => html` <div class="metadata-grid-item value content">${val}</div>`,
+    )}`;
+  }
+
+  // Display as single value
+  return html` <div class="metadata-grid-item value">${value}</div>`;
+}
+
+const createGridItem = (key: string, value: any, index: number): HTMLTemplateResult => {
+  return html` ${displayMetadataKey(key, value, index)} ${displayMetadataValue(key, value)} `;
 };
 
 const emptyMetadataMessage = (): HTMLTemplateResult => {
