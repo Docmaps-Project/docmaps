@@ -135,6 +135,7 @@ function thingToDisplayObject(
   nodeId: string,
   participants: RoleInTimeT[],
 ): DisplayObject {
+  const { doi, id, url } = thing;
   const displayType: string = determineDisplayType(thing.type);
   const published: string | undefined = formatDateIfAvailable(thing.published);
   const content: string[] | undefined = extractContentUrls(thing.content);
@@ -145,10 +146,10 @@ function thingToDisplayObject(
     type: displayType,
     // The rest of the fields should not be set if they are undefined.
     // Omitting undefined fields entirely lets us more easily merge display objects
-    ...(thing.doi ? { doi: thing.doi } : {}),
-    ...(thing.id ? { id: thing.id } : {}),
+    ...(doi ? { doi: doi } : {}),
+    ...(id ? { id: id } : {}),
     ...(published ? { published } : {}),
-    ...(thing.url ? { url: thing.url } : {}),
+    ...(url ? { url: url } : {}),
     ...(content ? { content } : {}),
     ...(actors ? { actors } : {}),
   };
