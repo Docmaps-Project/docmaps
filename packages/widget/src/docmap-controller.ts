@@ -131,27 +131,21 @@ function generateId(idable: IdAble): string {
 }
 
 function thingToDisplayObject(
-  thing: ThingT,
+  { content, doi, id, published, type, url }: ThingT,
   nodeId: string,
   participants: RoleInTimeT[],
 ): DisplayObject {
-  const { doi, id, url } = thing;
-  const displayType: string = determineDisplayType(thing.type);
-  const published: string | undefined = formatDateIfAvailable(thing.published);
-  const content: string[] | undefined = extractContentUrls(thing.content);
-  const actors: string = extractActorNames(participants);
-
+  // The order in which we assign these fields is currently important, because it determines the
+  // order in which they appear in the UI.
   return {
     nodeId,
-    type: displayType,
-    // The rest of the fields should not be set if they are undefined.
-    // Omitting undefined fields entirely lets us more easily merge display objects
-    ...(doi ? { doi: doi } : {}),
-    ...(id ? { id: id } : {}),
-    ...(published ? { published } : {}),
-    ...(url ? { url: url } : {}),
-    ...(content ? { content } : {}),
-    ...(actors ? { actors } : {}),
+    type: determineDisplayType(type),
+    ...(doi && { doi }),
+    ...(id && { id }),
+    ...(published && { published: formatDateIfAvailable(published) }),
+    ...(url && { url }),
+    ...(content && { content: extractContentUrls(content) }),
+    ...(participants.length > 0 && { actors: extractActorNames(participants) }),
   };
 }
 
