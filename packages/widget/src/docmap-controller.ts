@@ -31,7 +31,7 @@ export const getDocmap: TaskFunction<DocmapFetchingParams, DisplayObjectGraph> =
 };
 
 // This function is general enough we could probably move it into the SDK
-export function getSteps(docmapPerhaps: any): StepT[] {
+export function getSteps(docmapPerhaps: unknown): StepT[] {
   const stepsMaybe = pipe(docmapPerhaps, Docmap.decode);
 
   if (E.isLeft(stepsMaybe)) {
@@ -63,12 +63,17 @@ interface NodesById {
   [id: string]: DisplayObject;
 }
 
+interface IdAble {
+  id?: string;
+  doi?: string;
+}
+
 export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
   let nodesById: NodesById = {};
   let edges: DisplayObjectEdge[] = [];
 
   for (const step of steps) {
-    const { newNodesById, newEdges } = processStep(step, nodesById);
+    const { newNodesById, newEdges } = nodesAndEdgesForStep(step, nodesById);
     nodesById = newNodesById;
     edges = [...edges, ...newEdges];
   }
@@ -77,29 +82,40 @@ export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
   return { nodes, edges };
 }
 
-function processStep(
+function nodesAndEdgesForStep(
   step: StepT,
-  nodesById: NodesById,
-): { newNodesById: NodesById; newEdges: DisplayObjectEdge[] } {
-  let newNodesById: NodesById = { ...nodesById };
+  knownNodesById: NodesById,
+): {
+  newNodesById: NodesById;
+  newEdges: DisplayObjectEdge[];
+} {
+  const newNodesById: NodesById = { ...knownNodesById };
   let newEdges: DisplayObjectEdge[] = [];
 
   const inputIds =
     step.inputs?.map((input) => {
-      const result = processThing(input, newNodesById);
-      newNodesById = result.newNodesById;
-      return result.id;
-    }) || [];
+      const newId = generateId(input);
+      const dispObj = thingToDisplayObject(input, newId, []);
+      newNodesById[newId] = {
+        ...(newNodesById[newId] ?? {}),
+        ...dispObj,
+      };
+      return newId;
+    }) ?? [];
 
   for (const action of step.actions) {
     for (const output of action.outputs) {
-      const result = processThing(output, newNodesById, action.participants);
-      newNodesById = result.newNodesById;
+      const newId = generateId(output);
+      const dispObj = thingToDisplayObject(output, newId, action.participants);
+      newNodesById[newId] = {
+        ...(newNodesById[newId] ?? {}),
+        ...dispObj,
+      };
 
       const edgesForThisOutput: DisplayObjectEdge[] = inputIds.map(
         (inputId): DisplayObjectEdge => ({
           sourceId: inputId,
-          targetId: result.id,
+          targetId: newId,
         }),
       );
       newEdges = [...newEdges, ...edgesForThisOutput];
@@ -110,31 +126,8 @@ function processStep(
   return { newNodesById, newEdges };
 }
 
-function processThing(
-  thing: ThingT,
-  inputNodes: NodesById,
-  participants: RoleInTimeT[] = [],
-): { id: string; newNodesById: NodesById } {
-  const newNodesById: NodesById = { ...inputNodes };
-  const id = thing.doi || thing.id || generateId(newNodesById);
-
-  if (!(id in newNodesById)) {
-    newNodesById[id] = thingToDisplayObject(thing, id, participants);
-  }
-
-  return { id, newNodesById };
-}
-
-function generateId(nodesById: NodesById): string {
-  let idCounter: number = 1;
-  let newId: string = `n${idCounter}`;
-
-  while (newId in nodesById) {
-    idCounter++;
-    newId = `n${idCounter}`;
-  }
-
-  return newId;
+function generateId(idable: IdAble): string {
+  return idable.doi || idable.id || `n${Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)}`;
 }
 
 function thingToDisplayObject(
@@ -144,18 +137,19 @@ function thingToDisplayObject(
 ): DisplayObject {
   const displayType: string = determineDisplayType(thing.type);
   const published: string | undefined = formatDateIfAvailable(thing.published);
-  let content: string[] | undefined = extractContentUrls(thing.content);
+  const content: string[] | undefined = extractContentUrls(thing.content);
   const actors: string = extractActorNames(participants);
 
   return {
     nodeId,
     type: displayType,
-    doi: thing.doi,
-    id: thing.id,
-    published,
-    url: thing.url,
-    content,
-    actors,
+    // these fields should not be present if they are unset
+    ...(thing.doi ? { doi: thing.doi } : {}),
+    ...(thing.id ? { id: thing.id } : {}),
+    ...(published ? { published } : {}),
+    ...(thing.url ? { url: thing.url } : {}),
+    ...(content ? { content } : {}),
+    ...(actors ? { actors } : {}),
   };
 }
 
@@ -183,8 +177,10 @@ function extractActorNames(participants: RoleInTimeT[]) {
     .map((participant) => participant.actor)
     .filter((actor: ActorT): actor is NameHaver => {
       // Actors can be anything, so we have to check that they have a name
-      // @ts-ignore
-      return actor && actor?.name;
+      // TODO: let us note that actors without names are ignored. Should
+      // this be the case ?
+      const downcast = actor as NameHaver;
+      return downcast && !!downcast?.name;
     })
     .map((actor: NameHaver) => actor.name)
     .join(', ');
@@ -210,17 +206,4 @@ function formatDate(date: Date) {
   }
 
   return yyyy + '-' + mm + '-' + dd;
-}
-
-// These sort functions are only used by tests currently, but seem universally useful
-export function sortDisplayObjects(objects: DisplayObject[]): DisplayObject[] {
-  return [...objects].sort((a: DisplayObject, b: DisplayObject) =>
-    a.nodeId.localeCompare(b.nodeId),
-  );
-}
-
-export function sortDisplayObjectEdges(edges: DisplayObjectEdge[]): DisplayObjectEdge[] {
-  return [...edges].sort((a: DisplayObjectEdge, b: DisplayObjectEdge) =>
-    a.sourceId.localeCompare(b.sourceId),
-  );
 }
