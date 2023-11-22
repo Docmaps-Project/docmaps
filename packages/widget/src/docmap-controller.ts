@@ -150,7 +150,11 @@ function thingToDisplayObject(
 }
 
 function formatDateIfAvailable(date: Date | string | undefined) {
-  return date && date instanceof Date ? formatDate(date) : date;
+  if (date instanceof Date) {
+    return formatDate(date);
+  }
+
+  return date;
 }
 
 function determineDisplayType(ty: string | string[] | undefined): string {
