@@ -44,21 +44,11 @@ const createMetadataGrid = (metadataEntries: [string, any][]): HTMLTemplateResul
 const createGridItem = (key: string, value: any, index: number): HTMLTemplateResult => {
   let content: HTMLTemplateResult;
   if (key === 'url') {
-    content = html` <a
-      href="${value}"
-      target="_blank"
-      class="metadata-grid-item value metadata-link"
-      >${value}</a
-    >`;
+    content = html` <a href='${value}' target='_blank' class='metadata-grid-item value metadata-link'>${value}</a>`;
   } else if (key === 'content' && Array.isArray(value)) {
     content = html`${value.map(
       (val) =>
-        html` <a
-          href="${val}"
-          target="_blank"
-          class="metadata-grid-item value content metadata-link"
-          >${val}</a
-        >`,
+        html` <a href='${val}' target='_blank' class='metadata-grid-item value content metadata-link'>${val}</a>`,
     )}`;
   } else if (Array.isArray(value)) {
     content = html`${value.map(
