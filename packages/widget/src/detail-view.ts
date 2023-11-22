@@ -46,18 +46,17 @@ const createGridItem = (key: string, value: any, index: number): HTMLTemplateRes
   if (Array.isArray(value)) {
     const start = index + 1;
     const end = index + value.length + 1;
-    keyDisplay = html`
-      <div
-        class='metadata-grid-item key'
-        style='grid-row-start: ${start}; grid-row-end: ${end};'
-      >
-        ${key}
-      </div>`;
+    keyDisplay = html` <div
+      class="metadata-grid-item key"
+      style="grid-row-start: ${start}; grid-row-end: ${end};"
+    >
+      ${key}
+    </div>`;
   }
 
   let valueDisplay: HTMLTemplateResult;
   if (key === 'url') {
-    valueDisplay = html` <a
+    valueDisplay = html`<a
       href="${value}"
       target="_blank"
       class="metadata-grid-item value metadata-link"
