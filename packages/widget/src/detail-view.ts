@@ -42,27 +42,46 @@ const createMetadataGrid = (metadataEntries: [string, any][]): HTMLTemplateResul
 };
 
 const createGridItem = (key: string, value: any, index: number): HTMLTemplateResult => {
-  let content: HTMLTemplateResult;
+  let keyDisplay: HTMLTemplateResult = html` <div class="metadata-grid-item key">${key}</div>`;
+  if (Array.isArray(value)) {
+    const start = index + 1;
+    const end = index + value.length + 1;
+    keyDisplay = html`
+      <div
+        class='metadata-grid-item key'
+        style='grid-row-start: ${start}; grid-row-end: ${end};'
+      >
+        ${key}
+      </div>`;
+  }
+
+  let valueDisplay: HTMLTemplateResult;
   if (key === 'url') {
-    content = html` <a href='${value}' target='_blank' class='metadata-grid-item value metadata-link'>${value}</a>`;
+    valueDisplay = html` <a
+      href="${value}"
+      target="_blank"
+      class="metadata-grid-item value metadata-link"
+      >${value}</a
+    >`;
   } else if (key === 'content' && Array.isArray(value)) {
-    content = html`${value.map(
+    valueDisplay = html`${value.map(
       (val) =>
-        html` <a href='${val}' target='_blank' class='metadata-grid-item value content metadata-link'>${val}</a>`,
+        html` <a
+          href="${val}"
+          target="_blank"
+          class="metadata-grid-item value content metadata-link"
+          >${val}</a
+        >`,
     )}`;
   } else if (Array.isArray(value)) {
-    content = html`${value.map(
+    valueDisplay = html`${value.map(
       (val) => html` <div class="metadata-grid-item value content">${val}</div>`,
     )}`;
   } else {
-    content = html`
-      <div class='metadata-grid-item value'>${value}</div>`;
+    valueDisplay = html` <div class="metadata-grid-item value">${value}</div>`;
   }
 
-  return html`
-    <div class="metadata-grid-item key">${key}</div>
-    ${content}
-  `;
+  return html` ${keyDisplay} ${valueDisplay} `;
 };
 
 const emptyMetadataMessage = (): HTMLTemplateResult => {
