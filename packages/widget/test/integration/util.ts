@@ -61,7 +61,7 @@ export const typeShortLabelToOpts: {
   R: {
     longLabel: 'Review',
     backgroundColor: '#1E2F48',
-    textColor: '#D7E4FD',
+    textColor: '#D4E5FF',
   },
   P: {
     longLabel: 'Preprint',
@@ -71,32 +71,32 @@ export const typeShortLabelToOpts: {
   ES: {
     longLabel: 'Evaluation Summary',
     backgroundColor: '#936308',
-    textColor: '#FFEDCC',
+    textColor: '#FFF1D8',
   },
   RA: {
     longLabel: 'Review Article',
     backgroundColor: '#099CEE',
-    textColor: '#CEEDFF',
+    textColor: '#E7F6FF',
   },
   JA: {
     longLabel: 'Journal Article',
     backgroundColor: '#880052',
-    textColor: '#FFF',
+    textColor: '#FFE3F4',
   },
   ED: {
     longLabel: 'Editorial',
     backgroundColor: '#2A8781',
-    textColor: '#FFFFFF',
+    textColor: '#E8FFFE',
   },
   CO: {
     longLabel: 'Comment',
     backgroundColor: '#B66248',
-    textColor: '#FFF',
+    textColor: '#FFF0EB',
   },
   RE: {
     longLabel: 'Reply',
     backgroundColor: '#79109E',
-    textColor: '#F6DBFF',
+    textColor: '#F9E9FF',
   },
   '': {
     longLabel: 'Type unknown',
@@ -104,6 +104,7 @@ export const typeShortLabelToOpts: {
     textColor: '#043945',
   },
 };
+
 
 export const typeToDetailBackgroundColor = (type: string) =>
   type === '' ? TYPE_UNKNOWN_DETAIL_HEADER_COLOR : typeShortLabelToOpts[type].backgroundColor;
