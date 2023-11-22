@@ -143,7 +143,8 @@ function thingToDisplayObject(
   return {
     nodeId,
     type: displayType,
-    // these fields should not be present if they are unset
+    // The rest of the fields should not be set if they are undefined.
+    // Omitting undefined fields entirely lets us more easily merge display objects
     ...(thing.doi ? { doi: thing.doi } : {}),
     ...(thing.id ? { id: thing.id } : {}),
     ...(published ? { published } : {}),

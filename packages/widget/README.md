@@ -3,7 +3,7 @@
 
 An embeddable widget for displaying Docmaps data, built with Lit and D3.
 
-## Usage
+# Usage
 
 The widget can be retrieved via CDN, or via NPM if your project already uses NPM.
 
@@ -44,7 +44,7 @@ These attributes can be added to the `<docmaps-widget>` tag to configure the wid
 | `doi`       | The DOI of the paper to render                                                                                                                                                                                                                                                                                                                                                                                       |
 | `serverurl` | The URL of the server from which the docmap will be fetched. The widget will make a request to this server's `GET /docmap_for/doi?subject={doi}` endpoint, which must be implemented by the server in accordance with the [official Docmaps API spec](https://github.com/Docmaps-Project/rfcs/blob/ships/1/APIProtocol/proposals/001_interop.md#convenience-endpoints-for-one-shot-noninteractive-docmap-retrieval). |
 
-## Screenshots
+# Screenshots
 
 Graph view:
 
@@ -54,7 +54,7 @@ Clicking a node opens the detail view:
 
 ![Screenshot of the widget's detailview](./images-for-readme/detail-view.jpeg)
 
-## Development
+# Development
 
 ### Running the server locally
 
