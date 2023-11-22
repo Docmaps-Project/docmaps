@@ -131,10 +131,15 @@ function generateId(idable: IdAble): string {
 }
 
 function thingToDisplayObject(
-  { content, doi, id, published, type, url }: ThingT,
+  thing: ThingT,
   nodeId: string,
   participants: RoleInTimeT[],
 ): DisplayObject {
+  const { doi, id, type, url } = thing;
+  const content = extractContentUrls(thing.content);
+  const actors: string = extractActorNames(participants);
+  const published = formatDateIfAvailable(thing.published);
+
   // The order in which we assign these fields is currently important, because it determines the
   // order in which they appear in the UI.
   return {
@@ -142,10 +147,10 @@ function thingToDisplayObject(
     type: determineDisplayType(type),
     ...(doi && { doi }),
     ...(id && { id }),
-    ...(published && { published: formatDateIfAvailable(published) }),
+    ...(published && { published }),
     ...(url && { url }),
-    ...(content && { content: extractContentUrls(content) }),
-    ...(participants.length > 0 && { actors: extractActorNames(participants) }),
+    ...(content && { content }),
+    ...(actors && { actors }),
   };
 }
 
