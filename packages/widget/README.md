@@ -5,10 +5,25 @@ An embeddable widget for displaying Docmaps data, built with Lit and D3.
 
 ## Usage
 
-To add the widget to your project:
+The widget can be retrieved via CDN, or via NPM if your project already uses NPM.
+
+## Retrieving via CDN
+You can directly pull in the widget in an HTML file without installing anything like so:
+
+```html
+<head>
+  <script type='module' src='https://cdn.jsdelivr.net/npm/@docmaps/widget/dist/index.min.js'></script>
+</head>
+<body>
+<docmaps-widget doi='doi-to-render' serverurl='https://example.com'></docmaps-widget>
+</body>
+```
+
+## Installing with NPM
+If your project already uses NPM, you can install the widget like so:
 
 ```shell
-pnpm install @docmaps/widget
+npm install @docmaps/widget
 ```
 
 Then, add the widget to your page:
@@ -18,10 +33,10 @@ Then, add the widget to your page:
   import '@docmaps/widget';
 </script>
 
-<docmaps-widget doi="doi-to-render" serverurl="http://example.com"></docmaps-widget>
+<docmaps-widget doi="doi-to-render" serverurl="https://example.com"></docmaps-widget>
 ```
 
-### Supported attributes
+## Supported attributes
 These attributes can be added to the `<docmaps-widget>` tag to configure the widget's behavior.
 
 | Attribute   | Description                                                                                                                                                                                                                                                                                                                                                                                                          |
