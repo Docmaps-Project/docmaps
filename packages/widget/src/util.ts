@@ -119,6 +119,29 @@ export interface DisplayObject extends FieldsToDisplay {
   type: string;
 }
 
+export function mergeDisplayObjects(a: DisplayObject | undefined, b: DisplayObject): DisplayObject {
+  return {
+    ...(a && normalizeDisplayObject(a)),
+    ...normalizeDisplayObject(b),
+  };
+}
+
+// This function is used to remove undefined values from a display object, so that we can merge
+// it with another display object using destructuring
+function normalizeDisplayObject(displayObject: DisplayObject): DisplayObject {
+  const { nodeId, type, doi, id, published, url, content, actors } = displayObject;
+  return {
+    nodeId,
+    type,
+    ...(doi && { doi }),
+    ...(id && { id }),
+    ...(published && { published }),
+    ...(url && { url }),
+    ...(content && { content }),
+    ...(actors && { actors }),
+  };
+}
+
 export type DisplayObjectEdge = {
   sourceId: string;
   targetId: string;

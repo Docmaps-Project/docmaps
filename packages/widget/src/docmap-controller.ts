@@ -3,7 +3,13 @@ import { TaskFunction } from '@lit/task';
 import { ActorT, Docmap, DocmapT, ManifestationT, RoleInTimeT, StepT, ThingT } from 'docmaps-sdk';
 import { pipe } from 'fp-ts/lib/function';
 import * as E from 'fp-ts/lib/Either';
-import { ALL_KNOWN_TYPES, DisplayObject, DisplayObjectEdge, DisplayObjectGraph } from './util';
+import {
+  ALL_KNOWN_TYPES,
+  DisplayObject,
+  DisplayObjectEdge,
+  DisplayObjectGraph,
+  mergeDisplayObjects,
+} from './util';
 
 export type DocmapFetchingParams = [string, string]; // [serverUrl, doi]
 
@@ -96,10 +102,7 @@ function nodesAndEdgesForStep(
     step.inputs?.map((input) => {
       const newId = generateId(input);
       const dispObj = thingToDisplayObject(input, newId, []);
-      newNodesById[newId] = {
-        ...(newNodesById[newId] ?? {}),
-        ...dispObj,
-      };
+      newNodesById[newId] = mergeDisplayObjects(newNodesById[newId], dispObj);
       return newId;
     }) ?? [];
 
@@ -107,10 +110,7 @@ function nodesAndEdgesForStep(
     for (const output of action.outputs) {
       const newId = generateId(output);
       const dispObj = thingToDisplayObject(output, newId, action.participants);
-      newNodesById[newId] = {
-        ...(newNodesById[newId] ?? {}),
-        ...dispObj,
-      };
+      newNodesById[newId] = mergeDisplayObjects(newNodesById[newId], dispObj);
 
       const edgesForThisOutput: DisplayObjectEdge[] = inputIds.map(
         (inputId): DisplayObjectEdge => ({
@@ -140,18 +140,8 @@ function thingToDisplayObject(
   const content = extractContentUrls(thing.content);
   const actors: string = extractActorNames(participants);
 
-  // The order in which we assign these fields is currently important, because it determines the
-  // order in which they appear in the UI.
-  return {
-    nodeId,
-    type: determineDisplayType(type),
-    ...(doi && { doi }),
-    ...(id && { id }),
-    ...(published && { published }),
-    ...(url && { url }),
-    ...(content && { content }),
-    ...(actors && { actors }),
-  };
+  // The order in which we assign these fields determines the order in which they appear in the UI.
+  return { nodeId, type: determineDisplayType(type), doi, id, published, url, content, actors };
 }
 
 function formatDateIfAvailable(date: Date | string | undefined) {
