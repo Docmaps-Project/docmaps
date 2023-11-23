@@ -219,10 +219,10 @@ function transformDisplayObjectsToD3Nodes(
 
     return {
       ...node,
-      // Always maintain vertical position from Dagre
+      // Maintain vertical position from Dagre
       fy: node.y,
-      // Fix center horizontally if node is alone on its level. Otherwise, let d3 decide the x position.
-      ...(isOnlyNodeOnLevel ? { fx: Math.floor(graphWidth / 2) } : {}),
+      // Fix the node at horizontal center if it is alone on its y-level
+      ...(isOnlyNodeOnLevel && { fx: Math.floor(graphWidth / 2) }),
     };
   });
 }

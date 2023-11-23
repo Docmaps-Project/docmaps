@@ -135,27 +135,31 @@ function thingToDisplayObject(
   nodeId: string,
   participants: RoleInTimeT[],
 ): DisplayObject {
-  const displayType: string = determineDisplayType(thing.type);
-  const published: string | undefined = formatDateIfAvailable(thing.published);
-  const content: string[] | undefined = extractContentUrls(thing.content);
+  const { doi, id, type, url } = thing;
+  const published = formatDateIfAvailable(thing.published);
+  const content = extractContentUrls(thing.content);
   const actors: string = extractActorNames(participants);
 
+  // The order in which we assign these fields is currently important, because it determines the
+  // order in which they appear in the UI.
   return {
     nodeId,
-    type: displayType,
-    // The rest of the fields should not be set if they are undefined.
-    // Omitting undefined fields entirely lets us more easily merge display objects
-    ...(thing.doi ? { doi: thing.doi } : {}),
-    ...(thing.id ? { id: thing.id } : {}),
-    ...(published ? { published } : {}),
-    ...(thing.url ? { url: thing.url } : {}),
-    ...(content ? { content } : {}),
-    ...(actors ? { actors } : {}),
+    type: determineDisplayType(type),
+    ...(doi && { doi }),
+    ...(id && { id }),
+    ...(published && { published }),
+    ...(url && { url }),
+    ...(content && { content }),
+    ...(actors && { actors }),
   };
 }
 
 function formatDateIfAvailable(date: Date | string | undefined) {
-  return date && date instanceof Date ? formatDate(date) : date;
+  if (date instanceof Date) {
+    return formatDate(date);
+  }
+
+  return date;
 }
 
 function determineDisplayType(ty: string | string[] | undefined): string {
