@@ -10,7 +10,7 @@ export interface DisplayObjectMetadata {
   doi?: string;
   id?: string;
   published?: string;
-  url?: URL;
+  url?: string;
   content?: string[];
   actors?: string;
 }
@@ -30,10 +30,6 @@ const DisplayObjectMetadataPrototype: { [K in DisplayObjectMetadataField]: null 
 
 export function isDisplayObjectMetadataField(key: string): key is DisplayObjectMetadataField {
   return key in DisplayObjectMetadataPrototype;
-}
-
-export function displayObjectMetadataFieldNames(): DisplayObjectMetadataField[] {
-  return Object.keys(DisplayObjectMetadataPrototype) as DisplayObjectMetadataField[];
 }
 
 // DisplayObjects are the widget's internal representation of a node from the graph view.

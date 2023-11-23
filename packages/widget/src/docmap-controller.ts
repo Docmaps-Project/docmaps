@@ -144,7 +144,16 @@ function thingToDisplayObject(
   const content = extractContentUrls(thing.content);
   const actors: string = extractActorNames(participants);
 
-  return { nodeId, type: determineDisplayType(type), doi, id, published, url, content, actors };
+  return {
+    nodeId,
+    type: determineDisplayType(type),
+    url: url?.toString(),
+    doi,
+    id,
+    published,
+    content,
+    actors,
+  };
 }
 
 function formatDateIfAvailable(date: Date | string | undefined) {
