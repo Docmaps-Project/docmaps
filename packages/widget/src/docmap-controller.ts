@@ -13,6 +13,19 @@ import {
 
 export type DocmapFetchingParams = [string, string]; // [serverUrl, doi]
 
+interface NodesById {
+  [id: string]: DisplayObject;
+}
+
+interface IdAble {
+  id?: string;
+  doi?: string;
+}
+
+interface NameHaver {
+  name: string;
+}
+
 export const getDocmap: TaskFunction<DocmapFetchingParams, DisplayObjectGraph> = async ([
   serverUrl,
   doi,
@@ -63,15 +76,6 @@ function getOrderedSteps(docmap: DocmapT): StepT[] {
   }
 
   return orderedSteps;
-}
-
-interface NodesById {
-  [id: string]: DisplayObject;
-}
-
-interface IdAble {
-  id?: string;
-  doi?: string;
 }
 
 export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
@@ -140,7 +144,6 @@ function thingToDisplayObject(
   const content = extractContentUrls(thing.content);
   const actors: string = extractActorNames(participants);
 
-  // The order in which we assign these fields determines the order in which they appear in the UI.
   return { nodeId, type: determineDisplayType(type), doi, id, published, url, content, actors };
 }
 
@@ -161,10 +164,6 @@ function extractContentUrls(content: ManifestationT[] | undefined) {
   return content
     ?.map((manifestation: ManifestationT) => manifestation.url?.toString())
     .filter((url: string | undefined): url is string => url !== undefined);
-}
-
-interface NameHaver {
-  name: string;
 }
 
 function extractActorNames(participants: RoleInTimeT[]) {

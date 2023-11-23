@@ -1,5 +1,10 @@
 import { html, HTMLTemplateResult } from 'lit';
-import { DisplayObject, filterMetadataEntries, TYPE_DISPLAY_OPTIONS } from './util';
+import {
+  DisplayObject,
+  isDisplayObjectMetadataField,
+  normalizeDisplayObject,
+  TYPE_DISPLAY_OPTIONS,
+} from './util';
 import { renderDetailNavigationHeader } from './detail-navigation-header';
 import { closeDetailsButton } from './assets';
 
@@ -10,10 +15,10 @@ export function renderDetailsView(
   closeDetailsView: () => void,
 ) {
   const opts = TYPE_DISPLAY_OPTIONS[selectedNode.type];
-  const metadataEntries: [string, any][] = filterMetadataEntries(selectedNode);
+  const metadataFields: [string, any][] = getMetadataFields(selectedNode);
 
   const metadataBody: HTMLTemplateResult =
-    metadataEntries.length > 0 ? createMetadataGrid(metadataEntries) : emptyMetadataMessage();
+    metadataFields.length > 0 ? createMetadataGrid(metadataFields) : emptyMetadataMessage();
 
   const backgroundColor = opts.detailBackgroundColor || opts.backgroundColor;
   const textColor = opts.detailTextColor || opts.textColor;
@@ -97,4 +102,14 @@ const emptyMetadataMessage = (): HTMLTemplateResult => {
   return html` <div class="metadata-item">
     <div class="metadata-key">no metadata found</div>
   </div>`;
+};
+
+const getMetadataFields = (node: DisplayObject): [string, any][] => {
+  // first put the fields in order:
+  const normalizedNode = normalizeDisplayObject(node);
+
+  // then keep only the fields that should be displayed:
+  return Object.entries(normalizedNode).filter(
+    ([key, value]) => isDisplayObjectMetadataField(key) && value,
+  );
 };
