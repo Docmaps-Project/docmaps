@@ -15,13 +15,12 @@ export function renderDetailsView(
   closeDetailsView: () => void,
 ) {
   const opts = TYPE_DISPLAY_OPTIONS[selectedNode.type];
-  const metadataFields: [string, any][] = getMetadataFields(selectedNode);
+  const backgroundColor = opts.detailViewBackgroundColor || opts.backgroundColor;
+  const textColor = opts.detailViewTextColor || opts.textColor;
 
-  const metadataBody: HTMLTemplateResult =
-    metadataFields.length > 0 ? createMetadataGrid(metadataFields) : emptyMetadataMessage();
-
-  const backgroundColor = opts.detailBackgroundColor || opts.backgroundColor;
-  const textColor = opts.detailTextColor || opts.textColor;
+  const fieldsToDisplay: [string, any][] = getMetadataFieldsToDisplay(selectedNode);
+  const detailBody: HTMLTemplateResult =
+    fieldsToDisplay.length > 0 ? createMetadataGrid(fieldsToDisplay) : emptyMetadataMessage();
 
   return html`
     <div class="detail-timeline">
@@ -35,7 +34,7 @@ export function renderDetailsView(
       </div>
     </div>
 
-    <div class="detail-body">${metadataBody}</div>
+    <div class="detail-body">${detailBody}</div>
   `;
 }
 
@@ -104,7 +103,7 @@ const emptyMetadataMessage = (): HTMLTemplateResult => {
   </div>`;
 };
 
-const getMetadataFields = (node: DisplayObject): [string, any][] => {
+const getMetadataFieldsToDisplay = (node: DisplayObject): [string, any][] => {
   // first put the fields in order:
   const normalizedNode = normalizeDisplayObject(node);
 

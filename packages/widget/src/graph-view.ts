@@ -17,8 +17,12 @@ import { SimulationNodeDatum } from 'd3-force';
 // D3Nodes represent a node that is being passed to D3's force simulation to be rendered in the graph view.
 // They are a superset of DisplayObjects, with additional fields that are used by D3.
 // Note that we override x & y since they're optional in SimulationNodeDatum, but not in our use case
-type D3Node = SimulationNodeDatum & DisplayObject & { x: number; y: number };
-type D3Edge = SimulationLinkDatum<D3Node>;
+type D3Node = SimulationNodeDatum &
+  DisplayObject & {
+    x: number;
+    y: number;
+  };
+type D3Edge = SimulationLinkDatum<D3Node>; // an edge between two D3Nodes
 type DagreGraph = Dagre.graphlib.Graph<DisplayObject>;
 
 export const displayGraph = (
@@ -185,7 +189,11 @@ function groupNodesByYCoordinate(nodeIds: string[], dagreGraph: DagreGraph): Map
 export function prepareGraphForSimulation(
   nodes: DisplayObject[],
   edges: DisplayObjectEdge[],
-): { d3Edges: D3Edge[]; d3Nodes: D3Node[]; graphWidth: number } {
+): {
+  d3Edges: D3Edge[];
+  d3Nodes: D3Node[];
+  graphWidth: number;
+} {
   // Use Dagre to get initial node positions based on graph layout
   const dagreGraph: DagreGraph = getInitialNodePositions(nodes, edges);
 

@@ -4,7 +4,7 @@ import { ActorT, Docmap, DocmapT, ManifestationT, RoleInTimeT, StepT, ThingT } f
 import { pipe } from 'fp-ts/lib/function';
 import * as E from 'fp-ts/lib/Either';
 import {
-  ALL_KNOWN_TYPES,
+  ALL_DISPLAY_OBJECT_TYPES,
   DisplayObject,
   DisplayObjectEdge,
   DisplayObjectGraph,
@@ -157,7 +157,7 @@ function formatDateIfAvailable(date: Date | string | undefined) {
 
 function determineDisplayType(ty: string | string[] | undefined): string {
   const singleType: string = (Array.isArray(ty) ? ty[0] : ty) ?? '??';
-  return ALL_KNOWN_TYPES.includes(singleType) ? singleType : '??';
+  return ALL_DISPLAY_OBJECT_TYPES.includes(singleType) ? singleType : '??';
 }
 
 function extractContentUrls(content: ManifestationT[] | undefined) {
