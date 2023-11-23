@@ -136,9 +136,9 @@ function thingToDisplayObject(
   participants: RoleInTimeT[],
 ): DisplayObject {
   const { doi, id, type, url } = thing;
+  const published = formatDateIfAvailable(thing.published);
   const content = extractContentUrls(thing.content);
   const actors: string = extractActorNames(participants);
-  const published = formatDateIfAvailable(thing.published);
 
   // The order in which we assign these fields is currently important, because it determines the
   // order in which they appear in the UI.
