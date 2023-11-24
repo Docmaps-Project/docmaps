@@ -15,6 +15,13 @@ export interface DisplayObjectMetadata {
   actors?: string;
 }
 
+// DisplayObjects are the widget's internal representation of a node from the graph view.
+// They roughly correspond to a ThingT in the Docmap spec, but with only the fields that we want to display.
+export interface DisplayObject extends DisplayObjectMetadata {
+  nodeId: string; // Used internally to construct graph relationships, never rendered
+  type: string;
+}
+
 // The following 3 statements allow us to use FieldsToDisplay both as a type and as something we can
 // check against at runtime. We could also use io-ts for this, but that felt like overkill since this
 // is the only place in the widget where we do something like this.
@@ -30,13 +37,6 @@ const DisplayObjectMetadataPrototype: { [K in DisplayObjectMetadataField]: null 
 
 export function isDisplayObjectMetadataField(key: string): key is DisplayObjectMetadataField {
   return key in DisplayObjectMetadataPrototype;
-}
-
-// DisplayObjects are the widget's internal representation of a node from the graph view.
-// They roughly correspond to a ThingT in the Docmap spec, but with only the fields that we want to display.
-export interface DisplayObject extends DisplayObjectMetadata {
-  nodeId: string; // Used internally to construct graph relationships, never rendered
-  type: string;
 }
 
 // Returns a new DisplayObject which has no fields set to the value undefined,

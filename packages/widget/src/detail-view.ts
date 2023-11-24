@@ -17,7 +17,7 @@ export function renderDetailsView(
   allNodes: DisplayObject[],
   updateSelectedNode: (node: DisplayObject) => void,
   closeDetailsView: () => void,
-) {
+): HTMLTemplateResult {
   const opts = TYPE_DISPLAY_OPTIONS[selectedNode.type];
   const backgroundColor = opts.detailViewBackgroundColor || opts.backgroundColor;
   const textColor = opts.detailViewTextColor || opts.textColor;
