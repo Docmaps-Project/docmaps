@@ -52,7 +52,7 @@ const timeline = (
   const timelineNodes: SVGTemplateResult[] = allNodes.map((node, i) => {
     const x = getNodeX(i, allNodes.length);
     const displayOpts = TYPE_DISPLAY_OPTIONS[node.type];
-    const color = displayOpts.detailBackgroundColor ?? displayOpts.backgroundColor;
+    const color = displayOpts.detailViewBackgroundColor ?? displayOpts.backgroundColor;
 
     const thisNodeIsSelected: boolean = node.nodeId === selectedNode.nodeId;
     const selectedNodeIndicator: SVGTemplateResult | typeof nothing = thisNodeIsSelected

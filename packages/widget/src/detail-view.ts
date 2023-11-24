@@ -1,7 +1,16 @@
 import { html, HTMLTemplateResult } from 'lit';
-import { DisplayObject, filterMetadataEntries, TYPE_DISPLAY_OPTIONS } from './util';
+import {
+  DisplayObject,
+  isDisplayObjectMetadataField,
+  normalizeDisplayObject,
+  TYPE_DISPLAY_OPTIONS,
+} from './util';
 import { renderDetailNavigationHeader } from './detail-navigation-header';
 import { closeDetailsButton } from './assets';
+
+type MetadataKey = string;
+type MetadataValue = string | string[];
+type MetadataTuple = [MetadataKey, MetadataValue];
 
 export function renderDetailsView(
   selectedNode: DisplayObject,
@@ -10,13 +19,12 @@ export function renderDetailsView(
   closeDetailsView: () => void,
 ) {
   const opts = TYPE_DISPLAY_OPTIONS[selectedNode.type];
-  const metadataEntries: [string, any][] = filterMetadataEntries(selectedNode);
+  const backgroundColor = opts.detailViewBackgroundColor || opts.backgroundColor;
+  const textColor = opts.detailViewTextColor || opts.textColor;
 
-  const metadataBody: HTMLTemplateResult =
-    metadataEntries.length > 0 ? createMetadataGrid(metadataEntries) : emptyMetadataMessage();
-
-  const backgroundColor = opts.detailBackgroundColor || opts.backgroundColor;
-  const textColor = opts.detailTextColor || opts.textColor;
+  const fieldsToDisplay: MetadataTuple[] = getMetadataFieldsToDisplay(selectedNode);
+  const detailBody: HTMLTemplateResult =
+    fieldsToDisplay.length > 0 ? createMetadataGrid(fieldsToDisplay) : emptyMetadataMessage();
 
   return html`
     <div class="detail-timeline">
@@ -30,18 +38,24 @@ export function renderDetailsView(
       </div>
     </div>
 
-    <div class="detail-body">${metadataBody}</div>
+    <div class="detail-body">${detailBody}</div>
   `;
 }
 
-const createMetadataGrid = (metadataEntries: [string, any][]): HTMLTemplateResult => {
+const createMetadataGrid = (
+  metadataEntries: [MetadataKey, MetadataValue][],
+): HTMLTemplateResult => {
   const gridItems: HTMLTemplateResult[] = metadataEntries.map(([key, value], index) =>
     createGridItem(key, value, index),
   );
   return html` <div class="metadata-grid">${gridItems}</div>`;
 };
 
-function displayMetadataKey(key: string, value: any, index: number): HTMLTemplateResult {
+function displayMetadataKey(
+  key: MetadataKey,
+  value: MetadataValue,
+  index: number,
+): HTMLTemplateResult {
   if (Array.isArray(value)) {
     // This key has multiple values, so we need to span multiple rows
     const start = index + 1;
@@ -56,7 +70,7 @@ function displayMetadataKey(key: string, value: any, index: number): HTMLTemplat
   return html` <div class="metadata-grid-item key">${key}</div>`;
 }
 
-function displayMetadataValue(key: string, value: any): HTMLTemplateResult {
+function displayMetadataValue(key: MetadataKey, value: MetadataValue): HTMLTemplateResult {
   if (key === 'url') {
     // display as clickable link
     return html` <a href="${value}" target="_blank" class="metadata-grid-item value metadata-link">
@@ -89,7 +103,11 @@ function displayMetadataValue(key: string, value: any): HTMLTemplateResult {
   return html` <div class="metadata-grid-item value">${value}</div>`;
 }
 
-const createGridItem = (key: string, value: any, index: number): HTMLTemplateResult => {
+const createGridItem = (
+  key: MetadataKey,
+  value: MetadataValue,
+  index: number,
+): HTMLTemplateResult => {
   return html` ${displayMetadataKey(key, value, index)} ${displayMetadataValue(key, value)} `;
 };
 
@@ -97,4 +115,23 @@ const emptyMetadataMessage = (): HTMLTemplateResult => {
   return html` <div class="metadata-item">
     <div class="metadata-key">no metadata found</div>
   </div>`;
+};
+
+const getMetadataFieldsToDisplay = (node: DisplayObject): MetadataTuple[] => {
+  // first put the fields in order:
+  const normalizedNode = normalizeDisplayObject(node);
+
+  // then keep only the fields that should be displayed:
+  return Object.entries(normalizedNode)
+    .filter(([key, value]) => isDisplayObjectMetadataField(key) && value)
+    .filter(isMetadataTuple);
+};
+
+const isMetadataTuple = (tuple: [string, any]): tuple is MetadataTuple => {
+  const [_, value] = tuple;
+
+  const isString = typeof value === 'string';
+  const isStringArray = Array.isArray(value) && value.every((item) => typeof item === 'string');
+
+  return isString || isStringArray;
 };

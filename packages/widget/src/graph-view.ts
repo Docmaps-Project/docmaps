@@ -1,8 +1,6 @@
 import * as d3 from 'd3';
+import { SimulationLinkDatum } from 'd3';
 import {
-  D3Edge,
-  D3Node,
-  DagreGraph,
   DisplayObject,
   DisplayObjectEdge,
   FIRST_NODE_RADIUS,
@@ -14,6 +12,18 @@ import {
   WIDGET_SIZE,
 } from './util';
 import * as Dagre from 'dagre';
+import { SimulationNodeDatum } from 'd3-force';
+
+// D3Nodes represent a node that is being passed to D3's force simulation to be rendered in the graph view.
+// They are a superset of DisplayObjects, with additional fields that are used by D3.
+// Note that we override x & y since they're optional in SimulationNodeDatum, but not in our use case
+type D3Node = SimulationNodeDatum &
+  DisplayObject & {
+    x: number;
+    y: number;
+  };
+type D3Edge = SimulationLinkDatum<D3Node>; // an edge between two D3Nodes
+type DagreGraph = Dagre.graphlib.Graph<DisplayObject>;
 
 export const displayGraph = (
   nodes: DisplayObject[],
@@ -179,7 +189,11 @@ function groupNodesByYCoordinate(nodeIds: string[], dagreGraph: DagreGraph): Map
 export function prepareGraphForSimulation(
   nodes: DisplayObject[],
   edges: DisplayObjectEdge[],
-): { d3Edges: D3Edge[]; d3Nodes: D3Node[]; graphWidth: number } {
+): {
+  d3Edges: D3Edge[];
+  d3Nodes: D3Node[];
+  graphWidth: number;
+} {
   // Use Dagre to get initial node positions based on graph layout
   const dagreGraph: DagreGraph = getInitialNodePositions(nodes, edges);
 
@@ -197,7 +211,7 @@ export function prepareGraphForSimulation(
   );
 
   // Transform DisplayObjects into D3Nodes with fixed positions as per Dagre layout
-  const d3Nodes: D3Node[] = transformDisplayObjectsToD3Nodes(dagreGraph, yLevelNodeMap, graphWidth);
+  const d3Nodes: D3Node[] = createD3Nodes(dagreGraph, yLevelNodeMap, graphWidth);
 
   // Transform DisplayObjectEdges into edges that D3 can use
   const d3Edges: D3Edge[] = edges.map(
@@ -207,7 +221,7 @@ export function prepareGraphForSimulation(
   return { d3Nodes, d3Edges, graphWidth };
 }
 
-function transformDisplayObjectsToD3Nodes(
+function createD3Nodes(
   dagreGraph: Dagre.graphlib.Graph<DisplayObject>,
   yLevelNodeMap: Map<number, D3Node[]>,
   graphWidth: number,

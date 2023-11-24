@@ -1,21 +1,90 @@
-import { SimulationLinkDatum } from 'd3';
-import { SimulationNodeDatum } from 'd3-force';
-import * as Dagre from 'dagre';
-
 export const WIDGET_SIZE: number = 500;
 export const GRAPH_CANVAS_HEIGHT: number = 475;
 export const GRAPH_CANVAS_ID: string = 'd3-canvas';
 export const FIRST_NODE_RADIUS: number = 50;
 export const NODE_RADIUS: number = 37.5;
 export const RANK_SEPARATION: number = 100;
+
+// The fields of DisplayObject that are shown in the UI
+export interface DisplayObjectMetadata {
+  doi?: string;
+  id?: string;
+  published?: string;
+  url?: string;
+  content?: string[];
+  actors?: string;
+}
+
+// The following 3 statements allow us to use FieldsToDisplay both as a type and as something we can
+// check against at runtime. We could also use io-ts for this, but that felt like overkill since this
+// is the only place in the widget where we do something like this.
+export type DisplayObjectMetadataField = keyof DisplayObjectMetadata;
+const DisplayObjectMetadataPrototype: { [K in DisplayObjectMetadataField]: null } = {
+  doi: null,
+  id: null,
+  published: null,
+  url: null,
+  content: null,
+  actors: null,
+};
+
+export function isDisplayObjectMetadataField(key: string): key is DisplayObjectMetadataField {
+  return key in DisplayObjectMetadataPrototype;
+}
+
+// DisplayObjects are the widget's internal representation of a node from the graph view.
+// They roughly correspond to a ThingT in the Docmap spec, but with only the fields that we want to display.
+export interface DisplayObject extends DisplayObjectMetadata {
+  nodeId: string; // Used internally to construct graph relationships, never rendered
+  type: string;
+}
+
+// Returns a new DisplayObject which has no fields set to the value undefined,
+// meaning the new Display Object can be merged with another DisplayObject via destructuring.
+//
+// Also puts the fields in the order in which they should be displayed.
+export function normalizeDisplayObject(displayObject: DisplayObject): DisplayObject {
+  const { nodeId, type, doi, id, published, url, content, actors } = displayObject;
+  return {
+    nodeId,
+    type,
+    ...(doi && { doi }),
+    ...(id && { id }),
+    ...(published && { published }),
+    ...(url && { url }),
+    ...(content && { content }),
+    ...(actors && { actors }),
+  };
+}
+
+export function mergeDisplayObjects(a: DisplayObject | undefined, b: DisplayObject): DisplayObject {
+  return {
+    ...(a && normalizeDisplayObject(a)),
+    ...normalizeDisplayObject(b),
+  };
+}
+
+// DisplayObjectEdges are the widget's internal representation of an edge connecting two DisplayObjects.
+export type DisplayObjectEdge = {
+  sourceId: string;
+  targetId: string;
+};
+
+export type DisplayObjectGraph = {
+  nodes: DisplayObject[];
+  edges: DisplayObjectEdge[];
+};
+
+// The appearance of a DisplayObject in the graph view and in the detail view is determined by its 'type' field.
+// The following constants define the possible values of the 'type' field and the appearance that corresponds with each value.
 export type TypeDisplayOption = {
   shortLabel: string;
   longLabel: string;
   backgroundColor: string;
-  detailBackgroundColor?: string; // if this is not set, backgroundColor will be used
-  detailTextColor?: string; // if this is not set, textColor will be used
   textColor: string;
-  dottedBorder?: boolean;
+  dottedBorder?: boolean; // whether the node should be rendered with a dotted border
+  detailViewBackgroundColor?: string; // if this is not set, backgroundColor will be used
+  detailViewTextColor?: string; // if this is not set, textColor will be used
 };
 
 export const TYPE_DISPLAY_OPTIONS: {
@@ -74,65 +143,10 @@ export const TYPE_DISPLAY_OPTIONS: {
     longLabel: 'Type unknown',
     backgroundColor: '#CDCDCD',
     textColor: '#043945',
-    detailBackgroundColor: '#777',
-    detailTextColor: '#CDCDCD',
+    detailViewBackgroundColor: '#777',
+    detailViewTextColor: '#CDCDCD',
     dottedBorder: true,
   },
 };
 
-export const ALL_KNOWN_TYPES: string[] = Object.keys(TYPE_DISPLAY_OPTIONS);
-
-export interface FieldsToDisplay {
-  doi?: string;
-  id?: string;
-  published?: string;
-  url?: URL;
-  content?: string[];
-  actors?: string;
-}
-
-// The following 3 statements allow us to use FieldsToDisplay both as a type and as something we can
-// check against at runtime. We could also use io-ts for this, but that felt like overkill since this
-// is the only place in the widget where we do something like this.
-export type FieldToDisplay = keyof FieldsToDisplay;
-
-const FieldsToDisplayPrototype: { [K in FieldToDisplay]: null } = {
-  doi: null,
-  id: null,
-  published: null,
-  url: null,
-  content: null,
-  actors: null,
-};
-
-export function isFieldToDisplay(key: string): key is FieldToDisplay {
-  return key in FieldsToDisplayPrototype;
-}
-
-export function getFieldsToDisplay(): FieldToDisplay[] {
-  return Object.keys(FieldsToDisplayPrototype) as FieldToDisplay[];
-}
-
-// Each input and output of the Docmap's steps is converted into one of these
-export interface DisplayObject extends FieldsToDisplay {
-  nodeId: string; // Used internally to construct graph, never rendered
-  type: string;
-}
-
-export type DisplayObjectEdge = {
-  sourceId: string;
-  targetId: string;
-};
-
-export type DisplayObjectGraph = {
-  nodes: DisplayObject[];
-  edges: DisplayObjectEdge[];
-};
-
-// We override x & y since they're optional in SimulationNodeDatum, but not in our use case
-export type D3Node = SimulationNodeDatum & DisplayObject & { x: number; y: number };
-export type D3Edge = SimulationLinkDatum<D3Node>;
-export type DagreGraph = Dagre.graphlib.Graph<DisplayObject>;
-
-export const filterMetadataEntries = (node: DisplayObject): [string, any][] =>
-  Object.entries(node).filter(([key, value]) => isFieldToDisplay(key) && value);
+export const ALL_DISPLAY_OBJECT_TYPES: string[] = Object.keys(TYPE_DISPLAY_OPTIONS);

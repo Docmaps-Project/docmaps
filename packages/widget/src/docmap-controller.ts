@@ -3,9 +3,28 @@ import { TaskFunction } from '@lit/task';
 import { ActorT, Docmap, DocmapT, ManifestationT, RoleInTimeT, StepT, ThingT } from 'docmaps-sdk';
 import { pipe } from 'fp-ts/lib/function';
 import * as E from 'fp-ts/lib/Either';
-import { ALL_KNOWN_TYPES, DisplayObject, DisplayObjectEdge, DisplayObjectGraph } from './util';
+import {
+  ALL_DISPLAY_OBJECT_TYPES,
+  DisplayObject,
+  DisplayObjectEdge,
+  DisplayObjectGraph,
+  mergeDisplayObjects,
+} from './util';
 
 export type DocmapFetchingParams = [string, string]; // [serverUrl, doi]
+
+interface NodesById {
+  [id: string]: DisplayObject;
+}
+
+interface IdAble {
+  id?: string;
+  doi?: string;
+}
+
+interface NameHaver {
+  name: string;
+}
 
 export const getDocmap: TaskFunction<DocmapFetchingParams, DisplayObjectGraph> = async ([
   serverUrl,
@@ -59,15 +78,6 @@ function getOrderedSteps(docmap: DocmapT): StepT[] {
   return orderedSteps;
 }
 
-interface NodesById {
-  [id: string]: DisplayObject;
-}
-
-interface IdAble {
-  id?: string;
-  doi?: string;
-}
-
 export function stepsToGraph(steps: StepT[]): DisplayObjectGraph {
   let nodesById: NodesById = {};
   let edges: DisplayObjectEdge[] = [];
@@ -96,10 +106,7 @@ function nodesAndEdgesForStep(
     step.inputs?.map((input) => {
       const newId = generateId(input);
       const dispObj = thingToDisplayObject(input, newId, []);
-      newNodesById[newId] = {
-        ...(newNodesById[newId] ?? {}),
-        ...dispObj,
-      };
+      newNodesById[newId] = mergeDisplayObjects(newNodesById[newId], dispObj);
       return newId;
     }) ?? [];
 
@@ -107,10 +114,7 @@ function nodesAndEdgesForStep(
     for (const output of action.outputs) {
       const newId = generateId(output);
       const dispObj = thingToDisplayObject(output, newId, action.participants);
-      newNodesById[newId] = {
-        ...(newNodesById[newId] ?? {}),
-        ...dispObj,
-      };
+      newNodesById[newId] = mergeDisplayObjects(newNodesById[newId], dispObj);
 
       const edgesForThisOutput: DisplayObjectEdge[] = inputIds.map(
         (inputId): DisplayObjectEdge => ({
@@ -140,17 +144,15 @@ function thingToDisplayObject(
   const content = extractContentUrls(thing.content);
   const actors: string = extractActorNames(participants);
 
-  // The order in which we assign these fields is currently important, because it determines the
-  // order in which they appear in the UI.
   return {
     nodeId,
     type: determineDisplayType(type),
-    ...(doi && { doi }),
-    ...(id && { id }),
-    ...(published && { published }),
-    ...(url && { url }),
-    ...(content && { content }),
-    ...(actors && { actors }),
+    url: url?.toString(),
+    doi,
+    id,
+    published,
+    content,
+    actors,
   };
 }
 
@@ -164,17 +166,13 @@ function formatDateIfAvailable(date: Date | string | undefined) {
 
 function determineDisplayType(ty: string | string[] | undefined): string {
   const singleType: string = (Array.isArray(ty) ? ty[0] : ty) ?? '??';
-  return ALL_KNOWN_TYPES.includes(singleType) ? singleType : '??';
+  return ALL_DISPLAY_OBJECT_TYPES.includes(singleType) ? singleType : '??';
 }
 
 function extractContentUrls(content: ManifestationT[] | undefined) {
   return content
     ?.map((manifestation: ManifestationT) => manifestation.url?.toString())
     .filter((url: string | undefined): url is string => url !== undefined);
-}
-
-interface NameHaver {
-  name: string;
 }
 
 function extractActorNames(participants: RoleInTimeT[]) {
