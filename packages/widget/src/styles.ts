@@ -16,6 +16,13 @@ export const customCss: CSSResult = css`
     cursor: pointer;
   }
 
+  .no-select {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+  }
+
   button {
     border-radius: 8px;
     border: 1px solid transparent;
