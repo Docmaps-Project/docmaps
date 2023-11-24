@@ -1,5 +1,5 @@
 import { nothing, svg, SVGTemplateResult } from 'lit';
-import { DisplayObject, TYPE_DISPLAY_OPTIONS } from './util';
+import { DisplayObject, TYPE_DISPLAY_OPTIONS } from './display-object';
 
 const TIMELINE_WIDTH: number = 368;
 const FIRST_NODE_X: number = 6.5;

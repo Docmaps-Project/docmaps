@@ -9,7 +9,7 @@ import {
   DisplayObjectEdge,
   DisplayObjectGraph,
   mergeDisplayObjects,
-} from './util';
+} from './display-object';
 
 export type DocmapFetchingParams = [string, string]; // [serverUrl, doi]
 

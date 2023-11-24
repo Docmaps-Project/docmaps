@@ -4,7 +4,7 @@ import { customCss } from './styles';
 import { logo } from './assets';
 import { Task } from '@lit/task';
 import { DocmapFetchingParams, getDocmap } from './docmap-controller';
-import { DisplayObject, DisplayObjectGraph, GRAPH_CANVAS_ID } from './util';
+import { DisplayObject, DisplayObjectGraph, GRAPH_CANVAS_ID } from './display-object';
 import { clearGraph, displayGraph } from './graph-view';
 import { renderDetailsView } from './detail-view';
 import { loadFont } from './font';

@@ -4,7 +4,7 @@ import {
   isDisplayObjectMetadataField,
   normalizeDisplayObject,
   TYPE_DISPLAY_OPTIONS,
-} from './util';
+} from './display-object.ts';
 import { renderDetailNavigationHeader } from './detail-navigation-header';
 import { closeDetailsButton } from './assets';
 

@@ -10,7 +10,7 @@ import {
   RANK_SEPARATION,
   TYPE_DISPLAY_OPTIONS,
   WIDGET_SIZE,
-} from './util';
+} from './display-object';
 import * as Dagre from 'dagre';
 import { SimulationNodeDatum } from 'd3-force';
 
