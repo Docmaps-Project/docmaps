@@ -17,7 +17,8 @@ export class DocmapsWidget extends LitElement {
   @property({ type: String })
   serverUrl: string = '';
 
-  @state() // This decorator automatically causes a rerender when the selecetdNode changes
+  // The @state decorator is used to automatically trigger a re-render when the value changes
+  @state()
   selectedNode?: DisplayObject; // if this is set, we're showing the detail view
 
   @state()
