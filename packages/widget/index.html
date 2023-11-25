@@ -11,10 +11,15 @@
 </head>
 <body>
 
-<p>
-  10.1101/273730
-</p>
+
 <div id='root'>
+  <p>Docmap fetched from server:</p>
+  <docmaps-widget serverurl='https://web-nodejs.onrender.com' doi='10.1101/273730'></docmaps-widget>
+
+
+  <p>
+    Docmap passed in as an object:
+  </p>
   <docmaps-widget id='my-widget'></docmaps-widget>
 </div>
 
@@ -213,7 +218,6 @@
       },
     };
     const widgetElement = document.getElementById('my-widget');
-    // uncomment this line to pass in an example docmap
     widgetElement.docmap = exampleDocmap;
   });
 
