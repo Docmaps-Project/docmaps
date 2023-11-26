@@ -10,7 +10,6 @@
 </script>
 
 <div class='code-container'>
-  <h2>Raw Docmap</h2>
-  <h4>(Docmap derived from CrossRef)</h4>
+  <h2>Docmap derived from CrossRef</h2>
   <JsonBox {json} />
 </div>

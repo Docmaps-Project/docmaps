@@ -7,18 +7,15 @@
   import { isLeft } from 'fp-ts/Either';
 
   let inputDoi = '';
-  let placeholder;
-  let widgetElement;
-
-  let codeBox;
   let json = undefined;
 
   $: tabs = [
     { name: 'Widget', component: Widget, props: { doi: inputDoi } },
     { name: 'Crossref Demo', component: CrossrefDemo, props: { json } },
   ];
-  let activeTabName = 'Crossref Demo';
-  let key = 0;
+  let activeTabName = 'Widget';
+
+  let key = 0; // Key is used to make sure Svelte re-renders the tab content from scratch whenever the active tab changes
   const handleClick = tabName => {
     key += 1;
     activeTabName = tabName;
@@ -36,31 +33,7 @@
     json = structureError(error);
   }
 
-  // function renderWidget() {
-  //   console.log('rendering widget');
-  //   if (!placeholder) {
-  //     return;
-  //   }
-  //
-  //   placeholder.innerHTML = '';
-  //   const widgetTitle = document.createElement('h2');
-  //   widgetTitle.appendChild(document.createTextNode('Docmaps Widget'));
-  //   placeholder.appendChild(widgetTitle);
-  //   const widgetExplanation = document.createElement('h4');
-  //   widgetExplanation.appendChild(document.createTextNode('(Docmap fetched from staging server)'));
-  //   placeholder.appendChild(widgetExplanation);
-  //   placeholder.appendChild(document.createElement('br'));
-  //
-  //   widgetElement = document.createElement('docmaps-widget');
-  //   widgetElement.setAttribute('serverurl', 'https://web-nodejs.onrender.com');
-  //   widgetElement.setAttribute('doi', inputDoi);
-  //   placeholder.appendChild(widgetElement);
-  // }
-
   async function fetchData() {
-    // if (!widgetElement) {
-    //   renderWidget();
-    // }
     key += 1;
     await configureForDoiString(
       inputDoi,
@@ -76,29 +49,28 @@
   }
 
   async function configureForDoiString(doi, handleJson, handleError) {
-
     const result = await ItemCmd(
       [doi],
       {
         source: {
           preset: 'crossref-api',
           client: CreateCrossrefClient({
-            politeMailto: "docmaps+spa@knowledgefutures.org"
+            politeMailto: 'docmaps+spa@knowledgefutures.org',
           }),
         },
         publisher: {
           name: 'Inferred from Crossref',
           url: 'https://github.com/docmaps-project/docmaps/tree/main/packages/ts-etl',
         },
-      }
+      },
     );
 
     if (isLeft(result)) {
-      console.log("Got error while building docmap from crossref:",  JSON.stringify(result.left));
-      handleError(result.left)
+      console.log('Got error while building docmap from crossref:', JSON.stringify(result.left));
+      handleError(result.left);
     } else {
-      console.log("Got docmap from crossref");
-      handleJson(result.right)
+      console.log('Got docmap from crossref');
+      handleJson(result.right);
     }
   }
 </script>
@@ -107,7 +79,7 @@
   <h1>Docmap Explorer</h1>
   <input type='text' bind:value='{inputDoi}' on:keyup='{handleKeyup}' placeholder='Enter Your DOI Here' />
   <button on:click='{fetchData}'>Fetch Docmap</button>
-
+  <br>
 
   {#if showContent}
     <!-- Tab buttons -->
@@ -157,6 +129,7 @@
         flex-wrap: wrap;
         padding-left: 0;
         margin-bottom: 0;
+        margin-top: 40px;
         list-style: none;
         border-bottom: 1px solid #dee2e6;
     }

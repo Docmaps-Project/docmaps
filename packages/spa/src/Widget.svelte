@@ -7,6 +7,8 @@
 
 {#if doi}
   <div id='result'>
+    <h2>Docmaps widget</h2>
+    <h4>Docmap fetched from the Docmaps staging server.</h4>
     <docmaps-widget doi={doi} serverurl='https://web-nodejs.onrender.com'></docmaps-widget>
   </div>
 {/if}
@@ -19,5 +21,4 @@
         margin: auto;
         max-width: 510px;
     }
-
 </style>
