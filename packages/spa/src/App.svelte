@@ -126,13 +126,13 @@
     {
       name: 'Widget',
       component: Widget,
-      show: true,
+      show: true, // Always show the widget
       props: { doi: requestedDoi, docmap },
     },
     {
       name: 'Crossref Demo',
       component: CrossrefDemo,
-      show: !providingPlaintextDocmap,
+      show: !providingPlaintextDocmap, // Only show the crossref demo when we're not providing a docmap via plaintext
       props: { json },
     },
   ];
@@ -168,6 +168,7 @@
     <button on:click='{() => fetchData(searchInput)}'>Fetch Docmap</button>
     <br>
     <span class='toggle-input' on:click='{toggleInputMethod}'>Provide a docmap as text instead</span>
+
   {/if}
   <br>
 
@@ -226,7 +227,6 @@
         border-bottom: 1px solid #dee2e6;
     }
 
-
     .tab {
         border: 1px solid transparent;
         border-top-left-radius: 0.25rem;
@@ -250,7 +250,6 @@
         border-radius: 0 0 .5rem .5rem;
         border-top: 0;
     }
-
 
     .tab:hover {
         background-color: #ddd;
