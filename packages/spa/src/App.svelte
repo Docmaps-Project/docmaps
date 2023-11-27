@@ -6,14 +6,28 @@
   import CrossrefDemo from './CrossrefDemo.svelte';
   import { CreateCrossrefClient, ItemCmd } from '@docmaps/etl';
   import { isLeft } from 'fp-ts/Either';
+  import { onMount } from 'svelte';
 
-  let requestedDoi = '';
+  let requestedDoi;
   let textInputDoi = '';
   let json = undefined;
 
   let key = 0; // Key is used to make sure Svelte re-renders the tab content from scratch whenever the active tab changes
 
   let activeTabName = 'Widget';
+
+  function parseQueryString() {
+    const params = new URLSearchParams(window.location.search);
+    const doi = params.get('doi');
+    if (doi) {
+      requestedDoi = doi;
+      fetchData(doi);
+    }
+  }
+
+  onMount(() => {
+    parseQueryString();
+  });
 
   const handleClick = tabName => {
     key += 1;
@@ -85,6 +99,16 @@
     { name: 'Widget', component: Widget, props: { doi: requestedDoi } },
     { name: 'Crossref Demo', component: CrossrefDemo, props: { json } },
   ];
+
+  $: if (typeof requestedDoi !== 'undefined' && requestedDoi) {
+    const newUrl = new URL(window.location);
+    newUrl.searchParams.set('doi', requestedDoi);
+    window.history.replaceState({}, '', newUrl);
+  } else if (requestedDoi === '') {
+    const newUrl = new URL(window.location);
+    newUrl.searchParams.delete('doi');
+    window.history.replaceState({}, '', newUrl);
+  }
 </script>
 
 <main>
@@ -103,6 +127,7 @@
   <br>
 
   {#if showContent}
+    <p><i>Showing results for: {requestedDoi}</i></p>
 
     <!-- Tab buttons -->
     <div class='tabs'>
@@ -118,6 +143,7 @@
     <div class='tab-contents'>
       {#each tabs as tab}
         {#if tab.name === activeTabName}
+
           <svelte:component this={tab.component} {...tab.props} key={key} />
         {/if}
       {/each}
