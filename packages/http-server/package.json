@@ -57,7 +57,7 @@
     "@types/express": "^4.17.17",
     "@types/isomorphic-fetch": "^0.0.39",
     "@types/n3": "^1.16.0",
-    "@types/node": "^18.16.2",
+    "@types/node": "^20.0.0",
     "@types/rdfjs__data-model": "^2.0.4",
     "@types/rdfjs__namespace": "^2.0.5",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
