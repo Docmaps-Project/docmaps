@@ -183,7 +183,7 @@ export const customCss: CSSResult = css`
 
   .labels text {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 30px; /* Default size which is overridden for the first node below */
+    font-size: 30px;
     font-style: normal;
     font-weight: 600;
     text-anchor: middle;

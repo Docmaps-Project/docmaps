@@ -1,8 +1,7 @@
 <script>
-  import Prism from "prismjs";
-  import "prismjs/components/prism-json";
-  import "prismjs/themes/prism.css";
-  import { afterUpdate } from "svelte";
+  import Prism from 'prismjs';
+  import 'prismjs/components/prism-json';
+  import 'prismjs/themes/prism.css';
 
   let codeElement;
 
@@ -20,11 +19,12 @@
 
 </script>
 
-<pre class="language-json"><code class="language-json" bind:this={codeElement}></code></pre>
+<pre class='language-json'><code class='language-json' bind:this={codeElement}></code></pre>
 
 <style>
-  pre {
-  }
-  code {
-  }
+    pre {
+    }
+
+    code {
+    }
 </style>
