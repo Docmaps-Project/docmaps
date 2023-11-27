@@ -16,17 +16,22 @@
 
   let activeTabName = 'Widget';
 
-  function parseQueryString() {
+  // If a DOI is specified in the URL, use that. Otherwise, randomly select a DOI.
+  function getDoiToDisplay() {
     const params = new URLSearchParams(window.location.search);
     const doi = params.get('doi');
     if (doi) {
       requestedDoi = doi;
-      fetchData(doi);
+    } else{
+      // Randomly select a DOI
+      const randomIndex = Math.floor(Math.random() * dois.length);
+      requestedDoi = dois[randomIndex];
     }
+    fetchData(requestedDoi);
   }
 
   onMount(() => {
-    parseQueryString();
+    getDoiToDisplay();
   });
 
   const handleClick = tabName => {
@@ -127,7 +132,7 @@
   <br>
 
   {#if showContent}
-    <p><i>Showing results for: {requestedDoi}</i></p>
+    <p style='margin-top: 60px;'><i>Showing results for: {requestedDoi}</i></p>
 
     <!-- Tab buttons -->
     <div class='tabs'>
@@ -174,7 +179,6 @@
         flex-wrap: wrap;
         padding-left: 0;
         margin-bottom: 0;
-        margin-top: 40px;
         list-style: none;
         border-bottom: 1px solid #dee2e6;
     }
