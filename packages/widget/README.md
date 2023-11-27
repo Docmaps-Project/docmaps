@@ -3,6 +3,8 @@
 
 An embeddable widget for displaying Docmaps data, built with Lit and D3.
 
+To see the widget in action, check out the [Docmap explorer](https://docmaps-project.github.io/docmaps/demo/index.html?doi=10.1101%2F2023.06.01.543271) demo site!
+
 # Usage
 
 The widget can be retrieved via CDN, or via NPM if your project already uses NPM.
