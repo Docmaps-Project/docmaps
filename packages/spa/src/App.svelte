@@ -72,6 +72,9 @@
 
   function displayWidgetWithDocmapLiteral() {
     json = JSON.parse(searchInput);
+    if (Array.isArray(json)) {
+      json = json[0];
+    }
     docmap = json;
     showContent = true;
     key += 1;
