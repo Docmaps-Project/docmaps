@@ -1,6 +1,6 @@
 <script>
   import { structureError } from './utils.js';
-  import dois from './all-elife-dois.js';
+  import dois from './dois.js';
   import '@docmaps/widget';
   import Widget from './Widget.svelte';
   import CrossrefDemo from './CrossrefDemo.svelte';
