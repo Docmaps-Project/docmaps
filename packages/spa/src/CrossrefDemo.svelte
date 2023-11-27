@@ -9,7 +9,9 @@
   export let key;
 </script>
 
-<div class='code-container'>
-  <h2>Docmap derived from CrossRef</h2>
-  <JsonBox {json} />
-</div>
+{#key key} <!--Make sure changes to key trigger a rerender -->
+  <div class='code-container'>
+    <h2>Docmap derived from CrossRef</h2>
+    <JsonBox {json} />
+  </div>
+{/key}
