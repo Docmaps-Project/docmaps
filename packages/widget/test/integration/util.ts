@@ -1,10 +1,33 @@
 import { Page, Request, Route } from '@playwright/test';
+import { DocmapsWidget } from '../../src';
 
 const STAGING_SERVER_URL: string = 'https://web-nodejs.onrender.com';
 
-export async function renderWidgetWithDocmap(page: Page, doi: string, docmap: any) {
+export async function renderWidgetWithServerMock(page: Page, doi: string, docmap: any) {
   await mockDocmapForEndpoint(page, doi, docmap);
   return await renderWidget(page, doi);
+}
+
+export async function renderWidgetWithDocmapLiteral(page: Page, docmap: any) {
+  // This approach is inspired by https://github.com/microsoft/playwright/issues/14241#issuecomment-1488829515
+  await page.goto('/');
+  await page.evaluate(
+    ({ docmap }) => {
+      const root = document.querySelector('#root');
+      if (root) {
+        root.innerHTML = `<docmaps-widget id='test-docmap'></docmaps-widget>`;
+      }
+
+      customElements.whenDefined('docmaps-widget').then(() => {
+        const widgetElement = document.getElementById('test-docmap');
+        (widgetElement as DocmapsWidget).docmap = docmap;
+      });
+    },
+    { docmap }, // This is not a regular closure, so we need to pass in the variables we want to use
+  );
+  await page.waitForSelector('#test-docmap');
+
+  return page.locator('#test-docmap');
 }
 
 async function renderWidget(page: Page, doi: string) {
@@ -14,7 +37,6 @@ async function renderWidget(page: Page, doi: string) {
     ({ serverUrl, doi }) => {
       const root = document.querySelector('#root');
       if (root) {
-        console.log('body found');
         root.innerHTML = `<docmaps-widget serverurl='${serverUrl}' doi='${doi}'></docmaps-widget>`;
       }
     },
@@ -104,7 +126,6 @@ export const typeShortLabelToOpts: {
     textColor: '#043945',
   },
 };
-
 
 export const typeToDetailBackgroundColor = (type: string) =>
   type === '' ? TYPE_UNKNOWN_DETAIL_HEADER_COLOR : typeShortLabelToOpts[type].backgroundColor;

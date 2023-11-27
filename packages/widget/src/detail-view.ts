@@ -27,12 +27,12 @@ export function renderDetailsView(
     fieldsToDisplay.length > 0 ? createMetadataGrid(fieldsToDisplay) : emptyMetadataMessage();
 
   return html`
-    <div class="detail-timeline">
+    <div class="detail-timeline no-select">
       ${renderDetailNavigationHeader(allNodes, selectedNode, updateSelectedNode)}
     </div>
 
     <div class="detail-header" style="background: ${backgroundColor};">
-      <span style="color: ${textColor};"> ${opts.longLabel} </span>
+      <span style="color: ${textColor};" class="no-select">${opts.longLabel}</span>
       <div class="close-button clickable" @click="${closeDetailsView}">
         ${closeDetailsButton(textColor)}
       </div>

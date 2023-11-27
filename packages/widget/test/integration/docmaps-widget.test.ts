@@ -5,7 +5,8 @@ import anotherDocmapWithOneStep from '../fixtures/sciety-docmap-2';
 import fakeDocmapWithEveryType from '../fixtures/fake-docmap-with-every-thing-type';
 import fakeDocmapWithTwoLonelyNodes from '../fixtures/fake-docmap-with-two-lonely-nodes';
 import {
-  renderWidgetWithDocmap,
+  renderWidgetWithDocmapLiteral,
+  renderWidgetWithServerMock,
   TYPE_UNKNOWN_DETAIL_HEADER_COLOR,
   typeShortLabelToOpts,
   typeToDetailBackgroundColor,
@@ -41,7 +42,7 @@ const fixtures: { [docmapName: string]: { docmap: any; types: string[] } } = {
   'fakeDocmapWithEveryType',
 ].forEach((docmapName) => {
   test(`It can display ${docmapName} as a graph`, async ({ page }) => {
-    const widget = await renderWidgetWithDocmap(page, docmapName, fixtures[docmapName].docmap);
+    const widget = await renderWidgetWithServerMock(page, docmapName, fixtures[docmapName].docmap);
     const expectedNodeLabels = fixtures[docmapName].types;
 
     await expect(widget.locator('circle')).toHaveCount(expectedNodeLabels.length);
@@ -82,7 +83,11 @@ const fixtures: { [docmapName: string]: { docmap: any; types: string[] } } = {
 });
 
 test('Tooltips appear on mouseover', async ({ page, browserName }) => {
-  const widget = await renderWidgetWithDocmap(page, 'tooltip-test-doi', docmapWithMultipleSteps);
+  const widget = await renderWidgetWithServerMock(
+    page,
+    'tooltip-test-doi',
+    docmapWithMultipleSteps,
+  );
 
   await assertTooltipAppearsOnHover(widget, widget.locator('.node').first(), 'Preprint');
   await assertTooltipAppearsOnHover(widget, widget.locator('.node').nth(3), 'Reply');
@@ -97,7 +102,7 @@ test('Tooltips appear on mouseover', async ({ page, browserName }) => {
 
 test(`Can display details view for a Preprint with every field`, async ({ page }) => {
   const docmapName = 'fakeDocmapWithTwoLonelyNodes';
-  const widget = await renderWidgetWithDocmap(page, docmapName, fixtures[docmapName].docmap);
+  const widget = await renderWidgetWithServerMock(page, docmapName, fixtures[docmapName].docmap);
   const expectedNodeCount = fixtures[docmapName].types.length;
   await expect(widget.locator('.node')).toHaveCount(expectedNodeCount);
   const nodeToClick = widget.locator('.node').first();
@@ -148,14 +153,13 @@ test(`Can display details view for a Preprint with every field`, async ({ page }
   await expect(keys.nth(5)).toContainText('actors');
   await expect(vals.nth(6)).toContainText('eve, Andrew Edstrom');
 
-
   // Assert the details display can be closed
   await widget.locator('.close-button').click({ force: true });
   await expect(widget.locator('.node')).toHaveCount(expectedNodeCount);
 });
 
 test('Can display details view for a Journal Article with different fields', async ({ page }) => {
-  const widget = await renderWidgetWithDocmap(
+  const widget = await renderWidgetWithServerMock(
     page,
     'this-is-a-journal-article',
     fakeDocmapWithTwoLonelyNodes,
@@ -195,7 +199,7 @@ test('Can display details view for a Journal Article with different fields', asy
 });
 
 test('displays the right detail header styles when the type is unknown', async ({ page }) => {
-  const widget = await renderWidgetWithDocmap(
+  const widget = await renderWidgetWithServerMock(
     page,
     'get-me-a-docmap-yo',
     fakeDocmapWithTwoLonelyNodes,
@@ -220,7 +224,7 @@ const timelineTestCases: [string, number][] = [
 ];
 timelineTestCases.forEach(([docmapName, nodeToClickIndex]) => {
   test(`displays real nodes in the timeline for ${docmapName}`, async ({ page }) => {
-    const widget = await renderWidgetWithDocmap(page, docmapName, fixtures[docmapName].docmap);
+    const widget = await renderWidgetWithServerMock(page, docmapName, fixtures[docmapName].docmap);
 
     const thingToClick = widget.locator('.node').nth(nodeToClickIndex);
     await thingToClick.click({ force: true });
@@ -261,7 +265,7 @@ timelineTestCases.forEach(([docmapName, nodeToClickIndex]) => {
 
 test(`clicking a node in the timeline takes you to that node`, async ({ page }) => {
   const docmapName: string = 'fakeDocmapWithTwoLonelyNodes';
-  const widget = await renderWidgetWithDocmap(page, docmapName, fixtures[docmapName].docmap);
+  const widget = await renderWidgetWithServerMock(page, docmapName, fixtures[docmapName].docmap);
 
   const firstNode = widget.locator('.node').nth(0);
   await firstNode.click({ force: true });
@@ -275,7 +279,7 @@ test(`clicking a node in the timeline takes you to that node`, async ({ page }) 
 
 test(`clicking the back button takes you to the previous node`, async ({ page }) => {
   const docmapName: string = 'fakeDocmapWithTwoLonelyNodes';
-  const widget = await renderWidgetWithDocmap(page, docmapName, fixtures[docmapName].docmap);
+  const widget = await renderWidgetWithServerMock(page, docmapName, fixtures[docmapName].docmap);
 
   const secondNode = widget.locator('.node').nth(1);
   await secondNode.click({ force: true });
@@ -289,7 +293,7 @@ test(`clicking the back button takes you to the previous node`, async ({ page })
 
 test(`clicking back from the first node wraps you around to the last node`, async ({ page }) => {
   const docmapName: string = 'fakeDocmapWithTwoLonelyNodes';
-  const widget = await renderWidgetWithDocmap(page, docmapName, fixtures[docmapName].docmap);
+  const widget = await renderWidgetWithServerMock(page, docmapName, fixtures[docmapName].docmap);
   const firstNode = widget.locator('.node').first();
   await firstNode.click({ force: true });
 
@@ -302,7 +306,7 @@ test(`clicking back from the first node wraps you around to the last node`, asyn
 
 test(`clicking the forward button takes you to the next node`, async ({ page }) => {
   const docmapName: string = 'fakeDocmapWithTwoLonelyNodes';
-  const widget = await renderWidgetWithDocmap(page, docmapName, fixtures[docmapName].docmap);
+  const widget = await renderWidgetWithServerMock(page, docmapName, fixtures[docmapName].docmap);
 
   const secondNode = widget.locator('.node').nth(4);
   await secondNode.click({ force: true });
@@ -318,7 +322,7 @@ test(`clicking the forward button from the last node wraps you around to the fir
   page,
 }) => {
   const docmapName: string = 'fakeDocmapWithTwoLonelyNodes';
-  const widget = await renderWidgetWithDocmap(page, docmapName, fixtures[docmapName].docmap);
+  const widget = await renderWidgetWithServerMock(page, docmapName, fixtures[docmapName].docmap);
 
   const lastNode = widget.locator('.node').last();
   await lastNode.click({ force: true });
@@ -333,9 +337,9 @@ test(`clicking the forward button from the last node wraps you around to the fir
 test('Nodes that are alone on their y level are fixed to the center of the widget horizontally', async ({
   page,
 }) => {
-  const widget = await renderWidgetWithDocmap(
+  const widget = await renderWidgetWithServerMock(
     page,
-    'this-docmap-has-3-lonely-nodes',
+    'this-docmap-has-2-lonely-nodes',
     fakeDocmapWithTwoLonelyNodes,
   );
 
@@ -344,6 +348,13 @@ test('Nodes that are alone on their y level are fixed to the center of the widge
 
   const secondCircle = widget.locator('.node').nth(1);
   await expect(secondCircle).toHaveAttribute('cx', '250');
+});
+
+test('Custom docmaps can be passed in directly', async ({ page }) => {
+  const docmapName = 'fakeDocmapWithEveryType';
+  const fixture = fixtures[docmapName];
+  const widget = await renderWidgetWithDocmapLiteral(page, fixture.docmap);
+  await expect(widget.locator('circle')).toHaveCount(fixture.types.length);
 });
 
 async function assertTooltipAppearsOnHover(

@@ -12,7 +12,7 @@ You can directly pull in the widget in an HTML file without installing anything 
 
 ```html
 <head>
-  <script type='module' src='https://cdn.jsdelivr.net/npm/@docmaps/widget/dist/index.min.js'></script>
+  <script type='module' src='https://cdn.jsdelivr.net/npm/@docmaps/widget@latest/dist/index.min.js'></script>
 </head>
 <body>
 <docmaps-widget doi='doi-to-render' serverurl='https://example.com'></docmaps-widget>
@@ -43,6 +43,30 @@ These attributes can be added to the `<docmaps-widget>` tag to configure the wid
 |-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `doi`       | The DOI of the paper to render                                                                                                                                                                                                                                                                                                                                                                                       |
 | `serverurl` | The URL of the server from which the docmap will be fetched. The widget will make a request to this server's `GET /docmap_for/doi?subject={doi}` endpoint, which must be implemented by the server in accordance with the [official Docmaps API spec](https://github.com/Docmaps-Project/rfcs/blob/ships/1/APIProtocol/proposals/001_interop.md#convenience-endpoints-for-one-shot-noninteractive-docmap-retrieval). |
+
+If you prefer to pass a docmap directly to the widget, you must do so after the widget has been mounted, like so:
+
+```html
+
+<head>
+  <script type='module' src='https://cdn.jsdelivr.net/npm/@docmaps/widget@latest/dist/index.min.js'></script>
+</head>
+<body>
+<docmaps-widget id='my-widget'></docmaps-widget>
+</body>
+
+<script>
+  customElements.whenDefined('docmaps-widget') // wait for the custom docmaps-widget element to be defined
+    .then(() => {
+      const widgetElement = document.getElementById('my-widget');
+      widgetElement.docmap = {
+        // docmap here
+      };
+    });
+</script>
+```
+
+For examples of docmaps to feed into the widget here, see the [examples directory](../../examples).
 
 # Screenshots
 

@@ -3,7 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { customCss } from './styles';
 import { logo } from './assets';
 import { Task } from '@lit/task';
-import { DocmapFetchingParams, getDocmap } from './docmap-controller';
+import { DocmapFetchingParams, docmapToDisplayObjectGraph, getDocmap } from './docmap-controller';
 import { DisplayObject, DisplayObjectGraph, GRAPH_CANVAS_ID } from './display-object';
 import { clearGraph, displayGraph } from './graph-view';
 import { renderDetailsView } from './detail-view';
@@ -17,10 +17,18 @@ export class DocmapsWidget extends LitElement {
   @property({ type: String })
   serverUrl: string = '';
 
-  @state() // This decorator automatically causes a rerender when the selecetdNode changes
+  // The @state decorator is used to automatically trigger a re-render when the value changes
+  @state()
   selectedNode?: DisplayObject; // if this is set, we're showing the detail view
 
-  allNodes: DisplayObject[] = [];
+  @state()
+  graph?: DisplayObjectGraph;
+
+  #hasRenderedOnce: boolean = false;
+
+  set docmap(docmap: any) {
+    this.configureWithDocmap(docmap);
+  }
 
   #docmapFetchingTask: Task<DocmapFetchingParams, DisplayObjectGraph> = new Task(
     this,
@@ -32,6 +40,7 @@ export class DocmapsWidget extends LitElement {
 
   firstUpdated() {
     loadFont();
+    this.#hasRenderedOnce = true;
   }
 
   private showDetailViewForNode = (node: DisplayObject) => {
@@ -58,20 +67,33 @@ export class DocmapsWidget extends LitElement {
     `;
   }
 
+  private configureWithDocmap(docmap: any) {
+    this.graph = docmapToDisplayObjectGraph(docmap);
+  }
+
+  private renderGraphView({ nodes, edges }: DisplayObjectGraph) {
+    if (this.shadowRoot) {
+      displayGraph(nodes, edges, this.shadowRoot, this.showDetailViewForNode);
+    }
+  }
+
+  onFetchComplete = (graph: DisplayObjectGraph) => {
+    this.graph = graph;
+    this.renderGraphView(graph);
+    // D3 draws in the canvas for us, so we do not return html representing the graph
+    return nothing;
+  };
+
   private graphView() {
-    const onFetchComplete = ({ nodes, edges }: DisplayObjectGraph) => {
-      if (this.shadowRoot) {
-        this.allNodes = nodes;
-        displayGraph(nodes, edges, this.shadowRoot, this.showDetailViewForNode);
+    if (this.graph) {
+      if (this.#hasRenderedOnce) {
+        this.renderGraphView(this.graph);
       }
-
-      return nothing; // D3 draws the graph for us, so we have nothing to actually render here
-    };
-
-    // this function usually returns a template result, but we don't need it currently since d3 draws the graph for us
-    this.#docmapFetchingTask.render({
-      complete: onFetchComplete,
-    });
+    } else {
+      this.#docmapFetchingTask?.render({
+        complete: this.onFetchComplete,
+      });
+    }
 
     return html` <div id="tooltip" class="tooltip" style="opacity:0;"></div>`;
   }
@@ -82,9 +104,13 @@ export class DocmapsWidget extends LitElement {
       return nothing;
     }
 
+    if (!this.graph) {
+      return nothing;
+    }
+
     return renderDetailsView(
       this.selectedNode,
-      this.allNodes,
+      this.graph.nodes,
       this.showDetailViewForNode,
       this.closeDetailView,
     );

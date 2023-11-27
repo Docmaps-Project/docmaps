@@ -26,6 +26,11 @@ interface NameHaver {
   name: string;
 }
 
+export function docmapToDisplayObjectGraph(rawDocmap: any): DisplayObjectGraph {
+  const steps: StepT[] = getSteps(rawDocmap);
+  return stepsToGraph(steps);
+}
+
 export const getDocmap: TaskFunction<DocmapFetchingParams, DisplayObjectGraph> = async ([
   serverUrl,
   doi,
@@ -45,8 +50,7 @@ export const getDocmap: TaskFunction<DocmapFetchingParams, DisplayObjectGraph> =
   }
 
   const rawDocmap = resp.body;
-  const steps: StepT[] = getSteps(rawDocmap);
-  return stepsToGraph(steps);
+  return docmapToDisplayObjectGraph(rawDocmap);
 };
 
 // This function is general enough we could probably move it into the SDK
