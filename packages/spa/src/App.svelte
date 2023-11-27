@@ -1,21 +1,20 @@
 <script>
   import { structureError } from './utils.js';
+  import dois from './all-elife-dois.js';
   import '@docmaps/widget';
   import Widget from './Widget.svelte';
   import CrossrefDemo from './CrossrefDemo.svelte';
   import { CreateCrossrefClient, ItemCmd } from '@docmaps/etl';
   import { isLeft } from 'fp-ts/Either';
 
-  let inputDoi = '';
+  let requestedDoi = '';
+  let textInputDoi = '';
   let json = undefined;
 
-  $: tabs = [
-    { name: 'Widget', component: Widget, props: { doi: inputDoi } },
-    { name: 'Crossref Demo', component: CrossrefDemo, props: { json } },
-  ];
+  let key = 0; // Key is used to make sure Svelte re-renders the tab content from scratch whenever the active tab changes
+
   let activeTabName = 'Widget';
 
-  let key = 0; // Key is used to make sure Svelte re-renders the tab content from scratch whenever the active tab changes
   const handleClick = tabName => {
     key += 1;
     activeTabName = tabName;
@@ -33,20 +32,27 @@
     json = structureError(error);
   }
 
-  async function fetchData() {
+  function handleKeyup(event) {
+    if (event.key === 'Enter') {
+      fetchData(textInputDoi);
+    }
+  }
+
+  function onSelectionChange(event) {
+    const selectedDoi = event.target.value;
+    fetchData(selectedDoi);
+  }
+
+  async function fetchData(doi) {
+    requestedDoi = doi;
     key += 1;
     await configureForDoiString(
-      inputDoi,
+      doi,
       handleData,
       handleError,
     );
   }
 
-  function handleKeyup(event) {
-    if (event.key === 'Enter') {
-      fetchData();
-    }
-  }
 
   async function configureForDoiString(doi, handleJson, handleError) {
     const result = await ItemCmd(
@@ -73,15 +79,31 @@
       handleJson(result.right);
     }
   }
+
+  // Reactive statements
+  $: tabs = [
+    { name: 'Widget', component: Widget, props: { doi: requestedDoi } },
+    { name: 'Crossref Demo', component: CrossrefDemo, props: { json } },
+  ];
 </script>
 
 <main>
   <h1>Docmap Explorer</h1>
-  <input type='text' bind:value='{inputDoi}' on:keyup='{handleKeyup}' placeholder='Enter Your DOI Here' />
-  <button on:click='{fetchData}'>Fetch Docmap</button>
+  <select on:change='{onSelectionChange}'>
+    <option value=''>Select a DOI</option>
+    {#each dois as doi}
+      <option value='{doi}'>{doi}</option>
+    {/each}
+  </select>
+
+  <span>or</span>
+
+  <input type='text' bind:value='{textInputDoi}' on:keyup='{handleKeyup}' placeholder='Enter Your DOI Here' />
+  <button on:click='{() => fetchData(textInputDoi)}'>Fetch Docmap</button>
   <br>
 
   {#if showContent}
+
     <!-- Tab buttons -->
     <div class='tabs'>
       {#each tabs as tab, index}
@@ -94,16 +116,13 @@
 
     <!-- Tab content -->
     <div class='tab-contents'>
-
       {#each tabs as tab}
         {#if tab.name === activeTabName}
-          <svelte:component this={tab.component} {...tab.props} key={`${activeTabName}${key}`} />
+          <svelte:component this={tab.component} {...tab.props} key={key} />
         {/if}
       {/each}
     </div>
   {/if}
-
-
 </main>
 
 <style>
