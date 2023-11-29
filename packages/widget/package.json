@@ -36,7 +36,7 @@
     "@types/d3-force": "^3.0.7",
     "@types/d3-selection": "^3.0.8",
     "@types/dagre": "^0.7.51",
-    "@types/node": "^18.16.2",
+    "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "ava": "^5.2.0",
