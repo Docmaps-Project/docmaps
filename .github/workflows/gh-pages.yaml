@@ -61,7 +61,7 @@ jobs:
 
       - name: Generate docs
         run: |
-          cd packages/ts-sdk ;
+          cd packages/sdk ;
           pnpm docs:generate;
 
       - name: Build SPA

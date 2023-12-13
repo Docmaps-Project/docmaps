@@ -1,4 +1,4 @@
-name: Test ts-etl
+name: Test @docmaps/etl
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_call:
 
 env:
-  PKG_DIR: "packages/ts-etl"
+  PKG_DIR: "packages/etl"
 
 jobs:
   nodejs_test:

@@ -8,10 +8,13 @@ title: "[DOCS]: [DESCRIPTION]"
 
 Packages related to documentation request:
 
+- [ ] sdk
+- [ ] etl
+- [ ] widget
+- [ ] http-client
+- [ ] http-server
+- [ ] spa (explorer)
 - [ ] OWL/SHACL definitions
-- [ ] ts-sdk
-- [ ] ts-etl
-- [ ] spa
 
 ### Description
 

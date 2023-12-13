@@ -1,4 +1,4 @@
-# Contributing to docmaps ts-sdk
+# Contributing to @docmaps/sdk
 
 We welcome contributions from anyone interested in improving [Project Name]! Before you get started, please read through the guidelines below to ensure that your contributions are effective and useful.
 

@@ -26,7 +26,7 @@ pnpm docmaps-etl item --source crossref-api 10.5194/angeo-40-247-2022 # or npm d
 
 ## Implementation
 
-This tool and library are written using the [`docmaps-sdk` package](/packages/ts-sdk)
+This tool and library are written using the [`docmaps-sdk` package](/packages/sdk)
 in this repository, as well as the [`crossref-openapi-client-ts`](https://github.com/Docmaps-Project/crossref-openapi-client-ts)
 also maintained by Knowledge Futures, Inc. As seen in `src/crossref.ts`[src/crossref.ts],
 Codecs from the SDK are processed using functional paradigms provided conveniently by

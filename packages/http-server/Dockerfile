@@ -66,7 +66,7 @@ COPY --from=build /app/packages/http-server/dist /app/packages/http-server/dist
 
 # Copy built sub-dependencies from this same package
 COPY --from=build /app/packages/http-client/dist /app/packages/http-server/node_modules/@docmaps/http-client/dist
-COPY --from=build /app/packages/ts-sdk/dist /app/packages/http-server/node_modules/docmaps-sdk/dist
+COPY --from=build /app/packages/sdk/dist /app/packages/http-server/node_modules/@docmaps/sdk/dist
 WORKDIR /app/packages/http-server
 
 # Use production node environment by default.

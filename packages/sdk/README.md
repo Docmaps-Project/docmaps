@@ -24,7 +24,7 @@ Any codec can be used directly with a JSON string or `any`/`unknown` object to t
 create the instantiation of the Typescript type. `io-ts` is designed to work with
 [`fp-ts`](https://github.com/gcanti/fp-ts), so you get an instance of Either which must
 be deconstructed by case to determine whether the input was valid. See examples of this
-in the [`typed_graph`](https://github.com/Docmaps-Project/docmaps/blob/main/packages/ts-sdk/src/typed_graph.ts),
+in the [`typed_graph`](https://github.com/Docmaps-Project/docmaps/blob/main/packages/sdk/src/typed_graph.ts),
 where we use `isLeft` to check if the decode failed.
 
 **For examples of usage of `fp-ts` pipelines with our `io-ts` codecs, review the
@@ -59,7 +59,7 @@ For Code of Conduct, see the repository-wide
 [CODE_OF_CONDUCT.md](https://github.com/Docmaps-Project/docmaps/blob/main/CODE_OF_CONDUCT.md).
 
 For info about local development of this repository, see
-[CONTRIBUTING.md](https://github.com/Docmaps-Project/docmaps/blob/main/packages/ts-sdk/CONTRIBUTING.md).
+[CONTRIBUTING.md](https://github.com/Docmaps-Project/docmaps/blob/main/packages/sdk/CONTRIBUTING.md).
 
 ## Releases
 

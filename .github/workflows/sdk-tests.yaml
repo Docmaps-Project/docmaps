@@ -1,4 +1,4 @@
-name: Test ts-sdk
+name: Test @docmaps/sdk
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_call:
 
 env:
-  PKG_DIR: "packages/ts-sdk"
+  PKG_DIR: "packages/sdk"
 
 jobs:
   nodejs_test:
