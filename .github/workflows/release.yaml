@@ -31,7 +31,7 @@ jobs:
     needs:
       - test-sdk
       - test-etl
-      - test-http-server:
+      - test-http-server
       - test-specification
       - test-example
 
