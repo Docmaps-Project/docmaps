@@ -1,4 +1,4 @@
-import * as D from 'docmaps-sdk'
+import * as D from '@docmaps/sdk'
 import type { Plugin, RecursiveStepDataChain } from './types'
 import * as TE from 'fp-ts/lib/TaskEither'
 import * as A from 'fp-ts/lib/Array'

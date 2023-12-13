@@ -3,7 +3,7 @@ import * as E from 'fp-ts/lib/Either'
 import type { Plugin } from '../../types'
 import { pipe } from 'fp-ts/lib/function'
 import * as TE from 'fp-ts/lib/TaskEither'
-import * as D from 'docmaps-sdk'
+import * as D from '@docmaps/sdk'
 import { relatedDoisForWork, decodeActionForWork } from './functions'
 import { mapLeftToUnknownError } from '../../utils'
 

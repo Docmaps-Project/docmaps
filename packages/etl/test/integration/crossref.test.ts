@@ -1,5 +1,5 @@
 import test from 'ava'
-import type { DocmapT } from 'docmaps-sdk'
+import type { DocmapT } from '@docmaps/sdk'
 import { MakeCli } from '../../src/command'
 
 type cmdResult = {

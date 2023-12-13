@@ -1,6 +1,6 @@
 import type { ApiInfo, BackendAdapter, ThingSpec } from './types'
 import * as TE from 'fp-ts/TaskEither'
-import * as D from 'docmaps-sdk'
+import * as D from '@docmaps/sdk'
 
 /** ApiInstance - a concrete class that handles sourcing data and composing answers
  *

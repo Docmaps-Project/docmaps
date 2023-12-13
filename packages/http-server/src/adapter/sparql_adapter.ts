@@ -1,7 +1,7 @@
 import type * as RDF from '@rdfjs/types'
 import { CONSTRUCT, Construct, Describe } from '@tpluscode/sparql-builder'
 import { VALUES } from '@tpluscode/sparql-builder/expressions'
-import * as D from 'docmaps-sdk'
+import * as D from '@docmaps/sdk'
 import * as TE from 'fp-ts/lib/TaskEither'
 import * as T from 'fp-ts/lib/Task'
 import * as E from 'fp-ts/lib/Either'

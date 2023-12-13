@@ -3,7 +3,7 @@ import * as cm from '../__fixtures__/crossref'
 import * as E from 'fp-ts/lib/Either'
 import { inspect } from 'util'
 import * as F from '../../../src/plugins/crossref/functions'
-import type { ActionT } from 'docmaps-sdk'
+import type { ActionT } from '@docmaps/sdk'
 
 function rightOrInspectError<T>(
   t: ExecutionContext,
