@@ -1,3 +1,7 @@
+> DEPRECATION NOTICE: the NPM package `docmaps-sdk` has been moved to `@docmaps/sdk`.
+>   (the source code still lives here.)
+>   Update your installs and imports accordingly.
+
 # Typescript SDK for Docmaps
 
 This typescript library is designed to provide core, highly-general docmaps

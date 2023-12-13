@@ -48,6 +48,10 @@ Latest @context: https://w3id.org/docmaps/context.jsonld
 
 ### [sdk](/packages/sdk)
 
+> DEPRECATION NOTICE: the NPM package `docmaps-sdk` has been moved to `@docmaps/sdk`.
+>   (the source code still lives here.)
+>   Update your installs and imports accordingly.
+
 This package contains a library of JSON-parsing and string-parsing codecs based on
 `io-ts`, and associated Typescript types. These types can be used without `io-ts`, but
 that library natively integrates with `fp-ts` and enables easy encoding & decoding
