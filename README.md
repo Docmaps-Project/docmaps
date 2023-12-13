@@ -7,9 +7,9 @@ More info: https://docmaps.knowledgefutures.org
 
 ## About This Repo
 
-This repo contains JSONLD contexts and framing for Docmaps.
+This repo contains the Typescript-based libraries for use with Node.js.
 
-It also contains the Typescript-based libraries (initially, just `packages/ts-sdk`) for use with Node.js.
+It also contains JSONLD contexts and RDF-native framing tools and SHACL shapes for Docmaps.
 
 ### Monorepo usage
 
@@ -21,7 +21,7 @@ cross-package behavior, such as release automation.
 automatically generate semvers based on commit history for each package in the repository. Multiple tags
 are generated for a single commit if it updates multiple packages.
 
-**Cross-dependencies and typescript:** Several packages depend on `ts-sdk`, and will refer to
+**Cross-dependencies and typescript:** Several packages depend on `@docmaps/sdk`, and will refer to
 the `dist` directory within that package for their source code when making local changes.
 For that reason, you may need to run `pnpm run build:deps` in a package, or `pnpm run -r build`
 to build all packages, if you are making local changes to uptream dependencies within this
@@ -46,7 +46,11 @@ Latest @context: https://w3id.org/docmaps/context.jsonld
 
 ## Packages
 
-### [ts-sdk](/packages/ts-sdk)
+### [sdk](/packages/sdk)
+
+> DEPRECATION NOTICE: the NPM package `docmaps-sdk` has been moved to `@docmaps/sdk`.
+>   (the source code still lives here.)
+>   Update your installs and imports accordingly.
 
 This package contains a library of JSON-parsing and string-parsing codecs based on
 `io-ts`, and associated Typescript types. These types can be used without `io-ts`, but
@@ -59,7 +63,7 @@ along with the types/interfaces in type namespace.
 This package is a Node server that serves docmaps. It is the Typescript
 reference implementation of Docmaps Project RFC#001 API Server Interoperability Protocol.
 
-### [ts-etl](/packages/ts-etl)
+### [etl](/packages/etl)
 
 This package contains a CLI tool based on `commander.js` for generating docmaps. Currently,
 it supports generating a docmap for a given DOI if that DOI is indexed on Crossref, and

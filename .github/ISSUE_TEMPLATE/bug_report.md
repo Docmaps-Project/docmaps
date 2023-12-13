@@ -8,10 +8,13 @@ title: "[PKG]: [BUG DESCRIPTION]"
 
 Packages affected:
 
+- [ ] sdk
+- [ ] etl
+- [ ] widget
+- [ ] http-client
+- [ ] http-server
+- [ ] spa (explorer)
 - [ ] OWL/SHACL definitions
-- [ ] ts-sdk
-- [ ] ts-etl
-- [ ] spa
 
 ### Expected behavior
 

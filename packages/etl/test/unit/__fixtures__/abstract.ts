@@ -1,7 +1,7 @@
 import type { InductiveStepResult, Plugin } from '../../../src/types'
 import { mock, instance } from 'ts-mockito'
 
-import type * as D from 'docmaps-sdk'
+import type * as D from '@docmaps/sdk'
 import * as TE from 'fp-ts/lib/TaskEither'
 import { MANUSCRIPT_DOI } from './crossref'
 

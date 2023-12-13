@@ -8,10 +8,13 @@ title: "[PKG]: [FEATURE NAME]"
 
 Packages to improve:
 
+- [ ] sdk
+- [ ] etl
+- [ ] widget
+- [ ] http-client
+- [ ] http-server
+- [ ] spa (explorer)
 - [ ] OWL/SHACL definitions
-- [ ] ts-sdk
-- [ ] ts-etl
-- [ ] spa
 
 ### Description
 

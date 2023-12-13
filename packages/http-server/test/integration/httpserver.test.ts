@@ -1,5 +1,5 @@
 import test from 'ava'
-import * as D from 'docmaps-sdk'
+import * as D from '@docmaps/sdk'
 import { inspect } from 'util'
 import { API_VERSION } from '../../src'
 import { MakeHttpClient } from '@docmaps/http-client'

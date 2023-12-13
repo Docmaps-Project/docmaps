@@ -58,11 +58,69 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2
 
+  packages/etl:
+    dependencies:
+      '@commander-js/extra-typings':
+        specifier: ^11.0.0
+        version: 11.0.0(commander@11.0.0)
+      '@docmaps/sdk':
+        specifier: workspace:^0.0.0
+        version: link:../sdk
+      commander:
+        specifier: ^11.0.0
+        version: 11.0.0
+      crossref-openapi-client-ts:
+        specifier: ^1.3.0
+        version: 1.3.0
+      fp-ts:
+        specifier: ^2.14.0
+        version: 2.16.1
+      tsx:
+        specifier: ^4.0.0
+        version: 4.0.0
+      typescript-collections:
+        specifier: ^1.3.3
+        version: 1.3.3
+    devDependencies:
+      '@docmaps/build-configs':
+        specifier: workspace:^
+        version: link:../build-configs
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.9.0
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^6.0.0
+        version: 6.4.1(@typescript-eslint/parser@6.4.1)(eslint@8.40.0)(typescript@5.2.2)
+      '@typescript-eslint/parser':
+        specifier: ^6.0.0
+        version: 6.4.1(eslint@8.40.0)(typescript@5.2.2)
+      ava:
+        specifier: ^5.2.0
+        version: 5.2.0
+      eslint:
+        specifier: ^8.39.0
+        version: 8.40.0
+      eslint-config-prettier:
+        specifier: ^9.0.0
+        version: 9.0.0(eslint@8.40.0)
+      eslint-plugin-prettier:
+        specifier: ^5.0.0
+        version: 5.0.0(eslint-config-prettier@9.0.0)(eslint@8.40.0)(prettier@3.0.2)
+      prettier:
+        specifier: ^3.0.0
+        version: 3.0.2
+      ts-mockito:
+        specifier: ^2.6.1
+        version: 2.6.1
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
+
   packages/example:
     dependencies:
-      docmaps-sdk:
+      '@docmaps/sdk':
         specifier: workspace:^0.0.0
-        version: link:../ts-sdk
+        version: link:../sdk
       fp-ts:
         specifier: ^2.16.0
         version: 2.16.0
@@ -85,12 +143,12 @@ importers:
 
   packages/http-client:
     dependencies:
+      '@docmaps/sdk':
+        specifier: workspace:^0.0.0
+        version: link:../sdk
       '@ts-rest/core':
         specifier: ^3.30.2
         version: 3.30.4(zod@3.22.4)
-      docmaps-sdk:
-        specifier: workspace:^0.0.0
-        version: link:../ts-sdk
     devDependencies:
       '@docmaps/build-configs':
         specifier: workspace:^
@@ -134,6 +192,9 @@ importers:
       '@docmaps/http-client':
         specifier: workspace:^0.1.0
         version: link:../http-client
+      '@docmaps/sdk':
+        specifier: workspace:^0.0.0
+        version: link:../sdk
       '@rdfjs/data-model':
         specifier: ^2.0.1
         version: 2.0.1
@@ -158,9 +219,6 @@ importers:
       cors:
         specifier: ^2.8.5
         version: 2.8.5
-      docmaps-sdk:
-        specifier: workspace:^0.0.0
-        version: link:../ts-sdk
       express:
         specifier: ^4.18.2
         version: 4.18.2
@@ -250,126 +308,7 @@ importers:
         specifier: ^3.22.2
         version: 3.22.4
 
-  packages/spa:
-    dependencies:
-      '@docmaps/etl':
-        specifier: workspace:^0.1.2
-        version: link:../ts-etl
-      '@docmaps/widget':
-        specifier: workspace:^0.0.0
-        version: link:../widget
-      '@spider-ui/global-event-registry':
-        specifier: ^0.2.7
-        version: 0.2.7
-      docmaps-sdk:
-        specifier: workspace:^0.0.0
-        version: link:../ts-sdk
-      fp-ts:
-        specifier: ^2.16.0
-        version: 2.16.0
-      prismjs:
-        specifier: ^1.29.0
-        version: 1.29.0
-      sirv-cli:
-        specifier: ^2.0.2
-        version: 2.0.2
-      upgraded-element:
-        specifier: ^0.6.5
-        version: 0.6.5
-    devDependencies:
-      '@docmaps/build-configs':
-        specifier: workspace:^
-        version: link:../build-configs
-      '@rollup/plugin-commonjs':
-        specifier: ^25.0.0
-        version: 25.0.1(rollup@4.2.0)
-      '@rollup/plugin-node-resolve':
-        specifier: ^15.1.0
-        version: 15.1.0(rollup@4.2.0)
-      '@rollup/plugin-terser':
-        specifier: ^0.4.3
-        version: 0.4.3(rollup@4.2.0)
-      rollup:
-        specifier: ^4.0.0
-        version: 4.2.0
-      rollup-plugin-css-only:
-        specifier: ^4.3.0
-        version: 4.3.0(rollup@4.2.0)
-      rollup-plugin-livereload:
-        specifier: ^2.0.5
-        version: 2.0.5
-      rollup-plugin-polyfill-node:
-        specifier: ^0.13.0
-        version: 0.13.0(rollup@4.2.0)
-      rollup-plugin-svelte:
-        specifier: ^7.1.5
-        version: 7.1.5(rollup@4.2.0)(svelte@4.0.0)
-      svelte:
-        specifier: ^4.0.0
-        version: 4.0.0
-      typescript:
-        specifier: ^5.2.2
-        version: 5.2.2
-
-  packages/ts-etl:
-    dependencies:
-      '@commander-js/extra-typings':
-        specifier: ^11.0.0
-        version: 11.0.0(commander@11.0.0)
-      commander:
-        specifier: ^11.0.0
-        version: 11.0.0
-      crossref-openapi-client-ts:
-        specifier: ^1.3.0
-        version: 1.3.0
-      docmaps-sdk:
-        specifier: workspace:^0.0.0
-        version: link:../ts-sdk
-      fp-ts:
-        specifier: ^2.14.0
-        version: 2.15.0
-      tsx:
-        specifier: ^4.0.0
-        version: 4.0.0
-      typescript-collections:
-        specifier: ^1.3.3
-        version: 1.3.3
-    devDependencies:
-      '@docmaps/build-configs':
-        specifier: workspace:^
-        version: link:../build-configs
-      '@types/node':
-        specifier: ^20.0.0
-        version: 20.9.0
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^6.0.0
-        version: 6.4.1(@typescript-eslint/parser@6.4.1)(eslint@8.40.0)(typescript@5.2.2)
-      '@typescript-eslint/parser':
-        specifier: ^6.0.0
-        version: 6.4.1(eslint@8.40.0)(typescript@5.2.2)
-      ava:
-        specifier: ^5.2.0
-        version: 5.2.0
-      eslint:
-        specifier: ^8.39.0
-        version: 8.40.0
-      eslint-config-prettier:
-        specifier: ^9.0.0
-        version: 9.0.0(eslint@8.40.0)
-      eslint-plugin-prettier:
-        specifier: ^5.0.0
-        version: 5.0.0(eslint-config-prettier@9.0.0)(eslint@8.40.0)(prettier@3.0.2)
-      prettier:
-        specifier: ^3.0.0
-        version: 3.0.2
-      ts-mockito:
-        specifier: ^2.6.1
-        version: 2.6.1
-      typescript:
-        specifier: ^5.2.2
-        version: 5.2.2
-
-  packages/ts-sdk:
+  packages/sdk:
     dependencies:
       '@rdfjs/data-model':
         specifier: ^2.0.1
@@ -413,7 +352,7 @@ importers:
         version: 1.5.8
       '@types/n3':
         specifier: ^1.10.4
-        version: 1.10.4
+        version: 1.16.3
       '@types/node':
         specifier: ^20.9.0
         version: 20.9.0
@@ -463,11 +402,75 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2
 
+  packages/spa:
+    dependencies:
+      '@docmaps/etl':
+        specifier: workspace:^0.1.2
+        version: link:../etl
+      '@docmaps/sdk':
+        specifier: workspace:^0.0.0
+        version: link:../sdk
+      '@docmaps/widget':
+        specifier: workspace:^0.0.0
+        version: link:../widget
+      '@spider-ui/global-event-registry':
+        specifier: ^0.2.7
+        version: 0.2.7
+      fp-ts:
+        specifier: ^2.16.0
+        version: 2.16.0
+      prismjs:
+        specifier: ^1.29.0
+        version: 1.29.0
+      sirv-cli:
+        specifier: ^2.0.2
+        version: 2.0.2
+      upgraded-element:
+        specifier: ^0.6.5
+        version: 0.6.5
+    devDependencies:
+      '@docmaps/build-configs':
+        specifier: workspace:^
+        version: link:../build-configs
+      '@rollup/plugin-commonjs':
+        specifier: ^25.0.0
+        version: 25.0.1(rollup@4.2.0)
+      '@rollup/plugin-node-resolve':
+        specifier: ^15.1.0
+        version: 15.1.0(rollup@4.2.0)
+      '@rollup/plugin-terser':
+        specifier: ^0.4.3
+        version: 0.4.3(rollup@4.2.0)
+      rollup:
+        specifier: ^4.0.0
+        version: 4.2.0
+      rollup-plugin-css-only:
+        specifier: ^4.3.0
+        version: 4.3.0(rollup@4.2.0)
+      rollup-plugin-livereload:
+        specifier: ^2.0.5
+        version: 2.0.5
+      rollup-plugin-polyfill-node:
+        specifier: ^0.13.0
+        version: 0.13.0(rollup@4.2.0)
+      rollup-plugin-svelte:
+        specifier: ^7.1.5
+        version: 7.1.5(rollup@4.2.0)(svelte@4.0.0)
+      svelte:
+        specifier: ^4.0.0
+        version: 4.0.0
+      typescript:
+        specifier: ^5.2.2
+        version: 5.2.2
+
   packages/widget:
     dependencies:
       '@docmaps/http-client':
         specifier: workspace:^0.1.0
         version: link:../http-client
+      '@docmaps/sdk':
+        specifier: workspace:^0.0.0
+        version: link:../sdk
       '@lit/task':
         specifier: ^1.0.0
         version: 1.0.0
@@ -480,9 +483,6 @@ importers:
       dagre:
         specifier: ^0.8.5
         version: 0.8.5
-      docmaps-sdk:
-        specifier: workspace:^0.0.0
-        version: link:../ts-sdk
       fp-ts:
         specifier: ^2.16.1
         version: 2.16.1
@@ -1445,10 +1445,6 @@ packages:
   /@rdfjs/to-ntriples@2.0.0:
     resolution: {integrity: sha512-nDhpfhx6W6HKsy4HjyLp3H1nbrX1CiUCWhWQwKcYZX1s9GOjcoQTwY7GUUbVec0hzdJDQBR6gnjxtENBDt482Q==}
 
-  /@rdfjs/traverser@0.1.1:
-    resolution: {integrity: sha512-zyVuur2dS5cceUPjIh0TNS7GsmvEHaSqb5Sw5yxS4mDOun1X35FObNEezksbGpc2KzcDTJJV8V2SLr397lAGug==}
-    dev: false
-
   /@rdfjs/traverser@0.1.2:
     resolution: {integrity: sha512-EBB/p9LrTMzupZ6VlxtBXyL0bdXFY7e5lAp2tHNwxOoe3kcR6hOJFVWdPT7pdWaSotyXbTIEQxG4PkXMw/OY7w==}
     dependencies:
@@ -1913,17 +1909,10 @@ packages:
       '@types/node': 20.9.0
     dev: true
 
-  /@types/clownface@1.5.2:
-    resolution: {integrity: sha512-c/BLyUFSuzgmbQ0kBlxNf9HEkDdCk4tMxUxWjtGSpvLMXM3t5KrJabcGkDStmfzA+bHFHwHHikyWsZYVC1TuWw==}
-    dependencies:
-      rdf-js: 4.0.2
-    dev: true
-
   /@types/clownface@2.0.4:
     resolution: {integrity: sha512-NAV4bUtQetmHf+vBIDdAcPmgC26ObDOPHB2jowhcMb6phRlcRPMRZ0YwY77p1Iic4K8htlnBquZS2ld4UFO6hA==}
     dependencies:
       rdf-js: 4.0.2
-    dev: false
 
   /@types/connect@3.4.37:
     resolution: {integrity: sha512-zBUSRqkfZ59OcwXon4HVxhx5oWCJmc0OtBTK05M+p0dYjgN6iTwIL2T/WbsQZrEsdnwaF9cWQ+azOnpPvIqY3Q==}
@@ -2184,13 +2173,6 @@ packages:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
     dev: false
 
-  /@types/n3@1.10.4:
-    resolution: {integrity: sha512-FfRTwcbXcScVHuAjIASveRWL6Fi6fPALl1Ge8tMESYLqU7R42LJvtdBpUi+f9YK0oQPqIN+zFFgMDFJfLMx0bg==}
-    dependencies:
-      '@types/node': 20.9.0
-      rdf-js: 4.0.2
-    dev: true
-
   /@types/n3@1.16.3:
     resolution: {integrity: sha512-6PDn2/tUtveGQONiFJDOpl2Aa/YnmwQhdQ8SznUJVFmjI/NEBBdNhnkmYeEFmvOQbhbIeGR+SfmTk71TdqJ5mg==}
     dependencies:
@@ -2237,17 +2219,17 @@ packages:
     resolution: {integrity: sha512-JBoX8+zSe3Wx+qu5pD7rM8pDenL77N6dwI33WOqBHVAJP4wsGPlBwTUtlVwV+hQy4bXFQMz+KDKpssl8x5XnjQ==}
     dependencies:
       '@rdfjs/types': 1.1.0
-      '@types/clownface': 1.5.2
+      '@types/clownface': 2.0.4
       '@types/rdfjs__data-model': 2.0.4
       '@types/rdfjs__dataset': 2.0.2
-      '@types/rdfjs__environment': 0.1.2
+      '@types/rdfjs__environment': 0.1.10
       '@types/rdfjs__fetch-lite': 3.0.2
       '@types/rdfjs__namespace': 2.0.8
       '@types/rdfjs__prefix-map': 0.1.1
       '@types/rdfjs__score': 0.1.1
       '@types/rdfjs__term-map': 2.0.3
       '@types/rdfjs__term-set': 2.0.3
-      '@types/rdfjs__traverser': 0.1.1
+      '@types/rdfjs__traverser': 0.1.5
     dev: true
 
   /@types/rdfjs__data-model@2.0.4:
@@ -2271,30 +2253,12 @@ packages:
       '@types/rdfjs__sink-map': 2.0.1
       '@types/rdfjs__term-map': 2.0.3
       '@types/rdfjs__term-set': 2.0.3
-    dev: false
-
-  /@types/rdfjs__environment@0.1.2:
-    resolution: {integrity: sha512-no9U48Te9CO8nzUxWZZMGNBEnZzy9/ueKjVC7SM7IAfOzYNwwAZvGCgciTuwoqMDl3KHiTEVirwv/80yBisKog==}
-    dependencies:
-      '@rdfjs/types': 1.1.0
-      '@types/rdfjs__namespace': 2.0.8
-      '@types/rdfjs__sink-map': 2.0.1
-      '@types/rdfjs__term-map': 2.0.3
-      '@types/rdfjs__term-set': 2.0.3
-    dev: true
 
   /@types/rdfjs__fetch-lite@3.0.2:
     resolution: {integrity: sha512-tm8XMZ8zpF+QafOnekcVL/JSfIfhOzSXi5E13ZAJ3c+NJpaPOztbHWeQJBSKl4D5CdQjWWq1gqpQM2iWSb/qkw==}
     dependencies:
       '@rdfjs/types': 1.1.0
-      '@types/rdfjs__formats-common': 2.0.2
-    dev: true
-
-  /@types/rdfjs__formats-common@2.0.2:
-    resolution: {integrity: sha512-2h3Db8iaOZjJIc26R8fz0LzdX3arGwQf2MzsRd6slW0Lq3B01LIN3eMS/EcCftf+yYAB+qdpOxGkwKI4e3C0Bg==}
-    dependencies:
-      '@types/rdfjs__sink-map': 2.0.1
-      rdf-js: 4.0.2
+      '@types/rdfjs__formats-common': 3.1.4
     dev: true
 
   /@types/rdfjs__formats-common@3.1.4:
@@ -2308,7 +2272,6 @@ packages:
       '@types/rdfjs__sink-map': 2.0.1
       rdf-js: 4.0.2
       rdfxml-streaming-parser: 2.2.2
-    dev: false
 
   /@types/rdfjs__namespace@2.0.8:
     resolution: {integrity: sha512-py5L7+crlnuhd86DSxkw8jDAIHLf5YNfSXiLM5fe0aleleoP9X/L15Zrbz9k2Yr3ODY+lhboOLVGyyhfH43/Sw==}
@@ -2320,7 +2283,6 @@ packages:
     dependencies:
       '@types/jsonld': 1.5.8
       rdf-js: 4.0.2
-    dev: false
 
   /@types/rdfjs__parser-n3@2.0.1:
     resolution: {integrity: sha512-IPA04Q5LutRlFy9Kz1x48uqj6UaPd5rWandyBww1wj7xzwrCl1Yp3xTVkx7DnWP6o/kYd527/KHKsVkNi4tA9g==}
@@ -2350,13 +2312,11 @@ packages:
     resolution: {integrity: sha512-podYtgQVJszg3eBlh7eUE3zuMi6BmKck01RXFu8G8tBSfC2Ihsee9Yki4zt8562q6CY9Ahz2PrHwLM5EQAW4CA==}
     dependencies:
       rdf-js: 4.0.2
-    dev: false
 
   /@types/rdfjs__serializer-ntriples@2.0.5:
     resolution: {integrity: sha512-8tepsjLyI7jBFfe2aIUj36hrKo8Z7muXLyN1O7HyP6NfLMq/j5PtVh+2jRD48Ju31p1O8PTHAoLdOhwY6rSehg==}
     dependencies:
       rdf-js: 4.0.2
-    dev: false
 
   /@types/rdfjs__sink-map@2.0.1:
     resolution: {integrity: sha512-V12S6Ythoe8NJjD2xbxy9MnZQXKdKKESsDf4n09okQB31k/uqLl/U5Ar0WJfrKv9tD5xQxXLHRFGUlk5+uKRdA==}
@@ -2373,17 +2333,10 @@ packages:
     dependencies:
       '@rdfjs/types': 1.1.0
 
-  /@types/rdfjs__traverser@0.1.1:
-    resolution: {integrity: sha512-TykIu//ITdHPAiIpFsTBFrYPxCYgKVGMvfpgaJdE0Xffdt3rdWqZprxhRKtT130JmFZk4hZA/XUouPddbMsFfA==}
-    dependencies:
-      '@rdfjs/types': 1.1.0
-    dev: true
-
   /@types/rdfjs__traverser@0.1.5:
     resolution: {integrity: sha512-tTpiM6lAddw+bGRDjhzwdpo1EQK73m8gYgMVNfO4OsevnuLZvQJeCJBckpuDC4H5HVAEwCapI0UlH9dVnZ9u5g==}
     dependencies:
       '@rdfjs/types': 1.1.0
-    dev: false
 
   /@types/readable-stream@2.3.15:
     resolution: {integrity: sha512-oM5JSKQCcICF1wvGgmecmHldZ48OZamtMxcGGVICOJA8o8cahXC1zEVAif8iwoc5j8etxFaRFnf095+CDsuoFQ==}
@@ -4722,10 +4675,6 @@ packages:
     engines: {node: '>= 0.6'}
     dev: false
 
-  /fp-ts@2.15.0:
-    resolution: {integrity: sha512-3o6EllAvGuCsDgjM+frscLKDRPR9pqbrg13tJ13z86F4eni913kBV8h85rM6zpu2fEvJ8RWA0ouYlUWwHEmxTg==}
-    dev: false
-
   /fp-ts@2.16.0:
     resolution: {integrity: sha512-bLq+KgbiXdTEoT1zcARrWEpa5z6A/8b7PcDW7Gef3NSisQ+VS7ll2Xbf1E+xsgik0rWub/8u0qP/iTTjj+PhxQ==}
     dev: false
@@ -6953,7 +6902,7 @@ packages:
       '@rdfjs/term-map': 2.0.0
       '@rdfjs/term-set': 2.0.1
       '@rdfjs/to-ntriples': 2.0.0
-      '@rdfjs/traverser': 0.1.1
+      '@rdfjs/traverser': 0.1.2
       clownface: 1.5.1
       readable-stream: 4.3.0
     dev: false
@@ -7021,7 +6970,6 @@ packages:
       relative-to-absolute-iri: 1.0.7
       saxes: 6.0.0
       validate-iri: 1.0.1
-    dev: false
 
   /read-pkg-up@7.0.1:
     resolution: {integrity: sha512-zK0TB7Xd6JpCLmlLmufqykGE+/TlOePD6qKClNW7hHDKFh/J7/7gCWGR7joEQEW1bKq3a3yUZSObOoWLFQ4ohg==}
@@ -7384,7 +7332,6 @@ packages:
     engines: {node: '>=v12.22.7'}
     dependencies:
       xmlchars: 2.2.0
-    dev: false
 
   /semantic-release@19.0.5:
     resolution: {integrity: sha512-NMPKdfpXTnPn49FDogMBi36SiBfXkSOJqCkk0E4iWOY1tusvvgBwqUmxTX1kmlT6kIYed9YwNKD1sfPpqa5yaA==}
@@ -8348,7 +8295,6 @@ packages:
 
   /validate-iri@1.0.1:
     resolution: {integrity: sha512-gLXi7351CoyVVQw8XE5sgpYawRKatxE7kj/xmCxXOZS1kMdtcqC0ILIqLuVEVnAUQSL/evOGG3eQ+8VgbdnstA==}
-    dev: false
 
   /validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
@@ -8547,7 +8493,6 @@ packages:
 
   /xmlchars@2.2.0:
     resolution: {integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==}
-    dev: false
 
   /xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}

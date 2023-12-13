@@ -1,6 +1,6 @@
 import { MakeHttpClient } from '@docmaps/http-client';
 import { TaskFunction } from '@lit/task';
-import { ActorT, Docmap, DocmapT, ManifestationT, RoleInTimeT, StepT, ThingT } from 'docmaps-sdk';
+import { ActorT, Docmap, DocmapT, ManifestationT, RoleInTimeT, StepT, ThingT } from '@docmaps/sdk';
 import { pipe } from 'fp-ts/lib/function';
 import * as E from 'fp-ts/lib/Either';
 import {

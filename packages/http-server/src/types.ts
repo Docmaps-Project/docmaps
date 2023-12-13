@@ -1,4 +1,4 @@
-import * as D from 'docmaps-sdk'
+import * as D from '@docmaps/sdk'
 import * as TE from 'fp-ts/TaskEither'
 
 // TODO: use io-ts? this is only decodable by consumers...

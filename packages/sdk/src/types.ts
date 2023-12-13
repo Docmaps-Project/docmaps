@@ -38,7 +38,7 @@ export const ContextUpsert = {
  * A `foaf:onlineAccount`, the online identity of some Agent (person, org, etc).
  *
  * @example
- * import { OnlineAccountT, OnlineAccount } from 'docmaps-sdk';
+ * import { OnlineAccountT, OnlineAccount } from '@docmaps/sdk';
  * import { Validation } from 'io-ts';
  *
  * const A: Validation<OnlineAccountT> = OnlineAccount.decode({
@@ -63,7 +63,7 @@ export const OnlineAccount = t.intersection([
  * The publisher of a docmap
  *
  * @example
- * import { PublisherT, Publisher } from 'docmaps-sdk';
+ * import { PublisherT, Publisher } from '@docmaps/sdk';
  * import { Validation } from 'io-ts';
  *
  * const A: Validation<PublisherT> = Publisher.decode({
@@ -100,7 +100,7 @@ export const Publisher = t.intersection([
  * A fabio:Manifestation, which may be included in an Output.
  *
  * @example
- * import { ManifestationT, Manifestation } from 'docmaps-sdk';
+ * import { ManifestationT, Manifestation } from '@docmaps/sdk';
  * import { Validation } from 'io-ts';
  *
  * const A: Validation<ManifestationT> = Manifestation.decode({
@@ -133,7 +133,7 @@ export const Manifestation = t.intersection([
  * but currently only a Person.
  *
  * @example
- * import { ActorT, Actor } from 'docmaps-sdk';
+ * import { ActorT, Actor } from '@docmaps/sdk';
  * import { Validation } from 'io-ts';
  *
  * const B: Validation<ActorT> = Actor.decode({
@@ -158,7 +158,7 @@ export const Actor = t.union([
  * A pro:RoleInTime ; How a participant participated in an action
  *
  * @example
- * import { RoleInTimeT, RoleInTime } from 'docmaps-sdk';
+ * import { RoleInTimeT, RoleInTime } from '@docmaps/sdk';
  * import { Validation } from 'io-ts';
  *
  * const C: Validation<RoleInTimeT> = RoleInTime.decode({
@@ -204,7 +204,7 @@ export const ThingType = arrayOrOneOf([
  * An output or input.
  *
  * @example
- * import { ThingT, Thing } from 'docmaps-sdk';
+ * import { ThingT, Thing } from '@docmaps/sdk';
  * import { Validation } from 'io-ts';
  *
  * const C: Validation<ThingT> = Thing.decode({
@@ -241,7 +241,7 @@ export const Thing = t.intersection([
  * An action taken in a step.
  *
  * @example
- * import { ActionT, Action } from 'docmaps-sdk';
+ * import { ActionT, Action } from '@docmaps/sdk';
  * import { Validation } from 'io-ts';
  *
  * const C: Validation<ActionT> = Action.decode({
@@ -291,7 +291,7 @@ const Status = t.string
  * A claim about a document acquiring a status that is asserted by a certain step
  *
  * @example
- * import { AssertionT, Assertion } from 'docmaps-sdk';
+ * import { AssertionT, Assertion } from '@docmaps/sdk';
  * import { Validation } from 'io-ts';
  *
  * const C: Validation<AssertionT> = Assertion.decode({
@@ -322,7 +322,7 @@ export const Assertion = t.intersection([
  * set of actions may appear in a step with a different content hash).
  *
  * @example
- * import { StepT, Step } from 'docmaps-sdk';
+ * import { StepT, Step } from '@docmaps/sdk';
  * import { Validation } from 'io-ts';
  *
  * const C: Validation<StepT> = Step.decode({
@@ -384,7 +384,7 @@ export const Step = t.intersection([
 
 /**
  * @example
- * import { DocmapT, Docmap } from 'docmaps-sdk';
+ * import { DocmapT, Docmap } from '@docmaps/sdk';
  * import { Validation } from 'io-ts';
  *
  * const C: Validation<DocmapT> = Docmap.decode({

@@ -5,7 +5,7 @@ import * as TE from 'fp-ts/lib/TaskEither'
 import { stepsForIdRecursive } from '../../src/processor'
 import { whenThenRight } from './utils'
 import * as am from './__fixtures__/abstract'
-import type * as D from 'docmaps-sdk'
+import type * as D from '@docmaps/sdk'
 import { when } from 'ts-mockito'
 
 const nothing = [] as D.ThingT[]

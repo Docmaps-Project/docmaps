@@ -1,5 +1,5 @@
 import { initContract } from '@ts-rest/core'
-import { DocmapT } from 'docmaps-sdk'
+import { DocmapT } from '@docmaps/sdk'
 import { ApiInfo, ErrorBody } from './types'
 
 const c = initContract()

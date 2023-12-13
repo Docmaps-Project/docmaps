@@ -17,20 +17,21 @@ env:
   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
-  test-ts-sdk:
-    uses: ./.github/workflows/ts-sdk-tests.yaml
-  test-ts-http-server:
+  test-sdk:
+    uses: ./.github/workflows/sdk-tests.yaml
+  test-http-server:
     uses: ./.github/workflows/http-server-tests.yaml
-  test-ts-etl:
-    uses: ./.github/workflows/ts-etl-tests.yaml
+  test-etl:
+    uses: ./.github/workflows/etl-tests.yaml
   test-example:
     uses: ./.github/workflows/example-tests.yaml
   test-specification:
     uses: ./.github/workflows/specification-tests.yaml
   nodejs_release:
     needs:
-      - test-ts-sdk
-      - test-ts-etl
+      - test-sdk
+      - test-etl
+      - test-http-server
       - test-specification
       - test-example
 

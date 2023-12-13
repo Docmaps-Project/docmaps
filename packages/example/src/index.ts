@@ -1,4 +1,4 @@
-import * as D from 'docmaps-sdk'
+import * as D from '@docmaps/sdk'
 import * as E from 'fp-ts/lib/Either'
 import * as A from 'fp-ts/lib/Array'
 import {pipe} from 'fp-ts/lib/function'
@@ -38,7 +38,7 @@ const program = pipe(
     // note the use of `any` here, which is because the `actor` field
     // currently doesn't have any obligatory fields. This leaks the
     // type safety slightly by assuming there is a `name`. Improvements
-    // to the `docmaps-sdk` based on narrower specification or even more
+    // to the `@docmaps/sdk` based on narrower specification or even more
     // involved parsing in the consumer library (like this script) can
     // provide further safety.
     A.map((p) => (p.actor as any).name)

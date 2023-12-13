@@ -2,7 +2,7 @@ import test from 'ava'
 import { SparqlAdapter } from '../../src/adapter'
 import { ApiInstance } from '../../src/api'
 import * as TE from 'fp-ts/lib/TaskEither'
-import * as D from 'docmaps-sdk'
+import * as D from '@docmaps/sdk'
 
 import { deepEqual, mock, instance, when } from 'ts-mockito'
 import { ThingSpec } from '../../src/types'
@@ -72,7 +72,7 @@ test('docmap_by_id: consults the adapter', async (t) => {
   ).get_docmap_by_id(dm_content.id)()
 
   // TODO awkward use of `await .. ()`, is there a more natural way?
-  // The alternative is all that `rightAnd` business in docmaps-sdk
+  // The alternative is all that `rightAnd` business in @docmaps/sdk
   t.deepEqual(res, await TE.of(dm_content)())
 })
 
@@ -101,6 +101,6 @@ test('docmap_for: consults the adapter', async (t) => {
   ).get_docmap_for_thing(spec)()
 
   // TODO awkward use of `await .. ()`, is there a more natural way?
-  // The alternative is all that `rightAnd` business in docmaps-sdk
+  // The alternative is all that `rightAnd` business in @docmaps/sdk
   t.deepEqual(res, await TE.of(dm_content)())
 })

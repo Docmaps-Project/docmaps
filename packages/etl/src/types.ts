@@ -1,5 +1,5 @@
 import type * as E from 'fp-ts/Either'
-import type D from 'docmaps-sdk'
+import type D from '@docmaps/sdk'
 import type * as TE from 'fp-ts/lib/TaskEither'
 
 export type ErrorOrDocmap = E.Either<Error, D.DocmapT[]>

@@ -2,7 +2,7 @@ import { Work, DatemorphISOString } from 'crossref-openapi-client-ts'
 import * as E from 'fp-ts/lib/Either'
 import * as A from 'fp-ts/lib/Array'
 import { pipe } from 'fp-ts/lib/function'
-import * as D from 'docmaps-sdk'
+import * as D from '@docmaps/sdk'
 import { mapLeftToUnknownError, nameForAuthor } from '../../utils'
 import { Eq } from 'fp-ts/lib/string'
 
