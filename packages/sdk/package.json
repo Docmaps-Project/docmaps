@@ -1,5 +1,5 @@
 {
-  "name": "docmaps-sdk",
+  "name": "@docmaps/sdk",
   "version": "0.0.0",
   "repository": "git@github.com:docmaps-project/docmaps.git",
   "homepage": "https://github.com/Docmaps-Project/docmaps/tree/main/packages/ts-sdk",

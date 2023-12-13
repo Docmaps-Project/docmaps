@@ -23,7 +23,7 @@
   ],
   "dependencies": {
     "@ts-rest/core": "^3.30.2",
-    "docmaps-sdk": "workspace:^0.0.0"
+    "@docmaps/sdk": "workspace:^0.0.0"
   },
   "devDependencies": {
     "@docmaps/build-configs": "workspace:^",

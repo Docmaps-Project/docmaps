@@ -1,9 +1,9 @@
 packages:
   - 'packages/build-configs'
+  - 'packages/etl'
   - 'packages/example'
   - 'packages/http-client'
   - 'packages/http-server'
+  - 'packages/sdk'
   - 'packages/spa'
-  - 'packages/ts-etl'
-  - 'packages/ts-sdk'
   - 'packages/widget'
