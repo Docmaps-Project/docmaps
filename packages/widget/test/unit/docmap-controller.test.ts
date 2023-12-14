@@ -48,9 +48,10 @@ test('getSteps when there are multiple steps', (t) => {
 
 test('getSteps on non-docmaps', (t) => {
   const notADocmap = { this: 'is', some: 'randomly', shaped: ['object'] };
-  const err = t.throws(() => getSteps(notADocmap), { instanceOf: TypeError });
-
-  t.is(err?.message, 'Could not parse Docmap: {"this":"is","some":"randomly","shaped":["object"]}');
+  t.throws(() => getSteps(notADocmap), {
+    instanceOf: TypeError,
+    message: /Could not parse Docmap: {"this":"is","some":"randomly","shaped":\["object"\]}/,
+  });
 });
 
 test('getSteps on docmaps without a first step', (t) => {
