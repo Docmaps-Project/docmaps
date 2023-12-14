@@ -119,15 +119,12 @@
             "@id": "pro:isHeldBy",
             "@type": "@id"
         },
-        "email": "fabio:Email",
         "file": {
             "@id": "fabio:DigitalManifestation",
             "@context": {
                 "text": "cnt:chars"
             }
         },
-        "letter": "fabio:Letter",
-        "manuscript": "fabio:Manuscript",
         "format": {
             "@id": "dcterms:format",
             "@type": "@vocab",
@@ -153,12 +150,15 @@
             "@id": "frbr:realizationOf",
             "@type": "@id"
         },
+        "letter": "fabio:Letter",
+        "email": "fabio:Email",
+        "web-page": "fabio:WebPage",
+        "web-content": "fabio:WebContent",
+        "manuscript": "fabio:Manuscript",
         "review-article": "fabio:ReviewArticle",
         "journal-article": "fabio:JournalArticle",
         "preprint": "fabio:Preprint",
         "review": "fabio:Review",
-        "web-page": "fabio:WebPage",
-        "web-content": "fabio:WebContent",
         "reply": "fabio:Reply",
         "evaluation-summary": "fabio:ExecutiveSummary",
         "comment": "fabio:Comment",
