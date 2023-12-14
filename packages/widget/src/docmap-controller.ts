@@ -58,7 +58,11 @@ export function getSteps(docmapPerhaps: unknown): StepT[] {
   const stepsMaybe = pipe(docmapPerhaps, Docmap.decode);
 
   if (E.isLeft(stepsMaybe)) {
-    throw new TypeError(`Could not parse Docmap: ${JSON.stringify(docmapPerhaps)}`);
+    throw new TypeError(
+      `Could not parse Docmap: ${JSON.stringify(docmapPerhaps)}, found error: ${JSON.stringify(
+        stepsMaybe.left,
+      )}`,
+    );
   }
 
   const docmap = stepsMaybe.right;
