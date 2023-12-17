@@ -207,6 +207,9 @@ export const customCss: CSSResult = css`
     }
 
     .tooltip {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 14px;
+        font-weight: 300;
         background: rgba(0, 0, 0, 0.6);
         color: #fff;
         padding: 4px 8px;
