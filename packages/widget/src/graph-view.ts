@@ -276,6 +276,7 @@ export const clearGraph = (shadowRoot: ShadowRoot | null) => {
 
 const getNodeX = (d: D3Node) => d.x ?? 0;
 const getNodeY = (d: D3Node) => d.y ?? 0;
+
 export const setUpTooltips = (
   selection: d3.Selection<any, D3Node, SVGGElement, unknown>,
   shadowRoot: ShadowRoot | null,
@@ -292,7 +293,7 @@ export const setUpTooltips = (
         .html(() => TYPE_DISPLAY_OPTIONS[d.type].longLabel)
         .style('visibility', 'visible')
         .style('opacity', 1)
-        .style('left', `${event.pageX + 5}px`) // Position the tooltip at the mouse location
+        .style('left', `${event.pageX}px`) // Position the tooltip at the mouse location
         .style('top', `${event.pageY - 28}px`);
     })
     .on('mouseout', () => {
@@ -306,8 +307,27 @@ export const setupInteractivity = (
   shadowRoot: ShadowRoot | null,
   onNodeClick: (node: DisplayObject) => void,
 ) => {
-  nodeElements.on('click', (_event, d: D3Node) => onNodeClick(d));
-  labels.on('click', (_event, d: D3Node) => onNodeClick(d));
+  if (!shadowRoot) {
+    return;
+  }
+
+  const tooltip = d3.select(shadowRoot.querySelector('#tooltip'));
+
+  nodeElements.on('click', (_event, d: D3Node) => {
+    // Hide the tooltip first
+    tooltip.style('visibility', 'hidden').style('opacity', 0);
+
+    // Then handle the node click
+    onNodeClick(d);
+  });
+
+  labels.on('click', (_event, d: D3Node) => {
+    // Hide the tooltip first
+    tooltip.style('visibility', 'hidden').style('opacity', 0);
+
+    // Then handle the node click
+    onNodeClick(d);
+  });
 
   setUpTooltips(nodeElements, shadowRoot);
   setUpTooltips(labels, shadowRoot);

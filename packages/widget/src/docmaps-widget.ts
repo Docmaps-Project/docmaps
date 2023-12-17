@@ -65,6 +65,7 @@ export class DocmapsWidget extends LitElement {
           <span>DOCMAP</span>
         </div>
         ${d3Canvas} ${content}
+        <div id="tooltip" class="tooltip" style="opacity:0;"></div>
       </div>
     `;
   }
@@ -87,8 +88,6 @@ export class DocmapsWidget extends LitElement {
   };
 
   private graphView() {
-    const tooltip = html` <div id="tooltip" class="tooltip" style="opacity:0;"></div>`;
-
     if (this.graph) {
       if (this.#hasRenderedOnce) {
         // There is a canvas for D3 to draw in! We can render the graph now
@@ -98,11 +97,10 @@ export class DocmapsWidget extends LitElement {
       return html` ${this.#docmapFetchingTask?.render({
         complete: this.onFetchComplete,
         error: (e) => noDocmapFoundScreen(e, this.doi),
-      })}
-      ${tooltip}`;
+      })}`;
     }
 
-    return tooltip;
+    return nothing;
   }
 
   private detailView() {
