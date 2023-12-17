@@ -7,6 +7,7 @@ import fakeDocmapWithTwoLonelyNodes from '../fixtures/fake-docmap-with-two-lonel
 import {
   renderWidgetWithDocmapLiteral,
   renderWidgetWithServerMock,
+  renderWidgetWithUnknownDOI,
   TYPE_UNKNOWN_DETAIL_HEADER_COLOR,
   typeShortLabelToOpts,
   typeToDetailBackgroundColor,
@@ -355,6 +356,11 @@ test('Custom docmaps can be passed in directly', async ({ page }) => {
   const fixture = fixtures[docmapName];
   const widget = await renderWidgetWithDocmapLiteral(page, fixture.docmap);
   await expect(widget.locator('circle')).toHaveCount(fixture.types.length);
+});
+
+test('When the docmap cannot be found, the empty screen is shown', async ({ page }) => {
+  const widget = await renderWidgetWithUnknownDOI(page);
+  await expect(widget).toContainText('No data found for DOI unknown-doi');
 });
 
 async function assertTooltipAppearsOnHover(

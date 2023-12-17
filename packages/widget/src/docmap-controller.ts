@@ -45,7 +45,9 @@ export const getDocmap: TaskFunction<DocmapFetchingParams, DisplayObjectGraph> =
   if (resp.status !== 200) {
     // TODO this is untested
     throw new Error(
-      `Failed to fetch docmap. ${resp.body ? 'Server response was ' + resp.body : ''}`,
+      `Failed to fetch docmap. ${
+        resp.body ? 'Server response was ' + JSON.stringify(resp.body) : ''
+      }`,
     );
   }
 

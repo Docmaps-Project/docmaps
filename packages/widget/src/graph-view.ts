@@ -13,6 +13,8 @@ import {
 } from './display-object';
 import * as Dagre from 'dagre';
 import { SimulationNodeDatum } from 'd3-force';
+import { html } from 'lit';
+import { logoLarge } from './assets';
 
 // D3Nodes represent a node that is being passed to D3's force simulation to be rendered in the graph view.
 // They are a superset of DisplayObjects, with additional fields that are used by D3.
@@ -37,6 +39,20 @@ export const displayGraph = (
   const svg = createEmptySvgForGraph(canvas, graphWidth, shadowRoot);
   drawGraph(d3Nodes, d3Edges, graphWidth, svg, shadowRoot, onNodeClick);
 };
+
+export function noDocmapFoundScreen(e: unknown, doi: string) {
+  console.log('Error fetching docmap:\n\n', e);
+  return html`
+    <div class="not-found-screen">
+      <div class="not-found-message">
+        <p>No data found for DOI</p>
+        <p>${doi}</p>
+      </div>
+
+      ${logoLarge}
+    </div>
+  `;
+}
 
 export function createLabels(
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
