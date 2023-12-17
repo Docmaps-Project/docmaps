@@ -1,11 +1,11 @@
 import { html, HTMLTemplateResult, LitElement, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { customCss } from './styles';
-import { logo } from './assets';
+import { logoSmall } from './assets';
 import { Task } from '@lit/task';
 import { DocmapFetchingParams, docmapToDisplayObjectGraph, getDocmap } from './docmap-controller';
 import { DisplayObject, DisplayObjectGraph, GRAPH_CANVAS_ID } from './display-object';
-import { clearGraph, displayGraph } from './graph-view';
+import { clearGraph, displayGraph, noDocmapFoundScreen } from './graph-view';
 import { renderDetailsView } from './detail-view';
 import { loadFont } from './font';
 
@@ -24,6 +24,8 @@ export class DocmapsWidget extends LitElement {
   @state()
   graph?: DisplayObjectGraph;
 
+  // We keep track of this because we have to render once before drawing the graph
+  // so that D3 has a canvas to draw into.
   #hasRenderedOnce: boolean = false;
 
   set docmap(docmap: any) {
@@ -59,7 +61,7 @@ export class DocmapsWidget extends LitElement {
     return html`
       <div class="docmaps-widget">
         <div class="widget-header">
-          ${logo}
+          ${logoSmall}
           <span>DOCMAP</span>
         </div>
         ${d3Canvas} ${content}
@@ -85,17 +87,22 @@ export class DocmapsWidget extends LitElement {
   };
 
   private graphView() {
+    const tooltip = html` <div id="tooltip" class="tooltip" style="opacity:0;"></div>`;
+
     if (this.graph) {
       if (this.#hasRenderedOnce) {
+        // There is a canvas for D3 to draw in! We can render the graph now
         this.renderGraphView(this.graph);
       }
     } else {
-      this.#docmapFetchingTask?.render({
+      return html` ${this.#docmapFetchingTask?.render({
         complete: this.onFetchComplete,
-      });
+        error: (e) => noDocmapFoundScreen(e, this.doi),
+      })}
+      ${tooltip}`;
     }
 
-    return html` <div id="tooltip" class="tooltip" style="opacity:0;"></div>`;
+    return tooltip;
   }
 
   private detailView() {

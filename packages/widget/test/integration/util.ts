@@ -1,11 +1,20 @@
 import { Page, Request, Route } from '@playwright/test';
 import { DocmapsWidget } from '../../src';
+import docmapWithOneStep from '../fixtures/sciety-docmap-1';
 
-const STAGING_SERVER_URL: string = 'https://web-nodejs.onrender.com';
+
+const STAGING_SERVER_URL: string = 'https://example.com';
 
 export async function renderWidgetWithServerMock(page: Page, doi: string, docmap: any) {
   await mockDocmapForEndpoint(page, doi, docmap);
   return await renderWidget(page, doi);
+}
+
+export async function renderWidgetWithUnknownDOI(page: Page) {
+  // We pass in a docmap that we don't use for anything.
+  // This is really just a hack that lets us use our existing method that mocks out the docmap for endpoint.
+  await mockDocmapForEndpoint(page, "not-the-doi-we-will-request", docmapWithOneStep);
+  return await renderWidget(page, "unknown-doi");
 }
 
 export async function renderWidgetWithDocmapLiteral(page: Page, docmap: any) {
@@ -30,7 +39,7 @@ export async function renderWidgetWithDocmapLiteral(page: Page, docmap: any) {
   return page.locator('#test-docmap');
 }
 
-async function renderWidget(page: Page, doi: string) {
+export async function renderWidget(page: Page, doi: string) {
   // This approach is inspired by https://github.com/microsoft/playwright/issues/14241#issuecomment-1488829515
   await page.goto('/');
   await page.evaluate(
@@ -50,7 +59,7 @@ async function renderWidget(page: Page, doi: string) {
 /**
  * Mocks out the api server's `/docmap_for/doi?subject=<doi>` endpoint to return a specific docmap
  */
-async function mockDocmapForEndpoint(page: Page, doi: string, docmapToReturn: any) {
+export async function mockDocmapForEndpoint(page: Page, doi: string, docmapToReturn: any) {
   const urlsToMock = (url: URL): boolean => url.toString().includes(STAGING_SERVER_URL);
 
   const mockHandler = async (route: Route, request: Request) => {
