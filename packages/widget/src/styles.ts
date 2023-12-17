@@ -22,7 +22,7 @@ export const customCss: CSSResult = css`
         -ms-user-select: none; /* IE10+/Edge */
         user-select: none; /* Standard */
     }
-    
+
     .not-found-message {
         margin-top: 121px;
         font-family: 'IBM Plex Mono', monospace;
@@ -31,7 +31,7 @@ export const customCss: CSSResult = css`
         text-align: center;
         color: #777777;
     }
-    
+
     .not-found-message p {
         margin: 0;
     }
@@ -144,10 +144,14 @@ export const customCss: CSSResult = css`
 
     .metadata-grid-item.value {
         font-weight: 300;
-        padding-right: 46px;
+        padding-right: 25px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    .metadata-grid-item.value.content {
+    .metadata-grid-item.value .content {
         font-size: 12px;
         font-style: italic;
         font-weight: 300;
@@ -157,6 +161,7 @@ export const customCss: CSSResult = css`
     }
 
     .metadata-link {
+        max-width: 89%;
         color: inherit;
         text-decoration: underline;
         cursor: pointer;
@@ -164,6 +169,11 @@ export const customCss: CSSResult = css`
 
     .metadata-link:hover {
         color: #C1C1C1;
+    }
+
+
+    .copy-to-clipboard-button:hover .copy-to-clipboard-button-path {
+        fill: #474747;
     }
 
     .detail-header .close-button {
@@ -187,7 +197,7 @@ export const customCss: CSSResult = css`
         display: inline-block;
         margin: 7px 13px 6px 11px
     }
-    
+
     .not-found-screen {
         display: flex;
         flex-direction: column;

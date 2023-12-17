@@ -6,7 +6,7 @@ import {
   TYPE_DISPLAY_OPTIONS,
 } from './display-object.ts';
 import { renderDetailNavigationHeader } from './detail-navigation-header';
-import { closeDetailsButton } from './assets';
+import { closeDetailsButton, copyToClipboardButton } from './assets';
 
 type MetadataKey = string;
 type MetadataValue = string | string[];
@@ -17,6 +17,7 @@ export function renderDetailsView(
   allNodes: DisplayObject[],
   updateSelectedNode: (node: DisplayObject) => void,
   closeDetailsView: () => void,
+  updateDetailTooltip: (newText: string, x: number, y: number) => void,
 ): HTMLTemplateResult {
   const opts = TYPE_DISPLAY_OPTIONS[selectedNode.type];
   const backgroundColor = opts.detailViewBackgroundColor || opts.backgroundColor;
@@ -24,7 +25,9 @@ export function renderDetailsView(
 
   const fieldsToDisplay: MetadataTuple[] = getMetadataFieldsToDisplay(selectedNode);
   const detailBody: HTMLTemplateResult =
-    fieldsToDisplay.length > 0 ? createMetadataGrid(fieldsToDisplay) : emptyMetadataMessage();
+    fieldsToDisplay.length > 0
+      ? renderMetadataGrid(fieldsToDisplay, updateDetailTooltip)
+      : emptyMetadataMessage();
 
   return html`
     <div class="detail-timeline no-select">
@@ -42,16 +45,20 @@ export function renderDetailsView(
   `;
 }
 
-const createMetadataGrid = (
+// Renders the metadata grid, which is a 2-column grid of key-value pairs.
+// The key is displayed in the left column, and the value is displayed in the right column. If the value is an array, it
+// is displayed as multiple rows, with the key cell spanning all those rows.
+const renderMetadataGrid = (
   metadataEntries: [MetadataKey, MetadataValue][],
+  updateDetailTooltip: (newText: string, x: number, y: number) => void,
 ): HTMLTemplateResult => {
   const gridItems: HTMLTemplateResult[] = metadataEntries.map(([key, value], index) =>
-    createGridItem(key, value, index),
+    createGridItem(key, value, index, updateDetailTooltip),
   );
   return html` <div class="metadata-grid">${gridItems}</div>`;
 };
 
-function displayMetadataKey(
+function renderMetadataKey(
   key: MetadataKey,
   value: MetadataValue,
   index: number,
@@ -70,45 +77,50 @@ function displayMetadataKey(
   return html` <div class="metadata-grid-item key">${key}</div>`;
 }
 
-function displayMetadataValue(key: MetadataKey, value: MetadataValue): HTMLTemplateResult {
-  if (key === 'url') {
+function displayMetadataValue(
+  key: MetadataKey,
+  value: MetadataValue,
+  updateDetailTooltip: (newText: string, x: number, y: number) => void,
+): HTMLTemplateResult {
+  if (key === 'url' && typeof value === 'string') {
     // display as clickable link
-    return html` <a href="${value}" target="_blank" class="metadata-grid-item value metadata-link">
-      ${value}
-    </a>`;
-  }
-
-  if (key === 'content' && Array.isArray(value)) {
-    // display as list of clickable links
-    return html` ${value.map(
-      (val) =>
-        html` <a
-          href="${val}"
-          target="_blank"
-          class="metadata-grid-item value content metadata-link"
-        >
-          ${val}
-        </a>`,
-    )}`;
+    const template = html` <a href="${value}" target="_blank" class="metadata-link">${value}</a>`;
+    return copyableMetadataValue(template, value, updateDetailTooltip);
   }
 
   if (Array.isArray(value)) {
-    // display as list
-    return html`${value.map(
-      (val) => html` <div class="metadata-grid-item value content">${val}</div>`,
-    )}`;
+    // Display as a list of clickable links.
+    return html` ${value.map((val) => {
+      const template = html` <a href="${val}" target="_blank" class="content metadata-link"
+        >${val}</a
+      >`;
+      return copyableMetadataValue(template, val, updateDetailTooltip);
+    })}`;
   }
 
   // Display as single value
-  return html` <div class="metadata-grid-item value">${value}</div>`;
+  return copyableMetadataValue(html` <span>${value}</span>`, value, updateDetailTooltip);
+}
+
+function copyableMetadataValue(
+  template: HTMLTemplateResult,
+  value: string,
+  onCopy: (newText: string, x: number, y: number) => void,
+): HTMLTemplateResult {
+  return html`
+    <div class="metadata-grid-item value">${template} ${copyToClipboardButton(value, onCopy)}</div>
+  `;
 }
 
 const createGridItem = (
   key: MetadataKey,
   value: MetadataValue,
   index: number,
+  updateDetailTooltip: (newText: string, x: number, y: number) => void,
 ): HTMLTemplateResult => {
-  return html` ${displayMetadataKey(key, value, index)} ${displayMetadataValue(key, value)} `;
+  return html`
+    ${renderMetadataKey(key, value, index)} ${displayMetadataValue(key, value, updateDetailTooltip)}
+  `;
 };
 
 const emptyMetadataMessage = (): HTMLTemplateResult => {
@@ -124,10 +136,15 @@ const getMetadataFieldsToDisplay = (node: DisplayObject): MetadataTuple[] => {
   // then keep only the fields that should be displayed:
   return Object.entries(normalizedNode)
     .filter(([key, value]) => isDisplayObjectMetadataField(key) && value)
-    .filter(isMetadataTuple);
+    .filter(valueIsAStringOrStringArray);
 };
 
-const isMetadataTuple = (tuple: [string, any]): tuple is MetadataTuple => {
+// This type guard asserts that the tuple's value is a string or string array. We need to narrow this down so that we
+// can handle "content" differently from other fields, making its key cell span multiple rows.
+//
+// It's worth noting that if we ever add a non-string or non-string-array field to DisplayObjectMetadata, this method
+// will need to be updated, because right now it will filter those fields out and keep them from being displayed.
+const valueIsAStringOrStringArray = (tuple: [string, any]): tuple is MetadataTuple => {
   const [_, value] = tuple;
 
   const isString = typeof value === 'string';

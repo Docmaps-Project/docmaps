@@ -90,15 +90,21 @@ test('Tooltips appear on mouseover', async ({ page, browserName }) => {
     docmapWithMultipleSteps,
   );
 
-  await assertTooltipAppearsOnHover(widget, widget.locator('.node').first(), 'Preprint');
-  await assertTooltipAppearsOnHover(widget, widget.locator('.node').nth(3), 'Reply');
+  await assertGraphTooltipAppearsOnHover(widget, widget.locator('.node').first(), 'Preprint');
+  await assertGraphTooltipAppearsOnHover(widget, widget.locator('.node').nth(3), 'Reply');
 
   if (browserName !== 'webkit') {
     // TODO for some reason this test fails on webkit even though the functionality does work on Safari.
     // This behavior is not important enough to spend time debugging right now.
-    await assertTooltipAppearsOnHover(widget, widget.locator('.label').first(), 'Preprint');
-    await assertTooltipAppearsOnHover(widget, widget.locator('.label').nth(3), 'Reply');
+    await assertGraphTooltipAppearsOnHover(widget, widget.locator('.label').first(), 'Preprint');
+    await assertGraphTooltipAppearsOnHover(widget, widget.locator('.label').nth(3), 'Reply');
   }
+
+  // tooltips should still appear after the details pane is opened and then closed
+  const nodeToClick = widget.locator('.node').first();
+  await nodeToClick.click({ force: true });
+  await widget.locator('.close-button').click({ force: true });
+  await assertGraphTooltipAppearsOnHover(widget, widget.locator('.node').nth(3), 'Reply');
 });
 
 test(`Can display details view for a Preprint with every field`, async ({ page }) => {
@@ -363,14 +369,14 @@ test('When the docmap cannot be found, the empty screen is shown', async ({ page
   await expect(widget).toContainText('No data found for DOI unknown-doi');
 });
 
-async function assertTooltipAppearsOnHover(
+async function assertGraphTooltipAppearsOnHover(
   widget: Locator,
   thingToHoverOver: Locator,
   expectedTooltipText: string,
 ) {
   await thingToHoverOver.hover({ trial: false, force: true });
 
-  const tooltip = widget.locator('#tooltip');
+  const tooltip = widget.locator('#graph-tooltip');
   await expect(tooltip).toBeVisible();
   await expect(tooltip).toHaveText(expectedTooltipText);
 
