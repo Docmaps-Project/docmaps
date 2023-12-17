@@ -10,8 +10,8 @@ export const copyToClipboardButton = (
   </svg>
 `;
 
-// Be aware: the copy-to-clipboard functionality is not tested. It is difficult to test clipboard functionality in
-// playwright.
+// Be aware: the copy-to-clipboard functionality is not tested. Sadly, it is basically impossible to test clipboard
+// functionality in Playwright.
 const copyToClipboard = (
   event: PointerEvent,
   textToCopy: string,

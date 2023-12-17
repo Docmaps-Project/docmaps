@@ -99,6 +99,12 @@ test('Tooltips appear on mouseover', async ({ page, browserName }) => {
     await assertGraphTooltipAppearsOnHover(widget, widget.locator('.label').first(), 'Preprint');
     await assertGraphTooltipAppearsOnHover(widget, widget.locator('.label').nth(3), 'Reply');
   }
+
+  // tooltips should still appear after the details pane is opened and then closed
+  const nodeToClick = widget.locator('.node').first();
+  await nodeToClick.click({ force: true });
+  await widget.locator('.close-button').click({ force: true });
+  await assertGraphTooltipAppearsOnHover(widget, widget.locator('.node').nth(3), 'Reply');
 });
 
 test(`Can display details view for a Preprint with every field`, async ({ page }) => {
