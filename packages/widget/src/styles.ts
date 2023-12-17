@@ -115,15 +115,17 @@ export const customCss: CSSResult = css`
 
     .metadata-grid {
         max-height: 100%;
+        max-width: 100%;
         display: grid;
-        grid-template-columns: 131px 369px;
+        grid-template-columns: 131px auto;
         grid-gap: 0;
         overflow-y: scroll;
+        overflow-x: hidden;
     }
 
     .metadata-grid-item {
         min-height: 47px;
-        max-width: 369px;
+        max-width: 100%;
         display: flex;
         align-items: center;
         justify-content: flex-start;
@@ -142,7 +144,6 @@ export const customCss: CSSResult = css`
 
     .metadata-grid-item.value {
         font-weight: 300;
-        max-width: 369px;
         padding-right: 46px;
     }
 
