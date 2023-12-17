@@ -24,6 +24,13 @@ export class DocmapsWidget extends LitElement {
   @state()
   graph?: DisplayObjectGraph;
 
+  @state()
+  detailTooltip: { text: string; x: number; y: number } = {
+    text: '',
+    x: 0,
+    y: 0,
+  };
+
   // We keep track of this because we have to render once before drawing the graph
   // so that D3 has a canvas to draw into.
   #hasRenderedOnce: boolean = false;
@@ -50,9 +57,21 @@ export class DocmapsWidget extends LitElement {
   };
 
   // Method to clear the selected node and go back to the graph view
-  private closeDetailView() {
+  private closeDetailView = () => {
     this.selectedNode = undefined;
-  }
+  };
+
+  private updateDetailTooltip = (newText: string, x: number, y: number) => {
+    // Show the tooltip with the provided text and position
+    this.detailTooltip = {
+      text: newText,
+      x: x,
+      y: y,
+    };
+
+    // Set a timeout to hide the tooltip after 3 seconds
+    setTimeout(() => (this.detailTooltip = { ...this.detailTooltip, text: '' }), 2000);
+  };
 
   render(): HTMLTemplateResult {
     const d3Canvas: HTMLTemplateResult = html` <div id="${GRAPH_CANVAS_ID}"></div>`;
@@ -65,7 +84,23 @@ export class DocmapsWidget extends LitElement {
           <span>DOCMAP</span>
         </div>
         ${d3Canvas} ${content}
-        <div id="tooltip" class="tooltip" style="opacity:0;"></div>
+        <div id="graph-tooltip" class="tooltip" style="opacity:0;"></div>
+        ${this.renderDetailTooltip()}
+      </div>
+    `;
+  }
+
+  private renderDetailTooltip() {
+    const { text, x, y } = this.detailTooltip;
+    return html`
+      <div
+        id="detail-tooltip"
+        class="tooltip"
+        style="opacity: ${text ? 1 : 0}; left: ${x}px; top: ${y}px; visibility: ${text
+          ? 'visible'
+          : 'hidden'}"
+      >
+        ${text}
       </div>
     `;
   }
@@ -118,6 +153,7 @@ export class DocmapsWidget extends LitElement {
       this.graph.nodes,
       this.showDetailViewForNode,
       this.closeDetailView,
+      this.updateDetailTooltip,
     );
   }
 }

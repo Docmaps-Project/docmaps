@@ -285,7 +285,7 @@ export const setUpTooltips = (
     return;
   }
 
-  const tooltip = d3.select(shadowRoot.querySelector('#tooltip'));
+  const tooltip = d3.select(shadowRoot.querySelector('#graph-tooltip'));
 
   selection
     .on('mouseover', function (event, d) {
@@ -311,7 +311,7 @@ export const setupInteractivity = (
     return;
   }
 
-  const tooltip = d3.select(shadowRoot.querySelector('#tooltip'));
+  const tooltip = d3.select(shadowRoot.querySelector('#graph-tooltip'));
 
   nodeElements.on('click', (_event, d: D3Node) => {
     // Hide the tooltip first

@@ -17,6 +17,7 @@ export function renderDetailsView(
   allNodes: DisplayObject[],
   updateSelectedNode: (node: DisplayObject) => void,
   closeDetailsView: () => void,
+  updateDetailTooltip: (newText: string, x: number, y: number) => void,
 ): HTMLTemplateResult {
   const opts = TYPE_DISPLAY_OPTIONS[selectedNode.type];
   const backgroundColor = opts.detailViewBackgroundColor || opts.backgroundColor;
@@ -24,7 +25,9 @@ export function renderDetailsView(
 
   const fieldsToDisplay: MetadataTuple[] = getMetadataFieldsToDisplay(selectedNode);
   const detailBody: HTMLTemplateResult =
-    fieldsToDisplay.length > 0 ? renderMetadataGrid(fieldsToDisplay) : emptyMetadataMessage();
+    fieldsToDisplay.length > 0
+      ? renderMetadataGrid(fieldsToDisplay, updateDetailTooltip)
+      : emptyMetadataMessage();
 
   return html`
     <div class="detail-timeline no-select">
@@ -47,9 +50,10 @@ export function renderDetailsView(
 // is displayed as multiple rows, with the key cell spanning all those rows.
 const renderMetadataGrid = (
   metadataEntries: [MetadataKey, MetadataValue][],
+  updateDetailTooltip: (newText: string, x: number, y: number) => void,
 ): HTMLTemplateResult => {
   const gridItems: HTMLTemplateResult[] = metadataEntries.map(([key, value], index) =>
-    createGridItem(key, value, index),
+    createGridItem(key, value, index, updateDetailTooltip),
   );
   return html` <div class="metadata-grid">${gridItems}</div>`;
 };
@@ -73,28 +77,38 @@ function renderMetadataKey(
   return html` <div class="metadata-grid-item key">${key}</div>`;
 }
 
-function displayMetadataValue(key: MetadataKey, value: MetadataValue): HTMLTemplateResult {
+function displayMetadataValue(
+  key: MetadataKey,
+  value: MetadataValue,
+  updateDetailTooltip: (newText: string, x: number, y: number) => void,
+): HTMLTemplateResult {
   if (key === 'url' && typeof value === 'string') {
     // display as clickable link
-    const template = html` <a href='${value}' target='_blank' class='metadata-link'>${value}</a>`;
-    return copyableMetadataValue(template, value);
+    const template = html` <a href="${value}" target="_blank" class="metadata-link">${value}</a>`;
+    return copyableMetadataValue(template, value, updateDetailTooltip);
   }
 
   if (Array.isArray(value)) {
     // Display as a list of clickable links.
     return html` ${value.map((val) => {
-      const template = html` <a href='${val}' target='_blank' class='content metadata-link'>${val}</a>`;
-      return copyableMetadataValue(template, val);
+      const template = html` <a href="${val}" target="_blank" class="content metadata-link"
+        >${val}</a
+      >`;
+      return copyableMetadataValue(template, val, updateDetailTooltip);
     })}`;
   }
 
   // Display as single value
-  return copyableMetadataValue(html` <span>${value}</span>`, value);
+  return copyableMetadataValue(html` <span>${value}</span>`, value, updateDetailTooltip);
 }
 
-function copyableMetadataValue(template: HTMLTemplateResult, value: string): HTMLTemplateResult {
+function copyableMetadataValue(
+  template: HTMLTemplateResult,
+  value: string,
+  onCopy: (newText: string, x: number, y: number) => void,
+): HTMLTemplateResult {
   return html`
-    <div class="metadata-grid-item value">${template} ${copyToClipboardButton(value)}</div>
+    <div class="metadata-grid-item value">${template} ${copyToClipboardButton(value, onCopy)}</div>
   `;
 }
 
@@ -102,8 +116,11 @@ const createGridItem = (
   key: MetadataKey,
   value: MetadataValue,
   index: number,
+  updateDetailTooltip: (newText: string, x: number, y: number) => void,
 ): HTMLTemplateResult => {
-  return html` ${renderMetadataKey(key, value, index)} ${displayMetadataValue(key, value)} `;
+  return html`
+    ${renderMetadataKey(key, value, index)} ${displayMetadataValue(key, value, updateDetailTooltip)}
+  `;
 };
 
 const emptyMetadataMessage = (): HTMLTemplateResult => {
