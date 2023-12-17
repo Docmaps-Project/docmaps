@@ -92,6 +92,8 @@ function displayMetadataValue(key: MetadataKey, value: MetadataValue): HTMLTempl
     )}`;
   }
 
+  // This currently never happens, because the only field that can have multiple values is 'content', and we handle that
+  // case above. But if we ever add another field that can have multiple values, this gives us a way to handle it.
   if (Array.isArray(value)) {
     // display as list
     return html`${value.map(
@@ -124,10 +126,15 @@ const getMetadataFieldsToDisplay = (node: DisplayObject): MetadataTuple[] => {
   // then keep only the fields that should be displayed:
   return Object.entries(normalizedNode)
     .filter(([key, value]) => isDisplayObjectMetadataField(key) && value)
-    .filter(isMetadataTuple);
+    .filter(valueIsAStringOrStringArray);
 };
 
-const isMetadataTuple = (tuple: [string, any]): tuple is MetadataTuple => {
+// This type guard asserts that the tuple's value is a string or string array. We need to narrow this down so that we
+// can handle "content" differently from other fields, making its key cell span multiple rows.
+//
+// It's worth noting that if we ever add a non-string or non-string-array field to DisplayObjectMetadata, this method
+// will need to be updated, because right now it will filter those fields out and keep them from being displayed.
+const valueIsAStringOrStringArray = (tuple: [string, any]): tuple is MetadataTuple => {
   const [_, value] = tuple;
 
   const isString = typeof value === 'string';

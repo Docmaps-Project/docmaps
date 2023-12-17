@@ -15,16 +15,16 @@ export interface DisplayObjectMetadata {
   actors?: string;
 }
 
-// DisplayObjects are the widget's internal representation of a node from the graph view.
-// They roughly correspond to a ThingT in the Docmap spec, but with only the fields that we want to display.
+// A DisplayObject is the widget's internal representation of a node in the graph view.
+// This type roughly corresponds to ThingT in the @docmaps/sdk, but with only the fields that we want to display.
 export interface DisplayObject extends DisplayObjectMetadata {
   nodeId: string; // Used internally to construct graph relationships, never rendered
   type: string;
 }
 
-// The following 3 statements allow us to use FieldsToDisplay both as a type and as something we can
-// check against at runtime. We could also use io-ts for this, but that felt like overkill since this
-// is the only place in the widget where we do something like this.
+// The following 3 statements allow us to use FieldsToDisplay both as a type and as something we can check against at
+// runtime. We could use io-ts for this, but that felt like overkill since this is the only place in the widget where we
+// do something like this.
 export type DisplayObjectMetadataField = keyof DisplayObjectMetadata;
 const DisplayObjectMetadataPrototype: { [K in DisplayObjectMetadataField]: null } = {
   doi: null,
@@ -39,8 +39,8 @@ export function isDisplayObjectMetadataField(key: string): key is DisplayObjectM
   return key in DisplayObjectMetadataPrototype;
 }
 
-// Returns a new DisplayObject which has no fields set to the value undefined,
-// meaning the new Display Object can be merged with another DisplayObject via destructuring.
+// Returns a new DisplayObject which has no fields set to the value undefined, meaning the new Display Object can be
+// merged with another DisplayObject via destructuring.
 //
 // Also puts the fields in the order in which they should be displayed.
 export function normalizeDisplayObject(displayObject: DisplayObject): DisplayObject {
@@ -57,6 +57,8 @@ export function normalizeDisplayObject(displayObject: DisplayObject): DisplayObj
   };
 }
 
+// Lets you combine two display objects into one, with the fields of the second object taking precedence.
+// only the first object can be undefined.
 export function mergeDisplayObjects(a: DisplayObject | undefined, b: DisplayObject): DisplayObject {
   return {
     ...(a && normalizeDisplayObject(a)),
@@ -64,7 +66,7 @@ export function mergeDisplayObjects(a: DisplayObject | undefined, b: DisplayObje
   };
 }
 
-// DisplayObjectEdges are the widget's internal representation of an edge connecting two DisplayObjects.
+// DisplayObjectEdges are the widget's internal representation of a connection between two DisplayObjects.
 export type DisplayObjectEdge = {
   sourceId: string;
   targetId: string;
@@ -75,16 +77,23 @@ export type DisplayObjectGraph = {
   edges: DisplayObjectEdge[];
 };
 
-// The appearance of a DisplayObject in the graph view and in the detail view is determined by its 'type' field.
-// The following constants define the possible values of the 'type' field and the appearance that corresponds with each value.
+// The appearance of a DisplayObject in the graph view and in the detail view is determined by its 'type' field. The
+// following constants define the possible values of the 'type' field and the styling that corresponds with each value.
 export type TypeDisplayOption = {
+  // Abbreviation representing the type, e.g. 'R' for 'Review'
   shortLabel: string;
+  // Full, human-readable name of the type, e.g. 'Review'
   longLabel: string;
+  // Background color of the node in the graph view
   backgroundColor: string;
+  // Text color of the node in the graph view
   textColor: string;
-  dottedBorder?: boolean; // whether the node should be rendered with a dotted border
-  detailViewBackgroundColor?: string; // if this is not set, backgroundColor will be used
-  detailViewTextColor?: string; // if this is not set, textColor will be used
+  // whether the node should be rendered with a dotted border in the graph view
+  dottedBorder?: boolean;
+  // Background color of the detail view header. if this is not set, backgroundColor will be used
+  detailViewBackgroundColor?: string;
+  // Text color of the detail view header. if this is not set, textColor will be used
+  detailViewTextColor?: string;
 };
 
 export const TYPE_DISPLAY_OPTIONS: {
