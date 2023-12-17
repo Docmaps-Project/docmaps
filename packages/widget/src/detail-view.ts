@@ -6,7 +6,7 @@ import {
   TYPE_DISPLAY_OPTIONS,
 } from './display-object.ts';
 import { renderDetailNavigationHeader } from './detail-navigation-header';
-import { closeDetailsButton } from './assets';
+import { closeDetailsButton, copyToClipboardButton } from './assets';
 
 type MetadataKey = string;
 type MetadataValue = string | string[];
@@ -24,7 +24,7 @@ export function renderDetailsView(
 
   const fieldsToDisplay: MetadataTuple[] = getMetadataFieldsToDisplay(selectedNode);
   const detailBody: HTMLTemplateResult =
-    fieldsToDisplay.length > 0 ? createMetadataGrid(fieldsToDisplay) : emptyMetadataMessage();
+    fieldsToDisplay.length > 0 ? renderMetadataGrid(fieldsToDisplay) : emptyMetadataMessage();
 
   return html`
     <div class="detail-timeline no-select">
@@ -42,7 +42,10 @@ export function renderDetailsView(
   `;
 }
 
-const createMetadataGrid = (
+// Renders the metadata grid, which is a 2-column grid of key-value pairs.
+// The key is displayed in the left column, and the value is displayed in the right column. If the value is an array, it
+// is displayed as multiple rows, with the key cell spanning all those rows.
+const renderMetadataGrid = (
   metadataEntries: [MetadataKey, MetadataValue][],
 ): HTMLTemplateResult => {
   const gridItems: HTMLTemplateResult[] = metadataEntries.map(([key, value], index) =>
@@ -51,7 +54,7 @@ const createMetadataGrid = (
   return html` <div class="metadata-grid">${gridItems}</div>`;
 };
 
-function displayMetadataKey(
+function renderMetadataKey(
   key: MetadataKey,
   value: MetadataValue,
   index: number,
@@ -71,38 +74,28 @@ function displayMetadataKey(
 }
 
 function displayMetadataValue(key: MetadataKey, value: MetadataValue): HTMLTemplateResult {
-  if (key === 'url') {
+  if (key === 'url' && typeof value === 'string') {
     // display as clickable link
-    return html` <a href="${value}" target="_blank" class="metadata-grid-item value metadata-link">
-      ${value}
-    </a>`;
+    const template = html` <a href='${value}' target='_blank' class='metadata-link'>${value}</a>`;
+    return copyableMetadataValue(template, value);
   }
 
-  if (key === 'content' && Array.isArray(value)) {
-    // display as list of clickable links
-    return html` ${value.map(
-      (val) =>
-        html` <a
-          href="${val}"
-          target="_blank"
-          class="metadata-grid-item value content metadata-link"
-        >
-          ${val}
-        </a>`,
-    )}`;
-  }
-
-  // This currently never happens, because the only field that can have multiple values is 'content', and we handle that
-  // case above. But if we ever add another field that can have multiple values, this gives us a way to handle it.
   if (Array.isArray(value)) {
-    // display as list
-    return html`${value.map(
-      (val) => html` <div class="metadata-grid-item value content">${val}</div>`,
-    )}`;
+    // Display as a list of clickable links.
+    return html` ${value.map((val) => {
+      const template = html` <a href='${val}' target='_blank' class='content metadata-link'>${val}</a>`;
+      return copyableMetadataValue(template, val);
+    })}`;
   }
 
   // Display as single value
-  return html` <div class="metadata-grid-item value">${value}</div>`;
+  return copyableMetadataValue(html` <span>${value}</span>`, value);
+}
+
+function copyableMetadataValue(template: HTMLTemplateResult, value: string): HTMLTemplateResult {
+  return html`
+    <div class="metadata-grid-item value">${template} ${copyToClipboardButton(value)}</div>
+  `;
 }
 
 const createGridItem = (
@@ -110,7 +103,7 @@ const createGridItem = (
   value: MetadataValue,
   index: number,
 ): HTMLTemplateResult => {
-  return html` ${displayMetadataKey(key, value, index)} ${displayMetadataValue(key, value)} `;
+  return html` ${renderMetadataKey(key, value, index)} ${displayMetadataValue(key, value)} `;
 };
 
 const emptyMetadataMessage = (): HTMLTemplateResult => {

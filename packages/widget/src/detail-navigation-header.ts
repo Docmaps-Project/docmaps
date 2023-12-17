@@ -17,7 +17,7 @@ const backButton = (
     <svg class='docmaps-timeline-back clickable' width='36' height='36' viewBox='0 0 36 36' fill='none' xmlns='http://www.w3.org/2000/svg'
         @click='${() => updateSelectedNode(previousNode)}'>
       <circle cx='17.5' cy='17.5' r='17' stroke='#474747'/>
-      <path transform='scale(-1,1) translate(-35,0)' d='M22.5 17.134C23.1667 17.5189 23.1667 18.4811 22.5 18.866L10.5 25.7942C9.83333 26.1791 9 25.698 9 24.9282L9 11.0718C9 10.302 9.83333 9.82087 10.5 10.2058L22.5 17.134Z' fill='#474747'/>
+      <path fill='#474747' transform='scale(-1,1) translate(-35,0)' d='M22.5 17.134C23.1667 17.5189 23.1667 18.4811 22.5 18.866L10.5 25.7942C9.83333 26.1791 9 25.698 9 24.9282L9 11.0718C9 10.302 9.83333 9.82087 10.5 10.2058L22.5 17.134Z'/>
       <path transform='scale(-1,1) translate(-35,0)'  d='M24 10L24 26' stroke='#474747' stroke-width='2' stroke-linecap='round'/>
     </svg>`;
 };
