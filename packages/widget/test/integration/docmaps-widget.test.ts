@@ -4,6 +4,7 @@ import docmapWithOneStep from '../fixtures/docmapWithOneStep';
 import anotherDocmapWithOneStep from '../fixtures/anotherDocmapWithOneStep';
 import fakeDocmapWithEveryType from '../fixtures/fake-docmap-with-every-thing-type';
 import fakeDocmapWithTwoLonelyNodes from '../fixtures/fake-docmap-with-two-lonely-nodes';
+import docmapWithNoMetadata from '../fixtures/docmapWithNoMetadata';
 import {
   renderWidgetWithDocmapLiteral,
   renderWidgetWithServerMock,
@@ -34,6 +35,10 @@ const fixtures: { [docmapName: string]: { docmap: any; types: string[] } } = {
     docmap: fakeDocmapWithTwoLonelyNodes,
     types: ['P', 'RA', 'RA', 'RA', '', 'JA'],
   },
+  docmapWithNoMetadata: {
+    docmap: docmapWithNoMetadata,
+    types: ['', 'RA'],
+  }
 };
 
 [
@@ -368,6 +373,16 @@ test('When the docmap cannot be found, the empty screen is shown', async ({ page
   const widget = await renderWidgetWithUnknownDOI(page);
   await expect(widget).toContainText('No data found for DOI unknown-doi');
 });
+
+test('Can render a docmap with no metadata', async ({ page }) => {
+  const widget = await renderWidgetWithServerMock(page, 'docmap-with-no-metadata', docmapWithNoMetadata);
+  await expect(widget.locator('.node')).toHaveCount(2);
+
+  const nodeWithoutMetadata = widget.locator('.node').last();
+  await nodeWithoutMetadata.click({ force: true });
+
+  await expect(widget.locator('.detail-body')).toContainText('no metadata found');
+})
 
 async function assertGraphTooltipAppearsOnHover(
   widget: Locator,
