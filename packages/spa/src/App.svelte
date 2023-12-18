@@ -63,11 +63,14 @@
   async function fetchData(doi) {
     requestedDoi = doi;
     key += 1;
-    await configureForDoiString(
-      doi,
-      handleData,
-      handleError,
-    );
+    showContent = true;
+
+    // // Once we've fixed the crossref client, we can uncomment this
+    // await configureForDoiString(
+    //   doi,
+    //   handleData,
+    //   handleError,
+    // );
   }
 
   function displayWidgetWithDocmapLiteral() {
@@ -129,12 +132,13 @@
       show: true, // Always show the widget
       props: { doi: requestedDoi, docmap },
     },
-    {
-      name: 'Crossref Demo',
-      component: CrossrefDemo,
-      show: !providingPlaintextDocmap, // Only show the crossref demo when we're not providing a docmap via plaintext
-      props: { json },
-    },
+    // // Once we've fixed the crossref client, we can uncomment this
+    // {
+    //   name: 'Crossref Demo',
+    //   component: CrossrefDemo,
+    //   show: !providingPlaintextDocmap, // Only show the crossref demo when we're not providing a docmap via plaintext
+    //   props: { json },
+    // },
   ];
 
   $: if (typeof requestedDoi !== 'undefined' && requestedDoi) {
@@ -172,7 +176,7 @@
   {/if}
   <br>
 
-  {#if showContent}
+  {#if requestedDoi || (providingPlaintextDocmap && docmap)}
     {#if !providingPlaintextDocmap}
       <p style='margin-top: 60px;'><i>Showing results for: {requestedDoi}</i></p>
     {/if}
