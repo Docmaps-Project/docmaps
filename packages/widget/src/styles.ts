@@ -123,13 +123,24 @@ export const customCss: CSSResult = css`
         overflow-x: hidden;
     }
 
+    .no-metadata-found-grid {
+        max-height: 100%;
+        max-width: 100%;
+        display: grid;
+        grid-template-columns: auto;
+        grid-gap: 0;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+
     .metadata-grid-item {
         min-height: 47px;
         max-width: 100%;
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        padding-left: 33px;
+        padding-left: 36px;
         word-wrap: break-word;
         overflow-wrap: break-word;
         word-break: break-all;

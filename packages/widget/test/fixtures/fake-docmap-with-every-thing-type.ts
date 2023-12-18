@@ -1,4 +1,4 @@
-// This is a copy of elife-docmap-1.ts but with every supported display type in the last step
+// This is a copy of docmapWithMultipleSteps.ts but with every supported display type in the last step
 
 export default {
     "@context": "https://w3id.org/docmaps/context.jsonld",

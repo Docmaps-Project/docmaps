@@ -124,8 +124,8 @@ const createGridItem = (
 };
 
 const emptyMetadataMessage = (): HTMLTemplateResult => {
-  return html` <div class="metadata-item">
-    <div class="metadata-key">no metadata found</div>
+  return html` <div class="no-metadata-found-grid">
+    <div class="metadata-grid-item">no metadata found</div>
   </div>`;
 };
 
