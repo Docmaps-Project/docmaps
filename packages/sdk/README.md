@@ -51,7 +51,7 @@ as the results of a SPARQL query.
 
 ## Documentation
 
-Documentation is [served by github pages](https://docmaps-project.github.io/docmaps/docmaps-sdk/index.html).
+Documentation is [served by github pages](https://docmaps-project.github.io/docmaps/sdk/index.html).
 If you wish to view documentation for an off-branch edition of this package, the directory `/docs`
 can be populated by the command `pnpm docs:generate`. The inputs to the
 generation script include all Markdown and source files in this directory. These docs are generated

@@ -10,7 +10,7 @@ The package/server is structured like this:
 | HTTP webserver | using [express.js](https://expressjs.com/), fulfills contract described in [the RFC for this server](https://github.com/Docmaps-Project/rfcs/blob/ships/1/APIProtocol/proposals/001_interop.md) |
 | Node API Instance | fulfills contract spec of the RFC in nodejs library. `src/api.ts` |
 | Adapter layer | Separates the dataset adapter from the API instance for example, isolates auth from data `src/adapter/` |
-| SPARQL processor/adapter | converts Docmaps semantics to SPARQL and uses `docmaps-sdk` to make objects from triples | 
+| SPARQL processor/adapter | converts Docmaps semantics to SPARQL and uses `@docmaps/sdk` to make objects from triples | 
 | SPARQL triplestore | Anything that supports SPARQL is allowed, we supply easy access to [oxigraph](https://github.com/oxigraph/oxigraph) |
 
 Note that use of SPARQL is optional but you would be required to write your own `BackendAdapter` layer that translates

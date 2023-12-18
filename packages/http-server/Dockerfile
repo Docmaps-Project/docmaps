@@ -33,7 +33,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
       --frozen-lockfile
 
 # Build the dependencies from this workspace
-RUN pnpm --filter docmaps-sdk --filter @docmaps/http-client run build
+RUN pnpm --filter @docmaps/sdk --filter @docmaps/http-client run build
 # Build the application
 RUN pnpm --filter @docmaps/http-server run build
 
