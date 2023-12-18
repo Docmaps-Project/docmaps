@@ -1,7 +1,7 @@
 import { expect, Locator, test } from '@playwright/test';
-import docmapWithMultipleSteps from '../fixtures/elife-docmap-1';
-import docmapWithOneStep from '../fixtures/sciety-docmap-1';
-import anotherDocmapWithOneStep from '../fixtures/sciety-docmap-2';
+import docmapWithMultipleSteps from '../fixtures/docmapWithMultipleSteps';
+import docmapWithOneStep from '../fixtures/docmapWithOneStep';
+import anotherDocmapWithOneStep from '../fixtures/anotherDocmapWithOneStep';
 import fakeDocmapWithEveryType from '../fixtures/fake-docmap-with-every-thing-type';
 import fakeDocmapWithTwoLonelyNodes from '../fixtures/fake-docmap-with-two-lonely-nodes';
 import {

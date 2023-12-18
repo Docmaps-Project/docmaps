@@ -1,4 +1,4 @@
-// This is a copy of elife-docmap-1.ts but with every supported display type in the last step
+// This docmap's display objects form a graph 3 layers deep, with the first and second layers only having one node each.
 
 export default {
   "@context": "https://w3id.org/docmaps/context.jsonld",

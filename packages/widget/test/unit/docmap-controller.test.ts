@@ -1,9 +1,9 @@
 import test from 'ava';
 import { getSteps, stepsToGraph } from '../../src';
 import type { DisplayObjectEdge } from '../../src/util';
-import smallDocmapWithOneStep from '../fixtures/sciety-docmap-1';
-import largeDocmapWithOneStep from '../fixtures/sciety-docmap-2';
-import docmapWithMultipleSteps from '../fixtures/elife-docmap-1';
+import smallDocmapWithOneStep from '../fixtures/docmapWithOneStep';
+import largeDocmapWithOneStep from '../fixtures/anotherDocmapWithOneStep';
+import docmapWithMultipleSteps from '../fixtures/docmapWithMultipleSteps';
 
 interface Item {
   type: string;

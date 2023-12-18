@@ -1,6 +1,6 @@
 import { Page, Request, Route } from '@playwright/test';
 import { DocmapsWidget } from '../../src';
-import docmapWithOneStep from '../fixtures/sciety-docmap-1';
+import docmapWithOneStep from '../fixtures/docmapWithOneStep';
 
 
 const STAGING_SERVER_URL: string = 'https://example.com';
