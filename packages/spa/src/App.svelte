@@ -65,12 +65,11 @@
     key += 1;
     showContent = true;
 
-    // // Once we've fixed the crossref client, we can uncomment this
-    // await configureForDoiString(
-    //   doi,
-    //   handleData,
-    //   handleError,
-    // );
+     await configureForDoiString(
+       doi,
+       handleData,
+       handleError,
+     );
   }
 
   function displayWidgetWithDocmapLiteral() {
@@ -90,7 +89,7 @@
         source: {
           preset: 'crossref-api',
           client: CreateCrossrefClient({
-            politeMailto: 'docmaps+spa@knowledgefutures.org',
+            bePolite: false
           }),
         },
         publisher: {
@@ -132,13 +131,12 @@
       show: true, // Always show the widget
       props: { doi: requestedDoi, docmap },
     },
-    // // Once we've fixed the crossref client, we can uncomment this
-    // {
-    //   name: 'Crossref Demo',
-    //   component: CrossrefDemo,
-    //   show: !providingPlaintextDocmap, // Only show the crossref demo when we're not providing a docmap via plaintext
-    //   props: { json },
-    // },
+     {
+       name: 'Crossref Demo',
+       component: CrossrefDemo,
+       show: !providingPlaintextDocmap, // Only show the crossref demo when we're not providing a docmap via plaintext
+       props: { json },
+     },
   ];
 
   $: if (typeof requestedDoi !== 'undefined' && requestedDoi) {
