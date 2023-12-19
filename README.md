@@ -1,9 +1,25 @@
-# Docmaps
+# DocMaps
 
 A community-endorsed framework for representing research object-level (e.g. journal article, preprint, or dataset)
 review/editorial processes in a machine-readable, discoverable, and extensible format.
 
 More info: https://docmaps.knowledgefutures.org
+
+## Getting started with DocMaps
+
+The easiest way to generate docmaps, parse and work with them, is in Typescript using the NPM packages
+in this repository. The essentiall package is `@docmaps/sdk`, which supports parsing and validating.
+
+To see the usage of this library, you can consult the package [`example`](./packages/example). This contains
+a simple script that shows how to use a docmap "codec" to parse an arbitrary JS/JSON object, resulting in
+a union type that is Either a Docmap or an Error. In general, this library is best used in a functional rather
+than OOP style. Although idiomatic functional programming is optional, you are obliged to use this codec pattern
+and handle the Error case explicitly, rather than a Constructor pattern; and doing so will quickly become more
+ergonomic as you get comfortable with `fp-ts`, which is also used in the example.
+
+Docmaps are best represented as linked data, which is to say RDF. Most networked usage of docmaps is formatted as
+JSON-LD, but you can see a reference implementation of a triplestore-based server implementation that uses
+SPARQL and JSON-LD Framing to extract structured docmaps from a graph backend in the [`http-server`](./packages/http-server).
 
 ## About This Repo
 
