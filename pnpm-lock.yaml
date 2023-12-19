@@ -70,8 +70,8 @@ importers:
         specifier: ^11.0.0
         version: 11.0.0
       crossref-openapi-client-ts:
-        specifier: ^1.3.0
-        version: 1.3.0
+        specifier: ^1.5.0
+        version: 1.5.0
       fp-ts:
         specifier: ^2.14.0
         version: 2.16.1
@@ -203,7 +203,7 @@ importers:
         version: 2.0.0
       '@tpluscode/sparql-builder':
         specifier: ^1.1.0
-        version: 1.1.0(@types/clownface@2.0.4)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5)(sparql-http-client@2.4.2)
+        version: 1.1.0(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5)(sparql-http-client@2.4.2)
       '@ts-rest/core':
         specifier: ^3.30.2
         version: 3.30.4(zod@3.22.4)
@@ -1829,11 +1829,11 @@ packages:
       '@types/rdfjs__namespace': 2.0.8
       '@zazuko/prefixes': 2.0.0
 
-  /@tpluscode/rdf-string@1.1.0(@types/clownface@2.0.4)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5):
+  /@tpluscode/rdf-string@1.1.0(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5):
     resolution: {integrity: sha512-n9RUQmeGS4V7Pj+zx/baURoFEia9ajmvwk4nG6pslgOMT3zp+d79dA20IjlOgC9zyYeH5bmMirXmIVOjeke3rQ==}
     dependencies:
       '@rdfjs/types': 1.1.0
-      '@zazuko/env': 1.10.1(@types/clownface@2.0.4)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5)
+      '@zazuko/env': 1.10.1(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5)
       '@zazuko/prefixes': 2.0.0
     transitivePeerDependencies:
       - '@types/clownface'
@@ -1843,7 +1843,7 @@ packages:
       - '@types/rdfjs__traverser'
     dev: false
 
-  /@tpluscode/sparql-builder@1.1.0(@types/clownface@2.0.4)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5)(sparql-http-client@2.4.2):
+  /@tpluscode/sparql-builder@1.1.0(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5)(sparql-http-client@2.4.2):
     resolution: {integrity: sha512-xrbKKezWwvv6bXHRlkzM7hhSJqnG63DwUT2jGqtJIOWaOPAFc1wDXXd9TiuLk/oGBX6J9oV4KzaNRoZCWob9eQ==}
     peerDependencies:
       sparql-http-client: ^2.2.0
@@ -1852,7 +1852,7 @@ packages:
       '@rdfjs/term-set': 2.0.1
       '@rdfjs/types': 1.1.0
       '@tpluscode/rdf-ns-builders': 4.1.0
-      '@tpluscode/rdf-string': 1.1.0(@types/clownface@2.0.4)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5)
+      '@tpluscode/rdf-string': 1.1.0(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5)
       '@types/sparql-http-client': 2.2.11
       anylogger: 1.0.11
       sparql-http-client: 2.4.2
@@ -1913,6 +1913,13 @@ packages:
     resolution: {integrity: sha512-NAV4bUtQetmHf+vBIDdAcPmgC26ObDOPHB2jowhcMb6phRlcRPMRZ0YwY77p1Iic4K8htlnBquZS2ld4UFO6hA==}
     dependencies:
       rdf-js: 4.0.2
+    dev: true
+
+  /@types/clownface@2.0.5:
+    resolution: {integrity: sha512-syaN4nOExKbW+cqH6falHe8xbalg5pP/aItWwntUEincOgbsxPxJ2JYMD7RioReAWBcASx2xgnMPA8waIGBf9w==}
+    dependencies:
+      rdf-js: 4.0.2
+    dev: false
 
   /@types/connect@3.4.37:
     resolution: {integrity: sha512-zBUSRqkfZ59OcwXon4HVxhx5oWCJmc0OtBTK05M+p0dYjgN6iTwIL2T/WbsQZrEsdnwaF9cWQ+azOnpPvIqY3Q==}
@@ -2187,6 +2194,12 @@ packages:
   /@types/node@18.16.7:
     resolution: {integrity: sha512-MFg7ua/bRtnA1hYE3pVyWxGd/r7aMqjNOdHvlSsXV3n8iaeGKkOaPzpJh6/ovf4bEXWcojkeMJpTsq3mzXW4IQ==}
 
+  /@types/node@20.10.5:
+    resolution: {integrity: sha512-nNPsNE65wjMxEKI93yOP+NPGGBJz/PoN3kZsVLee0XMiJolxSekEVD8wRwBUBqkwc7UWop0edW50yrCQW4CyRw==}
+    dependencies:
+      undici-types: 5.26.5
+    dev: false
+
   /@types/node@20.9.0:
     resolution: {integrity: sha512-nekiGu2NDb1BcVofVcEKMIwzlx4NjHlcjhoxxKBNLtz15Y1z7MYf549DFvkHSId02Ax6kGwWntIBPC3l/JZcmw==}
     dependencies:
@@ -2211,7 +2224,7 @@ packages:
   /@types/rdf-dataset-ext@1.0.7:
     resolution: {integrity: sha512-7AiBJjpPRQCxxK1v3YHwaHMggreZCoscbWSUNee8nxHphgejzJfM2H1P5RmI1KN/PfSGYKvAvZ+YxEbumLjT8Q==}
     dependencies:
-      '@types/readable-stream': 4.0.1
+      '@types/readable-stream': 4.0.10
       rdf-js: 4.0.2
     dev: false
 
@@ -2349,6 +2362,14 @@ packages:
     dependencies:
       '@types/node': 20.9.0
       safe-buffer: 5.1.2
+    dev: true
+
+  /@types/readable-stream@4.0.10:
+    resolution: {integrity: sha512-AbUKBjcC8SHmImNi4yK2bbjogQlkFSg7shZCcicxPQapniOlajG8GCc39lvXzCWX4lLRRs7DM3VAeSlqmEVZUA==}
+    dependencies:
+      '@types/node': 20.10.5
+      safe-buffer: 5.1.2
+    dev: false
 
   /@types/resolve@1.20.2:
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
@@ -2596,7 +2617,7 @@ packages:
     resolution: {integrity: sha512-N/tbkINRUDExgcPTBvxNkvHGu504k8lzlNQRITVnm6YjOjwa4r0nnbd4Jb01sNpur5hAllyRJzSK5PvB9PPwRg==}
     dev: true
 
-  /@zazuko/env@1.10.1(@types/clownface@2.0.4)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5):
+  /@zazuko/env@1.10.1(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5):
     resolution: {integrity: sha512-+2O/hJVBQbwhDaB0+5XHevSsVAjLQEx/Au5eE4WhS9BIDBg1kG+F3UpGjFyHnWrzL7luFdysA32g+lzgEmXz7w==}
     peerDependencies:
       '@types/clownface': ^2.0.0
@@ -2609,7 +2630,7 @@ packages:
       '@rdfjs/environment': 0.1.2
       '@rdfjs/traverser': 0.1.2
       '@tpluscode/rdf-ns-builders': 4.1.0
-      '@types/clownface': 2.0.4
+      '@types/clownface': 2.0.5
       '@types/rdf-dataset-ext': 1.0.7
       '@types/rdfjs__environment': 0.1.10
       '@types/rdfjs__formats-common': 3.1.4
@@ -3511,6 +3532,14 @@ packages:
     transitivePeerDependencies:
       - encoding
 
+  /cross-fetch@3.1.8:
+    resolution: {integrity: sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==}
+    dependencies:
+      node-fetch: 2.7.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /cross-spawn@5.1.0:
     resolution: {integrity: sha512-pTgQJ5KC0d2hcY8eyL1IzlBPYjTkyH72XRZPnLyKus2mBfNjQs3klqbJU2VILqZryAZUt9JOb3h/mWMy23/f5A==}
     dependencies:
@@ -3527,8 +3556,8 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
 
-  /crossref-openapi-client-ts@1.3.0:
-    resolution: {integrity: sha512-rssZoyLrmqkVMi6lET6P+cm0VQccGGYbM/Sn5zATINRKD4xXglEEtDz4NRCLSuKtKvq+2nOvm9N/QcmZr47IVA==}
+  /crossref-openapi-client-ts@1.5.0:
+    resolution: {integrity: sha512-CsegvA07THNbOGVedQGFAc3vbqjV+Jcf2R9ZMkWWUf8d7SO7jQSsD6x+E2iITVEvouXQfEMj+J4r/nOVJbbsZA==}
     dependencies:
       bluebird: 3.7.2
       request: 2.88.2
@@ -6102,6 +6131,18 @@ packages:
     dependencies:
       whatwg-url: 5.0.0
 
+  /node-fetch@2.7.0:
+    resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
+    engines: {node: 4.x || >=6.0.0}
+    peerDependencies:
+      encoding: ^0.1.0
+    peerDependenciesMeta:
+      encoding:
+        optional: true
+    dependencies:
+      whatwg-url: 5.0.0
+    dev: false
+
   /node-fetch@3.3.1:
     resolution: {integrity: sha512-cRVc/kyto/7E5shrWca1Wsea4y6tL9iYJE5FBCius3JQfb/4P4I295PfhgbJQBLTx6lATE4z+wK0rPM4VS2uow==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
@@ -6115,7 +6156,7 @@ packages:
     dependencies:
       '@zazuko/node-fetch': 2.6.6
       concat-stream: 1.6.2
-      cross-fetch: 3.1.5
+      cross-fetch: 3.1.8
       readable-error: 1.0.0
       readable-stream: 3.6.2
     transitivePeerDependencies:
