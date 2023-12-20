@@ -45,7 +45,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "prettier": "^3.0.0",
     "typescript": "^5.2.2",
-    "vite": "^4.4.5",
+    "vite": "^5.0.0",
     "vite-plugin-dts": "^3.6.3"
   },
   "ava": {
