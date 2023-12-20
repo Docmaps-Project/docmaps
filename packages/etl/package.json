@@ -9,14 +9,14 @@
     "clean": "rm -rf dist/",
     "test:integration": "ava test/integration/",
     "test:unit": "ava test/unit/",
-    "start": "tsx dist/cli.js",
+    "start": "tsx dist/main.js",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
     "build:deps": "pnpm run --filter=@docmaps/etl^... build",
     "build": "tsc --declaration"
   },
   "bin": {
-    "docmaps-etl": "dist/cli.js"
+    "docmaps-etl": "dist/main.js"
   },
   "keywords": [],
   "author": "eve github.com/ships",
