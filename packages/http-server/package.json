@@ -46,7 +46,7 @@
     "n3": "^1.17.1",
     "oxigraph": "^0.3.19",
     "pino": "^8.16.1",
-    "pino-http": "^8.5.1",
+    "pino-http": "^9.0.0",
     "streaming-iterables": "^8.0.0",
     "tsx": "^4.0.0"
   },
