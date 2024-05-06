@@ -203,7 +203,7 @@ importers:
         version: 2.0.0
       '@tpluscode/sparql-builder':
         specifier: ^1.1.0
-        version: 1.1.0(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5)(sparql-http-client@2.4.2)
+        version: 1.1.0(@types/clownface@2.0.7)(@types/rdf-dataset-ext@1.0.8)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.5)(@types/rdfjs__traverser@0.1.5)(sparql-http-client@2.4.2)
       '@ts-rest/core':
         specifier: ^3.30.2
         version: 3.30.4(zod@3.22.4)
@@ -434,7 +434,7 @@ importers:
         version: link:../build-configs
       '@rollup/plugin-commonjs':
         specifier: ^25.0.0
-        version: 25.0.1(rollup@4.2.0)
+        version: 25.0.7(rollup@4.2.0)
       '@rollup/plugin-node-resolve':
         specifier: ^15.1.0
         version: 15.1.0(rollup@4.2.0)
@@ -1464,21 +1464,21 @@ packages:
     dependencies:
       '@types/node': 20.9.0
 
-  /@rollup/plugin-commonjs@25.0.1(rollup@4.2.0):
-    resolution: {integrity: sha512-2DJ4kv4b1xfTJopWhu61ANdNRHvzQZ2fpaIrlgaP2jOfUv1wDJ0Ucqy8AZlbFmn/iUjiwKoqki9j55Y6L8kyNQ==}
+  /@rollup/plugin-commonjs@25.0.7(rollup@4.2.0):
+    resolution: {integrity: sha512-nEvcR+LRjEjsaSsc4x3XZfCCvZIaSMenZu/OiwOKGN2UhQpAYI7ru7czFvyWbErlpoGjnSX3D5Ch5FcMA3kRWQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
-      rollup: ^2.68.0||^3.0.0
+      rollup: ^2.68.0||^3.0.0||^4.0.0
     peerDependenciesMeta:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.2(rollup@4.2.0)
+      '@rollup/pluginutils': 5.1.0(rollup@4.2.0)
       commondir: 1.0.1
       estree-walker: 2.0.2
       glob: 8.1.0
       is-reference: 1.2.1
-      magic-string: 0.27.0
+      magic-string: 0.30.10
       rollup: 4.2.0
     dev: true
 
@@ -1491,9 +1491,9 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 5.0.5(rollup@4.2.0)
+      '@rollup/pluginutils': 5.1.0(rollup@4.2.0)
       estree-walker: 2.0.2
-      magic-string: 0.30.5
+      magic-string: 0.30.10
       rollup: 4.2.0
     dev: true
 
@@ -1547,13 +1547,13 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@types/estree': 1.0.1
+      '@types/estree': 1.0.5
       estree-walker: 2.0.2
       picomatch: 2.3.1
       rollup: 4.2.0
     dev: true
 
-  /@rollup/pluginutils@5.0.5(rollup@4.2.0):
+  /@rollup/pluginutils@5.0.5:
     resolution: {integrity: sha512-6aEYR910NyP73oHiJglti74iRyOwgFU4x3meH/H8OJx6Ry0j6cOVZ5X/wTvub7G7Ao6qaHBEaNsV3GLJkSsF+Q==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -1562,7 +1562,21 @@ packages:
       rollup:
         optional: true
     dependencies:
-      '@types/estree': 1.0.1
+      '@types/estree': 1.0.5
+      estree-walker: 2.0.2
+      picomatch: 2.3.1
+    dev: true
+
+  /@rollup/pluginutils@5.1.0(rollup@4.2.0):
+    resolution: {integrity: sha512-XTIWOPPcpvyKI6L1NHo0lFlCyznUEyPmPY1mc3KpPVDYulHSTvyeLNVW00QTLIAFNhR3kYnJTQHeGqU4M3n09g==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      '@types/estree': 1.0.5
       estree-walker: 2.0.2
       picomatch: 2.3.1
       rollup: 4.2.0
@@ -1829,11 +1843,11 @@ packages:
       '@types/rdfjs__namespace': 2.0.8
       '@zazuko/prefixes': 2.0.0
 
-  /@tpluscode/rdf-string@1.1.0(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5):
+  /@tpluscode/rdf-string@1.1.0(@types/clownface@2.0.7)(@types/rdf-dataset-ext@1.0.8)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.5)(@types/rdfjs__traverser@0.1.5):
     resolution: {integrity: sha512-n9RUQmeGS4V7Pj+zx/baURoFEia9ajmvwk4nG6pslgOMT3zp+d79dA20IjlOgC9zyYeH5bmMirXmIVOjeke3rQ==}
     dependencies:
       '@rdfjs/types': 1.1.0
-      '@zazuko/env': 1.10.1(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5)
+      '@zazuko/env': 1.10.1(@types/clownface@2.0.7)(@types/rdf-dataset-ext@1.0.8)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.5)(@types/rdfjs__traverser@0.1.5)
       '@zazuko/prefixes': 2.0.0
     transitivePeerDependencies:
       - '@types/clownface'
@@ -1843,7 +1857,7 @@ packages:
       - '@types/rdfjs__traverser'
     dev: false
 
-  /@tpluscode/sparql-builder@1.1.0(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5)(sparql-http-client@2.4.2):
+  /@tpluscode/sparql-builder@1.1.0(@types/clownface@2.0.7)(@types/rdf-dataset-ext@1.0.8)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.5)(@types/rdfjs__traverser@0.1.5)(sparql-http-client@2.4.2):
     resolution: {integrity: sha512-xrbKKezWwvv6bXHRlkzM7hhSJqnG63DwUT2jGqtJIOWaOPAFc1wDXXd9TiuLk/oGBX6J9oV4KzaNRoZCWob9eQ==}
     peerDependencies:
       sparql-http-client: ^2.2.0
@@ -1852,7 +1866,7 @@ packages:
       '@rdfjs/term-set': 2.0.1
       '@rdfjs/types': 1.1.0
       '@tpluscode/rdf-ns-builders': 4.1.0
-      '@tpluscode/rdf-string': 1.1.0(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5)
+      '@tpluscode/rdf-string': 1.1.0(@types/clownface@2.0.7)(@types/rdf-dataset-ext@1.0.8)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.5)(@types/rdfjs__traverser@0.1.5)
       '@types/sparql-http-client': 2.2.11
       anylogger: 1.0.11
       sparql-http-client: 2.4.2
@@ -1915,10 +1929,11 @@ packages:
       rdf-js: 4.0.2
     dev: true
 
-  /@types/clownface@2.0.5:
-    resolution: {integrity: sha512-syaN4nOExKbW+cqH6falHe8xbalg5pP/aItWwntUEincOgbsxPxJ2JYMD7RioReAWBcASx2xgnMPA8waIGBf9w==}
+  /@types/clownface@2.0.7:
+    resolution: {integrity: sha512-juRApsKi3UgyjmVH9mu1W8VmVe9EBu642BAZ8jdb3tEGOv6oDk2W9JEBRmjTeWVgoGu0GL1GPzlhYt5rIPcL9A==}
     dependencies:
-      rdf-js: 4.0.2
+      '@rdfjs/types': 1.1.0
+      '@types/rdfjs__environment': 0.1.10
     dev: false
 
   /@types/connect@3.4.37:
@@ -2116,8 +2131,8 @@ packages:
     resolution: {integrity: sha512-OJtLXov4mK9wZ4/TkBqUM5OBCpIQvv+sT9FZFnM1Ais5yqHEMnDObGGPYYrQhkLVIKik/bD8o9WWn7YQfPkDlQ==}
     dev: true
 
-  /@types/estree@1.0.1:
-    resolution: {integrity: sha512-LG4opVs2ANWZ1TJoKc937iMmNstM/d0ae1vNbnBvBhqCSezgVUOzcLCqbI5elV8Vy6WKwKjaqR+zO9VKirBBCA==}
+  /@types/estree@1.0.5:
+    resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
     dev: true
 
   /@types/express-serve-static-core@4.17.39:
@@ -2159,8 +2174,13 @@ packages:
     resolution: {integrity: sha512-Hr5Jfhc9eYOQNPYO5WLDq/n4jqijdHNlDXjuAQkkt+mWdQR+XJToOHrsD4cPaMXpn6KO7y2+wM8AZEs8VpBLVA==}
     dev: true
 
+  /@types/jsonld@1.5.13:
+    resolution: {integrity: sha512-n7fUU6W4kSYK8VQlf/LsE9kddBHPKhODoVOjsZswmve+2qLwBy6naWxs/EiuSZN9NU0N06Ra01FR+j87C62T0A==}
+    dev: false
+
   /@types/jsonld@1.5.8:
     resolution: {integrity: sha512-4l5t/jDnJpqZ+i7CLTTgPcT5BYXnAnwJupb07aAokPufCV0SjDHcwctUkSTuhIuSU9yHok+WOOngIGCtpL96gw==}
+    dev: true
 
   /@types/keyv@3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
@@ -2194,8 +2214,8 @@ packages:
   /@types/node@18.16.7:
     resolution: {integrity: sha512-MFg7ua/bRtnA1hYE3pVyWxGd/r7aMqjNOdHvlSsXV3n8iaeGKkOaPzpJh6/ovf4bEXWcojkeMJpTsq3mzXW4IQ==}
 
-  /@types/node@20.10.5:
-    resolution: {integrity: sha512-nNPsNE65wjMxEKI93yOP+NPGGBJz/PoN3kZsVLee0XMiJolxSekEVD8wRwBUBqkwc7UWop0edW50yrCQW4CyRw==}
+  /@types/node@20.12.9:
+    resolution: {integrity: sha512-o93r47yu04MHumPBCFg0bMPBMNgtMg3jzbhl7e68z50+BMHmRMGDJv13eBlUgOdc9i/uoJXGMGYLtJV4ReTXEg==}
     dependencies:
       undici-types: 5.26.5
     dev: false
@@ -2221,11 +2241,11 @@ packages:
     resolution: {integrity: sha512-+0autS93xyXizIYiyL02FCY8N+KkKPhILhcUSA276HxzreZ16kl+cmwvV2qAM/PuCCwPXzOXOWhiPcw20uSFcA==}
     dev: true
 
-  /@types/rdf-dataset-ext@1.0.7:
-    resolution: {integrity: sha512-7AiBJjpPRQCxxK1v3YHwaHMggreZCoscbWSUNee8nxHphgejzJfM2H1P5RmI1KN/PfSGYKvAvZ+YxEbumLjT8Q==}
+  /@types/rdf-dataset-ext@1.0.8:
+    resolution: {integrity: sha512-ngMGOzAm+yvrfTzFhlmPNa9lfWO72IkdqYRR+HNIPX3x+RPLf6qRpAi8GAZCg0rkpGt2JJqDQF3FgVxE6ykr/w==}
     dependencies:
-      '@types/readable-stream': 4.0.10
-      rdf-js: 4.0.2
+      '@rdfjs/types': 1.1.0
+      '@types/readable-stream': 4.0.12
     dev: false
 
   /@types/rdf-ext@2.0.2:
@@ -2285,6 +2305,20 @@ packages:
       '@types/rdfjs__sink-map': 2.0.1
       rdf-js: 4.0.2
       rdfxml-streaming-parser: 2.2.2
+    dev: true
+
+  /@types/rdfjs__formats-common@3.1.5:
+    resolution: {integrity: sha512-Zt74nSd9NemOq90/2cMrBVwnHJIXHFFDS7tkY4Slei1eRoQJpws059Lx9O+mqaFspkD3r81Enu/5CiNfQg9V7g==}
+    dependencies:
+      '@rdfjs/types': 1.1.0
+      '@types/node': 20.12.9
+      '@types/rdfjs__parser-jsonld': 2.1.6
+      '@types/rdfjs__parser-n3': 2.0.6
+      '@types/rdfjs__serializer-jsonld': 2.0.5
+      '@types/rdfjs__serializer-ntriples': 2.0.6
+      '@types/rdfjs__sink-map': 2.0.5
+      rdfxml-streaming-parser: 2.4.0
+    dev: false
 
   /@types/rdfjs__namespace@2.0.8:
     resolution: {integrity: sha512-py5L7+crlnuhd86DSxkw8jDAIHLf5YNfSXiLM5fe0aleleoP9X/L15Zrbz9k2Yr3ODY+lhboOLVGyyhfH43/Sw==}
@@ -2296,11 +2330,26 @@ packages:
     dependencies:
       '@types/jsonld': 1.5.8
       rdf-js: 4.0.2
+    dev: true
+
+  /@types/rdfjs__parser-jsonld@2.1.6:
+    resolution: {integrity: sha512-2O8584S2yT819CjUFtTde36Wl9olAmg3s4ZWkmvtnd6xCS1MJvCfI1rWfxApP+fy+k5TXsC3gciMbnAJ00NgCw==}
+    dependencies:
+      '@rdfjs/types': 1.1.0
+      '@types/jsonld': 1.5.13
+    dev: false
 
   /@types/rdfjs__parser-n3@2.0.1:
     resolution: {integrity: sha512-IPA04Q5LutRlFy9Kz1x48uqj6UaPd5rWandyBww1wj7xzwrCl1Yp3xTVkx7DnWP6o/kYd527/KHKsVkNi4tA9g==}
     dependencies:
       rdf-js: 4.0.2
+    dev: true
+
+  /@types/rdfjs__parser-n3@2.0.6:
+    resolution: {integrity: sha512-VHfdq7BDV6iMCtHkzTFSOuUWnqGlMUmEF0UZyK4+g9SzLWvc6TMcU5TYwQPQIz/e0s7dZ+xomxx6mVtIzsRQ/A==}
+    dependencies:
+      '@rdfjs/types': 1.1.0
+    dev: false
 
   /@types/rdfjs__prefix-map@0.1.1:
     resolution: {integrity: sha512-KgVKOzveR/ObWEq/vZmPEVF9CTlicbH01bUkjh2dp3Zd3SyiddxBPomO4f+fAVZqQ4jXXTg4/MBfWQqXog0ovg==}
@@ -2325,16 +2374,36 @@ packages:
     resolution: {integrity: sha512-podYtgQVJszg3eBlh7eUE3zuMi6BmKck01RXFu8G8tBSfC2Ihsee9Yki4zt8562q6CY9Ahz2PrHwLM5EQAW4CA==}
     dependencies:
       rdf-js: 4.0.2
+    dev: true
+
+  /@types/rdfjs__serializer-jsonld@2.0.5:
+    resolution: {integrity: sha512-ubdLD9QgZzAt+65NSPzh2qWCPWcGYlHEWgkP6uRwfm7JC48Xh/QjzwOTG13MTomOkQqcN4R7PIG0j3Ca8iyNWQ==}
+    dependencies:
+      '@rdfjs/types': 1.1.0
+    dev: false
 
   /@types/rdfjs__serializer-ntriples@2.0.5:
     resolution: {integrity: sha512-8tepsjLyI7jBFfe2aIUj36hrKo8Z7muXLyN1O7HyP6NfLMq/j5PtVh+2jRD48Ju31p1O8PTHAoLdOhwY6rSehg==}
     dependencies:
       rdf-js: 4.0.2
+    dev: true
+
+  /@types/rdfjs__serializer-ntriples@2.0.6:
+    resolution: {integrity: sha512-Nn3e3eyuymLvbI5MFzI7ODD/X6ZGpbB9fLaWOB00RtFHd2vttk3wQL2fzzsZZQPJ/ihC/xlFE4cNQkO6SoHa7w==}
+    dependencies:
+      '@rdfjs/types': 1.1.0
+    dev: false
 
   /@types/rdfjs__sink-map@2.0.1:
     resolution: {integrity: sha512-V12S6Ythoe8NJjD2xbxy9MnZQXKdKKESsDf4n09okQB31k/uqLl/U5Ar0WJfrKv9tD5xQxXLHRFGUlk5+uKRdA==}
     dependencies:
       '@rdfjs/types': 1.1.0
+
+  /@types/rdfjs__sink-map@2.0.5:
+    resolution: {integrity: sha512-ycUBlOMbp9YpjrBrMwGv3uiqulOWgodess06cinYLxomOTc2ET9rEQklgM5rJqnu5WMsVP8SFG3fFw36/5hADQ==}
+    dependencies:
+      '@rdfjs/types': 1.1.0
+    dev: false
 
   /@types/rdfjs__term-map@2.0.3:
     resolution: {integrity: sha512-yoXUFl3F4OLgZ6rR1XV8iBEE8YUt88SDermutJTe7eU4ntyqpJvTuGfYrnQqUFdRUntrjhzV/kXJOvyvD/5q6g==}
@@ -2364,10 +2433,10 @@ packages:
       safe-buffer: 5.1.2
     dev: true
 
-  /@types/readable-stream@4.0.10:
-    resolution: {integrity: sha512-AbUKBjcC8SHmImNi4yK2bbjogQlkFSg7shZCcicxPQapniOlajG8GCc39lvXzCWX4lLRRs7DM3VAeSlqmEVZUA==}
+  /@types/readable-stream@4.0.12:
+    resolution: {integrity: sha512-SCaw+bs9o/HCX1eTa3glTcQgW1oPxof49mqP2Qikik3xzTimNv2M4p43BQHhBuf7CwOJdQW0s1SrWU3MZxz6lw==}
     dependencies:
-      '@types/node': 20.10.5
+      '@types/node': 20.12.9
       safe-buffer: 5.1.2
     dev: false
 
@@ -2607,7 +2676,7 @@ packages:
       '@vue/compiler-dom': 3.3.7
       '@vue/shared': 3.3.7
       computeds: 0.0.1
-      minimatch: 9.0.3
+      minimatch: 9.0.4
       muggle-string: 0.3.1
       typescript: 5.2.2
       vue-template-compiler: 2.7.15
@@ -2617,7 +2686,7 @@ packages:
     resolution: {integrity: sha512-N/tbkINRUDExgcPTBvxNkvHGu504k8lzlNQRITVnm6YjOjwa4r0nnbd4Jb01sNpur5hAllyRJzSK5PvB9PPwRg==}
     dev: true
 
-  /@zazuko/env@1.10.1(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5):
+  /@zazuko/env@1.10.1(@types/clownface@2.0.7)(@types/rdf-dataset-ext@1.0.8)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.5)(@types/rdfjs__traverser@0.1.5):
     resolution: {integrity: sha512-+2O/hJVBQbwhDaB0+5XHevSsVAjLQEx/Au5eE4WhS9BIDBg1kG+F3UpGjFyHnWrzL7luFdysA32g+lzgEmXz7w==}
     peerDependencies:
       '@types/clownface': ^2.0.0
@@ -2630,10 +2699,10 @@ packages:
       '@rdfjs/environment': 0.1.2
       '@rdfjs/traverser': 0.1.2
       '@tpluscode/rdf-ns-builders': 4.1.0
-      '@types/clownface': 2.0.5
-      '@types/rdf-dataset-ext': 1.0.7
+      '@types/clownface': 2.0.7
+      '@types/rdf-dataset-ext': 1.0.8
       '@types/rdfjs__environment': 0.1.10
-      '@types/rdfjs__formats-common': 3.1.4
+      '@types/rdfjs__formats-common': 3.1.5
       '@types/rdfjs__traverser': 0.1.5
       '@zazuko/prefixes': 2.1.0
       clownface: 2.0.1
@@ -3307,7 +3376,7 @@ packages:
     resolution: {integrity: sha512-kVwJELqiILQyG5aeuyKFbdsI1fmQy1Cmf7dQ8eGmVuJoaRVdwey7WaMknr2ZFeVSYSKT0rExsa8EGw0aoI/1QQ==}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
-      '@types/estree': 1.0.1
+      '@types/estree': 1.0.5
       acorn: 8.8.2
       estree-walker: 3.0.3
       periscopic: 3.1.0
@@ -4391,7 +4460,7 @@ packages:
   /estree-walker@3.0.3:
     resolution: {integrity: sha512-7RUKfXgSMMkzt6ZuXmqapOurLGPPfgj6l9uRZ7lRGolvk0y2yocc35LdcxKC5PQZdn2DMqioAQ2NoWcrTKmm6g==}
     dependencies:
-      '@types/estree': 1.0.1
+      '@types/estree': 1.0.5
     dev: true
 
   /esutils@2.0.3:
@@ -5368,13 +5437,13 @@ packages:
   /is-reference@1.2.1:
     resolution: {integrity: sha512-U82MsXXiFIrjCK4otLT+o2NA2Cd2g5MLoOVXUZjIOhLurrRxpEXzI8O0KZHr3IjLvlAH1kTPYSuqer5T9ZVBKQ==}
     dependencies:
-      '@types/estree': 1.0.1
+      '@types/estree': 1.0.5
     dev: true
 
   /is-reference@3.0.1:
     resolution: {integrity: sha512-baJJdQLiYaJdvFbJqXrcGv3WU3QCzBlUcI5QhbesIm6/xPsvmO+2CDoi/GMOFBQEQm+PXkwOPrp9KK5ozZsp2w==}
     dependencies:
-      '@types/estree': 1.0.1
+      '@types/estree': 1.0.5
     dev: true
 
   /is-stream@2.0.1:
@@ -5803,13 +5872,6 @@ packages:
     resolution: {integrity: sha512-zTU3DaZaF3Rt9rhN3uBMGQD3dD2/vFQqnvZCDv4dl5iOzq2IZQqTxu90r4E5J+nP70J3ilqVCrbho2eWaeW8Ow==}
     dev: true
 
-  /magic-string@0.27.0:
-    resolution: {integrity: sha512-8UnnX2PeRAPZuN12svgR9j7M1uWMovg/CEnIwIG0LFkXSJJe4PdfUGiTGl8V9bsBHFUtfVINcSyYxd7q+kx9fA==}
-    engines: {node: '>=12'}
-    dependencies:
-      '@jridgewell/sourcemap-codec': 1.4.15
-    dev: true
-
   /magic-string@0.30.0:
     resolution: {integrity: sha512-LA+31JYDJLs82r2ScLrlz1GjSgu66ZV518eyWT+S8VhyQn/JL0u9MeBOvQMGYiPk1DBiSN9DDMOcXvigJZaViQ==}
     engines: {node: '>=12'}
@@ -5817,9 +5879,8 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
-  /magic-string@0.30.5:
-    resolution: {integrity: sha512-7xlpfBaQaP/T6Vh8MO/EqXSW5En6INHEvEXQiuff7Gku0PWjU3uf6w/j9o7O+SpB5fOAkrI5HeoNgwjEO0pFsA==}
-    engines: {node: '>=12'}
+  /magic-string@0.30.10:
+    resolution: {integrity: sha512-iIRwTIf0QKV3UAnYK4PU8uiEc4SRh5jX0mwpIwETPpHdhVM4f53RSwS/vXvN1JhGX+Cs7B8qIq3d6AH49O5fAQ==}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
@@ -5987,6 +6048,13 @@ packages:
 
   /minimatch@9.0.3:
     resolution: {integrity: sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==}
+    engines: {node: '>=16 || 14 >=14.17'}
+    dependencies:
+      brace-expansion: 2.0.1
+    dev: true
+
+  /minimatch@9.0.4:
+    resolution: {integrity: sha512-KqWh+VchfxcMNRAJjj2tnsSJdNbHsVgnkBhTNrW7AjVo6OvLtxw8zfT9oLw1JSohlFzJ8jCoTgaoXvJ+kHt6fw==}
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
       brace-expansion: 2.0.1
@@ -6620,7 +6688,7 @@ packages:
   /periscopic@3.1.0:
     resolution: {integrity: sha512-vKiQ8RRtkl9P+r/+oefh25C3fhybptkHKCZSPlcXiJux2tJF55GnEj3BVn4A5gKfq9NWWXXrxkHBwVPUfH0opw==}
     dependencies:
-      '@types/estree': 1.0.1
+      '@types/estree': 1.0.5
       estree-walker: 3.0.3
       is-reference: 3.0.1
     dev: true
@@ -7012,6 +7080,19 @@ packages:
       saxes: 6.0.0
       validate-iri: 1.0.1
 
+  /rdfxml-streaming-parser@2.4.0:
+    resolution: {integrity: sha512-f+tdI1wxOiPzMbFWRtOwinwPsqac0WIN80668yFKcVdFCSTGOWTM70ucQGUSdDZZo7pce/UvZgV0C3LDj0P7tg==}
+    dependencies:
+      '@rdfjs/types': 1.1.0
+      '@rubensworks/saxes': 6.0.1
+      '@types/readable-stream': 2.3.15
+      buffer: 6.0.3
+      rdf-data-factory: 1.1.2
+      readable-stream: 4.5.2
+      relative-to-absolute-iri: 1.0.7
+      validate-iri: 1.0.1
+    dev: false
+
   /read-pkg-up@7.0.1:
     resolution: {integrity: sha512-zK0TB7Xd6JpCLmlLmufqykGE+/TlOePD6qKClNW7hHDKFh/J7/7gCWGR7joEQEW1bKq3a3yUZSObOoWLFQ4ohg==}
     engines: {node: '>=8'}
@@ -7076,6 +7157,17 @@ packages:
       buffer: 6.0.3
       events: 3.3.0
       process: 0.11.10
+
+  /readable-stream@4.5.2:
+    resolution: {integrity: sha512-yjavECdqeZ3GLXNgRXgeQEdz9fvDDkNKyHnbHRFtOr7/LcfgBcmct7t/ET+HaCTqfh06OzoAxrkN/IfjJBVe+g==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dependencies:
+      abort-controller: 3.0.0
+      buffer: 6.0.3
+      events: 3.3.0
+      process: 0.11.10
+      string_decoder: 1.3.0
+    dev: false
 
   /readable-to-readable@0.1.3:
     resolution: {integrity: sha512-G+0kz01xJM/uTuItKcqC73cifW8S6CZ7tp77NLN87lE5mrSU+GC8geoSAlfmp0NocmXckQ7W8s8ns73HYsIA3w==}
@@ -8380,7 +8472,7 @@ packages:
         optional: true
     dependencies:
       '@microsoft/api-extractor': 7.38.0(@types/node@20.9.0)
-      '@rollup/pluginutils': 5.0.5(rollup@4.2.0)
+      '@rollup/pluginutils': 5.0.5
       '@vue/language-core': 1.8.22(typescript@5.2.2)
       debug: 4.3.4
       kolorist: 1.8.0
