@@ -203,7 +203,7 @@ importers:
         version: 2.0.0
       '@tpluscode/sparql-builder':
         specifier: ^1.1.0
-        version: 1.1.0(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5)(sparql-http-client@2.4.2)
+        version: 1.1.0(@types/clownface@2.0.7)(@types/rdf-dataset-ext@1.0.8)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.5)(@types/rdfjs__traverser@0.1.5)(sparql-http-client@2.4.2)
       '@ts-rest/core':
         specifier: ^3.30.2
         version: 3.30.4(zod@3.22.4)
@@ -440,7 +440,7 @@ importers:
         version: 15.1.0(rollup@4.2.0)
       '@rollup/plugin-terser':
         specifier: ^0.4.3
-        version: 0.4.3(rollup@4.2.0)
+        version: 0.4.4(rollup@4.2.0)
       rollup:
         specifier: ^4.0.0
         version: 4.2.0
@@ -918,8 +918,22 @@ packages:
       '@jridgewell/trace-mapping': 0.3.18
     dev: true
 
+  /@jridgewell/gen-mapping@0.3.5:
+    resolution: {integrity: sha512-IzL8ZoEDIBRWEzlCcRhOaCupYyN5gdIK+Q6fbFdPDg6HqX6jpkItn7DFIpW9LQzXG6Df9sA7+OKnq0qlz/GaQg==}
+    engines: {node: '>=6.0.0'}
+    dependencies:
+      '@jridgewell/set-array': 1.2.1
+      '@jridgewell/sourcemap-codec': 1.4.15
+      '@jridgewell/trace-mapping': 0.3.25
+    dev: true
+
   /@jridgewell/resolve-uri@3.1.0:
     resolution: {integrity: sha512-F2msla3tad+Mfht5cJq7LSXcdudKTWCVYUgw6pLFOOHSTtZlj6SWNYAp+AhuqLmWdBO2X5hPrLcu8cVP8fy28w==}
+    engines: {node: '>=6.0.0'}
+    dev: true
+
+  /@jridgewell/resolve-uri@3.1.2:
+    resolution: {integrity: sha512-bRISgCIjP20/tbWSPWMEi54QVPRZExkuD9lJL+UIxUKtwVJA8wW1Trb1jMs1RFXo1CBTNZ/5hpC9QvmKWdopKw==}
     engines: {node: '>=6.0.0'}
     dev: true
 
@@ -928,11 +942,16 @@ packages:
     engines: {node: '>=6.0.0'}
     dev: true
 
-  /@jridgewell/source-map@0.3.3:
-    resolution: {integrity: sha512-b+fsZXeLYi9fEULmfBrhxn4IrPlINf8fiNarzTof004v3lFdntdwa9PF7vFJqm3mg7s+ScJMxXaE3Acp1irZcg==}
+  /@jridgewell/set-array@1.2.1:
+    resolution: {integrity: sha512-R8gLRTZeyp03ymzP/6Lil/28tGeGEzhx1q2k703KGWRAI1VdvPIXdG70VJc2pAMw3NA6JKL5hhFu1sJX0Mnn/A==}
+    engines: {node: '>=6.0.0'}
+    dev: true
+
+  /@jridgewell/source-map@0.3.6:
+    resolution: {integrity: sha512-1ZJTZebgqllO79ue2bm3rIGud/bOe0pP5BjSRCRxxYkEZS8STV7zN84UBbiYu7jy+eCKSnVIUgoWWE/tt+shMQ==}
     dependencies:
-      '@jridgewell/gen-mapping': 0.3.3
-      '@jridgewell/trace-mapping': 0.3.18
+      '@jridgewell/gen-mapping': 0.3.5
+      '@jridgewell/trace-mapping': 0.3.25
     dev: true
 
   /@jridgewell/sourcemap-codec@1.4.14:
@@ -948,6 +967,13 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
+    dev: true
+
+  /@jridgewell/trace-mapping@0.3.25:
+    resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
+    dependencies:
+      '@jridgewell/resolve-uri': 3.1.2
+      '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
   /@lit-labs/ssr-dom-shim@1.1.1:
@@ -1515,19 +1541,19 @@ packages:
       rollup: 4.2.0
     dev: true
 
-  /@rollup/plugin-terser@0.4.3(rollup@4.2.0):
-    resolution: {integrity: sha512-EF0oejTMtkyhrkwCdg0HJ0IpkcaVg1MMSf2olHb2Jp+1mnLM04OhjpJWGma4HobiDTF0WCyViWuvadyE9ch2XA==}
+  /@rollup/plugin-terser@0.4.4(rollup@4.2.0):
+    resolution: {integrity: sha512-XHeJC5Bgvs8LfukDwWZp7yeqin6ns8RTl2B9avbejt6tZqsqvVoWI7ZTQrcNsfKEDWBTnTxM8nMDkO2IFFbd0A==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
-      rollup: ^2.x || ^3.x
+      rollup: ^2.0.0||^3.0.0||^4.0.0
     peerDependenciesMeta:
       rollup:
         optional: true
     dependencies:
       rollup: 4.2.0
-      serialize-javascript: 6.0.1
-      smob: 1.4.0
-      terser: 5.17.7
+      serialize-javascript: 6.0.2
+      smob: 1.5.0
+      terser: 5.31.0
     dev: true
 
   /@rollup/pluginutils@4.2.1:
@@ -1829,11 +1855,11 @@ packages:
       '@types/rdfjs__namespace': 2.0.8
       '@zazuko/prefixes': 2.0.0
 
-  /@tpluscode/rdf-string@1.1.0(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5):
+  /@tpluscode/rdf-string@1.1.0(@types/clownface@2.0.7)(@types/rdf-dataset-ext@1.0.8)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.5)(@types/rdfjs__traverser@0.1.5):
     resolution: {integrity: sha512-n9RUQmeGS4V7Pj+zx/baURoFEia9ajmvwk4nG6pslgOMT3zp+d79dA20IjlOgC9zyYeH5bmMirXmIVOjeke3rQ==}
     dependencies:
       '@rdfjs/types': 1.1.0
-      '@zazuko/env': 1.10.1(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5)
+      '@zazuko/env': 1.10.1(@types/clownface@2.0.7)(@types/rdf-dataset-ext@1.0.8)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.5)(@types/rdfjs__traverser@0.1.5)
       '@zazuko/prefixes': 2.0.0
     transitivePeerDependencies:
       - '@types/clownface'
@@ -1843,7 +1869,7 @@ packages:
       - '@types/rdfjs__traverser'
     dev: false
 
-  /@tpluscode/sparql-builder@1.1.0(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5)(sparql-http-client@2.4.2):
+  /@tpluscode/sparql-builder@1.1.0(@types/clownface@2.0.7)(@types/rdf-dataset-ext@1.0.8)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.5)(@types/rdfjs__traverser@0.1.5)(sparql-http-client@2.4.2):
     resolution: {integrity: sha512-xrbKKezWwvv6bXHRlkzM7hhSJqnG63DwUT2jGqtJIOWaOPAFc1wDXXd9TiuLk/oGBX6J9oV4KzaNRoZCWob9eQ==}
     peerDependencies:
       sparql-http-client: ^2.2.0
@@ -1852,7 +1878,7 @@ packages:
       '@rdfjs/term-set': 2.0.1
       '@rdfjs/types': 1.1.0
       '@tpluscode/rdf-ns-builders': 4.1.0
-      '@tpluscode/rdf-string': 1.1.0(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5)
+      '@tpluscode/rdf-string': 1.1.0(@types/clownface@2.0.7)(@types/rdf-dataset-ext@1.0.8)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.5)(@types/rdfjs__traverser@0.1.5)
       '@types/sparql-http-client': 2.2.11
       anylogger: 1.0.11
       sparql-http-client: 2.4.2
@@ -1915,10 +1941,11 @@ packages:
       rdf-js: 4.0.2
     dev: true
 
-  /@types/clownface@2.0.5:
-    resolution: {integrity: sha512-syaN4nOExKbW+cqH6falHe8xbalg5pP/aItWwntUEincOgbsxPxJ2JYMD7RioReAWBcASx2xgnMPA8waIGBf9w==}
+  /@types/clownface@2.0.7:
+    resolution: {integrity: sha512-juRApsKi3UgyjmVH9mu1W8VmVe9EBu642BAZ8jdb3tEGOv6oDk2W9JEBRmjTeWVgoGu0GL1GPzlhYt5rIPcL9A==}
     dependencies:
-      rdf-js: 4.0.2
+      '@rdfjs/types': 1.1.0
+      '@types/rdfjs__environment': 0.1.10
     dev: false
 
   /@types/connect@3.4.37:
@@ -2159,8 +2186,13 @@ packages:
     resolution: {integrity: sha512-Hr5Jfhc9eYOQNPYO5WLDq/n4jqijdHNlDXjuAQkkt+mWdQR+XJToOHrsD4cPaMXpn6KO7y2+wM8AZEs8VpBLVA==}
     dev: true
 
+  /@types/jsonld@1.5.14:
+    resolution: {integrity: sha512-z4IRf5oRgjPTkazDDv94sjzI5iK3DrDEW7Y5Gk4VO4+ANymgtHtNaXWi93+BmiAoG3PB9QTv5DgSpKWGYVvysA==}
+    dev: false
+
   /@types/jsonld@1.5.8:
     resolution: {integrity: sha512-4l5t/jDnJpqZ+i7CLTTgPcT5BYXnAnwJupb07aAokPufCV0SjDHcwctUkSTuhIuSU9yHok+WOOngIGCtpL96gw==}
+    dev: true
 
   /@types/keyv@3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
@@ -2194,8 +2226,8 @@ packages:
   /@types/node@18.16.7:
     resolution: {integrity: sha512-MFg7ua/bRtnA1hYE3pVyWxGd/r7aMqjNOdHvlSsXV3n8iaeGKkOaPzpJh6/ovf4bEXWcojkeMJpTsq3mzXW4IQ==}
 
-  /@types/node@20.10.5:
-    resolution: {integrity: sha512-nNPsNE65wjMxEKI93yOP+NPGGBJz/PoN3kZsVLee0XMiJolxSekEVD8wRwBUBqkwc7UWop0edW50yrCQW4CyRw==}
+  /@types/node@20.14.2:
+    resolution: {integrity: sha512-xyu6WAMVwv6AKFLB+e/7ySZVr/0zLCzOa7rSpq6jNwpqOrUbcACDWC+53d4n2QHOnDou0fbIsg8wZu/sxrnI4Q==}
     dependencies:
       undici-types: 5.26.5
     dev: false
@@ -2221,11 +2253,11 @@ packages:
     resolution: {integrity: sha512-+0autS93xyXizIYiyL02FCY8N+KkKPhILhcUSA276HxzreZ16kl+cmwvV2qAM/PuCCwPXzOXOWhiPcw20uSFcA==}
     dev: true
 
-  /@types/rdf-dataset-ext@1.0.7:
-    resolution: {integrity: sha512-7AiBJjpPRQCxxK1v3YHwaHMggreZCoscbWSUNee8nxHphgejzJfM2H1P5RmI1KN/PfSGYKvAvZ+YxEbumLjT8Q==}
+  /@types/rdf-dataset-ext@1.0.8:
+    resolution: {integrity: sha512-ngMGOzAm+yvrfTzFhlmPNa9lfWO72IkdqYRR+HNIPX3x+RPLf6qRpAi8GAZCg0rkpGt2JJqDQF3FgVxE6ykr/w==}
     dependencies:
-      '@types/readable-stream': 4.0.10
-      rdf-js: 4.0.2
+      '@rdfjs/types': 1.1.0
+      '@types/readable-stream': 4.0.14
     dev: false
 
   /@types/rdf-ext@2.0.2:
@@ -2285,6 +2317,20 @@ packages:
       '@types/rdfjs__sink-map': 2.0.1
       rdf-js: 4.0.2
       rdfxml-streaming-parser: 2.2.2
+    dev: true
+
+  /@types/rdfjs__formats-common@3.1.5:
+    resolution: {integrity: sha512-Zt74nSd9NemOq90/2cMrBVwnHJIXHFFDS7tkY4Slei1eRoQJpws059Lx9O+mqaFspkD3r81Enu/5CiNfQg9V7g==}
+    dependencies:
+      '@rdfjs/types': 1.1.0
+      '@types/node': 20.14.2
+      '@types/rdfjs__parser-jsonld': 2.1.7
+      '@types/rdfjs__parser-n3': 2.0.6
+      '@types/rdfjs__serializer-jsonld': 2.0.5
+      '@types/rdfjs__serializer-ntriples': 2.0.6
+      '@types/rdfjs__sink-map': 2.0.5
+      rdfxml-streaming-parser: 2.4.0
+    dev: false
 
   /@types/rdfjs__namespace@2.0.8:
     resolution: {integrity: sha512-py5L7+crlnuhd86DSxkw8jDAIHLf5YNfSXiLM5fe0aleleoP9X/L15Zrbz9k2Yr3ODY+lhboOLVGyyhfH43/Sw==}
@@ -2296,11 +2342,26 @@ packages:
     dependencies:
       '@types/jsonld': 1.5.8
       rdf-js: 4.0.2
+    dev: true
+
+  /@types/rdfjs__parser-jsonld@2.1.7:
+    resolution: {integrity: sha512-n35K+c1Y95580N202Jxly6xjFE953FF+Y2mwxok6zLfMo4rgIfgMBElnNwpja0IeYXTuzGm1tEz7va3lItGrTg==}
+    dependencies:
+      '@rdfjs/types': 1.1.0
+      '@types/jsonld': 1.5.14
+    dev: false
 
   /@types/rdfjs__parser-n3@2.0.1:
     resolution: {integrity: sha512-IPA04Q5LutRlFy9Kz1x48uqj6UaPd5rWandyBww1wj7xzwrCl1Yp3xTVkx7DnWP6o/kYd527/KHKsVkNi4tA9g==}
     dependencies:
       rdf-js: 4.0.2
+    dev: true
+
+  /@types/rdfjs__parser-n3@2.0.6:
+    resolution: {integrity: sha512-VHfdq7BDV6iMCtHkzTFSOuUWnqGlMUmEF0UZyK4+g9SzLWvc6TMcU5TYwQPQIz/e0s7dZ+xomxx6mVtIzsRQ/A==}
+    dependencies:
+      '@rdfjs/types': 1.1.0
+    dev: false
 
   /@types/rdfjs__prefix-map@0.1.1:
     resolution: {integrity: sha512-KgVKOzveR/ObWEq/vZmPEVF9CTlicbH01bUkjh2dp3Zd3SyiddxBPomO4f+fAVZqQ4jXXTg4/MBfWQqXog0ovg==}
@@ -2325,16 +2386,36 @@ packages:
     resolution: {integrity: sha512-podYtgQVJszg3eBlh7eUE3zuMi6BmKck01RXFu8G8tBSfC2Ihsee9Yki4zt8562q6CY9Ahz2PrHwLM5EQAW4CA==}
     dependencies:
       rdf-js: 4.0.2
+    dev: true
+
+  /@types/rdfjs__serializer-jsonld@2.0.5:
+    resolution: {integrity: sha512-ubdLD9QgZzAt+65NSPzh2qWCPWcGYlHEWgkP6uRwfm7JC48Xh/QjzwOTG13MTomOkQqcN4R7PIG0j3Ca8iyNWQ==}
+    dependencies:
+      '@rdfjs/types': 1.1.0
+    dev: false
 
   /@types/rdfjs__serializer-ntriples@2.0.5:
     resolution: {integrity: sha512-8tepsjLyI7jBFfe2aIUj36hrKo8Z7muXLyN1O7HyP6NfLMq/j5PtVh+2jRD48Ju31p1O8PTHAoLdOhwY6rSehg==}
     dependencies:
       rdf-js: 4.0.2
+    dev: true
+
+  /@types/rdfjs__serializer-ntriples@2.0.6:
+    resolution: {integrity: sha512-Nn3e3eyuymLvbI5MFzI7ODD/X6ZGpbB9fLaWOB00RtFHd2vttk3wQL2fzzsZZQPJ/ihC/xlFE4cNQkO6SoHa7w==}
+    dependencies:
+      '@rdfjs/types': 1.1.0
+    dev: false
 
   /@types/rdfjs__sink-map@2.0.1:
     resolution: {integrity: sha512-V12S6Ythoe8NJjD2xbxy9MnZQXKdKKESsDf4n09okQB31k/uqLl/U5Ar0WJfrKv9tD5xQxXLHRFGUlk5+uKRdA==}
     dependencies:
       '@rdfjs/types': 1.1.0
+
+  /@types/rdfjs__sink-map@2.0.5:
+    resolution: {integrity: sha512-ycUBlOMbp9YpjrBrMwGv3uiqulOWgodess06cinYLxomOTc2ET9rEQklgM5rJqnu5WMsVP8SFG3fFw36/5hADQ==}
+    dependencies:
+      '@rdfjs/types': 1.1.0
+    dev: false
 
   /@types/rdfjs__term-map@2.0.3:
     resolution: {integrity: sha512-yoXUFl3F4OLgZ6rR1XV8iBEE8YUt88SDermutJTe7eU4ntyqpJvTuGfYrnQqUFdRUntrjhzV/kXJOvyvD/5q6g==}
@@ -2364,10 +2445,10 @@ packages:
       safe-buffer: 5.1.2
     dev: true
 
-  /@types/readable-stream@4.0.10:
-    resolution: {integrity: sha512-AbUKBjcC8SHmImNi4yK2bbjogQlkFSg7shZCcicxPQapniOlajG8GCc39lvXzCWX4lLRRs7DM3VAeSlqmEVZUA==}
+  /@types/readable-stream@4.0.14:
+    resolution: {integrity: sha512-xZn/AuUbCMShGsqH/ehZtGDwQtbx00M9rZ2ENLe4tOjFZ/JFeWMhEZkk2fEe1jAUqqEAURIkFJ7Az/go8mM1/w==}
     dependencies:
-      '@types/node': 20.10.5
+      '@types/node': 20.14.2
       safe-buffer: 5.1.2
     dev: false
 
@@ -2617,7 +2698,7 @@ packages:
     resolution: {integrity: sha512-N/tbkINRUDExgcPTBvxNkvHGu504k8lzlNQRITVnm6YjOjwa4r0nnbd4Jb01sNpur5hAllyRJzSK5PvB9PPwRg==}
     dev: true
 
-  /@zazuko/env@1.10.1(@types/clownface@2.0.5)(@types/rdf-dataset-ext@1.0.7)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.4)(@types/rdfjs__traverser@0.1.5):
+  /@zazuko/env@1.10.1(@types/clownface@2.0.7)(@types/rdf-dataset-ext@1.0.8)(@types/rdfjs__environment@0.1.10)(@types/rdfjs__formats-common@3.1.5)(@types/rdfjs__traverser@0.1.5):
     resolution: {integrity: sha512-+2O/hJVBQbwhDaB0+5XHevSsVAjLQEx/Au5eE4WhS9BIDBg1kG+F3UpGjFyHnWrzL7luFdysA32g+lzgEmXz7w==}
     peerDependencies:
       '@types/clownface': ^2.0.0
@@ -2630,10 +2711,10 @@ packages:
       '@rdfjs/environment': 0.1.2
       '@rdfjs/traverser': 0.1.2
       '@tpluscode/rdf-ns-builders': 4.1.0
-      '@types/clownface': 2.0.5
-      '@types/rdf-dataset-ext': 1.0.7
+      '@types/clownface': 2.0.7
+      '@types/rdf-dataset-ext': 1.0.8
       '@types/rdfjs__environment': 0.1.10
-      '@types/rdfjs__formats-common': 3.1.4
+      '@types/rdfjs__formats-common': 3.1.5
       '@types/rdfjs__traverser': 0.1.5
       '@zazuko/prefixes': 2.1.0
       clownface: 2.0.1
@@ -2715,6 +2796,12 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
     dev: false
+
+  /acorn@8.11.3:
+    resolution: {integrity: sha512-Y9rRfJG5jcKOE0CLisYbojUjIrIEE7AGMzA/Sm4BslANhbS+cDMpgBdcPT91oJ7OuJ9hYJBx59RjbhxVnrF8Xg==}
+    engines: {node: '>=0.4.0'}
+    hasBin: true
+    dev: true
 
   /acorn@8.8.2:
     resolution: {integrity: sha512-xjIYgE8HBrkpd/sJqOGNspf8uHG+NOHGOw6a/Urj8taM2EXfdNAH2oFcPeIFfsv3+kz/mJrS5VuMqbNLjCa2vw==}
@@ -7012,6 +7099,19 @@ packages:
       saxes: 6.0.0
       validate-iri: 1.0.1
 
+  /rdfxml-streaming-parser@2.4.0:
+    resolution: {integrity: sha512-f+tdI1wxOiPzMbFWRtOwinwPsqac0WIN80668yFKcVdFCSTGOWTM70ucQGUSdDZZo7pce/UvZgV0C3LDj0P7tg==}
+    dependencies:
+      '@rdfjs/types': 1.1.0
+      '@rubensworks/saxes': 6.0.1
+      '@types/readable-stream': 2.3.15
+      buffer: 6.0.3
+      rdf-data-factory: 1.1.2
+      readable-stream: 4.5.2
+      relative-to-absolute-iri: 1.0.7
+      validate-iri: 1.0.1
+    dev: false
+
   /read-pkg-up@7.0.1:
     resolution: {integrity: sha512-zK0TB7Xd6JpCLmlLmufqykGE+/TlOePD6qKClNW7hHDKFh/J7/7gCWGR7joEQEW1bKq3a3yUZSObOoWLFQ4ohg==}
     engines: {node: '>=8'}
@@ -7076,6 +7176,17 @@ packages:
       buffer: 6.0.3
       events: 3.3.0
       process: 0.11.10
+
+  /readable-stream@4.5.2:
+    resolution: {integrity: sha512-yjavECdqeZ3GLXNgRXgeQEdz9fvDDkNKyHnbHRFtOr7/LcfgBcmct7t/ET+HaCTqfh06OzoAxrkN/IfjJBVe+g==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dependencies:
+      abort-controller: 3.0.0
+      buffer: 6.0.3
+      events: 3.3.0
+      process: 0.11.10
+      string_decoder: 1.3.0
+    dev: false
 
   /readable-to-readable@0.1.3:
     resolution: {integrity: sha512-G+0kz01xJM/uTuItKcqC73cifW8S6CZ7tp77NLN87lE5mrSU+GC8geoSAlfmp0NocmXckQ7W8s8ns73HYsIA3w==}
@@ -7495,8 +7606,8 @@ packages:
       type-fest: 0.13.1
     dev: true
 
-  /serialize-javascript@6.0.1:
-    resolution: {integrity: sha512-owoXEFjWRllis8/M1Q+Cw5k8ZH40e3zhp/ovX+Xr/vi1qj6QesbyXXViFbpNvWvPNAD62SutwEXavefrLJWj7w==}
+  /serialize-javascript@6.0.2:
+    resolution: {integrity: sha512-Saa1xPByTTq2gdeFZYLLo+RFE35NHZkAbqZeWNd3BpzppeVisAqpDjcp8dyf6uIvEqJRd46jemmyA4iFIeVk8g==}
     dependencies:
       randombytes: 2.1.0
     dev: true
@@ -7632,8 +7743,8 @@ packages:
       is-fullwidth-code-point: 4.0.0
     dev: true
 
-  /smob@1.4.0:
-    resolution: {integrity: sha512-MqR3fVulhjWuRNSMydnTlweu38UhQ0HXM4buStD/S3mc/BzX3CuM9OmhyQpmtYCvoYdl5ris6TI0ZqH355Ymqg==}
+  /smob@1.5.0:
+    resolution: {integrity: sha512-g6T+p7QO8npa+/hNx9ohv1E5pVCmWrVCUzUXJyLdMmftX6ER0oiWY/w9knEonLpnOp6b6FenKnMfR8gqwWdwig==}
     dev: true
 
   /sonic-boom@3.7.0:
@@ -8001,13 +8112,13 @@ packages:
       unique-string: 2.0.0
     dev: false
 
-  /terser@5.17.7:
-    resolution: {integrity: sha512-/bi0Zm2C6VAexlGgLlVxA0P2lru/sdLyfCVaRMfKVo9nWxbmz7f/sD8VPybPeSUJaJcwmCJis9pBIhcVcG1QcQ==}
+  /terser@5.31.0:
+    resolution: {integrity: sha512-Q1JFAoUKE5IMfI4Z/lkE/E6+SwgzO+x4tq4v1AyBLRj8VSYvRO6A/rQrPg1yud4g0En9EKI1TvFRF2tQFcoUkg==}
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
-      '@jridgewell/source-map': 0.3.3
-      acorn: 8.8.2
+      '@jridgewell/source-map': 0.3.6
+      acorn: 8.11.3
       commander: 2.20.3
       source-map-support: 0.5.21
     dev: true
